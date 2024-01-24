@@ -82,7 +82,7 @@
                         @if(session()->has('loginError'))
                         <script>
                             swal("Login Gagal!", "{{ session('loginError') }}", "warning", {
-                                timer: 2000
+                                timer: 3000
                             });
                         </script>
                         @endif

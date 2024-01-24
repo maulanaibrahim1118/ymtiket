@@ -92,14 +92,19 @@
                                 <h6>{{ ucwords(auth()->user()->nama) }}</h6>
                                 </li>
                                 <li>
-                                <hr class="dropdown-divider">
+                                <hr class="dropdown-divider mb-2">
                                 </li>
         
                                 <li>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                <i class="bi bi-power"></i>
-                                <span>Logout</span>
+                                <form action="/logout" method="post">
+                                @csrf
+                                <a class="nav-link collapsed">
+                                    <button type="submit" class="dropdown-item d-flex align-items-center">
+                                    <i class="bi bi-power"></i>
+                                    <span>Logout</span>
+                                    </button>
                                 </a>
+                                </form>
                                 </li>
                             </ul><!-- End Profile Dropdown Items -->
                         </div><!-- End Profile Iamge Icon -->
