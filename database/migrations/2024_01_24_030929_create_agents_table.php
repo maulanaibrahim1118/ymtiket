@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateAgentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,29 +13,29 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('agents', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('nik')->unique();
-            $table->string('nama', 40);
-            $table->string('password');
-            $table->bigInteger('position_id');
+            $table->string('nama_agent', 40);
             $table->bigInteger('location_id');
-            $table->string('telp', 15);
-            $table->string('ip_address', 15);
-            $table->enum('role', ['client', 'service desk', 'agent']);
+            $table->bigInteger('total_ticket');
+            $table->bigInteger('total_sub_ticket');
+            $table->bigInteger('total_resolved_time');
+            $table->bigInteger('rate');
+            $table->enum('status', ['working', 'idle']);
             $table->string('updated_by', 40);
             $table->timestamps();
         });
 
-        DB::table('users')->insert([
+        DB::table('agents')->insert([
             ['nik' => 23010124, 
-            'nama' => 'maulana ibrahim', 
-            'password' => Hash::make('password'),
-            'position_id' => 1,
+            'nama_agent' => 'maulana ibrahim',
             'location_id' => 10,
-            'telp' => '083820326382',
-            'ip_address' => '172.17.7.106',
-            'role' => 'service desk',
+            'total_ticket' => 0,
+            'total_sub_ticket' => 0,
+            'total_resolved_time' => 0,
+            'rate' => 0,
+            'status' => 'idle',
             'updated_by' => 'maulana ibrahim'
             ]
         ]);
@@ -48,6 +48,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('agents');
     }
 }
