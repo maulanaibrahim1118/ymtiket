@@ -10,16 +10,16 @@ class Asset extends Model
 
     public function ticket()
     {
-        return $this->hasOne('App\Models\Ticket');
+        return $this->hasOne('App\Ticket');
     }
 
     public function category_asset()
     {
-        return $this->belongsTo('App\Models\Category_asset');
+        return $this->belongsTo('App\Category_asset');
     }
 
     public function location()
     {
-        return $this->belongsTo('App\Models\Location');
+        return $this->belongsTo('App\Location');
     }
 }

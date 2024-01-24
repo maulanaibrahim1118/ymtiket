@@ -10,11 +10,11 @@ class Ticket_approval extends Model
 
     public function ticket()
     {
-        return $this->belongsTo('App\Models\Ticket');
+        return $this->belongsTo('App\Ticket');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo('App\User');
     }
 }

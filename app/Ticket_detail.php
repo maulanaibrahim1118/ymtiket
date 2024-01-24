@@ -10,16 +10,16 @@ class Ticket_detail extends Model
 
     public function ticket()
     {
-        return $this->belongsTo('App\Models\Ticket');
+        return $this->belongsTo('App\Ticket');
     }
 
     public function sub_category_ticket()
     {
-        return $this->belongsTo('App\Models\Sub_category_ticket');
+        return $this->belongsTo('App\Sub_category_ticket');
     }
 
     public function agent()
     {
-        return $this->belongsTo('App\Models\Agent');
+        return $this->belongsTo('App\Agent');
     }
 }

@@ -10,11 +10,11 @@ class Sub_category_ticket extends Model
 
     public function ticket_detail()
     {
-        return $this->hasOne('App\Models\Ticket_detail');
+        return $this->hasOne('App\Ticket_detail');
     }
 
     public function category_ticket()
     {
-        return $this->belongsTo('App\Models\Category_ticket');
+        return $this->belongsTo('App\Category_ticket');
     }
 }

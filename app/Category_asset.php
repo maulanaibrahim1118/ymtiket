@@ -10,6 +10,6 @@ class Category_asset extends Model
 
     public function asset()
     {
-        return $this->hasOne('App\Models\Asset');
+        return $this->hasOne('App\Asset');
     }
 }

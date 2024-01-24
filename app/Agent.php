@@ -10,16 +10,16 @@ class Agent extends Model
 
     public function ticket()
     {
-        return $this->hasOne('App\Models\Ticket');
+        return $this->hasOne('App\Ticket');
     }
 
     public function ticket_detail()
     {
-        return $this->hasOne('App\Models\Ticket_detail');
+        return $this->hasOne('App\Ticket_detail');
     }
 
     public function location()
     {
-        return $this->belongsTo('App\Models\Location');
+        return $this->belongsTo('App\Location');
     }
 }

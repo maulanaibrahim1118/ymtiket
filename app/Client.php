@@ -10,16 +10,16 @@ class Client extends Model
 
     public function ticket()
     {
-        return $this->hasOne('App\Models\Ticket');
+        return $this->hasOne('App\Ticket');
     }
 
     public function location()
     {
-        return $this->belongsTo('App\Models\Location');
+        return $this->belongsTo('App\Location');
     }
 
     public function position()
     {
-        return $this->belongsTo('App\Models\Position');
+        return $this->belongsTo('App\Position');
     }
 }

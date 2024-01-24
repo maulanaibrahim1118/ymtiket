@@ -21,6 +21,7 @@ class CreateTicketsTable extends Migration
             $table->bigInteger('asset_id');
             $table->bigInteger('user_id');
             $table->bigInteger('client_id');
+            $table->string('lokasi_client', 50);
             $table->bigInteger('agent_id');
             $table->enum('role', ['service desk', 'agent']);
             $table->enum('status', ['created', 'onprocess', 'pending', 'resolved', 'finished', 'deleted']);

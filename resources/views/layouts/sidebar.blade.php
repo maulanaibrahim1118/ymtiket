@@ -26,14 +26,14 @@
         <li class="nav-item">
             <a class="nav-link {{ Request::is('users*') ? '' : 'collapsed' }}" href="/users">
                 <i class="bi bi-person-circle"></i>
-                <span>Pengguna</span>
+                <span>User</span>
             </a>
         </li><!-- End Pengguna -->
 
         <li class="nav-item">
             <a class="nav-link {{ Request::is('locations*') ? '' : 'collapsed' }}" href="/locations">
                 <i class="bi bi-geo-alt"></i>
-                <span>Lokasi</span>
+                <span>Location</span>
             </a>
         </li><!-- End Lokasi -->
 
@@ -46,22 +46,22 @@
 
         <li class="nav-item">
             <a class="nav-link {{ Request::is('category*') ? '' : 'collapsed' }}" data-bs-target="#category" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-ui-radios-grid"></i><span>Kategori</span><i class="bi bi-chevron-down ms-auto"></i>
+                <i class="bi bi-ui-radios-grid"></i><span>Category</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="category" class="nav-content collapse {{ Request::is('category*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="/category-assets" class="{{ Request::is('category-assets*') ? 'active' : '' }}">
-                        <i class="bi bi-file-text"></i><span>Kategori Asset</span>
+                        <i class="bi bi-file-text"></i><span>Category Asset</span>
                     </a>
                 </li>
                 <li>
                     <a href="/category-tickets" class="{{ Request::is('category-tickets*') ? 'active' : '' }}">
-                        <i class="bi bi-file-text"></i><span>Kategori Ticket</span>
+                        <i class="bi bi-file-text"></i><span>Category Ticket</span>
                     </a>
                 </li>
                 <li>
                     <a href="/category-sub-tickets" class="{{ Request::is('category-sub-tickets*') ? 'active' : '' }}">
-                        <i class="bi bi-file-text"></i><span>Sub Kategori Ticket</span>
+                        <i class="bi bi-file-text"></i><span>Sub Category Ticket</span>
                     </a>
                 </li>
             </ul>

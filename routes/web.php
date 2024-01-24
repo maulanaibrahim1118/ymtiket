@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TicketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,5 +23,10 @@ Route::post('/login', [LoginController::class, 'authenticate'])
 Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')->name('login.out');
 
+// Route Dashboard
 Route::get('/dashboard{id}-{role}', [DashboardController::class, 'index'])
     ->middleware('auth')->name('dashboard.index');
+
+// Route Client
+Route::resource('/clients', ClientController::class)
+    ->middleware('auth');

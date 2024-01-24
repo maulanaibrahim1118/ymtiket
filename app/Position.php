@@ -10,11 +10,11 @@ class Position extends Model
 
     public function user()
     {
-        return $this->hasOne('App\Models\User');
+        return $this->hasOne('App\User');
     }
 
     public function client()
     {
-        return $this->hasOne('App\Models\Client');
+        return $this->hasOne('App\Client');
     }
 }
