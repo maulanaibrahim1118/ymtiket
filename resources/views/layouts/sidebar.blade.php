@@ -76,18 +76,5 @@
             <ul id="setting" class="nav-content collapse {{ Request::is('setting*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
             </ul>
         </li><!-- End Setting -->
-
-        <li class="nav-item">
-            <!-- Form Logout -->
-            <form action="/logout" method="post">
-            @csrf
-            <a class="nav-link collapsed">
-                <button type="submit" class="dropdown-item d-flex align-items-center">
-                <i class="bi bi-power"></i>
-                <span>Logout</span>
-                </button>
-            </a>
-            </form>
-        </li><!-- End Logout -->
     </ul>
 </aside><!-- End Sidebar-->
