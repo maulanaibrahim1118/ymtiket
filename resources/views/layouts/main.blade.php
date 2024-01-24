@@ -62,8 +62,8 @@
     </div>
 
     <div style="display:none;" id="content" class="animate-bottom">
-        @include('header')
-        @include('sidebar')
+        @include('layouts.header')
+        @include('layouts.sidebar')
         <main id="main" class="main">
             <!-- Showing notification succeded -->
             @if(session()->has('success'))

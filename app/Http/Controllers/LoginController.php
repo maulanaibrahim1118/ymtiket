@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -13,7 +14,31 @@ class LoginController extends Controller
      */
     public function index()
     {
-        //
+        return view('contents.login.index', [
+            'title' => 'Form Login',
+        ]);
+    }
+
+    public function authenticate(Request $request)
+    {
+        $credentials = $request->only('nik', 'password');
+
+        if (Auth::attempt($credentials)) {
+            // Authentication passed...
+            return redirect()->intended('/dashboard'.encrypt(auth()->user()->id).'-'.encrypt(auth()->user()->role));
+        }
+
+        return back()->with('loginError', 'No. Induk Karyawan atau Password salah!');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+    
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    
+        return redirect('/');
     }
 
     /**

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
+use App\Agent;
+use App\Ticket;
 
 class DashboardController extends Controller
 {
@@ -11,9 +14,50 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id = 0, $role = 0)
     {
-        //
+        $id         = decrypt($id);
+        $role       = decrypt($role);
+        $getUser    = User::where('id', $id)->first();
+        $nik        = $getUser['nik'];
+        $locationId = $getUser['location_id'];
+        $positionId = $getUser['position_id'];
+        $getAgent   = Agent::where('nik', $nik)->first();
+        $agentId    = $getAgent['id'];
+
+        if($role == "client"){ // Jika role Client
+            if($positionId == "3"){ // Jika jabatan Chief
+                
+            }elseif($positionId == "7"){ // Jika jabatan Koordinator Wilayah
+                
+            }elseif($positionId == "8"){ // Jika jabatan Manager
+                
+            }else{ // Jika jabatan selain Korwil, Chief dan Manager
+
+            }
+        }elseif($role == "service desk"){ // Jika role Service Desk
+            $agent      = Agent::where('nik', $nik)->first();
+            $tickets    = Ticket::where([['ticket_for', $locationId],['status', 'onprocess']])->get();
+
+            return view('contents.dashboard.index', [
+                "url"       => "",
+                "title"     => "Dashboard",
+                "path"      => "Dashboard",
+                "agent"     => $agent,
+                "tickets"   => $tickets
+            ]);
+        }else{ // Jika role Agent
+            $agent      = Agent::where('nik', $nik)->first();
+            $tickets    = Ticket::where([['ticket_for', $locationId],['agent_id', $agentId],['status', 'onprocess']])->get();
+
+            return view('contents.dashboard.index', [
+                "url"       => "",
+                "title"     => "Dashboard",
+                "path"      => "Dashboard",
+                "agent"     => $agent,
+                "tickets"   => $tickets
+            ]);
+        }
     }
 
     /**
