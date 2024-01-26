@@ -50,3 +50,7 @@ Route::resource('/category-assets', CategoryAssetController::class)
 // Route Category Ticket
 Route::resource('/category-tickets', CategoryTicketController::class)
     ->middleware('auth');
+
+// Route Sub Category Ticket
+Route::resource('/category-sub-tickets', SubCategoryTicketController::class)
+    ->middleware('auth');

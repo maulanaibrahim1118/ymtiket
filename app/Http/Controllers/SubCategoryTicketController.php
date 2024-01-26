@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Sub_category_ticket;
+use App\Category_ticket;
 
 class SubCategoryTicketController extends Controller
 {
@@ -13,7 +15,12 @@ class SubCategoryTicketController extends Controller
      */
     public function index()
     {
-        //
+        return view('contents.sub_category_ticket.index', [
+            "url"                   => "",
+            "title"                 => "Sub Category Ticket List",
+            "path"                  => "Sub Category Ticket",
+            "sub_category_tickets"  => Sub_category_ticket::all()
+        ]);
     }
 
     /**
@@ -23,7 +30,13 @@ class SubCategoryTicketController extends Controller
      */
     public function create()
     {
-        //
+        return view('contents.sub_category_ticket.create', [
+            "url"               => "",
+            "title"             => "Create Sub Category Ticket",
+            "path"              => "Sub Category Ticket",
+            "path2"             => "Tambah",
+            "category_tickets"  => Category_ticket::all()
+        ]);
     }
 
     /**
@@ -34,7 +47,27 @@ class SubCategoryTicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validating data request
+        $validatedData = $request->validate([
+            'nama_sub_kategori'     => 'required|min:5|max:50|unique:sub_category_tickets',
+            'category_ticket_id'    => 'required',
+            'updated_by'            => 'required'
+        ],
+        // Create custom notification for the validation request
+        [
+            'nama_sub_kategori.required'    => 'Nama Kategori Ticket harus diisi!',
+            'nama_sub_kategori.min'         => 'Ketik minimal 5 digit!',
+            'nama_sub_kategori.max'         => 'Ketik maksimal 50 digit!',
+            'unique'                        => 'Nama Kategori Ticket sudah ada!',
+            'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
+            'updated_by.required'           => 'Wajib diisi!'
+        ]);
+        // Saving data to category_asset table
+        Sub_category_ticket::create($validatedData);
+
+        // Redirect to the Category Asset view if create data succeded
+        $nama_sub_kategori = $request['nama_sub_kategori'];
+        return redirect('/category-sub-tickets')->with('success', ucwords($nama_sub_kategori).' telah ditambahkan!');
     }
 
     /**
@@ -54,9 +87,15 @@ class SubCategoryTicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Sub_category_ticket $category_sub_ticket)
     {
-        //
+        return view('contents.sub_category_ticket.edit', [
+            "title"             => "Edit Sub Category Ticket",
+            "path"              => "Sub Category Ticket",
+            "path2"             => "Edit",
+            "sct"               => $category_sub_ticket,
+            "category_tickets"  => Category_ticket::all()
+        ]);
     }
 
     /**
@@ -66,9 +105,26 @@ class SubCategoryTicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Sub_category_ticket $category_sub_ticket)
     {
-        //
+        // Validating data request
+        $validatedData = $request->validate([
+            'nama_sub_kategori'     => 'required|min:5|max:50|unique:sub_category_tickets',
+            'category_ticket_id'    => 'required',
+            'updated_by'            => 'required'
+        ],
+        // Create custom notification for the validation request
+        [
+            'nama_sub_kategori.required'    => 'Nama Sub Kategori Ticket harus diisi!',
+            'nama_sub_kategori.min'         => 'Ketik minimal 5 digit!',
+            'nama_sub_kategori.max'         => 'Ketik maksimal 50 digit!',
+            'unique'                        => 'Nama Kategori Ticket sudah ada!',
+            'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
+            'updated_by.required'           => 'Wajib diisi!'
+        ]);
+        Sub_category_ticket::where('id', $category_sub_ticket->id)->update($validatedData);
+
+        return redirect('/category-sub-tickets')->with('success', 'Data Sub Category Ticket telah diubah!');
     }
 
     /**
