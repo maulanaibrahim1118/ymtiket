@@ -38,3 +38,11 @@ Route::resource('/users', UserController::class)
 // Route Location
 Route::resource('/locations', LocationController::class)
     ->middleware('auth');
+
+// Route Asset
+Route::resource('/assets', AssetController::class)
+    ->middleware('auth');
+
+// Route Category Asset
+Route::resource('/category-assets', CategoryAssetController::class)
+    ->middleware('auth');

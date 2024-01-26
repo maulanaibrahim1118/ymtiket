@@ -137,8 +137,8 @@ class UserController extends Controller
         }
 
         // Redirect to the user view if create data succeded
-        $nama = ucwords($request['nama']);
-        return redirect('/users')->with('success', $nama.' telah ditambahkan!');
+        $nama = $request['nama'];
+        return redirect('/users')->with('success', ucwords($nama).' telah ditambahkan!');
     }
 
     /**

@@ -80,8 +80,8 @@ class LocationController extends Controller
         Location::create($validatedData);
 
         // Redirect to the employee view if create data succeded
-        $nama_lokasi = ucwords($request['nama_lokasi']);
-        return redirect('/locations')->with('success', $nama_lokasi.' telah ditambahkan!');
+        $nama_lokasi = $request['nama_lokasi'];
+        return redirect('/locations')->with('success', ucwords($nama_lokasi).' telah ditambahkan!');
     }
 
     /**

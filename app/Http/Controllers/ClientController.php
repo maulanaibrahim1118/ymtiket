@@ -97,8 +97,8 @@ class ClientController extends Controller
         $client->save();
 
         // Redirect to the employee view if create data succeded
-        $nama_client = ucwords($request['nama_client']);
-        return redirect('/clients')->with('success', $nama_client.' telah ditambahkan!');
+        $nama_client = $request['nama_client'];
+        return redirect('/clients')->with('success', ucwords($nama_client).' telah ditambahkan!');
     }
 
     /**
