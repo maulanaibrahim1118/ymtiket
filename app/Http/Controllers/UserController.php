@@ -39,7 +39,7 @@ class UserController extends Controller
 
         return view('contents.user.create', [
             "url"       => "",
-            "title"     => "Tambah User",
+            "title"     => "Create User",
             "path"      => "User",
             "path2"     => "Tambah",
             "positions" => Position::orderBy('nama_jabatan', 'ASC')->get(),
@@ -68,7 +68,8 @@ class UserController extends Controller
             'ip_2'          => 'required',
             'ip_3'          => 'required',
             'ip_4'          => 'required',
-            'role'          => 'required'
+            'role'          => 'required',
+            'updated_by'    => 'required'
         ],
         // Create custom notification for the validation request
         [
@@ -87,7 +88,7 @@ class UserController extends Controller
             'telp.required'         => 'No. Telp/Ext harus diisi!',
             'telp.min'              => 'Ketik minimal 4 digit!',
             'telp.max'              => 'Ketik maksimal 15 digit!',
-            'role.required'         => 'Role harus dipilih!'
+            'role.required'         => 'Role harus dipilih!',
         ]);
 
         $data   = $request->all();
@@ -218,7 +219,8 @@ class UserController extends Controller
             'telp.max'              => 'Ketik maksimal 13 digit!',
             'ip_address.required'   => 'IP Address harus diisi!',
             'ip_address.min'        => 'Ketik minimal 7 digit!',
-            'ip_address.max'        => 'Ketik maksimal 15 digit!'
+            'ip_address.max'        => 'Ketik maksimal 15 digit!',
+            'updated_by.required'   => 'Wajib diisi!'
         ]);
 
         // Updating data to user table
@@ -230,12 +232,14 @@ class UserController extends Controller
                 'position_id'   => $data['position_id'],
                 'location_id'   => $data['location_id'],
                 'telp'          => $data['telp'],
-                'ip_address'    => $data['ip_address']
+                'ip_address'    => $data['ip_address'],
+                'updated_by'    => $data['updated_by']
             ]);
         }else{
             // Updating data to agent table
             Agent::where('nik', $nik)->update([
-                'location_id'   => $data['location_id']
+                'location_id'   => $data['location_id'],
+                'updated_by'    => $data['updated_by']
             ]);
         }
 

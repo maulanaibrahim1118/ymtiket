@@ -31,6 +31,10 @@ Route::get('/dashboard{id}-{role}', [DashboardController::class, 'index'])
 Route::resource('/clients', ClientController::class)
     ->middleware('auth');
 
-// Route Client
+// Route User
 Route::resource('/users', UserController::class)
+    ->middleware('auth');
+
+// Route Location
+Route::resource('/locations', LocationController::class)
     ->middleware('auth');

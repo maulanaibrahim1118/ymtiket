@@ -19,7 +19,7 @@ class ClientController extends Controller
         $clients    = Client::all();
         return view('contents.client.index', [
             "url"       => "",
-            "title"     => "Data Client",
+            "title"     => "Client List",
             "path"      => "Client",
             "clients"   => $clients
         ]);
@@ -34,7 +34,7 @@ class ClientController extends Controller
     {
         return view('contents.client.create', [
             "url"       => "",
-            "title"     => "Tambah Client",
+            "title"     => "Create Client",
             "path"      => "Client",
             "path2"     => "Tambah",
             "positions" => Position::orderBy('nama_jabatan', 'ASC')->get(),
@@ -170,7 +170,8 @@ class ClientController extends Controller
             'telp.max'              => 'Ketik maksimal 13 digit!',
             'ip_address.required'   => 'IP Address harus diisi!',
             'ip_address.min'        => 'Ketik minimal 7 digit!',
-            'ip_address.max'        => 'Ketik maksimal 15 digit!'
+            'ip_address.max'        => 'Ketik maksimal 15 digit!',
+            'updated_by.required'   => 'Wajib diisi!'
         ]);
 
         // Updating data to branches table
