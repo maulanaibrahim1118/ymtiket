@@ -165,7 +165,7 @@ class ClientController extends Controller
             'nama_client.max'       => 'Ketik maksimal 255 digit!',
             'position_id.required'  => 'Jabatan harus dipilih!',
             'location_id.required'  => 'Lokasi harus dipilih!',
-            'telp.required'         => 'Nama Client harus diisi!',
+            'telp.required'         => 'No. Telp/Ext harus diisi!',
             'telp.min'              => 'Ketik minimal 4 digit!',
             'telp.max'              => 'Ketik maksimal 13 digit!',
             'ip_address.required'   => 'IP Address harus diisi!',

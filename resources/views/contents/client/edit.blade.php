@@ -15,7 +15,7 @@
                                     @csrf
                                     <div class="col-md-1">
                                         <label for="nik" class="form-label">NIK</label>
-                                        <input type="text" name="nik" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik', $client->nik) }}" required>
+                                        <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik', $client->nik) }}" maxlength="8" title="Tolong di input dalam bentuk nomor." required>
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('nik')
@@ -81,7 +81,7 @@
 
                                     <div class="col-md-2">
                                         <label for="telp" class="form-label">Telp/Ext</label>
-                                        <input type="text" name="telp" class="form-control text-capitalize @error('telp') is-invalid @enderror" id="telp" value="{{ old('telp', $client->telp) }}" required>
+                                        <input type="text" name="telp" pattern="[0-9]+" class="form-control text-capitalize @error('telp') is-invalid @enderror" id="telp" value="{{ old('telp', $client->telp) }}" maxlength="15" title="Tolong di input dalam bentuk nomor." required>
 
                                         <!-- Showing notification error for input validation -->
                                         @error('telp')
