@@ -18,7 +18,7 @@ class CategoryAssetController extends Controller
         return view('contents.category_asset.index', [
             "url"               => "",
             "title"             => "Category Asset List",
-            "path"              => "Categori Asset",
+            "path"              => "Category Asset",
             "category_assets"   => $category_assets
         ]);
     }
@@ -103,11 +103,20 @@ class CategoryAssetController extends Controller
      */
     public function update(Request $request, Category_asset $category_asset)
     {
-        $id = $category_asset->id;
-        Category_asset::where('id', $id)->update([
-            'nama_kategori' => $request['nama_kategori'],
-            'updated_by'    => $request['updated_by']
+        // Validating data request
+        $validatedData = $request->validate([
+            'nama_kategori' => 'required|min:5|max:50|unique:category_tickets',
+            'updated_by'    => 'required'
+        ],
+        // Create custom notification for the validation request
+        [
+            'nama_kategori.required'    => 'Nama Kategori Asset harus diisi!',
+            'nama_kategori.min'         => 'Ketik minimal 5 digit!',
+            'nama_kategori.max'         => 'Ketik maksimal 50 digit!',
+            'unique'                    => 'Nama Kategori Ticket sudah ada!',
+            'updated_by.required'       => 'Wajib diisi!'
         ]);
+        Category_asset::where('id', $category_asset->id)->update($validatedData);
 
         return redirect('/category-assets')->with('success', 'Data Category Asset telah diubah!');
     }

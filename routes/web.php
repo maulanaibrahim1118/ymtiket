@@ -46,3 +46,7 @@ Route::resource('/assets', AssetController::class)
 // Route Category Asset
 Route::resource('/category-assets', CategoryAssetController::class)
     ->middleware('auth');
+
+// Route Category Ticket
+Route::resource('/category-tickets', CategoryTicketController::class)
+    ->middleware('auth');
