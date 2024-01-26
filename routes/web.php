@@ -27,6 +27,10 @@ Route::post('/logout', [LoginController::class, 'logout'])
 Route::get('/dashboard{id}-{role}', [DashboardController::class, 'index'])
     ->middleware('auth')->name('dashboard.index');
 
+// Route Ticket
+Route::get('/tickets{id}-{role}', [TicketController::class, 'index'])
+    ->middleware('auth')->name('ticket.index');
+
 // Route Client
 Route::resource('/clients', ClientController::class)
     ->middleware('auth');
