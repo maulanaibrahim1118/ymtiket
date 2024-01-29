@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Ticket;
 use App\Agent;
 use App\User;
+use App\Client;
+use App\Location;
 
 class TicketController extends Controller
 {
@@ -20,20 +22,50 @@ class TicketController extends Controller
         $role       = decrypt($role);
         $getUser    = User::where('id', $id)->first();
         $nik        = $getUser['nik'];
+        
+        $getAgent   = Agent::where('nik', $nik)->first();
         $locationId = $getUser['location_id'];
         $positionId = $getUser['position_id'];
-        $getAgent   = Agent::where('nik', $nik)->first();
         $agentId    = $getAgent['id'];
+
+        $getLocation    = Location::where('id', $locationId)->first();
+        $namaLokasi     = $getLocation['nama_lokasi'];
+        $area           = substr($getLocation['area'], -1);
+        $regional       = substr($getLocation['regional'], -1);
+        $wilayah        = substr($getLocation['wilayah'], -1);
+
+        $ticketKorwil   = $area.$regional.$wilayah;
+        $ticketChief    = $area.$regional;
 
         if($role == "client"){ // Jika role Client
             if($positionId == "3"){ // Jika jabatan Chief
-                
+                return view('contents.ticket.index', [
+                    "url"       => "",
+                    "title"     => "Ticket List",
+                    "path"      => "Ticket",
+                    "tickets"   => Ticket::where('ticket_area', 'like', $ticketChief.'%')->get()
+                ]);  
             }elseif($positionId == "7"){ // Jika jabatan Koordinator Wilayah
-                
+                return view('contents.ticket.index', [
+                    "url"       => "",
+                    "title"     => "Ticket List",
+                    "path"      => "Ticket",
+                    "tickets"   => Ticket::where('ticket_area', $ticketKorwil)->get()
+                ]);   
             }elseif($positionId == "8"){ // Jika jabatan Manager
-                
+                return view('contents.ticket.index', [
+                    "url"       => "",
+                    "title"     => "Ticket List",
+                    "path"      => "Ticket",
+                    "tickets"   => Ticket::where('ticket_area', 'like', $area.'%')->get()
+                ]);                
             }else{ // Jika jabatan selain Korwil, Chief dan Manager
-
+                return view('contents.ticket.index', [
+                    "url"       => "",
+                    "title"     => "Ticket List",
+                    "path"      => "Ticket",
+                    "tickets"   => Ticket::where('lokasi_client', $namaLokasi)->get()
+                ]);
             }
         }elseif($role == "service desk"){ // Jika role Service Desk
             return view('contents.ticket.index', [
