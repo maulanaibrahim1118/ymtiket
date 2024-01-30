@@ -28,14 +28,19 @@ class Ticket extends Model
         return $this->belongsTo('App\Agent');
     }
 
+    public function location()
+    {
+        return $this->belongsTo('App\Location');
+    }
+
     public function comment()
     {
-        return $this->hasOne('App\Comment');
+        return $this->hasMany('App\Comment');
     }
 
     public function progress_ticket()
     {
-        return $this->hasOne('App\Progress_ticket');
+        return $this->hasMany('App\Progress_ticket');
     }
 
     public function ticket_approval()
@@ -45,6 +50,6 @@ class Ticket extends Model
 
     public function ticket_detail()
     {
-        return $this->hasOne('App\Ticket_detail');
+        return $this->hasMany('App\Ticket_detail');
     }
 }

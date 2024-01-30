@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\TicketDetailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,26 @@ Route::get('/dashboard{id}-{role}', [DashboardController::class, 'index'])
 // Route Ticket
 Route::get('/tickets{id}-{role}', [TicketController::class, 'index'])
     ->middleware('auth')->name('ticket.index');
+Route::get('/tickets/create{id}-{role}', [TicketController::class, 'create'])
+    ->middleware('auth')->name('ticket.create');
+Route::post('/tickets', [TicketController::class, 'store'])
+    ->middleware('auth')->name('ticket.store');
+
+// Route Dropdown Getting Ticket
+Route::get('/tickets/create2{id}', [TicketController::class, 'getClient'])
+    ->middleware('auth')->name('getClient');
+Route::get('/tickets/create3{id}', [TicketController::class, 'getLocation'])
+    ->middleware('auth')->name('getLocation');
+Route::get('/tickets/create4{id}', [TicketController::class, 'getAssets'])
+    ->middleware('auth')->name('getAssets');
+    
+// Route Ticket Detail
+Route::get('/ticket-details/{id}', [TicketDetailController::class, 'index'])
+    ->middleware('auth')->name('ticket-detail.index');
+    
+// Route Ticket Comment
+Route::resource('/ticket-comments', TicketCommentController::class)
+    ->middleware('auth');
 
 // Route Client
 Route::resource('/clients', ClientController::class)

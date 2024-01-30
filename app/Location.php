@@ -10,21 +10,26 @@ class Location extends Model
 
     public function user()
     {
-        return $this->hasOne('App\User');
+        return $this->hasMany('App\User');
     }
 
     public function client()
     {
-        return $this->hasOne('App\Client');
+        return $this->hasMany('App\Client');
     }
 
     public function agent()
     {
-        return $this->hasOne('App\Client');
+        return $this->hasMany('App\Client');
     }
 
     public function asset()
     {
-        return $this->hasOne('App\Asset');
+        return $this->hasMany('App\Asset');
+    }
+
+    public function ticket()
+    {
+        return $this->hasMany('App\Asset');
     }
 }

@@ -15,13 +15,13 @@ class CreateTicketsTable extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->string('no_ticket', 15)->unique();
+            $table->string('no_ticket', 9)->unique();
             $table->string('kendala', 20);
             $table->text('detail_kendala');
             $table->bigInteger('asset_id');
             $table->bigInteger('user_id');
             $table->bigInteger('client_id');
-            $table->string('lokasi_client', 50);
+            $table->bigInteger('location_id');
             $table->bigInteger('agent_id');
             $table->enum('role', ['service desk', 'agent']);
             $table->enum('status', ['created', 'onprocess', 'pending', 'resolved', 'finished', 'deleted']);
