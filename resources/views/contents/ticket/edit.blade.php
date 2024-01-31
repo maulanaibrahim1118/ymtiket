@@ -1,4 +1,4 @@
-@extends('layouts.secondary')
+@extends('layouts.third')
 @section('content')
     <section class="section dashboard">
         <div class="row">
@@ -10,11 +10,12 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/tickets" method="POST">
+                                <form class="row g-3 mb-3" action="/update-tickets/{{ $ticket->id }}" method="POST">
+                                    @method('put')
                                     @csrf
                                     <div class="col-md-1">
                                         <label for="no_ticket" class="form-label">No. Ticket</label>
-                                        <input type="text" name="no_ticket" class="form-control text-capitalize bg-light @error('no_ticket') is-invalid @enderror" id="no_ticket" value="{{ old('no_ticket', 'T'.sprintf('%08d', $ticketNumber)) }}" readonly>
+                                        <input type="text" name="no_ticket" class="form-control text-capitalize bg-light @error('no_ticket') is-invalid @enderror" id="no_ticket" value="{{ $ticket->no_ticket }}" readonly>
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('no_ticket')
@@ -29,7 +30,7 @@
                                         <select class="form-select @error('client_id') is-invalid @enderror" name="client_id" id="client_id">
                                             <option selected disabled>Choose...</option>
                                             @foreach($clients as $client)
-                                                @if(old('client_id') == $client->id)
+                                                @if(old('client_id', $ticket->client_id) == $client->id)
                                                 <option selected value="{{ $client->id }}">{{ ucwords($client->nama_client) }}</option>
                                                 @else
                                                 <option value="{{ $client->id }}">{{ ucwords($client->nama_client) }}</option>
@@ -46,18 +47,25 @@
                                     </div>
 
                                     <div class="col-md-3" hidden>
-                                        <input type="text" name="location_id" class="form-control text-capitalize bg-light @error('location_id') is-invalid @enderror" id="location_id" value="{{ old('location_id') }}" readonly>
+                                        <input type="text" name="location_id" class="form-control text-capitalize bg-light @error('location_id') is-invalid @enderror" id="location_id" value="{{ old('location_id', $ticket->location_id) }}" readonly>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label for="location" class="form-label">Lokasi</label>
-                                        <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="location" value="{{ old('location') }}" disabled>
+                                        <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="location" value="{{ old('location', $ticket->location->nama_lokasi) }}" disabled>
                                     </div>
 
                                     <div class="col-md-2">
                                         <label for="asset_id" class="form-label">No. Asset</label>
-                                        <select class="form-select @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id" disabled>
+                                        <select class="form-select @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id">
                                             <option selected disabled>Choose...</option>
+                                            @foreach($assets as $asset)
+                                            @if(old('asset_id', $ticket->asset_id) == $asset->id)
+                                            <option selected value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }}</option>
+                                            @else
+                                            <option value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }}</option>
+                                            @endif
+                                            @endforeach
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
@@ -126,7 +134,7 @@
                                         <select class="form-select @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for">
                                             <option selected disabled>Choose...</option>
                                             @for($i=0; $i < count($ticketFors); $i++){
-                                                @if(old('ticket_for') == $ticketFors[$i])
+                                                @if(old('ticket_for', $ticket->ticket_for) == $ticketFors[$i])
                                                 <option selected value="{{ $ticketFors[$i] }}">{{ ucwords($ticketFors[$i]) }}</option>
                                                 @else
                                                 <option value="{{ $ticketFors[$i] }}">{{ ucwords($ticketFors[$i]) }}</option>
@@ -147,7 +155,7 @@
 
                                     <div class="col-md-6">
                                         <label for="kendala" class="form-label">Kendala</label>
-                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="30" value="{{ old('kendala') }}" required>
+                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="30" value="{{ old('kendala', $ticket->kendala) }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('kendala')
@@ -159,7 +167,7 @@
 
                                     <div class="col-md-12">
                                         <label for="detail_kendala" class="form-label">Detail Kendala</label>
-                                        <textarea name="detail_kendala" class="form-control @error('detail_kendala') is-invalid @enderror" id="detail_kendala" rows="3">{{ old('detail_kendala') }}</textarea>
+                                        <textarea name="detail_kendala" class="form-control @error('detail_kendala') is-invalid @enderror" id="detail_kendala" rows="3">{{ old('detail_kendala', $ticket->detail_kendala) }}</textarea>
 
                                         <!-- Showing notification error for input validation -->
                                         @error('detail_kendala')

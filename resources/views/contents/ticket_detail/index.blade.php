@@ -52,10 +52,10 @@
                                         <label for="tanggal" class="form-label">: {{ $ticket->estimated }}</label>
                                     </div>
                                     <div class="col-md-1 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">Lokasi</label>
+                                        <label for="tanggal" class="form-label fw-bold">Client/Lokasi</label>
                                     </div>
                                     <div class="col-md-5 m-0">
-                                        <label for="tanggal" class="form-label">: {{ ucwords($ticket->location->nama_lokasi) }}</label>
+                                        <label for="tanggal" class="form-label">: {{ ucwords($ticket->client->nama_client) }} / {{ ucwords($ticket->location->nama_lokasi) }}</label>
                                     </div>
                                     <div class="col-md-1 m-0">
                                         <label for="tanggal" class="form-label fw-bold">PIC Agent</label>
@@ -129,12 +129,12 @@
                         
                                     <div class="col-md-12" style="font-size: 14px">
                                         <table class="table table-bordered">
-                                            <thead class="fw-bold">
+                                            <thead class="fw-bold text-center">
                                                 <tr>
                                                 <td>Kategori Ticket</td>
                                                 <td>Sub Kategori Ticket</td>
-                                                <td>Biaya</td>
-                                                <td>Note</td>
+                                                <td class="col-md-2">Biaya</td>
+                                                <td class="col-md-4">Note</td>
                                                 </tr>
                                             </thead>
                                             <tbody class="text-uppercase">
@@ -153,25 +153,29 @@
                                     <div class="col-md-6">
                                     </div>
                                     <div class="col-md-6">
-                                        @if(auth()->user()->role == "client")
-                                        @if($ticket->status == "created")
-                                        <a href="#"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-pencil-square me-1"></i> Edit</button></a>
-                                        <a href="#"><button type="button" class="btn btn-sm btn-danger float-end ms-1"><i class="bi bi-x-circle me-1"></i> Batal</button></a>
-                                        @elseif($ticket->status == "resolved")
-                                        <a href="#"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-check-circle me-1"></i> Close</button></a>
-                                        @endif
-                                        @else
-                                        @if($ticket->status == "created")
-                                        <a href="#"><button type="button" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-arrow-repeat me-1"></i> Proses</button></a>
-                                        <a href="#"><button type="button" class="btn btn-sm btn-outline-success float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
-                                        @elseif($ticket->status == "onprocess")
-                                        <a href="#"><button type="button" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-check-circle me-1"></i> Resolved</button></a>
-                                        <a href="#"><button type="button" class="btn btn-sm btn-danger float-end ms-1"><i class="bi bi-stop-circle me-1"></i> Pending</button></a>
-                                        <a href="#"><button type="button" class="btn btn-sm btn-outline-success float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
-                                        @elseif($ticket->status == "pending")
-                                        <a href="#"><button type="button" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-arrow-repeat me-1"></i> Proses Ulang</button></a>
-                                        <a href="#"><button type="button" class="btn btn-sm btn-outline-success float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
-                                        @endif
+                                        @if(auth()->user()->role == "client") {{-- Jika role sebagai Client --}}
+                                            @if($ticket->status == "resolved") {{-- Jika status resolved, muncul tombol close/selesai --}}
+                                                <a href="#"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-check-circle me-1"></i> Close</button></a>
+                                            @else {{-- Jika status bukan resolved, tidak akan muncul tombol apapun --}}
+                                            @endif
+                                        @else {{-- Jika role sebagai Agent/Service Desk --}}
+                                            @if($ticket->status == "created")
+                                                <a href="/ticket-details/{{ encrypt($ticket->id) }}/create">
+                                                <button type="button" class="btn btn-sm btn-primary float-end ms-1">
+                                                    <i class="bi bi-arrow-repeat me-1"></i> Proses
+                                                </button>
+                                                </a>
+                                                <a href="#"><button type="button" class="btn btn-sm btn-outline-success float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
+                                            @elseif($ticket->status == "onprocess")
+                                                <a href="#"><button type="button" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-check-circle me-1"></i> Resolved</button></a>
+                                                <a href="#"><button type="button" class="btn btn-sm btn-danger float-end ms-1"><i class="bi bi-stop-circle me-1"></i> Pending</button></a>
+                                                <a href="#"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-pencil-square me-1"></i> Edit</button></a>
+                                                <a href="#"><button type="button" class="btn btn-sm btn-outline-success float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
+                                                @elseif($ticket->status == "pending")
+                                                <a href="#"><button type="button" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-arrow-repeat me-1"></i> Proses Ulang</button></a>
+                                                <a href="#"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-pencil-square me-1"></i> Edit</button></a>
+                                                <a href="#"><button type="button" class="btn btn-sm btn-outline-success float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>

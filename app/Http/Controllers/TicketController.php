@@ -11,6 +11,7 @@ use App\Client;
 use App\Location;
 use App\Asset;
 use App\Progress_ticket;
+use App\National_holiday;
 
 class TicketController extends Controller
 {
@@ -23,20 +24,25 @@ class TicketController extends Controller
     {
         $id         = decrypt($id);
         $role       = decrypt($role);
+
+        // Mencari nik dan lokasi user untuk parameter menampilkan halaman client
         $getUser    = User::where('id', $id)->first();
         $nik        = $getUser['nik'];
-        
-        $getAgent   = Agent::where('nik', $nik)->first();
         $locationId = $getUser['location_id'];
         $positionId = $getUser['position_id'];
-        $agentId    = $getAgent['id'];
 
+        // Mencari agent_id untuk parameter menampilkan halaman ticket Agent
+        $getAgent   = Agent::where('nik', $nik)->first();
+        $agentId    = $getAgent['id'];
+        
+        // Mencari nama lokasi untuk parameter ticket_for atau menampilkan halaman ticket Service Desk
         $getLocation    = Location::where('id', $locationId)->first();
         $namaLokasi     = $getLocation['nama_lokasi'];
+
+        // Mencari area, regional, wilayah untuk parameter menampilkan halaman ticket bagi Manager, Chief, Korwil
         $area           = substr($getLocation['area'], -1);
         $regional       = substr($getLocation['regional'], -1);
         $wilayah        = substr($getLocation['wilayah'], -1);
-
         $ticketKorwil   = $area.$regional.$wilayah;
         $ticketChief    = $area.$regional;
 
@@ -75,14 +81,14 @@ class TicketController extends Controller
                 "url"       => "",
                 "title"     => "Ticket List",
                 "path"      => "Ticket",
-                "tickets"   => Ticket::where([['ticket_for', $locationId],['role', $role]])->whereNotIn('status', ['deleted'])->get()
+                "tickets"   => Ticket::where([['ticket_for', $namaLokasi],['role', $role]])->whereNotIn('status', ['deleted'])->get()
             ]);
         }else{ // Jika role Agent
             return view('contents.ticket.index', [
                 "url"       => "",
                 "title"     => "Ticket List",
                 "path"      => "Ticket",
-                "tickets"   => Ticket::where([['ticket_for', $locationId],['role', $role],['agent_id', $agentId]])->whereNotIn('status', ['deleted'])->get()
+                "tickets"   => Ticket::where([['ticket_for', $namaLokasi],['role', $role],['agent_id', $agentId]])->whereNotIn('status', ['deleted'])->get()
             ]);
         }
     }
@@ -99,9 +105,10 @@ class TicketController extends Controller
         $getUser        = User::where('id', $id2)->first();
         $locationId     = $getUser['location_id'];
 
-        $totalTicket    = Ticket::where('location_id', $locationId)->count();
-        $ticketClosed   = Ticket::where([['location_id', $locationId],['status', 'closed']])->count();
-        $ticketUnclosed = $totalTicket-$ticketClosed;
+        $totalTicket    = Ticket::where('user_id', $id2)->count();
+        $ticketClosed   = Ticket::where([['user_id', $id2],['status', 'closed']])->count();
+        $ticketDeleted  = Ticket::where([['user_id', $id2],['status', 'deleted']])->count();
+        $ticketUnclosed = $totalTicket-$ticketClosed-$ticketDeleted;
 
         $getMY          = date('my');
         $ticketDefault  = $getMY.'0000';
@@ -115,18 +122,21 @@ class TicketController extends Controller
             $ticketNumber   = $noTicket;
         }
 
+        $ticketFors  = ["information technology", "inventory control", "project me", "project sipil"];
+
         if($role2 == "client"){
-            if($ticketUnclosed == 0){
+            if($ticketUnclosed == 0){ // Jika tidak ada ticket yang belum di close
                 return view('contents.ticket.create', [
                     "url"           => $id.'-'.$role,
                     "title"         => "Create Ticket",
                     "path"          => "Ticket",
                     "path2"         => "Tambah",
                     "ticketNumber"  => $ticketNumber,
+                    "ticketFors"    => $ticketFors,
                     "clients"       => Client::where('location_id', $locationId)->orderBy('nama_client', 'ASC')->get()
                 ]);
-            }else{
-                return back()->with('createError', 'Ticket sebelumnya belum di close!');
+            }else{ // Jika masih ada ticket yang belum di close
+                return back()->with('createError', 'Ticket sebelumnya belum selesai!');
             }
         }elseif($role2 == "service desk"){
             return view('contents.ticket.create', [
@@ -135,6 +145,7 @@ class TicketController extends Controller
                 "path"          => "Ticket",
                 "path2"         => "Tambah",
                 "ticketNumber"  => $ticketNumber,
+                "ticketFors"    => $ticketFors,
                 "clients"       => Client::orderBy('nama_client', 'ASC')->get()
             ]);
         }
@@ -171,7 +182,7 @@ class TicketController extends Controller
             'client_id'         => 'required',
             'asset_id'          => 'required',
             'ticket_for'        => 'required',
-            'kendala'           => 'required|min:5|max:20',
+            'kendala'           => 'required|min:5|max:30',
             'detail_kendala'    => 'required|min:10'
         ],
         // Create custom notification for the validation request
@@ -181,19 +192,25 @@ class TicketController extends Controller
             'ticket_for.required'       => 'Ditujukan Kepada harus dipilih!',
             'kendala.required'          => 'Kendala harus diisi!',
             'kendala.min'               => 'Ketik minimal 5 digit!',
-            'kendala.max'               => 'Ketik maksimal 20 digit!',
+            'kendala.max'               => 'Ketik maksimal 30 digit!',
             'detail_kendala.required'   => 'Detail Kendala harus diisi!',
             'detail_kendala.min'        => 'Ketik minimal 10 digit!',
         ]);
 
-        $data           = $request->all();
+        // Menampung semua request
+        $data = $request->all();
+
+        // Mencari Service Desk berdasarkan ticket_for
         $ticketFor      = $data['ticket_for'];
-        $clientId       = $data['client_id'];
-        $getServiceDesk = User::where([['location_id', $ticketFor],['role', 'service desk']])->first();
+        $getLocAgent    = Location::where('nama_lokasi', $ticketFor)->first();
+        $locIdAgent     = $getLocAgent['id'];
+        $getServiceDesk = User::where([['location_id', $locIdAgent],['role', 'service desk']])->first();
         $nikServiceDesk = $getServiceDesk['nik'];
         $getAgent       = Agent::where('nik', $nikServiceDesk)->first();
         $agentId        = $getAgent['id'];
         
+        // Mencari Area, Regional, Wilayah Client untuk mengisi data ticket_area
+        $clientId       = $data['client_id'];
         $getClient      = Client::where('id', $clientId)->first();
         $locationId     = $getClient['location_id'];
         $getLocation    = Location::where('id', $locationId)->first();
@@ -203,20 +220,29 @@ class TicketController extends Controller
         $ticketArea     = $area.$regional.$wilayah;
 
         // Ambil waktu saat ini
-        $currentTime = Carbon::now();
+        $currentDay     = date('D');
+        $currentDate    = date('d-m-y');
+        $currentTime    = Carbon::now();
 
-        // Tentukan jam kerja (contoh: 9 pagi hingga 5 sore)
-        $workStartTime = Carbon::createFromTime(8, 0, 0);
-        $workEndTime = Carbon::createFromTime(17, 0, 0);
+        // Mencari apakah tanggal sekarang merupakan libur nasional atau bukan
+        $checkHoliday   = National_holiday::where('tanggal', $currentDate)->count();
 
-        // Periksa apakah waktu saat ini berada dalam rentang jam kerja
-        $isWorkTime = $currentTime->between($workStartTime, $workEndTime);
+        // Tentukan hari dam jam kerja (contoh: 9 pagi hingga 5 sore)
+        $workStartTime  = Carbon::createFromTime(8, 0, 0);
+        $workEndTime    = Carbon::createFromTime(17, 0, 0);
+
+        // Periksa apakah waktu saat ini berada dalam rentang hari dan jam kerja
+        $isWorkTime     = $currentTime->between($workStartTime, $workEndTime);
 
         // Tampilkan hasil
-        if ($isWorkTime) {
-            $jamKerja = "ya";
-        } else {
+        if ($currentDay == "SAT" or $currentDay == "SUN" or $checkHoliday == 1){ // Jika hari ini, hari sabtu atau minggu atau hari libur nasional
             $jamKerja = "tidak";
+        }else{ // Jika hari ini, bukan hari sabtu atau minggu atau hari libur nasional
+            if ($isWorkTime) {
+                $jamKerja = "ya";
+            } else {
+                $jamKerja = "tidak";
+            }
         }
 
         // Saving data to ticket table
@@ -272,9 +298,38 @@ class TicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Ticket $ticket)
+    public function edit($id = 0, $role = 0, Ticket $ticket)
     {
-        //
+        $id2            = decrypt($id);
+        $role2          = decrypt($role);
+        $getUser        = User::where('id', $id2)->first();
+        $locationId     = $getUser['location_id'];
+
+        $ticketFors     = ["information technology", "inventory control", "project me", "project sipil"];
+
+        if($role2 == "client"){
+            return view('contents.ticket.edit', [
+                "url"           => $id.'-'.$role,
+                "title"         => "Edit Ticket",
+                "path"          => "Ticket",
+                "path2"         => "Edit",
+                "ticket"        => $ticket,
+                "ticketFors"    => $ticketFors,
+                "assets"        => Asset::where('location_id', $ticket->location_id)->get(),
+                "clients"       => Client::where('location_id', $locationId)->orderBy('nama_client', 'ASC')->get()
+            ]);
+        }elseif($role2 == "service desk"){
+            return view('contents.ticket.edit', [
+                "url"           => $id.'-'.$role,
+                "title"         => "Edit Ticket",
+                "path"          => "Ticket",
+                "path2"         => "Edit",
+                "ticket"        => $ticket,
+                "ticketFors"    => $ticketFors,
+                "assets"        => Asset::where('location_id', $ticket->location_id)->get(),
+                "clients"       => Client::orderBy('nama_client', 'ASC')->get()
+            ]);
+        }
     }
 
     /**
@@ -284,9 +339,48 @@ class TicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ticket $ticket)
+    public function update(Request $request, Ticket $id)
     {
-        //
+        // Validating data request
+        $rules = [
+            'client_id'         => 'required',
+            'asset_id'          => 'required',
+            'ticket_for'        => 'required',
+            'kendala'           => 'required|min:5|max:30',
+            'detail_kendala'    => 'required|min:10',
+            'updated_by'        => 'required'
+        ];
+
+        // Create custom notification for the validation request
+        $validatedData = $request->validate($rules,
+        [
+            'client_id.required'        => 'Client harus dipilih!',
+            'asset_id.required'         => 'No. Asset harus dipilih!',
+            'ticket_for.required'       => 'Ditujukan Kepada harus dipilih!',
+            'kendala.required'          => 'Kendala harus diisi!',
+            'kendala.min'               => 'Ketik minimal 5 digit!',
+            'kendala.max'               => 'Ketik maksimal 30 digit!',
+            'detail_kendala.required'   => 'Detail Kendala harus diisi!',
+            'detail_kendala.min'        => 'Ketik minimal 10 digit!',
+            'updated_by.required'       => 'Wajib diisi!',
+        ]);
+
+        // Updating data to ticket table
+        Ticket::where('id', $id->id)->update($validatedData);
+
+        // Get id ticket yang baru dibuat
+        $ticket_id  = $id->id;
+
+        // Saving data to progress ticket table
+        $progress_ticket                = new Progress_ticket;
+        $progress_ticket->ticket_id     = $ticket_id;
+        $progress_ticket->tindakan      = "Ticket di edit oleh";
+        $progress_ticket->lama_tindakan = 0;
+        $progress_ticket->updated_by    = $request['updated_by'];
+        $progress_ticket->save();
+        
+        $url = $request['url'];
+        return redirect('/tickets'.$url)->with('success', 'Ticket berhasil di edit!');
     }
 
     /**
@@ -295,8 +389,15 @@ class TicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Ticket $ticket)
     {
         //
+    }
+
+    public function delete(Request $request, $id)
+    {
+        Ticket::where('id', $id)->update(['status' => 'deleted']);
+
+        return back()->with('success', 'Ticket berhasil dihapus!');
     }
 }
