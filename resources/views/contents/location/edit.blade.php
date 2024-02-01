@@ -12,18 +12,6 @@
                                 <form class="row g-3 mb-3" action="/locations/{{ $location->id }}" method="POST">
                                     @method('put')
                                     @csrf
-                                    <div class="col-md-1">
-                                        <label for="inisial" class="form-label">Inisial</label>
-                                        <input type="text" name="inisial" class="form-control text-uppercase @error('inisial') is-invalid @enderror" id="inisial" value="{{ old('inisial', $location->inisial) }}" maxlength="3" required>
-                                        
-                                        <!-- Showing notification error for input validation -->
-                                        @error('inisial')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    
                                     <div class="col-md-3">
                                         <label for="nama_lokasi" class="form-label">Nama Lokasi</label>
                                         <input type="text" name="nama_lokasi" class="form-control text-capitalize @error('nama_lokasi') is-invalid @enderror" id="nama_lokasi" value="{{ old('nama_lokasi', $location->nama_lokasi) }}" required>
@@ -38,15 +26,15 @@
 
                                     <div class="col-md-2">
                                         <label for="wilayah" class="form-label">Wilayah</label>
-                                        <select class="form-select @error('wilayah') is-invalid @enderror" name="wilayah" id="wilayah"">
+                                        <select class="form-select @error('wilayah') is-invalid @enderror" name="wilayah" id="wilayah">
                                             <option selected disabled>Choose...</option>
-                                            @for($i=0; $i < count($wilayahs); $i++){
-                                                @if(old('wilayah', $location->wilayah) == $wilayahs[$i])
-                                                <option selected value="{{ $wilayahs[$i] }}">{{ ucwords($wilayahs[$i]) }}</option>
+                                            @foreach($wilayahs as $wilayah)
+                                                @if(old('wilayah', $location->wilayah) == $wilayah->name)
+                                                <option selected value="{{ $wilayah->name }}">{{ ucwords($wilayah->name) }}</option>
                                                 @else
-                                                <option value="{{ $wilayahs[$i] }}">{{ ucwords($wilayahs[$i]) }}</option>
+                                                <option value="{{ $wilayah->name }}">{{ ucwords($wilayah->name) }}</option>
                                                 @endif
-                                            }@endfor
+                                            @endforeach
                                         </select>
 
                                         <!-- Showing notification error for input validation -->

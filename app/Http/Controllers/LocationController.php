@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Location;
+use App\Wilayah;
 
 class LocationController extends Controller
 {
@@ -32,14 +33,13 @@ class LocationController extends Controller
     {
         $regionals  = ["distribution center", "head office", "regional a", "regional b", "regional c", "regional d", "regional e", "regional f"];
         $areas      = ["area 1", "area 2", "distribution center", "head office"];
-        $wilayahs   = ["distribution center", "head office", "wilayah 1", "wilayah 2", "wilayah 3", "wilayah 4", "wilayah 5", "wilayah 6", "wilayah 7", "wilayah 8", "wilayah 9", "wilayah 10"];
 
         return view('contents.location.create', [
             "url"       => "",
             "title"     => "Create Lokasi",
             "path"      => "Lokasi",
             "path2"     => "Tambah",
-            "wilayahs"  => $wilayahs,
+            "wilayahs"  => Wilayah::all(),
             "regionals" => $regionals,
             "areas"     => $areas
         ]);
@@ -55,7 +55,6 @@ class LocationController extends Controller
     {
         // Validating data request
         $validatedData = $request->validate([
-            'inisial'       => 'required|min:2|max:3|unique:locations',
             'nama_lokasi'   => 'required|min:5|max:50|unique:locations',
             'wilayah'       => 'required',
             'regional'      => 'required',
@@ -64,10 +63,6 @@ class LocationController extends Controller
         ],
         // Create custom notification for the validation request
         [
-            'inisial.required'      => 'Inisial harus diisi!',
-            'inisial.min'           => 'Ketik minimal 2 digit!',
-            'inisial.max'           => 'Ketik maksimal 3 digit!',
-            'inisial.unique'        => 'Inisial sudah ada!',
             'nama_lokasi.required'  => 'Nama Lokasi harus diisi!',
             'nama_lokasi.min'       => 'Ketik minimal 5 digit!',
             'nama_lokasi.max'       => 'Ketik maksimal 50 digit!',
@@ -105,13 +100,12 @@ class LocationController extends Controller
     {
         $regionals  = ["distribution center", "head office", "regional a", "regional b", "regional c", "regional d", "regional e", "regional f"];
         $areas      = ["area 1", "area 2", "distribution center", "head office"];
-        $wilayahs   = ["distribution center", "head office", "wilayah 1", "wilayah 2", "wilayah 3", "wilayah 4", "wilayah 5", "wilayah 6", "wilayah 7", "wilayah 8", "wilayah 9", "wilayah 10"];
 
         return view('contents.location.edit', [
             "title"     => "Edit Location",
             "path"      => "Location",
             "path2"     => "Edit",
-            "wilayahs"  => $wilayahs,
+            "wilayahs"  => Wilayah::all(),
             "regionals" => $regionals,
             "areas"     => $areas,
             "location"  => $location
@@ -135,10 +129,6 @@ class LocationController extends Controller
             'updated_by'    => 'required'
         ];
 
-        if($request->inisial != $location->inisial){
-            $rules['inisial'] = 'required|min:2|max:3|unique:locations';
-        }
-
         if($request->nama_lokasi != $location->nama_lokasi){
             $rules['nama_lokasi'] = 'required|min:5|max:50|unique:locations';
         }
@@ -146,10 +136,6 @@ class LocationController extends Controller
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
-            'inisial.required'      => 'Inisial harus diisi!',
-            'inisial.min'           => 'Ketik minimal 2 digit!',
-            'inisial.max'           => 'Ketik maksimal 3 digit!',
-            'inisial.unique'        => 'Inisial sudah ada!',
             'nama_lokasi.required'  => 'Nama Lokasi harus diisi!',
             'nama_lokasi.min'       => 'Ketik minimal 5 digit!',
             'nama_lokasi.max'       => 'Ketik maksimal 50 digit!',

@@ -16,7 +16,7 @@ class CreateTicketsTable extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->string('no_ticket', 9)->unique();
-            $table->string('kendala', 20);
+            $table->string('kendala', 30);
             $table->text('detail_kendala');
             $table->bigInteger('asset_id');
             $table->bigInteger('user_id');
@@ -28,7 +28,7 @@ class CreateTicketsTable extends Migration
             $table->string('closed_status')->nullable();
             $table->enum('need_approval', ['ya', 'tidak']);
             $table->enum('jam_kerja', ['ya', 'tidak']);
-            $table->string('ticket_for', 3);
+            $table->string('ticket_for', 50);
             $table->string('ticket_area', 20);
             $table->string('estimated', 30);
             $table->string('updated_by', 40);

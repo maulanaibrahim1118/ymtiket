@@ -12,8 +12,8 @@
                                 
                                 <form class="row g-3 mb-3" action="/users" method="POST">
                                     @csrf
-                                    <div class="col-md-1">
-                                        <label for="nik" class="form-label">NIK</label>
+                                    <div class="col-md-2">
+                                        <label for="nik" class="form-label">NIK Karyawan / Site Cabang</label>
                                         <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik') }}" maxlength="8" title="Tolong di input dalam bentuk nomor." required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -27,8 +27,8 @@
                                     <div class="col-md-10">
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <label for="nama" class="form-label">Nama Lengkap</label>
+                                    <div class="col-md-3">
+                                        <label for="nama" class="form-label">Nama Lengkap / Nama Cabang</label>
                                         <input type="text" name="nama" class="form-control text-capitalize @error('nama') is-invalid @enderror" id="nama" value="{{ old('nama') }}" required>
 
                                         <!-- Showing notification error for input validation -->
@@ -37,9 +37,6 @@
                                             {{ $message }}
                                         </div>
                                         @enderror
-                                    </div>
-
-                                    <div class="col-md-10">
                                     </div>
 
                                     <div class="col-md-2">
@@ -75,7 +72,7 @@
                                         @enderror
                                     </div>
                                     
-                                    <div class="col-md-8">
+                                    <div class="col-md-5">
                                     </div>
 
                                     <div class="col-md-12">
@@ -90,7 +87,11 @@
                                                 @if(old('position_id') == $position->id)
                                                 <option selected value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
                                                 @else
-                                                <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
+                                                    @if($position->id == 5)
+                                                    <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }} (khusus cabang)</option>
+                                                    @else
+                                                    <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         </select>

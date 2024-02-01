@@ -22,7 +22,6 @@ class CreatePositionsTable extends Migration
 
         DB::table('positions')->insert([
             ['nama_jabatan' => 'Admin', 'updated_by' => 'maulana ibrahim'],
-            ['nama_jabatan' => 'Asisten Kepala Toko', 'updated_by' => 'maulana ibrahim'],
             ['nama_jabatan' => 'Chief', 'updated_by' => 'maulana ibrahim'],
             ['nama_jabatan' => 'Direktur', 'updated_by' => 'maulana ibrahim'],
             ['nama_jabatan' => 'Junior Staff', 'updated_by' => 'maulana ibrahim'],

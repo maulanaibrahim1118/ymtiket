@@ -18,7 +18,6 @@
                                 <table class="table datatable">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
-                                            <th scope="col">INISIAL</th>
                                             <th scope="col">NAMA LOKASI</th>
                                             <th scope="col">WILAYAH</th>
                                             <th scope="col">REGIONAL</th>
@@ -29,7 +28,6 @@
                                     <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
                                         @foreach($locations as $location)
                                         <tr>
-                                            <td>{{ $location->inisial }}</td>
                                             <td>{{ $location->nama_lokasi }}</td>
                                             <td>{{ $location->wilayah }}</td>
                                             <td>{{ $location->regional }}</td>

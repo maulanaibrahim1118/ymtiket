@@ -58,7 +58,7 @@ class UserController extends Controller
     {
         // Validating data request
         $validatedData = $request->validate([
-            'nik'           => 'required|min:8|max:8|unique:users',
+            'nik'           => 'required|min:5|max:8|unique:users',
             'nama'          => 'required|min:2|max:40',
             'password'      => 'required|min:5|max:191',
             'position_id'   => 'required',
@@ -74,7 +74,7 @@ class UserController extends Controller
         // Create custom notification for the validation request
         [
             'nik.required'          => 'NIK harus diisi!',
-            'nik.min'               => 'Ketik minimal 8 digit!',
+            'nik.min'               => 'Ketik minimal 5 digit!',
             'nik.max'               => 'Ketik maksimal 8 digit!',
             'unique'                => 'NIK sudah ada!',
             'nama.required'         => 'Nama Pengguna harus diisi!',
@@ -199,14 +199,14 @@ class UserController extends Controller
         ];
 
         if($request->nik != $user->nik){
-            $rules['nik'] = 'required|min:8|max:8|unique:user';
+            $rules['nik'] = 'required|min:5|max:8|unique:user';
         }
 
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
             'nik.required'          => 'NIK harus diisi!',
-            'nik.min'               => 'Ketik minimal 8 digit!',
+            'nik.min'               => 'Ketik minimal 5 digit!',
             'nik.max'               => 'Ketik maksimal 8 digit!',
             'unique'                => 'NIK sudah ada!',
             'nama.required'         => 'Nama harus diisi!',

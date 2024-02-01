@@ -32,4 +32,9 @@ class Location extends Model
     {
         return $this->hasMany('App\Asset');
     }
+
+    public function category_ticket()
+    {
+        return $this->hasMany('App\Category_ticket');
+    }
 }

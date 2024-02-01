@@ -10,7 +10,7 @@ class Agent extends Model
 
     public function ticket()
     {
-        return $this->hasOne('App\Ticket');
+        return $this->hasMany('App\Ticket');
     }
 
     public function ticket_detail()

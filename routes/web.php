@@ -35,6 +35,12 @@ Route::get('/tickets/create{id}-{role}', [TicketController::class, 'create'])
     ->middleware('auth')->name('ticket.create');
 Route::post('/tickets', [TicketController::class, 'store'])
     ->middleware('auth')->name('ticket.store');
+Route::get('/tickets{id}-{role}/{ticket}/edit', [TicketController::class, 'edit'])
+    ->middleware('auth')->name('ticket.edit');
+Route::put('/update-tickets/{id}', [TicketController::class, 'update'])
+    ->middleware('auth')->name('ticket.update');
+Route::put('/tickets/{id}', [TicketController::class, 'delete'])
+    ->middleware('auth')->name('ticket.delete');
 
 // Route Dropdown Getting Ticket
 Route::get('/tickets/create2{id}', [TicketController::class, 'getClient'])
@@ -47,6 +53,8 @@ Route::get('/tickets/create4{id}', [TicketController::class, 'getAssets'])
 // Route Ticket Detail
 Route::get('/ticket-details/{id}', [TicketDetailController::class, 'index'])
     ->middleware('auth')->name('ticket-detail.index');
+Route::get('/ticket-details/{id}/create', [TicketDetailController::class, 'create'])
+    ->middleware('auth')->name('ticket-detail.create');
     
 // Route Ticket Comment
 Route::resource('/ticket-comments', TicketCommentController::class)

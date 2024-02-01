@@ -16,6 +16,7 @@ class CreateCategoryTicketsTable extends Migration
         Schema::create('category_tickets', function (Blueprint $table) {
             $table->id();
             $table->string('nama_kategori', 50)->unique();
+            $table->bigInteger('location_id');
             $table->string('updated_by', 40);
             $table->timestamps();
         });
