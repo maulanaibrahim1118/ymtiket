@@ -18,7 +18,7 @@
                                 <table class="table datatable">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
-                                        <th scope="col">NIK</th>
+                                        <th scope="col">NIK/SITE</th>
                                         <th scope="col">NAMA LENGKAP</th>
                                         <th scope="col">JABATAN</th>
                                         <th scope="col">LOKASI</th>

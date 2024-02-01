@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Category_ticket;
+use App\Location;
 
 class CategoryTicketController extends Controller
 {
@@ -29,11 +30,14 @@ class CategoryTicketController extends Controller
      */
     public function create()
     {
+        $locations  = Location::where('id', 10)->orWhere('id', 12)->orWhere('id', 83)->orWhere('id', 84)->get();
+
         return view('contents.category_ticket.create', [
             "url"               => "",
             "title"             => "Create Category Ticket",
             "path"              => "Category Ticket",
-            "path2"             => "Tambah"
+            "path2"             => "Tambah",
+            "locations"         => $locations
         ]);
     }
 
@@ -48,6 +52,7 @@ class CategoryTicketController extends Controller
         // Validating data request
         $validatedData = $request->validate([
             'nama_kategori' => 'required|min:5|max:50|unique:category_tickets',
+            'location_id'   => 'required',
             'updated_by'    => 'required'
         ],
         // Create custom notification for the validation request
@@ -56,6 +61,7 @@ class CategoryTicketController extends Controller
             'nama_kategori.min'         => 'Ketik minimal 5 digit!',
             'nama_kategori.max'         => 'Ketik maksimal 50 digit!',
             'unique'                    => 'Nama Kategori Ticket sudah ada!',
+            'location_id.required'      => 'Lokasi harus dipilih!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
         // Saving data to category_asset table
@@ -85,11 +91,14 @@ class CategoryTicketController extends Controller
      */
     public function edit(Category_ticket $category_ticket)
     {
+        $locations  = Location::where('id', 10)->orWhere('id', 12)->orWhere('id', 83)->orWhere('id', 84)->get();
+
         return view('contents.category_ticket.edit', [
             "title"     => "Edit Category Ticket",
             "path"      => "Category Ticket",
             "path2"     => "Edit",
-            "ct"        => $category_ticket
+            "ct"        => $category_ticket,
+            "locations" => $locations
         ]);
     }
 
@@ -102,17 +111,23 @@ class CategoryTicketController extends Controller
      */
     public function update(Request $request, Category_ticket $category_ticket)
     {
-        // Validating data request
-        $validatedData = $request->validate([
-            'nama_kategori' => 'required|min:5|max:50|unique:category_tickets',
+        $rules = [
+            'location_id'   => 'required',
             'updated_by'    => 'required'
-        ],
+        ];
+
+        if($request->nama_kategori != $category_ticket->nama_kategori){
+            $rules['nama_kategori'] = 'required|min:5|max:50|unique:category_tickets';
+        }
+
         // Create custom notification for the validation request
+        $validatedData = $request->validate($rules,
         [
             'nama_kategori.required'    => 'Nama Kategori Ticket harus diisi!',
             'nama_kategori.min'         => 'Ketik minimal 5 digit!',
             'nama_kategori.max'         => 'Ketik maksimal 50 digit!',
             'unique'                    => 'Nama Kategori Ticket sudah ada!',
+            'location_id.required'      => 'Lokasi harus dipilih!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
         Category_ticket::where('id', $category_ticket->id)->update($validatedData);

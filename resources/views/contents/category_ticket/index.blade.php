@@ -19,6 +19,7 @@
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
                                             <th scope="col">NAMA KATEGORI</th>
+                                            <th scope="col">LOKASI</th>
                                             <th scope="col">CREATED AT</th>
                                             <th scope="col">UPDATED AT</th>
                                             <th scope="col">UPDATED BY</th>
@@ -29,6 +30,7 @@
                                         @foreach($category_tickets as $ct)
                                         <tr>
                                         <td>{{ $ct->nama_kategori }}</td>
+                                        <td>{{ $ct->location->nama_lokasi }}</td>
                                         <td>{{ $ct->created_at }}</td>
                                         <td>{{ $ct->updated_at }}</td>
                                         <td>{{ $ct->updated_by }}</td>

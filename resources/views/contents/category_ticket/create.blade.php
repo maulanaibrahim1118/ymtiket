@@ -23,6 +23,27 @@
                                         @enderror
                                     </div>
 
+                                    <div class="col-md-3">
+                                        <label for="location_id" class="form-label">Lokasi</label>
+                                        <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location_id" value="{{ old('location_id') }}">
+                                            <option selected disabled>Choose...</option>
+                                            @foreach($locations as $location)
+                                                @if(old('location_id') == $location->id)
+                                                <option selected value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
+                                                @else
+                                                <option value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('location_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     
                                     <div class="col-md-12">
