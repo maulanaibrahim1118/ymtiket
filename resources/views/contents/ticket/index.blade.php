@@ -95,7 +95,7 @@
                                             @elseif(auth()->user()->role == "service desk")
                                                 @if($ticket->user_id == auth()->user()->id) {{-- Jika ticket dibuat oleh service desk --}}
                                                     @if($ticket->status == "created") {{-- Jika status created, ticket masih bisa di hapus, di edit dan di proses--}}
-                                                        <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{  encrypt($ticket->id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                                                        <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{ encrypt($ticket->id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                                                         <li><a class="dropdown-item text-capitalize" href="/tickets{{ encrypt(auth()->user()->id) }}-{{ encrypt(auth()->user()->role) }}/{{ $ticket->id }}/edit"><i class="bi bi-pencil-square text-warning"></i>Edit</a></li>
                                                         <form action="/tickets/{{ $ticket->id }}" method="POST">
                                                         @method('put')

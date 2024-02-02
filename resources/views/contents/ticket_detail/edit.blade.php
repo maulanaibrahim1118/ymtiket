@@ -100,7 +100,8 @@
                                         <p class="border-bottom mt-1 mb-0"></p>
                                     </div>
                         
-                                    <form class="row g-3" action="/ticket-details" method="POST">
+                                    <form class="row g-3" action="/ticket-details/{{ $td->id }}" method="POST">
+                                    @method('put')
                                     @csrf
                                     <div class="col-md-12 mb-0" style="font-size: 14px">
                                         <table class="table table-bordered">
@@ -118,7 +119,7 @@
                                                 <select class="form-select @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id">
                                                     <option selected disabled>Choose...</option>
                                                     @foreach($category_tickets as $ct)
-                                                        @if(old('category_ticket_id') == $ct->id)
+                                                        @if(old('category_ticket_id', $td->sub_category_ticket->category_ticket_id) == $ct->id)
                                                         <option selected value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
                                                         @else
                                                         <option value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
@@ -134,28 +135,28 @@
                                                 @enderror
                                                 </td>
                                                 <td>
-                                                    <select class="form-select @error('sub_category_ticket_id') is-invalid @enderror" name="sub_category_ticket_id" id="sub_category_ticket_id" disabled>
+                                                    <select class="form-select @error('sub_category_ticket_id') is-invalid @enderror" name="sub_category_ticket_id" id="sub_category_ticket_id">
                                                         <option selected disabled>Choose...</option>
-                                                        {{-- @foreach($sub_category_tickets as $sct)
-                                                            @if(old('sub_category_ticket_id') == $ct->id)
+                                                        @foreach($sub_category_tickets as $sct)
+                                                            @if(old('sub_category_ticket_id', $td->sub_category_ticket_id) == $sct->id)
                                                             <option selected value="{{ $sct->id }}">{{ ucwords($sct->nama_sub_kategori) }}</option>
                                                             @else
                                                             <option value="{{ $sct->id }}">{{ ucwords($sct->nama_sub_kategori) }}</option>
                                                             @endif
-                                                        @endforeach --}}
+                                                        @endforeach
                                                     </select>
             
                                                     <!-- Showing notification error for input validation -->
-                                                    {{-- @error('sub_category_ticket_id')
+                                                    @error('sub_category_ticket_id')
                                                     <div class="invalid-feedback">
                                                         {{ $message }}
                                                     </div>
-                                                    @enderror --}}
+                                                    @enderror
                                                 </td>
                                                 <td>
                                                 <div class="input-group">
                                                     <span class="input-group-text" id="basic-addon1">IDR</span>
-                                                    <input type="text" name="biaya" class="form-control text-capitalize @error('biaya') is-invalid @enderror" id="biaya" placeholder="0" value="{{ old('biaya') }}">
+                                                    <input type="text" name="biaya" class="form-control text-capitalize @error('biaya') is-invalid @enderror" id="biaya" placeholder="0" value="{{ old('biaya', $td->biaya) }}">
                                                 </div>
                                                 </td>
                                                 <script>
@@ -186,7 +187,7 @@
                                                         }
                                                     });
                                                 </script>
-                                                <td><input type="text" name="note" class="form-control @error('note') is-invalid @enderror" id="note" placeholder="Tuliskan saran tindakan..." value="{{ old('note') }}"></td>
+                                                <td><input type="text" name="note" class="form-control @error('note') is-invalid @enderror" id="note" placeholder="Tuliskan saran tindakan..." value="{{ old('note', $td->note) }}"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -223,13 +224,16 @@
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
                                     <input type="text" name="url" value="{{ encrypt($ticket->id) }}" hidden>
+                                    @if($td->status == "onprocess")
                                     <input type="text" name="status" value="onprocess" hidden>
-
+                                    @elseif($td->status == "pending")
+                                    <input type="text" name="status" value="pending" hidden>
+                                    @endif
                                     <div class="col-md-6">
                                         (*) : Mandatory
                                     </div>
                                     <div class="col-md-6">
-                                        <button type="submit" class="btn btn-primary float-end ms-1"><i class="bi bi-box-arrow-in-down-right me-1"></i> Proses</button>
+                                        <button type="submit" class="btn btn-primary float-end ms-1"><i class="bi bi-save me-1"></i> Simpan</button>
                                         <button type="reset" class="btn btn-warning float-end ms-1"><i class="bi bi-trash me-1"></i> Reset</button>
                                         <a href="/ticket-details/{{ encrypt($ticket->id) }}"><button type="button" class="btn btn-secondary float-end"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
                                     </div>

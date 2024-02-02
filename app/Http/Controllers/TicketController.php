@@ -47,21 +47,21 @@ class TicketController extends Controller
         $ticketChief    = $area.$regional;
 
         if($role == "client"){ // Jika role Client
-            if($positionId == "3"){ // Jika jabatan Chief
+            if($positionId == "2"){ // Jika jabatan Chief
                 return view('contents.ticket.index', [
                     "url"       => "",
                     "title"     => "Ticket List",
                     "path"      => "Ticket",
                     "tickets"   => Ticket::where('ticket_area', 'like', $ticketChief.'%')->whereNotIn('status', ['deleted'])->get()
                 ]);  
-            }elseif($positionId == "7"){ // Jika jabatan Koordinator Wilayah
+            }elseif($positionId == "6"){ // Jika jabatan Koordinator Wilayah
                 return view('contents.ticket.index', [
                     "url"       => "",
                     "title"     => "Ticket List",
                     "path"      => "Ticket",
                     "tickets"   => Ticket::where('ticket_area', $ticketKorwil)->whereNotIn('status', ['deleted'])->get()
                 ]);   
-            }elseif($positionId == "8"){ // Jika jabatan Manager
+            }elseif($positionId == "7"){ // Jika jabatan Manager
                 return view('contents.ticket.index', [
                     "url"       => "",
                     "title"     => "Ticket List",
@@ -271,7 +271,7 @@ class TicketController extends Controller
         // Saving data to progress ticket table
         $progress_ticket                = new Progress_ticket;
         $progress_ticket->ticket_id     = $ticket_id;
-        $progress_ticket->tindakan      = "Ticket dibuat oleh";
+        $progress_ticket->tindakan      = "Ticket di buat oleh";
         $progress_ticket->lama_tindakan = 0;
         $progress_ticket->updated_by    = $data['updated_by'];
         $progress_ticket->save();

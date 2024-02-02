@@ -19,7 +19,7 @@ class CreateClientsTable extends Migration
             $table->string('nama_client', 40);
             $table->bigInteger('position_id');
             $table->bigInteger('location_id');
-            $table->bigInteger('telp');
+            $table->string('telp', 15);
             $table->string('ip_address', 15);
             $table->string('updated_by', 40);
             $table->timestamps();

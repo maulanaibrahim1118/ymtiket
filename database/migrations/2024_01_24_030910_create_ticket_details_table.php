@@ -18,11 +18,10 @@ class CreateTicketDetailsTable extends Migration
             $table->bigInteger('ticket_id');
             $table->bigInteger('sub_category_ticket_id');
             $table->bigInteger('agent_id');
-            $table->string('process_at');
             $table->string('pending_at');
             $table->bigInteger('pending_time');
             $table->bigInteger('resolved_time');
-            $table->bigInteger('biaya');
+            $table->bigInteger('biaya')->nullable();
             $table->text('note')->nullable();
             $table->string('updated_by', 40);
             $table->timestamps();

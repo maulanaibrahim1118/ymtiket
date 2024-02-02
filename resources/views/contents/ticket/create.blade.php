@@ -145,7 +145,7 @@
                                     <div class="col-md-2">
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <label for="kendala" class="form-label">Kendala</label>
                                         <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="30" value="{{ old('kendala') }}" required>
                                         

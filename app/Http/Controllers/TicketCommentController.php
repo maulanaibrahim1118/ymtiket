@@ -51,7 +51,7 @@ class TicketCommentController extends Controller
 
         // Redirect to the employee view if create data succeded
         $ticketId = encrypt($request['ticket_id']);
-        return redirect('/ticket-details'.'/'.$ticketId)->with('success', 'Komentar telah dikirim!');
+        return redirect('/ticket-details'.'/'.$ticketId)->with('commentSuccess', 'Komentar telah dikirim!');
     }
 
     /**

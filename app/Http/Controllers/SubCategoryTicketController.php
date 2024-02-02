@@ -62,8 +62,13 @@ class SubCategoryTicketController extends Controller
             'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
             'updated_by.required'           => 'Wajib diisi!'
         ]);
-        // Saving data to category_asset table
-        Sub_category_ticket::create($validatedData);
+
+        // Saving data to sub_category_ticket table
+        $sct                        = new Sub_category_ticket;
+        $sct->nama_sub_kategori     = ucwords($request['nama_sub_kategori']);
+        $sct->category_ticket_id    = $request['category_ticket_id'];
+        $sct->updated_by            = $request['updated_by'];
+        $sct->save();
 
         // Redirect to the Category Asset view if create data succeded
         $nama_sub_kategori = $request['nama_sub_kategori'];

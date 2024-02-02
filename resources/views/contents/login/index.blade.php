@@ -94,7 +94,7 @@
                                         <!-- Login Title -->
                                         <div class="col-12">
                                             <h5 class="card-title text-primary text-center pb-2 fs-4 fw-bold">Form Login</h5>
-                                            <p class="text-center small px-3">Masukkan Nomor Induk dan Kata Sandi akun anda untuk dapat masuk & mulai bekerja.</p>
+                                            <p class="text-center small px-3">Masukkan No. Induk Karyawan / Site Cabang dan Kata Sandi akun anda untuk dapat masuk & mulai bekerja.</p>
                                         </div>
                                     </div>
 
@@ -104,7 +104,7 @@
                                             @csrf
                                             <div class="col-12">
                                                 <div class="border border-3 border-primary d-inline py-2"></div>
-                                                <input type="number" name="nik" class="form-control d-inline rounded-0" id="nik" placeholder="No. Induk Karyawan" required />
+                                                <input type="number" name="nik" class="form-control d-inline rounded-0" id="nik" placeholder="No. Induk Karyawan / Site Cabang" required />
                                             </div>
         
                                             <div class="col-12 pb-2">

@@ -45,9 +45,9 @@ Route::put('/tickets/{id}', [TicketController::class, 'delete'])
 // Route Dropdown Getting Ticket
 Route::get('/tickets/create2{id}', [TicketController::class, 'getClient'])
     ->middleware('auth')->name('getClient');
-Route::get('/tickets/create3{id}', [TicketController::class, 'getLocation'])
+    Route::get('/tickets/create3{id}', [TicketController::class, 'getLocation'])
     ->middleware('auth')->name('getLocation');
-Route::get('/tickets/create4{id}', [TicketController::class, 'getAssets'])
+    Route::get('/tickets/create4{id}', [TicketController::class, 'getAssets'])
     ->middleware('auth')->name('getAssets');
     
 // Route Ticket Detail
@@ -55,6 +55,22 @@ Route::get('/ticket-details/{id}', [TicketDetailController::class, 'index'])
     ->middleware('auth')->name('ticket-detail.index');
 Route::get('/ticket-details/{id}/create', [TicketDetailController::class, 'create'])
     ->middleware('auth')->name('ticket-detail.create');
+Route::post('/ticket-details', [TicketDetailController::class, 'store'])
+    ->middleware('auth')->name('ticket-detail.store');
+Route::get('/ticket-details/{id}/edit', [TicketDetailController::class, 'edit'])
+    ->middleware('auth')->name('ticket-detail.edit');
+Route::put('/ticket-details/{id}', [TicketDetailController::class, 'update'])
+    ->middleware('auth')->name('ticket-detail.update');
+Route::put('/ticket-details/{id}/pending', [TicketDetailController::class, 'pending'])
+    ->middleware('auth')->name('ticket-detail.pending');
+Route::put('/ticket-details/{id}/reProcess', [TicketDetailController::class, 'reProcess'])
+    ->middleware('auth')->name('ticket-detail.reProcess');
+Route::put('/ticket-details/{id}/assign', [TicketDetailController::class, 'assign'])
+    ->middleware('auth')->name('ticket-detail.assign');
+
+// Route Dropdown Getting Category Ticket
+Route::get('/ticket-details/{id}/create1', [TicketDetailController::class, 'getSubCategoryTicket'])
+    ->middleware('auth')->name('getSubCategoryTicket');
     
 // Route Ticket Comment
 Route::resource('/ticket-comments', TicketCommentController::class)

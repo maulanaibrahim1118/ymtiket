@@ -55,7 +55,11 @@
                                         <label for="client/lokasi" class="form-label fw-bold">Client/Lokasi</label>
                                     </div>
                                     <div class="col-md-5 m-0">
+                                        @if ($ticket->client->nama_client == $ticket->location->nama_lokasi)
+                                        <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->client->nik) }} - {{ ucwords($ticket->client->nama_client) }} / Store</label>
+                                        @else
                                         <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->client->nama_client) }} / {{ ucwords($ticket->location->nama_lokasi) }}</label>
+                                        @endif
                                     </div>
                                     <div class="col-md-1 m-0">
                                         <label for="agent" class="form-label fw-bold">PIC Agent</label>
@@ -116,7 +120,7 @@
                                         <label for="tanggal" class="form-label fw-bold">Detail Kendala</label>
                                     </div>
                                     <div class="col-md-10 m-0">
-                                        <label for="tanggal" class="form-label">: {{ $ticket->detail_kendala }}</label>
+                                        <label for="tanggal" class="form-label">: {{ ucfirst($ticket->detail_kendala) }}</label>
                                     </div>
 
                                     <div class="col-md-12">
@@ -125,30 +129,39 @@
                         
                                     <div class="col-md-12" style="font-size: 14px">
                                         <table class="table table-bordered">
-                                            <thead class="fw-bold text-center">
+                                            <thead class="fw-bold">
                                                 <tr>
                                                 <td>Kategori Ticket</td>
                                                 <td>Sub Kategori Ticket</td>
                                                 <td class="col-md-2">Biaya</td>
-                                                <td class="col-md-4">Note</td>
+                                                <td class="col-md-5">Saran Tindakan</td>
                                                 </tr>
                                             </thead>
-                                            <tbody class="text-uppercase">
+                                            <tbody class="text-capitalize">
                                                 @foreach($ticket_details as $td)
                                                 <tr>
-                                                <td>{{ $td->sub_category_ticket->category->nama_kategori }}</td>
+                                                <td>{{ $td->sub_category_ticket->category_ticket->nama_kategori }}</td>
                                                 <td>{{ $td->sub_category_ticket->nama_sub_kategori }}</td>
-                                                <td>{{ $td->biaya }}</td>
+                                                <td>IDR. {{ number_format($td->biaya,2,'.',',') }}</td>
+                                                @if($td->note == NULL)
+                                                <td>Tidak ada saran tindakan</td>
+                                                @else
                                                 <td>{{ $td->note }}</td>
+                                                @endif
                                                 </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
                                     </div>
 
-                                    <div class="col-md-6">
-                                    </div>
-                                    <div class="col-md-6">
+                                    @if(session()->has('assignError'))
+                                    <script>
+                                        swal("Assign Gagal!", "{{ session('assignError') }}", "warning", {
+                                            timer: 3000
+                                        });
+                                    </script>
+                                    @endif
+                                    <div class="col-md-12">
                                         @if(auth()->user()->role == "client") {{-- Jika role sebagai Client --}}
                                             @if($ticket->status == "resolved") {{-- Jika status resolved, muncul tombol close/selesai --}}
                                                 <a href="#"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-check-circle me-1"></i> Close</button></a>
@@ -157,20 +170,40 @@
                                         @else {{-- Jika role sebagai Agent/Service Desk --}}
                                             @if($ticket->status == "created")
                                                 <a href="/ticket-details/{{ encrypt($ticket->id) }}/create">
-                                                <button type="button" class="btn btn-sm btn-primary float-end ms-1">
-                                                    <i class="bi bi-arrow-repeat me-1"></i> Proses
-                                                </button>
+                                                    <button type="button" class="btn btn-sm btn-primary float-end ms-1">
+                                                        <i class="bi bi-box-arrow-in-down-right me-1"></i> Tangani
+                                                    </button>
                                                 </a>
-                                                <a href="#"><button type="button" class="btn btn-sm btn-outline-success float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
+                                                <a href="#"><button type="button" class="btn btn-sm btn-outline-dark float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
+                                                <a href="/tickets{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}"><button type="button" class="btn btn-sm btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+
                                             @elseif($ticket->status == "onprocess")
                                                 <a href="#"><button type="button" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-check-circle me-1"></i> Resolved</button></a>
-                                                <a href="#"><button type="button" class="btn btn-sm btn-danger float-end ms-1"><i class="bi bi-stop-circle me-1"></i> Pending</button></a>
-                                                <a href="#"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-pencil-square me-1"></i> Edit</button></a>
-                                                <a href="#"><button type="button" class="btn btn-sm btn-outline-success float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
-                                                @elseif($ticket->status == "pending")
-                                                <a href="#"><button type="button" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-arrow-repeat me-1"></i> Proses Ulang</button></a>
-                                                <a href="#"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-pencil-square me-1"></i> Edit</button></a>
-                                                <a href="#"><button type="button" class="btn btn-sm btn-outline-success float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
+                                                <form action="/ticket-details/{{ $ticket->id }}/pending" method="POST">
+                                                @method('put')
+                                                @csrf
+                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                <button type="submit" class="btn btn-sm btn-danger float-end ms-1"><i class="bi bi-stop-circle me-1"></i> Pending</button>
+                                                </form>
+                                                <a href="/ticket-details/{{ encrypt($ticket->id) }}/edit"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-pencil-square me-1"></i> Edit</button></a>
+                                                <form action="/ticket-details/{{ $ticket->id }}/assign" method="POST">
+                                                @method('put')
+                                                @csrf
+                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                <input type="text" name="location_id" value="{{ auth()->user()->location_id }}" hidden>
+                                                <button type="submit" class="btn btn-sm btn-outline-dark float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button>
+                                                </form>
+                                                <a href="/tickets{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}"><button type="button" class="btn btn-sm btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+
+                                            @elseif($ticket->status == "pending")
+                                                <form action="/ticket-details/{{ $ticket->id }}/reProcess" method="POST">
+                                                @method('put')
+                                                @csrf
+                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                <a href="#"><button type="submit" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-arrow-repeat me-1"></i> Proses Ulang</button></a>
+                                                </form>
+                                                <a href="#"><button type="button" class="btn btn-sm btn-outline-dark float-end ms-1"><i class="bx bx-share me-1"></i> Assign</button></a>
+                                                <a href="/tickets{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}"><button type="button" class="btn btn-sm btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
                                             @endif
                                         @endif
                                     </div>
@@ -202,9 +235,9 @@
                                         <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                         <a href="#"><button type="submit" class="btn btn-sm btn-primary float-end mt-2 ms-1"><i class="bi bi-send me-1"></i> Kirim</button></a>
                                     </form>
-                                    @if(session()->has('success'))
+                                    @if(session()->has('commentSuccess'))
                                     <script>
-                                        swal("Terkirim!", "{{ session('success') }}", "success", {
+                                        swal("Terkirim!", "{{ session('commentSuccess') }}", "success", {
                                             timer: 3000
                                         });
                                     </script>
@@ -231,7 +264,11 @@
                                 <div class="activite-label pe-3">{{ date('d-M-Y H:i', strtotime($comment->created_at)) }}</div>
                                 <i class='bi bi-circle-fill activity-badge text-secondary align-self-start'></i>
                                 <div class="activity-content">
-                                    <a href="#" class="fw-bold text-dark">{{ ucwords($comment->user->nama) }}</a> : {{ $comment->komentar }}
+                                    @if(auth()->user()->nama == $comment->user->nama)
+                                    <a href="#" class="fw-bold text-dark pe-1">{{ ucwords($comment->user->nama) }}</a><span class="badge bg-info text-capitalize">saya</span></td> : {{ $comment->komentar }}
+                                    @else
+                                    <a href="#" class="fw-bold text-dark">{{ ucwords($comment->user->nama) }}</a></td> : {{ $comment->komentar }}
+                                    @endif
                                 </div>
                             </div><!-- End activity item-->
                             @endforeach
