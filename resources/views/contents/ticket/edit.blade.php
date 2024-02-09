@@ -10,7 +10,7 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/update-tickets/{{ $ticket->id }}" method="POST">
+                                <form class="row g-3 mb-3" action="/tickets/update{{ $ticket->id }}" method="POST">
                                     @method('put')
                                     @csrf
                                     <div class="col-md-1">

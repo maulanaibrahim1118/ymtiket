@@ -128,9 +128,9 @@ class UserController extends Controller
             $agent->nama_agent             = $data['nama'];
             $agent->location_id            = $data['location_id'];
             $agent->total_ticket           = 0;
-            $agent->total_sub_ticket       = 0;
+            $agent->ticket_assigned        = 0;
             $agent->total_resolved_time    = 0;
-            $agent->rate                   = 0;
+            $agent->total_assigned_time    = 0;
             $agent->status                 = 'idle';
             $agent->updated_by             = $data['updated_by'];
             $agent->save();

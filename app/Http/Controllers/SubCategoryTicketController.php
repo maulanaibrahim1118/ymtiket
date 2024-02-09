@@ -127,7 +127,12 @@ class SubCategoryTicketController extends Controller
             'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
             'updated_by.required'           => 'Wajib diisi!'
         ]);
-        Sub_category_ticket::where('id', $category_sub_ticket->id)->update($validatedData);
+        
+        Sub_category_ticket::where('id', $category_sub_ticket->id)->update([
+            'nama_sub_kategori'     => ucwords($request['nama_sub_kategori']),
+            'category_ticket_id'    => $request['category_ticket_id'],
+            'updated_by'            => $request['updated_by']
+        ]);
 
         return redirect('/category-sub-tickets')->with('success', 'Data Sub Category Ticket telah diubah!');
     }

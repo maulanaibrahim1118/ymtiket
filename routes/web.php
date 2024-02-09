@@ -31,16 +31,39 @@ Route::get('/dashboard{id}-{role}', [DashboardController::class, 'index'])
 // Route Ticket
 Route::get('/tickets{id}-{role}', [TicketController::class, 'index'])
     ->middleware('auth')->name('ticket.index');
-Route::get('/tickets/create{id}-{role}', [TicketController::class, 'create'])
+Route::get('/tickets/{id}-{role}/create', [TicketController::class, 'create'])
     ->middleware('auth')->name('ticket.create');
-Route::post('/tickets', [TicketController::class, 'store'])
+Route::post('/tickets/store', [TicketController::class, 'store'])
     ->middleware('auth')->name('ticket.store');
-Route::get('/tickets{id}-{role}/{ticket}/edit', [TicketController::class, 'edit'])
+Route::get('/tickets/{id}-{role}/edit{ticket}', [TicketController::class, 'edit'])
     ->middleware('auth')->name('ticket.edit');
-Route::put('/update-tickets/{id}', [TicketController::class, 'update'])
+Route::put('/tickets/update{id}', [TicketController::class, 'update'])
     ->middleware('auth')->name('ticket.update');
-Route::put('/tickets/{id}', [TicketController::class, 'delete'])
+Route::put('/tickets/delete{id}', [TicketController::class, 'delete'])
     ->middleware('auth')->name('ticket.delete');
+Route::put('/tickets/{id}/process1', [TicketController::class, 'process1'])
+    ->middleware('auth')->name('ticket.process1');
+Route::put('/tickets/{id}/process2', [TicketController::class, 'process2'])
+    ->middleware('auth')->name('ticket.process2');
+Route::put('/tickets/queue{id}', [TicketController::class, 'queue'])
+    ->middleware('auth')->name('ticket.queue');
+Route::put('/tickets/assign', [TicketController::class, 'assign'])
+    ->middleware('auth')->name('ticket.assign');
+Route::put('/tickets/assign2', [TicketController::class, 'assign2'])
+    ->middleware('auth')->name('ticket.assign2');
+Route::put('/tickets/pending{id}', [TicketController::class, 'pending'])
+    ->middleware('auth')->name('ticket.pending');
+Route::put('/tickets/{id}/reProcess1', [TicketController::class, 'reProcess1'])
+    ->middleware('auth')->name('ticket.reProcess1');
+Route::get('/tickets/{id}/reProcess2', [TicketController::class, 'reProcess2'])
+    ->middleware('auth')->name('ticket.reProcess2');
+Route::put('/tickets/resolved{id}', [TicketController::class, 'resolved'])
+    ->middleware('auth')->name('ticket.resolved');
+    
+// Route::put('/tickets/{id}/process2', [TicketController::class, 'process2'])
+//     ->middleware('auth')->name('ticket.process2');
+// Route::get('/tickets/{id}-{nik}/process3', [TicketController::class, 'process3'])
+//     ->middleware('auth')->name('ticket.process3');
 
 // Route Dropdown Getting Ticket
 Route::get('/tickets/create2{id}', [TicketController::class, 'getClient'])
@@ -55,18 +78,18 @@ Route::get('/ticket-details/{id}', [TicketDetailController::class, 'index'])
     ->middleware('auth')->name('ticket-detail.index');
 Route::get('/ticket-details/{id}/create', [TicketDetailController::class, 'create'])
     ->middleware('auth')->name('ticket-detail.create');
-Route::post('/ticket-details', [TicketDetailController::class, 'store'])
+Route::post('/ticket-details/process', [TicketDetailController::class, 'store'])
     ->middleware('auth')->name('ticket-detail.store');
 Route::get('/ticket-details/{id}/edit', [TicketDetailController::class, 'edit'])
     ->middleware('auth')->name('ticket-detail.edit');
-Route::put('/ticket-details/{id}', [TicketDetailController::class, 'update'])
+Route::put('/ticket-details/update{id}', [TicketDetailController::class, 'update'])
     ->middleware('auth')->name('ticket-detail.update');
-Route::put('/ticket-details/{id}/pending', [TicketDetailController::class, 'pending'])
-    ->middleware('auth')->name('ticket-detail.pending');
-Route::put('/ticket-details/{id}/reProcess', [TicketDetailController::class, 'reProcess'])
-    ->middleware('auth')->name('ticket-detail.reProcess');
-Route::put('/ticket-details/{id}/assign', [TicketDetailController::class, 'assign'])
-    ->middleware('auth')->name('ticket-detail.assign');
+// Route::put('/ticket-details/{id}/reProcess', [TicketDetailController::class, 'reProcess'])
+//     ->middleware('auth')->name('ticket-detail.reProcess');
+// Route::put('/ticket-details/{id}/assign1', [TicketDetailController::class, 'assign1'])
+//     ->middleware('auth')->name('ticket-detail.assign1');
+// Route::put('/ticket-details/{id}/assign2', [TicketDetailController::class, 'assign2'])
+//     ->middleware('auth')->name('ticket-detail.assign2');
 
 // Route Dropdown Getting Category Ticket
 Route::get('/ticket-details/{id}/create1', [TicketDetailController::class, 'getSubCategoryTicket'])

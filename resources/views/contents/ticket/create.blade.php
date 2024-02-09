@@ -1,4 +1,4 @@
-@extends('layouts.secondary')
+@extends('layouts.third')
 @section('content')
     <section class="section dashboard">
         <div class="row">
@@ -10,7 +10,7 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/tickets" method="POST">
+                                <form class="row g-3 mb-3" action="/tickets/store" method="POST">
                                     @csrf
                                     <div class="col-md-1">
                                         <label for="no_ticket" class="form-label">No. Ticket</label>

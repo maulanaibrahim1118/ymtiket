@@ -100,7 +100,7 @@
                                         <p class="border-bottom mt-1 mb-0"></p>
                                     </div>
                         
-                                    <form class="row g-3" action="/ticket-details/{{ $td->id }}" method="POST">
+                                    <form class="row g-3" action="/ticket-details/update{{ $td->id }}" method="POST">
                                     @method('put')
                                     @csrf
                                     <div class="col-md-12 mb-0" style="font-size: 14px">
@@ -220,7 +220,8 @@
                                     </script>
                                     <input name="ticket_id" id="ticket_id" value="{{ $ticket->id }}" hidden>
                                     <input name="no_ticket" id="no_ticket" value="{{ $ticket->no_ticket }}" hidden>
-                                    <input name="agent_id" id="agent_id" value="{{ $ticket->id }}" hidden>
+                                    <input name="agent_id" id="agent_id" value="{{ $ticket->agent_id }}" hidden>
+                                    <input name="process_at" id="process_at" value="{{ $ticket->process_at }}" hidden>
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
                                     <input type="text" name="url" value="{{ encrypt($ticket->id) }}" hidden>

@@ -17,7 +17,8 @@ class CreateProgressTicketsTable extends Migration
             $table->id();
             $table->bigInteger('ticket_id');
             $table->string('tindakan');
-            $table->bigInteger('lama_tindakan');
+            $table->string('process_at');
+            $table->enum('status', ['created', 'edited', 'onprocess', 'assigned', 'pending', 'resolved', 'finished', 'deleted']);
             $table->string('updated_by', 40);
             $table->timestamps();
         });

@@ -25,7 +25,13 @@ class CreateTicketsTable extends Migration
             $table->bigInteger('agent_id');
             $table->enum('role', ['service desk', 'agent']);
             $table->enum('status', ['created', 'onprocess', 'pending', 'resolved', 'finished', 'deleted']);
+            $table->string('process_at')->nullable();
+            $table->string('pending_at')->nullable();
+            $table->bigInteger('pending_time')->nullable();
+            $table->bigInteger('processed_time')->nullable();
             $table->string('closed_status')->nullable();
+            $table->enum('is_queue', ['ya', 'tidak']);
+            $table->enum('assigned', ['ya', 'tidak']);
             $table->enum('need_approval', ['ya', 'tidak']);
             $table->enum('jam_kerja', ['ya', 'tidak']);
             $table->string('ticket_for', 50);

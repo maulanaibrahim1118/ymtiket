@@ -58,7 +58,7 @@
 <body onload="myFunction()">
     <div id="preloader" class="d-flex align-items-center">
         <div id="loader"></div>
-        <strong id="status" role="status" class="position-absolute text-primary" style="top: 60%; left: 44%;">Memuat Halaman...</strong>
+        <strong id="status" role="status" class="position-absolute text-primary" style="top: 60%; left: 45%;">Memuat Halaman...</strong>
     </div>
 
     <div style="display:none;" id="content" class="animate-bottom">
