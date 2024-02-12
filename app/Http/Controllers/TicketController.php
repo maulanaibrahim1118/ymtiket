@@ -193,6 +193,7 @@ class TicketController extends Controller
             'ticket_for'        => 'required',
             'kendala'           => 'required|min:5|max:30',
             'detail_kendala'    => 'required|min:10',
+            'file'              => 'required|max:1024',
         ],
         // Create custom notification for the validation request
         [
@@ -204,6 +205,8 @@ class TicketController extends Controller
             'kendala.max'               => 'Ketik maksimal 30 digit!',
             'detail_kendala.required'   => 'Detail Kendala harus diisi!',
             'detail_kendala.min'        => 'Ketik minimal 10 digit!',
+            'file.required'             => 'Lampiran harus diisi!',
+            'file.max'                  => 'Maksimal ukuran file 1Mb!',
         ]);
 
         if($request['file'] == NULL){
@@ -372,6 +375,7 @@ class TicketController extends Controller
             'ticket_for'        => 'required',
             'kendala'           => 'required|min:5|max:30',
             'detail_kendala'    => 'required|min:10',
+            'file'              => 'required|max:1024',
             'updated_by'        => 'required'
         ];
 
@@ -387,6 +391,8 @@ class TicketController extends Controller
             'detail_kendala.required'   => 'Detail Kendala harus diisi!',
             'detail_kendala.min'        => 'Ketik minimal 10 digit!',
             'updated_by.required'       => 'Wajib diisi!',
+            'file.required'             => 'Lampiran harus diisi!',
+            'file.max'                  => 'Maksimal ukuran file 1Mb!',
         ]);
 
         $newFile    = $request['file'];

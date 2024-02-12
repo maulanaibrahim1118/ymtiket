@@ -170,8 +170,8 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="detail_kendala" class="form-label">Lampiran (opsional)</label>
-                                        <input type="file" name="file" id="file" accept="image/jpeg, image/jpg, image/png, image/gif" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}">
+                                        <label for="detail_kendala" class="form-label">Lampiran (jpg, jpeg, png, gif, xlsx)</label>
+                                        <input type="file" name="file" id="file" accept="image/jpeg, image/jpg, image/png, image/gif, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}">
 
                                         <!-- Showing notification error for input validation -->
                                         @error('file')

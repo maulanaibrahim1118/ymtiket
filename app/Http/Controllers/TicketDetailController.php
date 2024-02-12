@@ -39,6 +39,9 @@ class TicketDetailController extends Controller
         $getAgentSD = Agent::where('nik', $nikSD)->first();
         $sdId       = $getAgentSD->id;
 
+        // Mencari extension file
+        $ext = substr($ticket->file, -4);
+
         if($role == "service desk"){
             $agents = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
         }else{
@@ -54,7 +57,8 @@ class TicketDetailController extends Controller
             "checkComment"      => Comment::where('ticket_id', $id)->count(),
             "progress_tickets"  => Progress_ticket::where('ticket_id', $id)->orderBy('created_at', 'DESC')->get(),
             "ticket_details"    => Ticket_detail::where('ticket_id', $id)->get(),
-            "agents"            => $agents
+            "agents"            => $agents,
+            "ext"               => $ext
         ]);
     }
 
