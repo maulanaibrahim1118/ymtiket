@@ -10,7 +10,7 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/tickets/store" method="POST">
+                                <form class="row g-3 mb-3" action="/tickets/store" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="col-md-1">
                                         <label for="no_ticket" class="form-label">No. Ticket</label>
@@ -160,7 +160,7 @@
                                     <div class="col-md-12">
                                         <label for="detail_kendala" class="form-label">Detail Kendala</label>
                                         <textarea name="detail_kendala" class="form-control @error('detail_kendala') is-invalid @enderror" id="detail_kendala" rows="3">{{ old('detail_kendala') }}</textarea>
-
+                                        
                                         <!-- Showing notification error for input validation -->
                                         @error('detail_kendala')
                                         <div class="invalid-feedback">
@@ -169,6 +169,18 @@
                                         @enderror
                                     </div>
 
+                                    <div class="col-md-6">
+                                        <label for="detail_kendala" class="form-label">Lampiran (opsional)</label>
+                                        <input type="file" name="file" id="file" accept="image/jpeg, image/jpg, image/png, image/gif" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}">
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('file')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                    
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
                                     <input type="text" name="url" value="{{ $url }}" hidden>

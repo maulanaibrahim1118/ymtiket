@@ -23,6 +23,7 @@ class CreateTicketsTable extends Migration
             $table->bigInteger('client_id');
             $table->bigInteger('location_id');
             $table->bigInteger('agent_id');
+            $table->string('file')->nullable();
             $table->enum('role', ['service desk', 'agent']);
             $table->enum('status', ['created', 'onprocess', 'pending', 'resolved', 'finished', 'deleted']);
             $table->string('process_at')->nullable();

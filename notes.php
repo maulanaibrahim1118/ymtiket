@@ -34,6 +34,8 @@ Revisi:
 -->
 4. Service desk dapat mengatur status agent, apakah libur, izin, sakit, cuti, dan tugas keluar kota.
 5. Agent tidak akan mendapat ticket baru jika sedang libur, izin, sakit, cuti, dan tugas keluar kota.
+<!--
 6. Agent hanya dapat meng assign ticket ke service desk saja.
 7. Saran tindakan tidak boleh kosong.
 8. Pending ticket oleh service desk / agent harus disertai alasan.
+-->

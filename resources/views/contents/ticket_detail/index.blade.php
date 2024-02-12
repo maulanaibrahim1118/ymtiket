@@ -131,6 +131,37 @@
                                     </div>
 
                                     <div class="col-md-12">
+                                        {{-- Tombol Lampiran --}}
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark-image me-1"></i> Lampiran</button>
+                                        <div class="modal fade" id="lampiranModal" tabindex="-1">
+                                            @if($ticket->file == NULL)
+                                            <div class="modal-dialog modal-dialog-centered">
+                                            @else
+                                            <div class="modal-dialog modal-xl modal-dialog-centered">
+                                            @endif
+                                                <div class="modal-content" id="modalContent1">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Lampiran Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="col-md-12">
+                                                            @if($ticket->file == NULL)
+                                                            <p class="text-center">Tidak ada lampiran...</p>
+                                                            @else
+                                                            <img src="{{ asset('uploads/' . $ticket->file) }}" class="rounded mx-auto d-block w-100" alt="...">
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- End Lampiran Modal-->
+                                    </div>
+
+                                    <div class="col-md-12">
                                         <p class="border-bottom mt-1 mb-0"></p>
                                     </div>
                         
@@ -198,12 +229,47 @@
                                                     @endif
                                                 @endif
 
-                                                <td class="text-capitalize"><a href="/ticket-details/{{ $td->id }}/detail" class="text-primary"><i class="bi bi-eye"></i> Lihat</a></td>
+                                                <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{{ $td->note }}" onclick="tampilkanData(this)"><i class="bi bi-search me-1"></i> Lihat</button></td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
                                     </div>
+
+                                    {{-- Action Modal --}}
+                                    <div class="modal fade" id="actionModal" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content" id="modalContent2">
+                                            </div>
+                                        </div>
+                                    </div><!-- End Vertically centered Modal-->
+                                    <script>
+                                    // Fungsi untuk menampilkan data pada modal
+                                    function tampilkanData(ticket_id) {
+                                        // Mendapatkan elemen modalContent
+                                        var modalContent2 = document.getElementById("modalContent2");
+                                    
+                                        // Menampilkan data pada modalContent
+                                        modalContent2.innerHTML  =
+                                        '<div class="modal-header">'+
+                                            '<h5 class="modal-title">Saran Tindakan Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>'+
+                                            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
+                                        '</div>'+
+                                        '<form action="/tickets/assign" method="post">'+
+                                        '@method("put")'+
+                                        '@csrf'+
+                                        '<div class="modal-body">'+
+                                            '<div class="col-md-12">'+
+                                                '<p>'+ticket_id.name+'</p>'+
+                                            '</div>'+
+                                            '<input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>'+
+                                        '</div>'+
+                                        '<div class="modal-footer">'+
+                                            '<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>'+
+                                        '</div>'+
+                                        '</form>';
+                                    }
+                                    </script>
 
                                     @if(session()->has('assignError'))
                                     <script>
@@ -238,7 +304,7 @@
                                                 </form>
                                                 <div class="modal fade" id="pendingModal" tabindex="-1">
                                                     <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content" id="modalContent">
+                                                        <div class="modal-content" id="modalContent3">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title">Alasan Pending Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -269,7 +335,7 @@
                                                 <button type="button" class="btn btn-sm btn-outline-dark float-end ms-1" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal"><i class="bx bx-share me-1"></i> Assign</button>
                                                 <div class="modal fade" id="assignModal" tabindex="-1">
                                                     <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content" id="modalContent">
+                                                        <div class="modal-content" id="modalContent4">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title">Pilih Nama Agent</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

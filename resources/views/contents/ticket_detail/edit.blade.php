@@ -97,6 +97,33 @@
                                     </div>
 
                                     <div class="col-md-12">
+                                        {{-- Tombol Lampiran --}}
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark-image me-1"></i> Lampiran</button>
+                                        <div class="modal fade" id="lampiranModal" tabindex="-1">
+                                            @if($ticket->file == NULL)
+                                            <div class="modal-dialog modal-dialog-centered">
+                                            @else
+                                            <div class="modal-dialog modal-xl modal-dialog-centered">
+                                            @endif
+                                                <div class="modal-content" id="modalContent">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Lampiran Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="col-md-12">
+                                                            <img src="{{ asset('uploads/' . $ticket->file) }}" class="rounded mx-auto d-block w-100" alt="...">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- End Lampiran Modal-->
+                                    </div>
+
+                                    <div class="col-md-12">
                                         <p class="border-bottom mt-1 mb-0"></p>
                                     </div>
                         
@@ -107,14 +134,33 @@
                                         <table class="table table-bordered">
                                             <thead class="fw-bold text-center">
                                                 <tr>
+                                                <td>Jenis Ticket*</td>
                                                 <td>Kategori Ticket*</td>
                                                 <td>Sub Kategori Ticket*</td>
                                                 <td class="col-md-2">Biaya</td>
-                                                <td class="col-md-5">Saran Tindakan</td>
                                                 </tr>
                                             </thead>
-                                            <tbody class="text-uppercase">
+                                            <tbody>
                                                 <tr>
+                                                <td>
+                                                <select class="form-select @error('jenis_ticket') is-invalid @enderror" name="jenis_ticket" id="jenis_ticket" value="{{ old('jenis_ticket') }}">
+                                                    <option selected disabled>Choose...</option>
+                                                    @for($i=0; $i < count($types); $i++){
+                                                        @if(old('jenis_ticket', $td->jenis_ticket) == $types[$i])
+                                                        <option selected value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
+                                                        @else
+                                                        <option value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
+                                                        @endif
+                                                    }@endfor
+                                                </select>
+        
+                                                <!-- Showing notification error for input validation -->
+                                                @error('jenis_ticket')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                                @enderror
+                                                </td>
                                                 <td>
                                                 <select class="form-select @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id">
                                                     <option selected disabled>Choose...</option>
@@ -187,7 +233,19 @@
                                                         }
                                                     });
                                                 </script>
-                                                <td><input type="text" name="note" class="form-control @error('note') is-invalid @enderror" id="note" placeholder="Tuliskan saran tindakan..." value="{{ old('note', $td->note) }}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold text-center align-middle">Saran Tindakan*</td>
+                                                    <td colspan="3">
+                                                    <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3" placeholder="Sebutkan saran tindakan...">{{ old('note', $td->note) }}</textarea>
+
+                                                    <!-- Showing notification error for input validation -->
+                                                    @error('note')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                    @enderror
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>

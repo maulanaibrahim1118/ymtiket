@@ -60,7 +60,7 @@
                                         <tr>
                                         <td>{{ $ticket->no_ticket }}</td>
                                         <td>{{ $ticket->kendala }}</td>
-                                        <td>{{ $ticket->detail_kendala }}</td>
+                                        <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->detail_kendala }}</td>
 
                                         {{-- Kolom Dibuat Pada --}}
                                         @if($ticket->jam_kerja == 'ya')

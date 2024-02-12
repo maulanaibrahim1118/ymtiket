@@ -192,7 +192,7 @@ class TicketController extends Controller
             'asset_id'          => 'required',
             'ticket_for'        => 'required',
             'kendala'           => 'required|min:5|max:30',
-            'detail_kendala'    => 'required|min:10'
+            'detail_kendala'    => 'required|min:10',
         ],
         // Create custom notification for the validation request
         [
@@ -206,6 +206,13 @@ class TicketController extends Controller
             'detail_kendala.min'        => 'Ketik minimal 10 digit!',
         ]);
 
+        if($request['file'] == NULL){
+            $imageName  = NULL;
+        }else{
+            $imageName = time() . '.' . $request->file->extension();
+            $request->file->move(public_path('uploads'), $imageName);
+        }
+        
         // Menampung semua request
         $data       = $request->all();
         $updatedBy  = $data['updated_by'];
@@ -274,6 +281,7 @@ class TicketController extends Controller
         $ticket->ticket_for     = $data['ticket_for'];
         $ticket->ticket_area    = $ticketArea;
         $ticket->estimated      = "-";
+        $ticket->file           = $imageName ?? null;
         $ticket->updated_by     = $updatedBy;
         $ticket->save();
 
@@ -381,8 +389,26 @@ class TicketController extends Controller
             'updated_by.required'       => 'Wajib diisi!',
         ]);
 
+        $newFile    = $request['file'];
+        $oldFile    = $request['old_file'];
+
+        if($newFile == NULL){
+            $imageName  = $oldFile;
+        }else{
+            $imageName  = time() . '.' . $request->file->extension();
+            $request->file->move(public_path('uploads'), $imageName);
+        }
+
         // Updating data to ticket table
-        Ticket::where('id', $id->id)->update($validatedData);
+        Ticket::where('id', $id->id)->update([
+            'client_id'         => $request['client_id'],
+            'asset_id'          => $request['asset_id'],
+            'ticket_for'        => $request['ticket_for'],
+            'kendala'           => $request['kendala'],
+            'detail_kendala'    => $request['detail_kendala'],
+            'file'              => $imageName,
+            'updated_by'        => $request['client_id']
+        ]);
 
         // Get id ticket yang baru dibuat
         $ticket_id  = $id->id;
@@ -734,25 +760,30 @@ class TicketController extends Controller
         if($role == "service desk"){
             return redirect($url)->with('success', 'Ticket telah selesai diproses!');
         }else{
-            $nik        = $request['nik'];
-            $getAgent   = Agent::where('nik', $nik)->first();
-            $agentId2   = $getAgent->id;
+            $nik            = $request['nik'];
+            $getAgent       = Agent::where('nik', $nik)->first();
+            $agentId2       = $getAgent->id;
+            $agentStatus    = $getAgent->status;
 
             $countAntrian   = Ticket::where('is_queue', 'ya')->count();
 
-            if($countAntrian == NULL){
+            if($countAntrian == NULL){ // Jika antrian ticket sudah habis
                 return redirect($url)->with('success', 'Ticket telah selesai diproses!');
             }else {
-                $getAntrian     = Ticket::where('is_queue', 'ya')->first();
-                $ticketId       = $getAntrian->id;
-                Ticket::where('id', $ticketId)->update([
-                    'agent_id'      => $agentId2,
-                    'role'          => "agent",
-                    'is_queue'      => "tidak",
-                    'updated_by'    => $updatedBy
-                ]);
-    
-                return redirect($url)->with('success', 'Ticket telah selesai diproses!');
+                if($agentStatus == 'busy'){ // Jika Agent izin, keluar kota, dll
+                    return redirect($url)->with('success', 'Ticket telah selesai diproses!');
+                }else{ // Jika agent ready
+                    $getAntrian     = Ticket::where('is_queue', 'ya')->first();
+                    $ticketId       = $getAntrian->id;
+                    Ticket::where('id', $ticketId)->update([
+                        'agent_id'      => $agentId2,
+                        'role'          => "agent",
+                        'is_queue'      => "tidak",
+                        'updated_by'    => $updatedBy
+                    ]);
+        
+                    return redirect($url)->with('success', 'Ticket telah selesai diproses!');
+                }
             }
         }
     }

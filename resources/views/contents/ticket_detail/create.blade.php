@@ -96,6 +96,37 @@
                                     </div>
 
                                     <div class="col-md-12">
+                                        {{-- Tombol Lampiran --}}
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark-image me-1"></i> Lampiran</button>
+                                        <div class="modal fade" id="lampiranModal" tabindex="-1">
+                                            @if($ticket->file == NULL)
+                                            <div class="modal-dialog modal-dialog-centered">
+                                            @else
+                                            <div class="modal-dialog modal-xl modal-dialog-centered">
+                                            @endif
+                                                <div class="modal-content" id="modalContent">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Lampiran Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="col-md-12">
+                                                            @if($ticket->file == NULL)
+                                                            <p class="text-center">Tidak ada lampiran...</p>
+                                                            @else
+                                                            <img src="{{ asset('uploads/' . $ticket->file) }}" class="rounded mx-auto d-block w-100" alt="...">
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- End Lampiran Modal-->
+                                    </div>
+
+                                    <div class="col-md-12">
                                         <p class="border-bottom mt-1 mb-0"></p>
                                     </div>
                         

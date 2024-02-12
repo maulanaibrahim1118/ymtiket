@@ -110,7 +110,7 @@ class TicketDetailController extends Controller
             'sub_category_ticket_id.required'   => 'Sub Kategori Ticket harus dipilih!',
             'biaya.max'                         => 'Ketik maksimal 20 digit!',
             'note.required'                     => 'Saran Tindakan harus diisi!',
-            'note.max'                          => 'Ketik minimal 10 digit!',
+            'note.min'                          => 'Ketik minimal 10 karakter!',
         ]);
 
         if($request['biaya'] == NULL){
@@ -180,6 +180,7 @@ class TicketDetailController extends Controller
         $subCategoryId  = $ticket_detail->sub_category_ticket_id;
         $subCategory    = Sub_category_ticket::where('id', $subCategoryId)->first();
         $categoryId     = $subCategory->category_ticket_id;
+        $types          = ["kendala", "permintaan"];
 
         return view('contents.ticket_detail.edit', [
             "title"                 => "Edit Detail Tindakan",
@@ -188,6 +189,7 @@ class TicketDetailController extends Controller
             "category_tickets"      => Category_ticket::all(),
             "sub_category_tickets"  => Sub_category_ticket::where('category_ticket_id', $categoryId)->get(),
             "ticket"                => $ticket,
+            'types'                 => $types,
             "td"                    => $ticket_detail
         ]);
     }
@@ -209,15 +211,20 @@ class TicketDetailController extends Controller
 
         // Validating data request
         $validatedData = $request->validate([
+            'jenis_ticket'              => 'required',
             'category_ticket_id'        => 'required',
             'sub_category_ticket_id'    => 'required',
             'biaya'                     => 'max:20',
+            'note'                      => 'required|min:10'
         ],
         // Create custom notification for the validation request
         [
+            'jenis_ticket.required'             => 'Jenis Ticket harus dipilih!',
             'category_ticket_id.required'       => 'Kategori Ticket harus dipilih!',
             'sub_category_ticket_id.required'   => 'Sub Kategori Ticket harus dipilih!',
             'biaya.max'                         => 'Ketik maksimal 20 digit!',
+            'note.required'                     => 'Saran Tindakan harus diisi!',
+            'note.min'                          => 'Ketik minimal 10 karakter!'
         ]);
 
         if($request['biaya'] == NULL){
@@ -229,6 +236,7 @@ class TicketDetailController extends Controller
         if($processAt == NULL) {
             // Updating data to ticket detail table
             Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->update([
+                'jenis_ticket'              => $request['jenis_ticket'],
                 'sub_category_ticket_id'    => $request['sub_category_ticket_id'],
                 'biaya'                     => $biaya,
                 'process_at'                => $request['process_at'],
