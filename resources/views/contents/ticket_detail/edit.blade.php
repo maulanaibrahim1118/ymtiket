@@ -78,15 +78,15 @@
                                     </div>
                                     <div class="col-md-5 m-0">
                                         @if($ticket->status == 'created')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-secondary">{{ ucwords($ticket->status) }}</span></label>
+                                        <label for="status" class="form-label">: <span class="badge bg-secondary">{{ ucwords($ticket->status) }}</span></label>
                                         @elseif($ticket->status == 'onprocess')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-warning">{{ ucwords($ticket->status) }}</span></label>
+                                        <label for="status" class="form-label">: <span class="badge bg-warning">{{ ucwords($ticket->status) }}</span></label>
                                         @elseif($ticket->status == 'pending')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-danger">{{ ucwords($ticket->status) }}</span></label>
+                                        <label for="status" class="form-label">: <span class="badge bg-danger">{{ ucwords($ticket->status) }}</span></label>
                                         @elseif($ticket->status == 'resolved')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-primary">{{ ucwords($ticket->status) }}</span></label>
+                                        <label for="status" class="form-label">: <span class="badge bg-primary">{{ ucwords($ticket->status) }}</span></label>
                                         @elseif($ticket->status == 'finished')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-success">{{ ucwords($ticket->status) }}</span></label>
+                                        <label for="status" class="form-label">: <span class="badge bg-success">{{ ucwords($ticket->status) }}</span></label>
                                         @endif
                                     </div>
                                     <div class="col-md-1 m-0">

@@ -924,6 +924,11 @@ h6 {
   background: #fff9df;
 }
 
+.dashboard .danger-card .card-icon {
+  color: #d10f0f;
+  background: #fff4f4;
+}
+
 .dashboard .success-card .card-icon {
   color: #2eca6a;
   background: #e0f8e9;

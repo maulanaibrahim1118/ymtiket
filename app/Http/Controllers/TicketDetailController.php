@@ -70,16 +70,21 @@ class TicketDetailController extends Controller
     public function create($id = 0)
     {
         $id     = decrypt($id);
+        $ticket = Ticket::where('id', $id)->first();
         $now    = date('d-m-Y H:i:s');
         $types  = ["kendala", "permintaan"];
+
+        // Mencari extension file
+        $ext = substr($ticket->file, -4);
 
         return view('contents.ticket_detail.create', [
             "title"                 => "Tangani Ticket",
             "path"                  => "Ticket",
             "path2"                 => "Tangani",
-            "ticket"                => Ticket::where('id', $id)->first(),
+            "ticket"                => $ticket,
             'now'                   => $now,
             'types'                 => $types,
+            'ext'                   => $ext,
             "category_tickets"      => Category_ticket::all(),
             "sub_category_tickets"  => Sub_category_ticket::all()
         ]);
@@ -123,7 +128,6 @@ class TicketDetailController extends Controller
             $biaya = str_replace(',','',$request['biaya']);
         }
 
-        $pending_at = '-';
         $updatedBy  = $request['updated_by'];
 
         // Saving data to ticket_detail table
@@ -133,10 +137,10 @@ class TicketDetailController extends Controller
         $ticket_detail->sub_category_ticket_id  = $request['sub_category_ticket_id'];
         $ticket_detail->agent_id                = $request['agent_id'];
         $ticket_detail->process_at              = $request['process_at'];
-        $ticket_detail->pending_at              = $pending_at;
+        $ticket_detail->pending_at              = "-";
         $ticket_detail->biaya                   = $biaya;
         $ticket_detail->note                    = $request['note'];
-        $ticket_detail->updated_by              = $request['updated_by'];
+        $ticket_detail->updated_by              = $updatedBy;
         $ticket_detail->save();
 
         // Saving data to progress ticket table
@@ -209,8 +213,7 @@ class TicketDetailController extends Controller
     {
         $ticketId       = $request['ticket_id'];
         $agentId        = $request['agent_id'];
-        $getDetail      = Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->first();
-        $processAt      = $getDetail->process_at;
+        $countDetail    = Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->count();
         $updatedBy      = $request['updated_by'];
 
         // Validating data request
@@ -237,7 +240,7 @@ class TicketDetailController extends Controller
             $biaya = str_replace(',','',$request['biaya']);
         }
         
-        if($processAt == NULL) {
+        if($countDetail == NULL) {
             // Updating data to ticket detail table
             Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->update([
                 'jenis_ticket'              => $request['jenis_ticket'],
@@ -247,6 +250,18 @@ class TicketDetailController extends Controller
                 'note'                      => $request['note'],
                 'status'                    => "onprocess",
             ]);
+            // Saving data to ticket_detail table
+            $ticket_detail                          = new Ticket_detail;
+            $ticket_detail->ticket_id               = $ticketId;
+            $ticket_detail->jenis_ticket            = $request['jenis_ticket'];
+            $ticket_detail->sub_category_ticket_id  = $request['sub_category_ticket_id'];
+            $ticket_detail->agent_id                = $request['agent_id'];
+            $ticket_detail->process_at              = $request['process_at'];
+            $ticket_detail->pending_at              = "-";
+            $ticket_detail->biaya                   = $biaya;
+            $ticket_detail->note                    = $request['note'];
+            $ticket_detail->updated_by              = $request['updated_by'];
+            $ticket_detail->save();
 
             // Saving data to progress ticket table
             $progress_ticket                = new Progress_ticket;
@@ -263,6 +278,7 @@ class TicketDetailController extends Controller
         }else{
             // Updating data to ticket detail table
             Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->update([
+                'jenis_ticket'              => $request['jenis_ticket'],
                 'sub_category_ticket_id'    => $request['sub_category_ticket_id'],
                 'biaya'                     => $biaya,
                 'note'                      => $request['note'],

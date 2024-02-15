@@ -94,7 +94,7 @@
                                         <!-- Login Title -->
                                         <div class="col-12">
                                             <h5 class="card-title text-primary text-center pb-2 fs-4 fw-bold">Form Login</h5>
-                                            <p class="text-center small px-3">Masukkan No. Induk Karyawan / Site Cabang dan Kata Sandi akun anda untuk dapat masuk & mulai bekerja.</p>
+                                            <p class="text-center small px-3">Masukkan No. Induk Karyawan / Site Cabang dan Password akun anda untuk dapat masuk & mulai bekerja.</p>
                                         </div>
                                     </div>
 
@@ -109,10 +109,10 @@
         
                                             <div class="col-12 pb-2">
                                                 <span class="border border-3 border-primary d-inline py-2"></span>
-                                                <input type="password" name="password" class="form-control d-inline rounded-0 mb-2" id="password" placeholder="Kata Sandi" required />
+                                                <input type="password" name="password" class="form-control d-inline rounded-0 mb-2" id="password" placeholder="Password" required />
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" onclick="myFunction()">
-                                                    <label class="form-check-label" for="inlineCheckbox1">Tampilkan Kata Sandi</label>
+                                                    <label class="form-check-label" for="inlineCheckbox1">Tampilkan Password</label>
                                                 </div>
                                             </div>
         

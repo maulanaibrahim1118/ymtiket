@@ -59,6 +59,8 @@ Route::get('/tickets/{id}/reProcess2', [TicketController::class, 'reProcess2'])
     ->middleware('auth')->name('ticket.reProcess2');
 Route::put('/tickets/resolved{id}', [TicketController::class, 'resolved'])
     ->middleware('auth')->name('ticket.resolved');
+Route::put('/tickets/finished{id}', [TicketController::class, 'finished'])
+    ->middleware('auth')->name('ticket.finished');
     
 // Route::put('/tickets/{id}/process2', [TicketController::class, 'process2'])
 //     ->middleware('auth')->name('ticket.process2');

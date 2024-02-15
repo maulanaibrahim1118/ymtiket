@@ -77,15 +77,15 @@
                                     </div>
                                     <div class="col-md-5 m-0">
                                         @if($ticket->status == 'created')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-secondary">{{ ucwords($ticket->status) }}</span></label>
+                                        <label for="status" class="form-label">: <span class="badge bg-secondary">{{ ucwords($ticket->status) }}</span></label>
                                         @elseif($ticket->status == 'onprocess')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-warning">{{ ucwords($ticket->status) }}</span></label>
+                                        <label for="status" class="form-label">: <span class="badge bg-warning">{{ ucwords($ticket->status) }}</span></label>
                                         @elseif($ticket->status == 'pending')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-danger">{{ ucwords($ticket->status) }}</span></label>
+                                        <label for="status" class="form-label">: <span class="badge bg-danger">{{ ucwords($ticket->status) }}</span></label>
                                         @elseif($ticket->status == 'resolved')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-primary">{{ ucwords($ticket->status) }}</span></label>
+                                        <label for="status" class="form-label">: <span class="badge bg-primary">{{ ucwords($ticket->status) }}</span></label>
                                         @elseif($ticket->status == 'finished')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-success">{{ ucwords($ticket->status) }}</span></label>
+                                        <label for="status" class="form-label">: <span class="badge bg-success">{{ ucwords($ticket->status) }}</span></label>
                                         @endif
                                     </div>
                                     <div class="col-md-1 m-0">
@@ -96,8 +96,12 @@
                                     </div>
 
                                     <div class="col-md-12">
-                                        {{-- Tombol Lampiran --}}
-                                        <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark-image me-1"></i> Lampiran</button>
+                                        @if($ext == "xlsx")
+                                        <a href="{{ asset('uploads/' . $ticket->file) }}"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark me-1"></i> Lampiran</button></a>
+                                        @else
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark me-1"></i> Lampiran</button>
+                                        @endif
+                                        
                                         <div class="modal fade" id="lampiranModal" tabindex="-1">
                                             @if($ticket->file == NULL)
                                             <div class="modal-dialog modal-dialog-centered">

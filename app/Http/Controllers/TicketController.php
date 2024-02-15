@@ -51,55 +51,33 @@ class TicketController extends Controller
 
         if($role == "client"){ // Jika role Client
             if($positionId == "2"){ // Jika jabatan Chief
-                return view('contents.ticket.index', [
-                    "url"       => "",
-                    "title"     => "Ticket List",
-                    "path"      => "Ticket",
-                    "agents"    => Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get(),
-                    "tickets"   => Ticket::where('ticket_area', 'like', $ticketChief.'%')->whereNotIn('status', ['deleted'])->get()
-                ]);  
+                $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
+                $tickets    = Ticket::where('ticket_area', 'like', $ticketChief.'%')->whereNotIn('status', ['deleted'])->orderBy('created_at', 'ASC')->get();
             }elseif($positionId == "6"){ // Jika jabatan Koordinator Wilayah
-                return view('contents.ticket.index', [
-                    "url"       => "",
-                    "title"     => "Ticket List",
-                    "path"      => "Ticket",
-                    "agents"    => Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get(),
-                    "tickets"   => Ticket::where('ticket_area', $ticketKorwil)->whereNotIn('status', ['deleted'])->get()
-                ]);   
+                $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
+                $tickets    = Ticket::where('ticket_area', $ticketKorwil)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'ASC')->get();
             }elseif($positionId == "7"){ // Jika jabatan Manager
-                return view('contents.ticket.index', [
-                    "url"       => "",
-                    "title"     => "Ticket List",
-                    "path"      => "Ticket",
-                    "agents"    => Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get(),
-                    "tickets"   => Ticket::where('ticket_area', 'like', $area.'%')->whereNotIn('status', ['deleted'])->get()
-                ]);                
+                $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
+                $tickets    = Ticket::where('ticket_area', 'like', $area.'%')->whereNotIn('status', ['deleted'])->orderBy('created_at', 'ASC')->get();
             }else{ // Jika jabatan selain Korwil, Chief dan Manager
-                return view('contents.ticket.index', [
-                    "url"       => "",
-                    "title"     => "Ticket List",
-                    "path"      => "Ticket",
-                    "agents"    => Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get(),
-                    "tickets"   => Ticket::where('location_id', $locationId)->whereNotIn('status', ['deleted'])->get()
-                ]);
+                $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
+                $tickets    = Ticket::where('location_id', $locationId)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'ASC')->get();
             }
         }elseif($role == "service desk"){ // Jika role Service Desk
-            return view('contents.ticket.index', [
-                "url"       => "",
-                "title"     => "Ticket List",
-                "path"      => "Ticket",
-                "agents"    => Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get(),
-                "tickets"   => Ticket::where('ticket_for', $namaLokasi)->whereNotIn('status', ['deleted'])->get()
-            ]);
+            $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
+            $tickets    = Ticket::where('ticket_for', $namaLokasi)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
         }else{ // Jika role Agent
-            return view('contents.ticket.index', [
-                "url"       => "",
-                "title"     => "Ticket List",
-                "path"      => "Ticket",
-                "agents"    => Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get(),
-                "tickets"   => Ticket::where([['ticket_for', $namaLokasi],['role', $role],['agent_id', $agentId]])->whereNotIn('status', ['deleted'])->get()
-            ]);
+            $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
+            $tickets    = Ticket::where([['ticket_for', $namaLokasi],['role', $role],['agent_id', $agentId]])->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
         }
+
+        return view('contents.ticket.index', [
+            "url"       => "",
+            "title"     => "Ticket List",
+            "path"      => "Ticket",
+            "agents"    => $agents,
+            "tickets"   => $tickets
+        ]);
     }
 
     /**
@@ -115,7 +93,7 @@ class TicketController extends Controller
         $locationId     = $getUser['location_id'];
 
         $totalTicket    = Ticket::where('user_id', $id2)->count();
-        $ticketClosed   = Ticket::where([['user_id', $id2],['status', 'closed']])->count();
+        $ticketClosed   = Ticket::where([['user_id', $id2],['status', 'finished']])->count();
         $ticketDeleted  = Ticket::where([['user_id', $id2],['status', 'deleted']])->count();
         $ticketUnclosed = $totalTicket-$ticketClosed-$ticketDeleted;
 
@@ -468,15 +446,15 @@ class TicketController extends Controller
         $id2            = decrypt($id);
         $status         = "onprocess";
         $now            = date('d-m-Y H:i:s');
+        $types          = ["kendala", "permintaan"];
         $nikAgent       = $request['nik'];
         $ticket         = Ticket::where('id', $id2)->first();
-
-        $pendingAt      = Carbon::parse($ticket->pending_at);
         $now            = Carbon::parse($now);
+        $pendingAt      = Carbon::parse($ticket->pending_at);
         $pending_time   = $pendingAt->diffInSeconds($now);
 
         $agentId        = $ticket->agent_id;
-        $ticket_detail  = Ticket_detail::where([['ticket_id', $id2],['agent_id', $agentId]])->first();
+        $ticket_detail  = Ticket_detail::where('ticket_id', $id2)->latest()->first();
         $subCategoryId  = $ticket_detail->sub_category_ticket_id;
         $subCategory    = Sub_category_ticket::where('id', $subCategoryId)->first();
         $categoryId     = $subCategory->category_ticket_id;
@@ -502,8 +480,9 @@ class TicketController extends Controller
             "path2"                 => "Tangani",
             "category_tickets"      => Category_ticket::all(),
             "sub_category_tickets"  => Sub_category_ticket::where('category_ticket_id', $categoryId)->get(),
-            "ticket"                => $ticket,
-            "td"                    => $ticket_detail
+            "ticket"                => Ticket::where('id', $id2)->first(),
+            "td"                    => Ticket_detail::where('ticket_id', $id2)->latest()->first(),
+            "types"                 => $types
         ]);
     }
 
@@ -588,15 +567,6 @@ class TicketController extends Controller
                 'status'            => "assigned",
                 'updated_by'        => $updatedBy
             ]);
-
-            // Saving data to ticket detail table
-            $ticket_detail                          = new Ticket_detail;
-            $ticket_detail->ticket_id               = $ticketId;
-            $ticket_detail->sub_category_ticket_id  = $subCategoryId;
-            $ticket_detail->agent_id                = $agentId2;
-            $ticket_detail->status                  = "pending";
-            $ticket_detail->updated_by              = $updatedBy;
-            $ticket_detail->save();
 
             // Saving data to progress ticket table
             $progress_ticket                = new Progress_ticket;
@@ -706,16 +676,36 @@ class TicketController extends Controller
         $progress_ticket->updated_by    = $updatedBy;
         $progress_ticket->save();
 
-        return redirect('/ticket-details'.'/'.encrypt($id))->with('success', 'Ticket berhasil di proses ulang!');
+        return redirect('/ticket-details'.'/'.encrypt($id));
     }
 
     // Proses kembali jika status onprocess (melanjutkan proses ticket)
     public function reProcess2($id = 0){
-        $getTicket  = Ticket::where('id', $id)->first();
-        $agentId    = $getTicket->agent_id;
-        $getDetail  = Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->count();
-        if($getDetail == NULL){
-            return redirect('/ticket-details'.'/'.encrypt($id).'/create');
+        $getTicket      = Ticket::where('id', $id)->first();
+        $agentId        = $getTicket->agent_id;
+        $countDetailAll = Ticket_detail::where('ticket_id', $id)->count();
+        $countDetail    = Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->count();
+        if($countDetail == NULL){
+            if($countDetailAll == NULL){
+                return redirect('/ticket-details'.'/'.encrypt($id).'/create');
+            }else{
+                $ticket_detail  = Ticket_detail::where('ticket_id', $id)->latest()->first();
+                $subCategoryId  = $ticket_detail->sub_category_ticket_id;
+                $subCategory    = Sub_category_ticket::where('id', $subCategoryId)->first();
+                $categoryId     = $subCategory->category_ticket_id;
+                $types          = ["kendala", "permintaan"];
+
+                return view('contents.ticket_detail.edit', [
+                    "title"                 => "Tangani Ticket",
+                    "path"                  => "Ticket",
+                    "path2"                 => "Tangani",
+                    "category_tickets"      => Category_ticket::all(),
+                    "sub_category_tickets"  => Sub_category_ticket::where('category_ticket_id', $categoryId)->get(),
+                    "ticket"                => Ticket::where('id', $id)->first(),
+                    "td"                    => Ticket_detail::where('ticket_id', $id)->latest()->first(),
+                    "types"                 => $types
+                ]);
+            }
         }else {
             return redirect('/ticket-details'.'/'.encrypt($id));
         }
@@ -791,6 +781,137 @@ class TicketController extends Controller
                     return redirect($url)->with('success', 'Ticket telah selesai diproses!');
                 }
             }
+        }
+    }
+
+    public function finished(Request $request, $id)
+    {
+        $now            = date('d-m-Y H:i:s');
+        $status         = $request['closedStatus'];
+        $alasanClosed   = $request['alasanClosed'];
+        $updatedBy      = $request['updated_by'];
+
+        if($status == "selesai"){
+            $statusClosed   = $status;
+            
+            // Updating data to ticket table
+            Ticket::where('id', $id)->update([
+                'status'        => "finished",
+                'closed_status' => $statusClosed,
+            ]);
+
+            // Saving data to progress ticket table
+            $progress_ticket                = new Progress_ticket;
+            $progress_ticket->ticket_id     = $id;
+            $progress_ticket->tindakan      = "Ticket di close oleh ".ucwords($updatedBy);
+            $progress_ticket->status        = "finished";
+            $progress_ticket->process_at    = $now;
+            $progress_ticket->updated_by    = $updatedBy;
+            $progress_ticket->save();
+            
+            return redirect($request['url'])->with('success', 'Ticket berhasil di close!');
+        }else{
+            // $statusClosed   = $status." - ".$alasanClosed;
+            
+            // // Updating data to ticket table
+            // Ticket::where('id', $id)->update([
+            //     'status'        => "finished",
+            //     'closed_status' => $statusClosed,
+            // ]);
+
+            // // Saving data to progress ticket table
+            // $progress_ticket                = new Progress_ticket;
+            // $progress_ticket->ticket_id     = $id;
+            // $progress_ticket->tindakan      = "Ticket di close oleh ".ucwords($updatedBy);
+            // $progress_ticket->status        = "finished";
+            // $progress_ticket->process_at    = $now;
+            // $progress_ticket->updated_by    = $updatedBy;
+            // $progress_ticket->save();
+
+            // // Mendapatkan data ticket sebelumnya
+            // $getTicket  = Ticket::where('id', $id)->first();
+            // $kendala    = $getTicket->kendala;
+
+            // $getMY          = date('my');
+            // $ticketDefault  = $getMY.'0000';
+            // $countTicket    = Ticket::where('no_ticket', 'LIKE', 'T'.$getMY.'%')->count();
+
+            // if($countTicket == 0){ // Jika jumlah ticket nol, nomor dimulai dari angka 1
+            //     $noTicket       = $ticketDefault+1;
+            //     $ticketNumber   = $noTicket;
+            // }else{ // Jika jumlah ticket > 0, no ticket = jumlah ticket ditambah 1
+            //     $noTicket       = $ticketDefault+$countTicket+1; 
+            //     $ticketNumber   = $noTicket;
+            // }
+
+            // // Mencari Service Desk berdasarkan ticket_for
+            // $ticketFor      = $data['ticket_for'];
+            // $getLocAgent    = Location::where('nama_lokasi', $ticketFor)->first();
+            // $locIdAgent     = $getLocAgent['id'];
+            // $getServiceDesk = User::where([['location_id', $locIdAgent],['role', 'service desk']])->first();
+            // $nikServiceDesk = $getServiceDesk['nik'];
+            // $getAgent       = Agent::where('nik', $nikServiceDesk)->first();
+            // $agentId        = $getAgent['id'];
+            
+            // // Mencari Area, Regional, Wilayah Client untuk mengisi data ticket_area
+            // $clientId       = $data['client_id'];
+            // $getClient      = Client::where('id', $clientId)->first();
+            // $locationId     = $getClient['location_id'];
+            // $getLocation    = Location::where('id', $locationId)->first();
+            // $area           = substr($getLocation['area'], -1);
+            // $regional       = substr($getLocation['regional'], -1);
+            // $wilayah        = substr($getLocation['wilayah'], -2);
+            // $ticketArea     = $area.$regional.$wilayah;
+
+            // // Ambil waktu saat ini
+            // $currentDay     = date('D');
+            // $currentDate    = date('d-m-y');
+            // $currentTime    = Carbon::now();
+
+            // // Mencari apakah tanggal sekarang merupakan libur nasional atau bukan
+            // $checkHoliday   = National_holiday::where('tanggal', $currentDate)->count();
+
+            // // Tentukan hari dam jam kerja (contoh: 9 pagi hingga 5 sore)
+            // $workStartTime  = Carbon::createFromTime(8, 0, 0);
+            // $workEndTime    = Carbon::createFromTime(17, 0, 0);
+
+            // // Periksa apakah waktu saat ini berada dalam rentang hari dan jam kerja
+            // $isWorkTime     = $currentTime->between($workStartTime, $workEndTime);
+
+            // // Tampilkan hasil
+            // if ($currentDay == "SAT" or $currentDay == "SUN" or $checkHoliday == 1){ // Jika hari ini, merupakan hari sabtu atau minggu atau hari libur nasional
+            //     $jamKerja = "tidak";
+            // }else{ // Jika hari ini, bukan hari sabtu atau minggu atau hari libur nasional
+            //     if ($isWorkTime) {
+            //         $jamKerja = "ya";
+            //     } else {
+            //         $jamKerja = "tidak";
+            //     }
+            // }
+
+            // // Saving data to ticket table
+            // $ticket                 = new Ticket;
+            // $ticket->no_ticket      = $getTicket->no_ticket;
+            // $ticket->kendala        = "Re: ".$kendala;
+            // $ticket->detail_kendala = $getTicket->detail_kendala;
+            // $ticket->asset_id       = $getTicket->asset_id;
+            // $ticket->user_id        = $getTicket->user_id;
+            // $ticket->client_id      = $getTicket->client_id;
+            // $ticket->location_id    = $getTicket->location_id;
+            // $ticket->agent_id       = $agentId;
+            // $ticket->role           = "service desk";
+            // $ticket->status         = "created";
+            // $ticket->is_queue       = "tidak";
+            // $ticket->assigned       = "tidak";
+            // $ticket->need_approval  = "tidak";
+            // $ticket->jam_kerja      = $jamKerja;
+            // $ticket->ticket_for     = $getTicket->kendala;
+            // $ticket->ticket_area    = $ticketArea;
+            // $ticket->estimated      = "-";
+            // $ticket->file           = $getTicket->file;
+            // $ticket->updated_by     = $updatedBy;
+            // $ticket->save();
+            
         }
     }
 

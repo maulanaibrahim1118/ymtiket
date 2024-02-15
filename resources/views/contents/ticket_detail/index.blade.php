@@ -136,6 +136,7 @@
                                         <a href="{{ asset('uploads/' . $ticket->file) }}"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark me-1"></i> Lampiran</button></a>
                                         @else
                                         <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark me-1"></i> Lampiran</button>
+                                        @endif
 
                                         {{-- Lampiran Modal --}}
                                         <div class="modal fade" id="lampiranModal" tabindex="-1">
@@ -156,7 +157,6 @@
                                                 </div>
                                             </div>
                                         </div><!-- End Lampiran Modal-->
-                                        @endif
                                     </div>
 
                                     <div class="col-md-12">
@@ -280,7 +280,39 @@
                                         @if(auth()->user()->role == "client") {{-- Jika role sebagai Client --}}
                                             @if($ticket->status == "resolved") {{-- Jika status resolved, muncul tombol close/selesai --}}
                                                 {{-- Tombol Close --}}
-                                                <a href="#"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-check-circle me-1"></i> Close</button></a>
+                                                <button type="button" class="btn btn-sm btn-success float-end ms-1" id="closedButton" data-bs-toggle="modal" data-bs-target="#closedModal"><i class="bi bi-check-circle me-1"></i> Close</button>
+                                                </form>
+                                                <div class="modal fade" id="closedModal" tabindex="-1">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content" id="modalContent4">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Status Closed Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form action="/tickets/finished{{ $ticket->id }}" method="post">
+                                                            @method("put")
+                                                            @csrf
+                                                            <div class="modal-body">
+                                                                <div class="col-md-6 mb-2">
+                                                                    <select class="form-select" name="closedStatus" id="closedStatus" value="{{ old('closedStatus') }}">
+                                                                        <option selected disabled>Choose...</option>
+                                                                        <option value="selesai">Selesai</option>
+                                                                        <option value="belum selesai">Belum Selesai</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <textarea name="alasanClosed" class="form-control" id="alasanClosed" rows="3" placeholder="Tuliskan keterangan tambahan (opsional)">{{ old('alasanClosed') }}</textarea>
+                                                                </div>
+                                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                                <input type="text" name="url" value="/tickets{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Kirim</button>
+                                                            </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div><!-- End Pending Modal-->
                                             @else {{-- Jika status bukan resolved, tidak akan muncul tombol apapun --}}
                                             @endif
                                             
