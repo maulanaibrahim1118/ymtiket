@@ -89,18 +89,18 @@ class DashboardController extends Controller
 
             // Menghitung Workload Agent
             $processedTime  = Ticket_detail::where('agent_id', $agentId)->sum('processed_time');
-            $pendingTime1   = Ticket_detail::where('agent_id', $agentId)->sum('pending_time');
-            $workload       = $processedTime-$pendingTime1;
+            $pendingTime    = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->sum('pending_time');
+            $workload       = $processedTime-$pendingTime;
 
             // Menghitung Waktu Rata-rata Ticket Resolved
             $resolvedCount  = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->count();
             $resolvedTime   = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->sum('processed_time');
-            $pendingTime2   = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->sum('pending_time');
+
             if($resolvedCount == 0){
                 $resolvedAvg    = 0;
                 $roundedAvg     = 0;
             }else {
-                $resolvedAvg    = ($resolvedTime-$pendingTime2)/$resolvedCount;
+                $resolvedAvg    = ($resolvedTime-$pendingTime)/$resolvedCount;
                 $roundedAvg     = round($resolvedAvg);
             }
 

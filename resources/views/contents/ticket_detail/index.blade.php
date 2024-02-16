@@ -6,9 +6,9 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card info-card mb-4">
-                            @if(session()->has('pendingError'))
+                            @if(session()->has('error'))
                             <script>
-                                swal("Pending Gagal!", "{{ session('pendingError') }}", "warning", {
+                                swal("Gagal!", "{{ session('error') }}", "warning", {
                                     timer: 3000
                                 });
                             </script>
@@ -269,13 +269,6 @@
                                     }
                                     </script>
 
-                                    @if(session()->has('assignError'))
-                                    <script>
-                                        swal("Assign Gagal!", "{{ session('assignError') }}", "warning", {
-                                            timer: 3000
-                                        });
-                                    </script>
-                                    @endif
                                     <div class="col-md-12">
                                         @if(auth()->user()->role == "client") {{-- Jika role sebagai Client --}}
                                             @if($ticket->status == "resolved") {{-- Jika status resolved, muncul tombol close/selesai --}}

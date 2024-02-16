@@ -128,3 +128,7 @@ Route::resource('/category-tickets', CategoryTicketController::class)
 // Route Sub Category Ticket
 Route::resource('/category-sub-tickets', SubCategoryTicketController::class)
     ->middleware('auth');
+
+// Route jika 'page expired', karena user telalu lama membirkan pc nya standby
+Route::get('/login', [LoginController::class, 'index'])
+    ->middleware('guest')->name('login2.index');

@@ -133,11 +133,11 @@
                 $carbonInstance = \Carbon\Carbon::parse($workload);
             @endphp
             @if($workload >= 3600)
-            <h6>{{ $carbonInstance->hour }}</h6>
-            <span class="text-warning small pt-1 fw-bold">Jam | {{ $carbonInstance->minute }} Menit | {{ $carbonInstance->second }} Detik</span>
+            <h6>{{ $carbonInstance->hour }} Jam</h6>
+            <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit</span>
             @elseif($workload >= 60)
-            <h6>{{ $carbonInstance->minute }}</h6>
-            <span class="text-warning small pt-1 fw-bold">Menit | {{ $carbonInstance->minute }} Detik</span>
+            <h6>{{ $carbonInstance->minute }} Menit</h6>
+            <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->minute }} Detik</span>
             @else
             <h6>{{ $carbonInstance->second }}</h6>
             <span class="text-warning small pt-1 fw-bold">Detik</span>
@@ -179,11 +179,11 @@
                 $carbonInstance = \Carbon\Carbon::parse($roundedAvg);
             @endphp
             @if($roundedAvg >= 3600)
-            <h6>{{ $carbonInstance->hour }}</h6>
-            <span class="text-success small pt-1 fw-bold">Jam | {{ $carbonInstance->minute }} Menit | {{ $carbonInstance->second }} Detik</span>
+            <h6>{{ $carbonInstance->hour }} Jam</h6>
+            <span class="text-success small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit | {{ $carbonInstance->second }} Detik</span>
             @elseif($roundedAvg >= 60)
-            <h6>{{ $carbonInstance->minute }}</h6>
-            <span class="text-success small pt-1 fw-bold">Menit | {{ $carbonInstance->minute }} Detik</span>
+            <h6>{{ $carbonInstance->minute }} Menit</h6>
+            <span class="text-success small pt-1 fw-bold">{{ $carbonInstance->minute }} Detik</span>
             @else
             <h6>{{ $carbonInstance->second }}</h6>
             <span class="text-success small pt-1 fw-bold">Detik</span>

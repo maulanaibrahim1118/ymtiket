@@ -123,7 +123,7 @@ class TicketController extends Controller
                     "clients"       => Client::where('location_id', $locationId)->orderBy('nama_client', 'ASC')->get()
                 ]);
             }else{ // Jika masih ada ticket yang belum di close
-                return back()->with('createError', 'Ticket sebelumnya belum selesai!');
+                return back()->with('createError', 'Ticket sebelumnya belum selesai / belum ditutup!');
             }
         }elseif($role2 == "service desk"){
             return view('contents.ticket.create', [
@@ -169,7 +169,7 @@ class TicketController extends Controller
             'client_id'         => 'required',
             'asset_id'          => 'required',
             'ticket_for'        => 'required',
-            'kendala'           => 'required|min:5|max:30',
+            'kendala'           => 'required|min:5|max:50',
             'detail_kendala'    => 'required|min:10',
             'file'              => 'required|max:1024',
         ],
@@ -180,7 +180,7 @@ class TicketController extends Controller
             'ticket_for.required'       => 'Ditujukan Kepada harus dipilih!',
             'kendala.required'          => 'Kendala harus diisi!',
             'kendala.min'               => 'Ketik minimal 5 digit!',
-            'kendala.max'               => 'Ketik maksimal 30 digit!',
+            'kendala.max'               => 'Ketik maksimal 50 digit!',
             'detail_kendala.required'   => 'Detail Kendala harus diisi!',
             'detail_kendala.min'        => 'Ketik minimal 10 digit!',
             'file.required'             => 'Lampiran harus diisi!',
@@ -351,7 +351,7 @@ class TicketController extends Controller
             'client_id'         => 'required',
             'asset_id'          => 'required',
             'ticket_for'        => 'required',
-            'kendala'           => 'required|min:5|max:30',
+            'kendala'           => 'required|min:5|max:50',
             'detail_kendala'    => 'required|min:10',
             'file'              => 'required|max:1024',
             'updated_by'        => 'required'
@@ -365,7 +365,7 @@ class TicketController extends Controller
             'ticket_for.required'       => 'Ditujukan Kepada harus dipilih!',
             'kendala.required'          => 'Kendala harus diisi!',
             'kendala.min'               => 'Ketik minimal 5 digit!',
-            'kendala.max'               => 'Ketik maksimal 30 digit!',
+            'kendala.max'               => 'Ketik maksimal 50 digit!',
             'detail_kendala.required'   => 'Detail Kendala harus diisi!',
             'detail_kendala.min'        => 'Ketik minimal 10 digit!',
             'updated_by.required'       => 'Wajib diisi!',
@@ -500,7 +500,7 @@ class TicketController extends Controller
     {
         $updatedBy  = $request['updated_by'];
         if($request['agent_id'] == NULL){
-            return back()->with('assignError', 'Nama Agent harus dipilih!');
+            return back()->with('error', 'Nama Agent harus dipilih!');
         }else {
             $getAgent   = Agent::where('id', $request['agent_id'])->first();
             $agentName  = $getAgent->nama_agent;
@@ -531,7 +531,7 @@ class TicketController extends Controller
     public function assign2(Request $request)
     {
         if($request['agent_id'] == NULL){
-            return back()->with('assignError', 'Nama Agent harus dipilih!');
+            return back()->with('error', 'Nama Agent harus dipilih!');
         }else {
             $agentId1   = $request['agent_id1']; // Agent sebelumnya (yang meng assign ticket)
             $ticketId   = $request['ticket_id'];
@@ -595,7 +595,7 @@ class TicketController extends Controller
         $alasan     = $request['alasanPending'];
 
         if($alasan == NULL){
-            return back()->with('pendingError', 'Tolong sebutkan alasan pending!');
+            return back()->with('error', 'Tolong sebutkan alasan pending!');
         }else {
             $now        = date('d-m-Y H:i:s');
             $status     = "pending";
@@ -786,8 +786,14 @@ class TicketController extends Controller
 
     public function finished(Request $request, $id)
     {
+        $status = $request['closedStatus'];
+
+        // Menampilkan pesan error jika status closed tidak dipilih
+        if($status == NULL){
+            return back()->with('error', 'Status Closed harus dipilih!');
+        }
+
         $now            = date('d-m-Y H:i:s');
-        $status         = $request['closedStatus'];
         $alasanClosed   = $request['alasanClosed'];
         $updatedBy      = $request['updated_by'];
 
@@ -803,7 +809,7 @@ class TicketController extends Controller
             // Saving data to progress ticket table
             $progress_ticket                = new Progress_ticket;
             $progress_ticket->ticket_id     = $id;
-            $progress_ticket->tindakan      = "Ticket di close oleh ".ucwords($updatedBy);
+            $progress_ticket->tindakan      = "Ticket di tutup oleh ".ucwords($updatedBy);
             $progress_ticket->status        = "finished";
             $progress_ticket->process_at    = $now;
             $progress_ticket->updated_by    = $updatedBy;
@@ -811,107 +817,123 @@ class TicketController extends Controller
             
             return redirect($request['url'])->with('success', 'Ticket berhasil di close!');
         }else{
-            // $statusClosed   = $status." - ".$alasanClosed;
+            $statusClosed   = $status." - ".$alasanClosed;
             
-            // // Updating data to ticket table
-            // Ticket::where('id', $id)->update([
-            //     'status'        => "finished",
-            //     'closed_status' => $statusClosed,
-            // ]);
+            // Mendapatkan data ticket sebelumnya
+            $getTicket  = Ticket::where('id', $id)->first();
+            $kendala    = $getTicket->kendala;
 
-            // // Saving data to progress ticket table
-            // $progress_ticket                = new Progress_ticket;
-            // $progress_ticket->ticket_id     = $id;
-            // $progress_ticket->tindakan      = "Ticket di close oleh ".ucwords($updatedBy);
-            // $progress_ticket->status        = "finished";
-            // $progress_ticket->process_at    = $now;
-            // $progress_ticket->updated_by    = $updatedBy;
-            // $progress_ticket->save();
+            $getMY          = date('my');
+            $ticketDefault  = $getMY.'0000';
+            $countTicket    = Ticket::where('no_ticket', 'LIKE', 'T'.$getMY.'%')->count();
 
-            // // Mendapatkan data ticket sebelumnya
-            // $getTicket  = Ticket::where('id', $id)->first();
-            // $kendala    = $getTicket->kendala;
+            if($countTicket == 0){ // Jika jumlah ticket nol, nomor dimulai dari angka 1
+                $noTicket       = $ticketDefault+1;
+                $ticketNumber   = $noTicket;
+            }else{ // Jika jumlah ticket > 0, no ticket = jumlah ticket ditambah 1
+                $noTicket       = $ticketDefault+$countTicket+1; 
+                $ticketNumber   = $noTicket;
+            }
 
-            // $getMY          = date('my');
-            // $ticketDefault  = $getMY.'0000';
-            // $countTicket    = Ticket::where('no_ticket', 'LIKE', 'T'.$getMY.'%')->count();
-
-            // if($countTicket == 0){ // Jika jumlah ticket nol, nomor dimulai dari angka 1
-            //     $noTicket       = $ticketDefault+1;
-            //     $ticketNumber   = $noTicket;
-            // }else{ // Jika jumlah ticket > 0, no ticket = jumlah ticket ditambah 1
-            //     $noTicket       = $ticketDefault+$countTicket+1; 
-            //     $ticketNumber   = $noTicket;
-            // }
-
-            // // Mencari Service Desk berdasarkan ticket_for
-            // $ticketFor      = $data['ticket_for'];
-            // $getLocAgent    = Location::where('nama_lokasi', $ticketFor)->first();
-            // $locIdAgent     = $getLocAgent['id'];
-            // $getServiceDesk = User::where([['location_id', $locIdAgent],['role', 'service desk']])->first();
-            // $nikServiceDesk = $getServiceDesk['nik'];
-            // $getAgent       = Agent::where('nik', $nikServiceDesk)->first();
-            // $agentId        = $getAgent['id'];
+            // Mencari Service Desk berdasarkan ticket_for
+            $ticketFor      = $getTicket->ticket_for;
+            $getLocAgent    = Location::where('nama_lokasi', $ticketFor)->first();
+            $locIdAgent     = $getLocAgent['id'];
+            $getServiceDesk = User::where([['location_id', $locIdAgent],['role', 'service desk']])->first();
+            $nikServiceDesk = $getServiceDesk['nik'];
+            $getAgent       = Agent::where('nik', $nikServiceDesk)->first();
+            $agentId        = $getAgent['id'];
             
-            // // Mencari Area, Regional, Wilayah Client untuk mengisi data ticket_area
-            // $clientId       = $data['client_id'];
-            // $getClient      = Client::where('id', $clientId)->first();
-            // $locationId     = $getClient['location_id'];
-            // $getLocation    = Location::where('id', $locationId)->first();
-            // $area           = substr($getLocation['area'], -1);
-            // $regional       = substr($getLocation['regional'], -1);
-            // $wilayah        = substr($getLocation['wilayah'], -2);
-            // $ticketArea     = $area.$regional.$wilayah;
+            // Mencari Area, Regional, Wilayah Client untuk mengisi data ticket_area
+            $clientId       = $getTicket->client_id;
+            $getClient      = Client::where('id', $clientId)->first();
+            $locationId     = $getClient['location_id'];
+            $getLocation    = Location::where('id', $locationId)->first();
+            $area           = substr($getLocation['area'], -1);
+            $regional       = substr($getLocation['regional'], -1);
+            $wilayah        = substr($getLocation['wilayah'], -2);
+            $ticketArea     = $area.$regional.$wilayah;
 
-            // // Ambil waktu saat ini
-            // $currentDay     = date('D');
-            // $currentDate    = date('d-m-y');
-            // $currentTime    = Carbon::now();
+            // Ambil waktu saat ini
+            $currentDay     = date('D');
+            $currentDate    = date('d-m-y');
+            $currentTime    = Carbon::now();
 
-            // // Mencari apakah tanggal sekarang merupakan libur nasional atau bukan
-            // $checkHoliday   = National_holiday::where('tanggal', $currentDate)->count();
+            // Mencari apakah tanggal sekarang merupakan libur nasional atau bukan
+            $checkHoliday   = National_holiday::where('tanggal', $currentDate)->count();
 
-            // // Tentukan hari dam jam kerja (contoh: 9 pagi hingga 5 sore)
-            // $workStartTime  = Carbon::createFromTime(8, 0, 0);
-            // $workEndTime    = Carbon::createFromTime(17, 0, 0);
+            // Tentukan hari dam jam kerja (contoh: 9 pagi hingga 5 sore)
+            $workStartTime  = Carbon::createFromTime(8, 0, 0);
+            $workEndTime    = Carbon::createFromTime(17, 0, 0);
 
-            // // Periksa apakah waktu saat ini berada dalam rentang hari dan jam kerja
-            // $isWorkTime     = $currentTime->between($workStartTime, $workEndTime);
+            // Periksa apakah waktu saat ini berada dalam rentang hari dan jam kerja
+            $isWorkTime     = $currentTime->between($workStartTime, $workEndTime);
 
-            // // Tampilkan hasil
-            // if ($currentDay == "SAT" or $currentDay == "SUN" or $checkHoliday == 1){ // Jika hari ini, merupakan hari sabtu atau minggu atau hari libur nasional
-            //     $jamKerja = "tidak";
-            // }else{ // Jika hari ini, bukan hari sabtu atau minggu atau hari libur nasional
-            //     if ($isWorkTime) {
-            //         $jamKerja = "ya";
-            //     } else {
-            //         $jamKerja = "tidak";
-            //     }
-            // }
+            // Tampilkan hasil
+            if ($currentDay == "SAT" or $currentDay == "SUN" or $checkHoliday == 1){ // Jika hari ini, merupakan hari sabtu atau minggu atau hari libur nasional
+                $jamKerja = "tidak";
+            }else{ // Jika hari ini, bukan hari sabtu atau minggu atau hari libur nasional
+                if ($isWorkTime) {
+                    $jamKerja = "ya";
+                } else {
+                    $jamKerja = "tidak";
+                }
+            }
 
-            // // Saving data to ticket table
-            // $ticket                 = new Ticket;
-            // $ticket->no_ticket      = $getTicket->no_ticket;
-            // $ticket->kendala        = "Re: ".$kendala;
-            // $ticket->detail_kendala = $getTicket->detail_kendala;
-            // $ticket->asset_id       = $getTicket->asset_id;
-            // $ticket->user_id        = $getTicket->user_id;
-            // $ticket->client_id      = $getTicket->client_id;
-            // $ticket->location_id    = $getTicket->location_id;
-            // $ticket->agent_id       = $agentId;
-            // $ticket->role           = "service desk";
-            // $ticket->status         = "created";
-            // $ticket->is_queue       = "tidak";
-            // $ticket->assigned       = "tidak";
-            // $ticket->need_approval  = "tidak";
-            // $ticket->jam_kerja      = $jamKerja;
-            // $ticket->ticket_for     = $getTicket->kendala;
-            // $ticket->ticket_area    = $ticketArea;
-            // $ticket->estimated      = "-";
-            // $ticket->file           = $getTicket->file;
-            // $ticket->updated_by     = $updatedBy;
-            // $ticket->save();
-            
+            // Membuatkan No. Ticket Baru
+            $getMY          = date('my');
+            $ticketDefault  = $getMY.'0000';
+            $countTicket    = Ticket::where('no_ticket', 'LIKE', 'T'.$getMY.'%')->count();
+
+            if($countTicket == 0){ // Jika jumlah ticket nol, nomor dimulai dari angka 1
+                $noTicket       = $ticketDefault+1;
+                $ticketNumber   = $noTicket;
+            }else{ // Jika jumlah ticket > 0, no ticket = jumlah ticket ditambah 1
+                $noTicket       = $ticketDefault+$countTicket+1; 
+                $ticketNumber   = $noTicket;
+            }
+
+            $no_ticket  = 'T'.sprintf('%08d', $ticketNumber);
+
+            // Updating data to ticket table
+            Ticket::where('id', $id)->update([
+                'status'        => "finished",
+                'closed_status' => $statusClosed,
+            ]);
+
+            // Saving data to progress ticket table
+            $progress_ticket                = new Progress_ticket;
+            $progress_ticket->ticket_id     = $id;
+            $progress_ticket->tindakan      = "Ticket di tutup oleh ".ucwords($updatedBy);
+            $progress_ticket->status        = "finished";
+            $progress_ticket->process_at    = $now;
+            $progress_ticket->updated_by    = $updatedBy;
+            $progress_ticket->save();
+
+            // Saving data to ticket table
+            $ticket                 = new Ticket;
+            $ticket->no_ticket      = $no_ticket;
+            $ticket->kendala        = "Re: (".$getTicket->no_ticket.') '.$kendala;
+            $ticket->detail_kendala = $getTicket->detail_kendala;
+            $ticket->asset_id       = $getTicket->asset_id;
+            $ticket->user_id        = $getTicket->user_id;
+            $ticket->client_id      = $getTicket->client_id;
+            $ticket->location_id    = $getTicket->location_id;
+            $ticket->agent_id       = $agentId;
+            $ticket->role           = "service desk";
+            $ticket->status         = "created";
+            $ticket->is_queue       = "tidak";
+            $ticket->assigned       = "tidak";
+            $ticket->need_approval  = "tidak";
+            $ticket->jam_kerja      = $jamKerja;
+            $ticket->ticket_for     = $getTicket->ticket_for;
+            $ticket->ticket_area    = $ticketArea;
+            $ticket->estimated      = "-";
+            $ticket->file           = $getTicket->file;
+            $ticket->updated_by     = $updatedBy;
+            $ticket->save();
+         
+            return redirect($request['url'])->with('success', 'Ticket berhasil di close!');
         }
     }
 

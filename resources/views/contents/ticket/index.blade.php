@@ -34,9 +34,9 @@
                                 </script>
                                 @endif
 
-                                @if(session()->has('assignError'))
+                                @if(session()->has('error'))
                                 <script>
-                                    swal("Assign Gagal!", "{{ session('assignError') }}", "warning", {
+                                    swal("Gagal!", "{{ session('error') }}", "warning", {
                                         timer: 3000
                                     });
                                 </script>
