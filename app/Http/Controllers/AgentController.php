@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\DB;
+use App\Agent;
 
-class LoginController extends Controller
+class AgentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,31 +16,28 @@ class LoginController extends Controller
      */
     public function index()
     {
-        return view('contents.login.index', [
-            'title' => 'Form Login',
+        $data = Agent::where('location_id', 10)
+            ->withCount('ticket_detail')
+            ->select(
+                'agents.*', 
+                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id) as total_ticket'),
+                DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
+                DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
+            )
+            ->get();
+        return view('contents.agent.index', [
+            "url"       => "",
+            "title"     => "Agent List",
+            "path"      => "Agent",
+            "data"      => $data
         ]);
     }
 
-    public function authenticate(Request $request)
+    public function agentsRefresh()
     {
-        $credentials = $request->only('nik', 'password');
+        $data = Agent::latest()->get();
 
-        if (Auth::attempt($credentials)) {
-            // Authentication passed...
-            return redirect()->intended('/dashboard'.'/'.encrypt(auth()->user()->id).'-'.encrypt(auth()->user()->role));
-        }
-
-        return back()->with('loginError', 'No. Induk Karyawan atau Password salah!');
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-    
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-    
-        return redirect('/');
+        return view('contents.agent.partials.table', ['data' => $data]);
     }
 
     /**
@@ -93,7 +92,11 @@ class LoginController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $item = Agent::find($id);
+        $item->status = $request->input('status');
+        $item->save();
+
+        return response()->json(['success' => true]);
     }
 
     /**

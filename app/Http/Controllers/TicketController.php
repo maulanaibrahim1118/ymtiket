@@ -75,6 +75,7 @@ class TicketController extends Controller
             "url"       => "",
             "title"     => "Ticket List",
             "path"      => "Ticket",
+            "path2"      => "Ticket",
             "agents"    => $agents,
             "tickets"   => $tickets
         ]);
@@ -114,7 +115,7 @@ class TicketController extends Controller
         if($role2 == "client"){
             if($ticketUnclosed == 0){ // Jika tidak ada ticket yang belum di close
                 return view('contents.ticket.create', [
-                    "url"           => $id.'-'.$role,
+                    "url"           => '/tickets'.'/'.$id.'-'.$role,
                     "title"         => "Create Ticket",
                     "path"          => "Ticket",
                     "path2"         => "Tambah",
@@ -127,7 +128,7 @@ class TicketController extends Controller
             }
         }elseif($role2 == "service desk"){
             return view('contents.ticket.create', [
-                "url"           => $id.'-'.$role,
+                "url"           => '/tickets'.'/'.$id.'-'.$role,
                 "title"         => "Create Ticket",
                 "path"          => "Ticket",
                 "path2"         => "Tambah",
@@ -281,7 +282,7 @@ class TicketController extends Controller
 
         // Redirect to the employee view if create data succeded
         $url = $data['url'];
-        return redirect('/tickets'.$url)->with('success', 'Ticket berhasil dibuat!');
+        return redirect($url)->with('success', 'Ticket berhasil dibuat!');
     }
 
     /**
@@ -312,7 +313,7 @@ class TicketController extends Controller
 
         if($role2 == "client"){
             return view('contents.ticket.edit', [
-                "url"           => $id.'-'.$role,
+                "url"           => '/tickets'.'/'.$id.'-'.$role,
                 "title"         => "Edit Ticket",
                 "path"          => "Ticket",
                 "path2"         => "Edit",
@@ -323,7 +324,7 @@ class TicketController extends Controller
             ]);
         }elseif($role2 == "service desk"){
             return view('contents.ticket.edit', [
-                "url"           => $id.'-'.$role,
+                "url"           => '/tickets'.'/'.$id.'-'.$role,
                 "title"         => "Edit Ticket",
                 "path"          => "Ticket",
                 "path2"         => "Edit",
@@ -408,7 +409,7 @@ class TicketController extends Controller
         $progress_ticket->save();
         
         $url = $request['url'];
-        return redirect('/tickets'.$url)->with('success', 'Ticket berhasil di edit!');
+        return redirect($url)->with('success', 'Ticket berhasil di edit!');
     }
 
     /**
@@ -766,9 +767,9 @@ class TicketController extends Controller
             if($countAntrian == NULL){ // Jika antrian ticket sudah habis
                 return redirect($url)->with('success', 'Ticket telah selesai diproses!');
             }else {
-                if($agentStatus == 'busy'){ // Jika Agent izin, keluar kota, dll
+                if($agentStatus != 'present'){ // Jika Agent tidak hadir, izin, keluar kota, dll
                     return redirect($url)->with('success', 'Ticket telah selesai diproses!');
-                }else{ // Jika agent ready
+                }else{ // Jika agent hadir di kantor
                     $getAntrian     = Ticket::where('is_queue', 'ya')->first();
                     $ticketId       = $getAntrian->id;
                     Ticket::where('id', $ticketId)->update([

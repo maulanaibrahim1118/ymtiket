@@ -26,11 +26,11 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')->name('login.out');
 
 // Route Dashboard
-Route::get('/dashboard/{id}-{role}', [DashboardController::class, 'index'])
+Route::get('/dashboard{id}-{role}', [DashboardController::class, 'index'])
     ->middleware('auth')->name('dashboard.index');
 
 // Route Ticket
-Route::get('/tickets/{id}-{role}', [TicketController::class, 'index'])
+Route::get('/tickets{id}-{role}', [TicketController::class, 'index'])
     ->middleware('auth')->name('ticket.index');
 Route::get('/tickets/{id}-{role}/create', [TicketController::class, 'create'])
     ->middleware('auth')->name('ticket.create');

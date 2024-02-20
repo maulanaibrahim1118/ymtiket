@@ -1,5 +1,5 @@
-<div class="col-xxl-2 col-md-6">
-    <div class="card info-card secondary-card">
+<div class="col-xxl-12 col-md-12 pb-0">
+    <div class="card">
 
     <div class="filter">
         <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
@@ -13,6 +13,15 @@
         <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
         </ul>
     </div>
+    <div class="card-body">
+        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard</h5>
+    </div>
+
+    </div>
+</div>
+
+<div class="col-xxl-3 col-md-6">
+    <div class="card info-card secondary-card">
 
     <div class="card-body">
         <h5 class="card-title">Total Ticket</h5>
@@ -33,21 +42,8 @@
     </div>
 </div><!-- End Secondary Card -->
 
-<div class="col-xxl-2 col-md-6">
+<div class="col-xxl-3 col-md-6">
     <div class="card info-card primary-card">
-
-    <div class="filter">
-        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-            <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" href="#">Hari Ini</a></li>
-        <li><a class="dropdown-item" href="#">Bulan Ini</a></li>
-        <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
-        </ul>
-    </div>
 
     <div class="card-body">
         <h5 class="card-title">Ticket Selesai</h5>
@@ -68,21 +64,8 @@
     </div>
 </div><!-- End Primary Card -->
 
-<div class="col-xxl-2 col-md-6">
+<div class="col-xxl-3 col-md-6">
     <div class="card info-card danger-card">
-
-    <div class="filter">
-        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-            <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" href="#">Hari Ini</a></li>
-        <li><a class="dropdown-item" href="#">Bulan Ini</a></li>
-        <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
-        </ul>
-    </div>
 
     <div class="card-body">
         <h5 class="card-title">Ticket Di Assign</h5>
@@ -104,20 +87,73 @@
 </div><!-- End Danger Card -->
 
 <div class="col-xxl-3 col-md-6">
+    <div class="card info-card secondary-card">
+
+    <div class="card-body">
+        <h5 class="card-title">Kategori Kendala</h5>
+
+        <div class="d-flex align-items-center">
+        <a href="#">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+            <i class="bi bi-ticket-perforated"></i>
+        </div>
+        </a>
+        <div class="ps-3">
+            <h6>0</h6>
+            <span class="text-secondary small pt-1 fw-bold">Kategori</span>
+        </div>
+        </div>
+    </div>
+
+    </div>
+</div><!-- End Secondary Card -->
+
+<div class="col-xxl-3 col-md-6">
+    <div class="card info-card success-card">
+
+    <div class="card-body">
+        <h5 class="card-title">Ticket Jam Kerja</h5>
+
+        <div class="d-flex align-items-center">
+        <a href="#">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+            <i class="bi bi-ticket-perforated"></i>
+        </div>
+        </a>
+        <div class="ps-3">
+            <h6>0</h6>
+            <span class="text-success small pt-1 fw-bold">Ticket</span>
+        </div>
+        </div>
+    </div>
+
+    </div>
+</div><!-- End Secondary Card -->
+
+<div class="col-xxl-3 col-md-6">
     <div class="card info-card warning-card">
 
-    <div class="filter">
-        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-            <h6>Filter</h6>
-        </li>
+    <div class="card-body">
+        <h5 class="card-title">Ticket Diluar Jam Kerja</h5>
 
-        <li><a class="dropdown-item" href="#">Hari Ini</a></li>
-        <li><a class="dropdown-item" href="#">Bulan Ini</a></li>
-        <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
-        </ul>
+        <div class="d-flex align-items-center">
+        <a href="#">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+            <i class="bi bi-ticket-perforated"></i>
+        </div>
+        </a>
+        <div class="ps-3">
+            <h6>0</h6>
+            <span class="text-warning small pt-1 fw-bold">Ticket</span>
+        </div>
+        </div>
     </div>
+
+    </div>
+</div><!-- End Secondary Card -->
+
+<div class="col-xxl-3 col-md-6">
+    <div class="card info-card warning-card">
 
     <div class="card-body">
         <h5 class="card-title">Total Waktu Kerja</h5>
@@ -137,7 +173,7 @@
             <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit</span>
             @elseif($workload >= 60)
             <h6>{{ $carbonInstance->minute }} Menit</h6>
-            <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->minute }} Detik</span>
+            <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->second }} Detik</span>
             @else
             <h6>{{ $carbonInstance->second }}</h6>
             <span class="text-warning small pt-1 fw-bold">Detik</span>
@@ -151,19 +187,6 @@
 
 <div class="col-xxl-3 col-md-6">
     <div class="card info-card success-card">
-
-    <div class="filter">
-        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-            <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" href="#">Hari Ini</a></li>
-        <li><a class="dropdown-item" href="#">Bulan Ini</a></li>
-        <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
-        </ul>
-    </div>
 
     <div class="card-body">
         <h5 class="card-title">Rata-Rata Ticket Selesai</h5>

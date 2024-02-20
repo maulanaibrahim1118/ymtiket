@@ -297,7 +297,7 @@
                                                                     <textarea name="alasanClosed" class="form-control" id="alasanClosed" rows="3" placeholder="Tuliskan keterangan tambahan (opsional)">{{ old('alasanClosed') }}</textarea>
                                                                 </div>
                                                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                                <input type="text" name="url" value="/tickets{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
+                                                                <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Kirim</button>
@@ -318,7 +318,7 @@
                                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                                 <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
                                                 <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                                <input type="text" name="url" value="/tickets{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
+                                                <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
                                                 <button type="submit" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-check-circle me-1"></i> Selesai</button>
                                                 </form>
 
@@ -341,7 +341,7 @@
                                                                 </div>
                                                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                                                 <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                                                <input type="text" name="url" value="/tickets{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
+                                                                <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="submit" class="btn btn-danger"><i class="bi bi-stop-circle me-2"></i>Pending</button>
@@ -383,7 +383,7 @@
                                                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                                                 <input type="text" id="ticket_id" name="ticket_id" value="{{ $ticket->id }}" hidden>
                                                                 <input type="text" id="agent_id1" name="agent_id1" value="{{ $ticket->agent_id }}" hidden>
-                                                                <input type="text" id="url" name="url" value="/tickets{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
+                                                                <input type="text" id="url" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="submit" class="btn btn-primary"><i class="bx bx-share me-2"></i>Assign</button>
@@ -396,7 +396,7 @@
                                             @endif
                                         @endif
                                         {{-- Tombol Kembali --}}
-                                        <a href="/tickets{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}"><button type="button" class="btn btn-sm btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}"><button type="button" class="btn btn-sm btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
                                     </div>
                                 </div>
                             </div>

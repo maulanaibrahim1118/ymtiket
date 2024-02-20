@@ -35,7 +35,7 @@ class CreateLocationsTable extends Migration
             ['nama_lokasi' => 'human resource', 'wilayah' => 'head office', 'regional' => 'head office', 'area' => 'head office', 'updated_by' => 'maulana ibrahim'],
             ['nama_lokasi' => 'information technology', 'wilayah' => 'head office', 'regional' => 'head office', 'area' => 'head office', 'updated_by' => 'maulana ibrahim'],
             ['nama_lokasi' => 'internal audit', 'wilayah' => 'head office', 'regional' => 'head office', 'area' => 'head office', 'updated_by' => 'maulana ibrahim'],
-            ['nama_lokasi' => 'intventory control', 'wilayah' => 'head office', 'regional' => 'head office', 'area' => 'head office', 'updated_by' => 'maulana ibrahim'],
+            ['nama_lokasi' => 'inventory control', 'wilayah' => 'head office', 'regional' => 'head office', 'area' => 'head office', 'updated_by' => 'maulana ibrahim'],
             ['nama_lokasi' => 'legal', 'wilayah' => 'head office', 'regional' => 'head office', 'area' => 'head office', 'updated_by' => 'maulana ibrahim'],
             ['nama_lokasi' => 'marketing', 'wilayah' => 'head office', 'regional' => 'head office', 'area' => 'head office', 'updated_by' => 'maulana ibrahim'],
             ['nama_lokasi' => 'merchandising food', 'wilayah' => 'head office', 'regional' => 'head office', 'area' => 'head office', 'updated_by' => 'maulana ibrahim'],

@@ -1,14 +1,14 @@
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('dashboard*') ? '' : 'collapsed' }}" href="/dashboard{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+            <a class="nav-link {{ Request::is('dashboard*') ? '' : 'collapsed' }}" href="/dashboard/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
                 <i class="bi bi-house-door"></i>
                 <span>Dashboard</span>
             </a>
         </li><!-- End Dashboards -->
 
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('tickets*') ? '' : 'collapsed' }}" href="/tickets{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+            <a class="nav-link {{ Request::is('tickets*') ? '' : 'collapsed' }}" href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
                 <i class="bi bi-ticket-perforated"></i>
                 <span>Ticket</span>
             </a>
@@ -17,18 +17,25 @@
         <li class="nav-heading pt-3">MASTER DATA</li>
 
         <li class="nav-item">
+            <a class="nav-link {{ Request::is('agents*') ? '' : 'collapsed' }}" href="/agents">
+                <i class="bi bi-people"></i>
+                <span>Agent</span>
+            </a>
+        </li><!-- End Agent -->
+
+        <li class="nav-item">
             <a class="nav-link {{ Request::is('clients*') ? '' : 'collapsed' }}" href="/clients">
                 <i class="bi bi-people"></i>
                 <span>Client</span>
             </a>
-        </li><!-- End Pengguna -->
+        </li><!-- End Client -->
 
         <li class="nav-item">
             <a class="nav-link {{ Request::is('users*') ? '' : 'collapsed' }}" href="/users">
                 <i class="bi bi-person-circle"></i>
                 <span>User</span>
             </a>
-        </li><!-- End Pengguna -->
+        </li><!-- End User -->
 
         <li class="nav-item">
             <a class="nav-link {{ Request::is('locations*') ? '' : 'collapsed' }}" href="/locations">

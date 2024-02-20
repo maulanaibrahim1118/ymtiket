@@ -1,5 +1,5 @@
-<div class="col-xxl-3 col-md-6">
-    <div class="card info-card secondary-card">
+<div class="col-xxl-12 col-md-12 pb-0">
+    <div class="card">
 
     <div class="filter">
         <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
@@ -13,6 +13,15 @@
         <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
         </ul>
     </div>
+    <div class="card-body">
+        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard</h5>
+    </div>
+
+    </div>
+</div>
+
+<div class="col-xxl-3 col-md-6">
+    <div class="card info-card secondary-card">
 
     <div class="card-body">
         <h5 class="card-title">Total Ticket</h5>
@@ -36,19 +45,6 @@
 <div class="col-xxl-3 col-md-6">
     <div class="card info-card warning-card">
 
-    <div class="filter">
-        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-            <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" href="#">Hari Ini</a></li>
-        <li><a class="dropdown-item" href="#">Bulan Ini</a></li>
-        <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
-        </ul>
-    </div>
-
     <div class="card-body">
         <h5 class="card-title">Ticket Sedang Diproses</h5>
 
@@ -71,19 +67,6 @@
 <div class="col-xxl-3 col-md-6">
     <div class="card info-card danger-card">
 
-    <div class="filter">
-        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-            <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" href="#">Hari Ini</a></li>
-        <li><a class="dropdown-item" href="#">Bulan Ini</a></li>
-        <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
-        </ul>
-    </div>
-
     <div class="card-body">
         <h5 class="card-title">Ticket Di Pending</h5>
 
@@ -105,19 +88,6 @@
 
 <div class="col-xxl-3 col-md-6">
     <div class="card info-card success-card">
-
-    <div class="filter">
-        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-            <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" href="#">Hari Ini</a></li>
-        <li><a class="dropdown-item" href="#">Bulan Ini</a></li>
-        <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
-        </ul>
-    </div>
 
     <div class="card-body">
         <h5 class="card-title">Ticket Selesai</h5>
