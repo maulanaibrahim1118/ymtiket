@@ -8,30 +8,41 @@
             <h6>Filter</h6>
         </li>
 
-        <li><a class="dropdown-item" href="#">Hari Ini</a></li>
-        <li><a class="dropdown-item" href="#">Bulan Ini</a></li>
-        <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
+        <li><a class="dropdown-item" href="/dashboard/{{ encrypt('today') }}/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Hari Ini</a></li>
+        <li><a class="dropdown-item" href="/dashboard/{{ encrypt('monthly') }}/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Bulan Ini</a></li>
+        <li><a class="dropdown-item" href="/dashboard/{{ encrypt('yearly') }}/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Tahun Ini</a></li>
         </ul>
     </div>
     <div class="card-body">
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard</h5>
+        @if($path2 == $path)
+        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span class="text-secondary"> [All] </span></h5>
+        @else
+        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span class="text-secondary"> [{{ $path2 }}] </span></h5>
+        @endif
     </div>
 
     </div>
 </div>
 
 <div class="col-xxl-3 col-md-6">
+    @if($path2 == "Hari Ini")
+    <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Bulan Ini")
+    <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Tahun Ini")
+    <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @else
+    <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @endif
     <div class="card info-card secondary-card">
 
     <div class="card-body">
         <h5 class="card-title">Total Ticket</h5>
 
         <div class="d-flex align-items-center">
-        <a href="#">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
             <i class="bi bi-ticket-perforated"></i>
         </div>
-        </a>
         <div class="ps-3">
             <h6>{{ $total }}</h6>
             <span class="text-secondary small pt-1 fw-bold">Ticket</span>
@@ -40,20 +51,28 @@
     </div>
 
     </div>
+    </a>
 </div><!-- End Secondary Card -->
 
 <div class="col-xxl-3 col-md-6">
+    @if($path2 == "Hari Ini")
+    <a href="/tickets/{{ encrypt('Onprocess') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Bulan Ini")
+    <a href="/tickets/{{ encrypt('Onprocess') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Tahun Ini")
+    <a href="/tickets/{{ encrypt('Onprocess') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @else
+    <a href="/tickets/{{ encrypt('Onprocess') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @endif
     <div class="card info-card warning-card">
 
     <div class="card-body">
         <h5 class="card-title">Ticket Sedang Diproses</h5>
 
         <div class="d-flex align-items-center">
-        <a href="#">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
             <i class="bi bi-ticket-perforated"></i>
         </div>
-        </a>
         <div class="ps-3">
             <h6>{{ $onProcess }}</h6>
             <span class="text-warning small pt-1 fw-bold">Ticket</span>
@@ -62,20 +81,28 @@
     </div>
 
     </div>
+    </a>
 </div><!-- End Warning Card -->
 
 <div class="col-xxl-3 col-md-6">
+    @if($path2 == "Hari Ini")
+    <a href="/tickets/{{ encrypt('Pending') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Bulan Ini")
+    <a href="/tickets/{{ encrypt('Pending') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Tahun Ini")
+    <a href="/tickets/{{ encrypt('Pending') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @else
+    <a href="/tickets/{{ encrypt('Pending') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @endif
     <div class="card info-card danger-card">
 
     <div class="card-body">
         <h5 class="card-title">Ticket Di Pending</h5>
 
         <div class="d-flex align-items-center">
-        <a href="#">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
             <i class="bi bi-ticket-perforated"></i>
         </div>
-        </a>
         <div class="ps-3">
             <h6>{{ $pending }}</h6>
             <span class="text-danger small pt-1 fw-bold">Ticket</span>
@@ -84,20 +111,28 @@
     </div>
 
     </div>
+    </a>
 </div><!-- End Danger Card -->
 
 <div class="col-xxl-3 col-md-6">
+    @if($path2 == "Hari Ini")
+    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Bulan Ini")
+    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Tahun Ini")
+    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @else
+    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @endif
     <div class="card info-card success-card">
 
     <div class="card-body">
         <h5 class="card-title">Ticket Selesai</h5>
 
         <div class="d-flex align-items-center">
-        <a href="#">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
             <i class="bi bi-ticket-perforated"></i>
         </div>
-        </a>
         <div class="ps-3">
             <h6>{{ $finished }}</h6>
             <span class="text-success small pt-1 fw-bold">Ticket</span>
@@ -106,6 +141,7 @@
     </div>
 
     </div>
+    </a>
 </div><!-- End Success Card -->
 
 <div class="col-12">

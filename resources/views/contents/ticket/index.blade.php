@@ -6,6 +6,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card info-card">
+                            @if($url == "")
                             <div class="filter">
                                 <a class="icon pe-2" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -13,16 +14,21 @@
                                     <h6>Filter</h6>
                                     </li>
                 
-                                    <li><a class="dropdown-item" href="#">Hari Ini</a></li>
-                                    <li><a class="dropdown-item" href="#">Bulan Ini</a></li>
-                                    <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
+                                    <li><a class="dropdown-item" href="/tickets/{{ encrypt('All') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Hari Ini</a></li>
+                                    <li><a class="dropdown-item" href="/tickets/{{ encrypt('All') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Bulan Ini</a></li>
+                                    <li><a class="dropdown-item" href="/tickets/{{ encrypt('All') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Tahun Ini</a></li>
                                 </ul>
 
                                 <a class="icon" href="/tickets"><i class="bx bx-revision"></i></a>
                             </div> <!-- End Filter -->
+                            @endif
 
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
+                                @if($path2 == $path)
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary"> [All] </span></h5>
+                                @else
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary"> [{{ $path2 }}] </span></h5>
+                                @endif
                                 
                                 <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
                                 <!-- Showing Notification Login Error -->
@@ -87,6 +93,8 @@
                                         <td><span class="badge bg-primary">{{ $ticket->status }}</span></td>
                                         @elseif($ticket->status == 'finished')
                                         <td><span class="badge bg-success">{{ $ticket->status }}</span></td>
+                                        @else
+                                        <td><span class="badge bg-danger">{{ $ticket->status }}</span></td>
                                         @endif
 
                                         {{-- Kolom Keterangan --}}
@@ -278,8 +286,11 @@
 
                                                 {{-- Jika status ticket onprocess --}}
                                                 @elseif($ticket->status == "onprocess" and $ticket->assigned == "tidak") {{-- Jika status onprocess dan belum ada detail ticket --}}
-                                                    {{-- Tombol Tangani Kembali --}}
-                                                    <li><a class="dropdown-item text-capitalize text-primary" href="/tickets/{{ $ticket->id }}/reProcess2"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Lanjutkan</a></li>
+                                                {{-- Tombol Tangani Kembali --}}
+                                                <li><a class="dropdown-item text-capitalize text-primary" href="/tickets/{{ $ticket->id }}/reProcess2"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Lanjutkan</a></li>
+                                                @elseif($ticket->status == "assigned") {{-- Jika status onprocess dan belum ada detail ticket --}}
+                                                {{-- Tombol Detail --}}
+                                                <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{  encrypt($ticket->ticket_id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                                                 @else
                                                     {{-- Tombol Detail --}}
                                                     <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{  encrypt($ticket->id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>

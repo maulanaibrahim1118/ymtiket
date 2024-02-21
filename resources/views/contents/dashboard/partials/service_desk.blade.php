@@ -24,7 +24,7 @@
     </div>
 </div>
 
-<div class="col-xxl-2 col-md-6">
+<div class="col-xxl-3 col-md-6">
     @if($path2 == "Hari Ini")
     <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     @elseif($path2 == "Bulan Ini")
@@ -54,7 +54,7 @@
     </a>
 </div><!-- End Secondary Card -->
 
-<div class="col-xxl-2 col-md-6">
+<div class="col-xxl-3 col-md-6">
     @if($path2 == "Hari Ini")
     <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     @elseif($path2 == "Bulan Ini")
@@ -84,42 +84,72 @@
     </a>
 </div><!-- End Primary Card -->
 
-<div class="col-xxl-2 col-md-6">
+<div class="col-xxl-3 col-md-6">
     @if($path2 == "Hari Ini")
-    <a href="/tickets/{{ encrypt('Assign') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="/tickets/{{ encrypt('Jam Kerja') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     @elseif($path2 == "Bulan Ini")
-    <a href="/tickets/{{ encrypt('Assign') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="/tickets/{{ encrypt('Jam Kerja') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     @elseif($path2 == "Tahun Ini")
-    <a href="/tickets/{{ encrypt('Assign') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="/tickets/{{ encrypt('Jam Kerja') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     @else
-    <a href="/tickets/{{ encrypt('Assign') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="/tickets/{{ encrypt('Jam Kerja') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     @endif
-    <div class="card info-card danger-card">
+    <div class="card info-card success-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Di Assign</h5>
+        <h5 class="card-title">Ticket Jam Kerja</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
             <i class="bi bi-ticket-perforated"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $assigned }}</h6>
-            <span class="text-danger small pt-1 fw-bold">Ticket</span>
+            <h6>{{ $workTimeTicket }}</h6>
+            <span class="text-success small pt-1 fw-bold">Ticket</span>
         </div>
         </div>
     </div>
 
     </div>
     </a>
-</div><!-- End Danger Card -->
+</div><!-- End Secondary Card -->
 
 <div class="col-xxl-3 col-md-6">
+    @if($path2 == "Hari Ini")
+    <a href="/tickets/{{ encrypt('Diluar Jam Kerja') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Bulan Ini")
+    <a href="/tickets/{{ encrypt('Diluar Jam Kerja') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Tahun Ini")
+    <a href="/tickets/{{ encrypt('Diluar Jam Kerja') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @else
+    <a href="/tickets/{{ encrypt('Diluar Jam Kerja') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @endif
+    <div class="card info-card warning-card">
+
+    <div class="card-body">
+        <h5 class="card-title">Ticket Diluar Jam Kerja</h5>
+
+        <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+            <i class="bi bi-ticket-perforated"></i>
+        </div>
+        <div class="ps-3">
+            <h6>{{ $freeTimeTicket }}</h6>
+            <span class="text-warning small pt-1 fw-bold">Ticket</span>
+        </div>
+        </div>
+    </div>
+
+    </div>
+    </a>
+</div><!-- End Secondary Card -->
+
+<div class="col-xxl-4 col-md-6">
     <a href="#">
     <div class="card info-card warning-card">
 
     <div class="card-body">
-        <h5 class="card-title">Total Waktu Kerja</h5>
+        <h5 class="card-title">Total Waktu Kerja | <span class="text-secondary">Saya</span></h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -147,12 +177,12 @@
     </a>
 </div><!-- End Warning Card -->
 
-<div class="col-xxl-3 col-md-6">
+<div class="col-xxl-4 col-md-6">
     <a href="#">
     <div class="card info-card success-card">
 
     <div class="card-body">
-        <h5 class="card-title">Rata-Rata Ticket Selesai</h5>
+        <h5 class="card-title">Rata-Rata Ticket Selesai | <span class="text-secondary">Saya</span></h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -179,6 +209,28 @@
     </div>
     </a>
 </div><!-- End Primary Card -->
+
+<div class="col-xxl-4 col-md-6">
+    <a href="/category-tickets">
+    <div class="card info-card secondary-card">
+
+    <div class="card-body">
+        <h5 class="card-title">Kategori Kendala</h5>
+
+        <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+            <i class="bi bi-ticket-perforated"></i>
+        </div>
+        <div class="ps-3">
+            <h6>{{ $category }}</h6>
+            <span class="text-secondary small pt-1 fw-bold">Kategori</span>
+        </div>
+        </div>
+    </div>
+
+    </div>
+    </a>
+</div><!-- End Secondary Card -->
 
 <div class="col-12">
     <div class="card info-table">

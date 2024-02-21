@@ -1,11 +1,13 @@
-@extends('layouts.secondary')
+@extends('layouts.third')
 @section('content')
     <section class="section dashboard">
         <div class="row">
             <div class="col-lg-12">
                 <div class="row">
                     
-                    @if(auth()->user()->role == "service desk" OR auth()->user()->role == "agent")
+                    @if(auth()->user()->role == "service desk")
+                    @include('contents.dashboard.partials.service_desk')
+                    @elseif(auth()->user()->role == "agent")
                     @include('contents.dashboard.partials.agent')
                     @else
                     @include('contents.dashboard.partials.client')

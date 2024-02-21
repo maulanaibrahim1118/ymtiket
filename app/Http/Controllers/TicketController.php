@@ -51,32 +51,26 @@ class TicketController extends Controller
 
         if($role == "client"){ // Jika role Client
             if($positionId == "2"){ // Jika jabatan Chief
-                $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
-                $tickets    = Ticket::where('ticket_area', 'like', $ticketChief.'%')->whereNotIn('status', ['deleted'])->orderBy('created_at', 'ASC')->get();
+                $tickets    = Ticket::where('ticket_area', 'like', $ticketChief.'%')->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
             }elseif($positionId == "6"){ // Jika jabatan Koordinator Wilayah
-                $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
-                $tickets    = Ticket::where('ticket_area', $ticketKorwil)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'ASC')->get();
+                $tickets    = Ticket::where('ticket_area', $ticketKorwil)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
             }elseif($positionId == "7"){ // Jika jabatan Manager
-                $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
-                $tickets    = Ticket::where('ticket_area', 'like', $area.'%')->whereNotIn('status', ['deleted'])->orderBy('created_at', 'ASC')->get();
+                $tickets    = Ticket::where('ticket_area', 'like', $area.'%')->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
             }else{ // Jika jabatan selain Korwil, Chief dan Manager
-                $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
-                $tickets    = Ticket::where('location_id', $locationId)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'ASC')->get();
+                $tickets    = Ticket::where('location_id', $locationId)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
             }
         }elseif($role == "service desk"){ // Jika role Service Desk
-            $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
             $tickets    = Ticket::where('ticket_for', $namaLokasi)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
         }else{ // Jika role Agent
-            $agents     = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
             $tickets    = Ticket::where([['ticket_for', $namaLokasi],['role', $role],['agent_id', $agentId]])->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
         }
 
         return view('contents.ticket.index', [
             "url"       => "",
-            "title"     => "Ticket List",
+            "title"     => "Ticket",
             "path"      => "Ticket",
-            "path2"      => "Ticket",
-            "agents"    => $agents,
+            "path2"     => "Ticket",
+            "agents"    => Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get(),
             "tickets"   => $tickets
         ]);
     }

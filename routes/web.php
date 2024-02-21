@@ -28,6 +28,10 @@ Route::post('/logout', [LoginController::class, 'logout'])
 // Route Dashboard
 Route::get('/dashboard/{id}-{role}', [DashboardController::class, 'index'])
     ->middleware('auth')->name('dashboard.index');
+Route::get('/dashboard/{filter}/{id}-{role}', [DashboardController::class, 'filter'])
+    ->middleware('auth')->name('dashboard.filter');
+Route::get('/tickets/{status}-{filter}-{id}-{role}', [DashboardController::class, 'ticket'])
+    ->middleware('auth')->name('ticket.filter');
 
 // Route Ticket
 Route::get('/tickets/{id}-{role}', [TicketController::class, 'index'])

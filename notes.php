@@ -39,3 +39,6 @@ Revisi:
 7. Saran tindakan tidak boleh kosong. (done)
 8. Pending ticket oleh service desk / agent harus disertai alasan. (done)
 -->
+9. Ukuran componen diperkecil / lebih responsive.
+10. Nomor Ticket jangan ditampilkan pada saat membuat ticket baru.
+11. Nama Barang ditampilkan saat memilih No. Asset (Create Ticket)
