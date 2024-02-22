@@ -67,7 +67,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/category-sub-tickets" class="{{ Request::is('category-sub-tickets*') ? 'active' : '' }}">
+                    <a href="/category-sub-tickets/{{ encrypt(auth()->user()->location_id) }}" class="{{ Request::is('category-sub-tickets*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Sub Category Ticket</span>
                     </a>
                 </li>

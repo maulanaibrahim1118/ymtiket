@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketDetailController;
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\SubCategoryTicketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -139,5 +140,13 @@ Route::resource('/category-tickets', CategoryTicketController::class)
     ->middleware('auth');
 
 // Route Sub Category Ticket
-Route::resource('/category-sub-tickets', SubCategoryTicketController::class)
-    ->middleware('auth');
+Route::get('/category-sub-tickets/{id}', [SubCategoryTicketController::class, 'index'])
+    ->middleware('auth')->name('sct.index');
+Route::get('/category-sub-tickets/{id}/create', [SubCategoryTicketController::class, 'create'])
+    ->middleware('auth')->name('sct.create');
+Route::post('/category-sub-tickets', [SubCategoryTicketController::class, 'store'])
+    ->middleware('auth')->name('sct.store');
+Route::get('/category-sub-tickets/{id}/edit{category_sub_ticket}', [SubCategoryTicketController::class, 'edit'])
+    ->middleware('auth')->name('sct.edit');
+Route::put('/category-sub-tickets/{category_sub_ticket}', [SubCategoryTicketController::class, 'update'])
+    ->middleware('auth')->name('sct.update');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Sub_category_ticket;
 use App\Category_ticket;
 
@@ -13,13 +14,23 @@ class SubCategoryTicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
+        $locationId = decrypt($id);
+        $data   = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
+            ->where('category_tickets.location_id', $locationId)
+            ->select(
+                'sub_category_tickets.*',
+                DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.sub_category_ticket_id = sub_category_tickets.id) as avg')
+            )
+            ->get();
+            
         return view('contents.sub_category_ticket.index', [
             "url"                   => "",
             "title"                 => "Sub Category Ticket List",
             "path"                  => "Sub Category Ticket",
-            "sub_category_tickets"  => Sub_category_ticket::all()
+            "path2"                 => "Sub Category Ticket",
+            "sub_category_tickets"  => $data
         ]);
     }
 
@@ -28,14 +39,17 @@ class SubCategoryTicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id)
     {
+        $locationId = decrypt($id);
+        $data       = Category_ticket::where('location_id', $locationId)->get();
+
         return view('contents.sub_category_ticket.create', [
             "url"               => "",
             "title"             => "Create Sub Category Ticket",
             "path"              => "Sub Category Ticket",
             "path2"             => "Tambah",
-            "category_tickets"  => Category_ticket::all()
+            "category_tickets"  => $data
         ]);
     }
 
@@ -71,8 +85,9 @@ class SubCategoryTicketController extends Controller
         $sct->save();
 
         // Redirect to the Category Asset view if create data succeded
-        $nama_sub_kategori = $request['nama_sub_kategori'];
-        return redirect('/category-sub-tickets')->with('success', ucwords($nama_sub_kategori).' telah ditambahkan!');
+        $nama_sub_kategori  = $request['nama_sub_kategori'];
+        $url                = $request['url'];
+        return redirect($url)->with('success', ucwords($nama_sub_kategori).' telah ditambahkan!');
     }
 
     /**
@@ -92,14 +107,17 @@ class SubCategoryTicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sub_category_ticket $category_sub_ticket)
+    public function edit( $id = 0, Sub_category_ticket $category_sub_ticket)
     {
+        $locationId = decrypt($id);
+        $data       = Category_ticket::where('location_id', $locationId)->get();
+
         return view('contents.sub_category_ticket.edit', [
             "title"             => "Edit Sub Category Ticket",
             "path"              => "Sub Category Ticket",
             "path2"             => "Edit",
             "sct"               => $category_sub_ticket,
-            "category_tickets"  => Category_ticket::all()
+            "category_tickets"  => $data
         ]);
     }
 
@@ -113,12 +131,17 @@ class SubCategoryTicketController extends Controller
     public function update(Request $request, Sub_category_ticket $category_sub_ticket)
     {
         // Validating data request
-        $validatedData = $request->validate([
-            'nama_sub_kategori'     => 'required|min:5|max:50|unique:sub_category_tickets',
+        $rules = [
             'category_ticket_id'    => 'required',
             'updated_by'            => 'required'
-        ],
+        ];
+
+        if($request->nama_sub_kategori != $category_sub_ticket->nama_sub_kategori){
+            $rules['nama_sub_kategori'] = 'required|min:5|max:50|unique:sub_category_tickets';
+        }
+
         // Create custom notification for the validation request
+        $validatedData = $request->validate($rules,
         [
             'nama_sub_kategori.required'    => 'Nama Sub Kategori Ticket harus diisi!',
             'nama_sub_kategori.min'         => 'Ketik minimal 5 digit!',
@@ -134,7 +157,8 @@ class SubCategoryTicketController extends Controller
             'updated_by'            => $request['updated_by']
         ]);
 
-        return redirect('/category-sub-tickets')->with('success', 'Data Sub Category Ticket telah diubah!');
+        $url    = $request['url'];
+        return redirect($url)->with('success', 'Data Sub Category Ticket telah diubah!');
     }
 
     /**

@@ -18,13 +18,15 @@ Aplikasi dapat :
 -->
 
 Laporan yang diharapkan :
-1. Bisa mengetahui berapa banyak kategori kendala
 <!--
-2. Bisa mengetahui berapa waktu rata-rata resolved dari setiap agent/service desk (done)--> berdasarkan periode tertentu
+1. Bisa mengetahui berapa banyak kategori kendala (done)
+2. Bisa mengetahui berapa waktu rata-rata resolved dari setiap agent/service desk berdasarkan periode tertentu (done)
+-->
 3. Bisa mengetahui berapa lama waktu penyelesaian setiap kategori
-4. Bisa menghitung ticket yang masuk di jam kerja dan diluar jam kerja
 <!--
-5. Bisa mengetahui workload / beban kerja setiap agent (done) -->
+4. Bisa menghitung ticket yang masuk di jam kerja dan diluar jam kerja (done)
+5. Bisa mengetahui workload / beban kerja setiap agent (done)
+-->
 6. Bisa mengetahui berapa lama waktu suatu ticket di pending
 7. Bisa mengetahui history no. asset yang sering ada kendala
 
@@ -39,6 +41,6 @@ Revisi:
 7. Saran tindakan tidak boleh kosong. (done)
 8. Pending ticket oleh service desk / agent harus disertai alasan. (done)
 -->
-9. Ukuran componen diperkecil / lebih responsive.
+9. Ukuran komponen diperkecil / lebih responsive.
 10. Nomor Ticket jangan ditampilkan pada saat membuat ticket baru.
 11. Nama Barang ditampilkan saat memilih No. Asset (Create Ticket)

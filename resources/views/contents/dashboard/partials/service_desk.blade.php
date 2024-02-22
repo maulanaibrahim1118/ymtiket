@@ -211,7 +211,7 @@
 </div><!-- End Primary Card -->
 
 <div class="col-xxl-4 col-md-6">
-    <a href="/category-tickets">
+    <a href="/category-sub-tickets/{{ encrypt(auth()->user()->location_id) }}">
     <div class="card info-card secondary-card">
 
     <div class="card-body">

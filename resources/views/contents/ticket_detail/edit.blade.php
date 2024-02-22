@@ -294,7 +294,7 @@
                                     <div class="col-md-6">
                                         <button type="submit" class="btn btn-primary float-end ms-1"><i class="bi bi-save me-1"></i> Simpan</button>
                                         <button type="reset" class="btn btn-warning float-end ms-1"><i class="bi bi-trash me-1"></i> Reset</button>
-                                        <a href="/ticket-details/{{ encrypt($ticket->id) }}"><button type="button" class="btn btn-secondary float-end"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-end"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
                                     </div>
                                     <form class="row g-3 mb-3" action="/tickets" method="POST">
                                 </div>

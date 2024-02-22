@@ -9,6 +9,7 @@ use App\Ticket;
 use App\Ticket_detail;
 use App\Location;
 use App\Category_ticket;
+use App\Sub_category_ticket;
 
 class DashboardController extends Controller
 {
@@ -133,7 +134,9 @@ class DashboardController extends Controller
                 $assigned       = 0;
 
                 // Menghitung Total Kategori Kendala
-                $category       = Category_ticket::where('location_id', $locationId)->count();
+                $category       = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
+                    ->where('category_tickets.location_id', $locationId)
+                    ->count();
                 
                 // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
                 $workTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya']])->whereNotIn('status', ['deleted'])->count();
@@ -313,7 +316,9 @@ class DashboardController extends Controller
                 $assigned   = 0;
 
                 // Menghitung Total Kategori Kendala
-                $category       = Category_ticket::where('location_id', $locationId)->count();
+                $category       = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
+                    ->where('category_tickets.location_id', $locationId)
+                    ->count();
                 
                 // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
                 $workTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
