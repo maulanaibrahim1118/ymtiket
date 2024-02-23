@@ -24,6 +24,7 @@ class UserController extends Controller
             "url"   => "",
             "title" => "User List",
             "path"  => "User",
+            "path2" => "User",
             "users" => $users
         ]);
     }
@@ -127,11 +128,7 @@ class UserController extends Controller
             $agent->nik                    = $data['nik'];
             $agent->nama_agent             = $data['nama'];
             $agent->location_id            = $data['location_id'];
-            $agent->total_ticket           = 0;
-            $agent->ticket_assigned        = 0;
-            $agent->total_resolved_time    = 0;
-            $agent->total_assigned_time    = 0;
-            $agent->status                 = 'idle';
+            $agent->status                 = 'present';
             $agent->updated_by             = $data['updated_by'];
             $agent->save();
         }

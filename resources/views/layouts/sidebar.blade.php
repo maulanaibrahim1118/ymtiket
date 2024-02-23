@@ -17,8 +17,15 @@
         <li class="nav-heading pt-3">MASTER DATA</li>
 
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('agents*') ? '' : 'collapsed' }}" href="/agents">
-                <i class="bi bi-people"></i>
+            <a class="nav-link {{ Request::is('users*') ? '' : 'collapsed' }}" href="/users">
+                <i class="bi bi-person-check"></i>
+                <span>User</span>
+            </a>
+        </li><!-- End User -->
+
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('agents*') ? '' : 'collapsed' }}" href="/agents/{{ encrypt(auth()->user()->location_id) }}">
+                <i class="bi bi-person-workspace"></i>
                 <span>Agent</span>
             </a>
         </li><!-- End Agent -->
@@ -31,11 +38,11 @@
         </li><!-- End Client -->
 
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('users*') ? '' : 'collapsed' }}" href="/users">
-                <i class="bi bi-person-circle"></i>
-                <span>User</span>
+            <a class="nav-link {{ Request::is('assets*') ? '' : 'collapsed' }}" href="/assets">
+                <i class="bi bi-box2"></i>
+                <span>Asset</span>
             </a>
-        </li><!-- End User -->
+        </li><!-- End Asset -->
 
         <li class="nav-item">
             <a class="nav-link {{ Request::is('locations*') ? '' : 'collapsed' }}" href="/locations">
@@ -43,13 +50,6 @@
                 <span>Location</span>
             </a>
         </li><!-- End Lokasi -->
-
-        <li class="nav-item">
-            <a class="nav-link {{ Request::is('assets*') ? '' : 'collapsed' }}" href="/assets">
-                <i class="bi bi-box2"></i>
-                <span>Asset</span>
-            </a>
-        </li><!-- End Asset -->
 
         <li class="nav-item">
             <a class="nav-link {{ Request::is('category*') ? '' : 'collapsed' }}" data-bs-target="#category" data-bs-toggle="collapse" href="#">

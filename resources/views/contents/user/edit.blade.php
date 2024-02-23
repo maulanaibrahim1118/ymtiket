@@ -1,4 +1,4 @@
-@extends('layouts.third')
+@extends('layouts.main')
 @section('content')
     <section class="section dashboard">
         <div class="row">
@@ -8,12 +8,12 @@
                         <div class="card info-card">
 
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-people me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-person-check me-2"></i>{{ $title }}</h5>
                                 
                                 <form class="row g-3 mb-3" action="/users/{{ $user->id }}" method="POST">
                                     @method('put')
                                     @csrf
-                                    <div class="col-md-1">
+                                    <div class="col-md-2">
                                         <label for="nik" class="form-label">NIK</label>
                                         <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize bg-light @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik', $user->nik) }}" maxlength="8" title="Tolong di input dalam bentuk nomor." readonly>
                                         
@@ -25,7 +25,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="nama" class="form-label">Nama Lengkap</label>
                                         <input type="text" name="nama" class="form-control text-capitalize bg-light @error('nama') is-invalid @enderror" id="nama" value="{{ old('nama', $user->nama) }}" readonly>
 
@@ -91,7 +91,7 @@
                                         <p class="border-bottom mt-2 mb-0"></p>
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="position_id" class="form-label">Jabatan</label>
                                         <select class="form-select @error('position_id') is-invalid @enderror" name="position_id" id="position_id" value="{{ old('position_id') }}">
                                             <option selected disabled>Choose...</option>
@@ -99,7 +99,11 @@
                                                 @if(old('position_id', $user->position_id) == $position->id)
                                                 <option selected value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
                                                 @else
-                                                <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
+                                                @if($position->id == 5)
+                                                    <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }} (khusus cabang)</option>
+                                                    @else
+                                                    <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         </select>

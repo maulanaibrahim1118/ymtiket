@@ -1,4 +1,4 @@
-@extends('layouts.secondary')
+@extends('layouts.main')
 @section('content')
     <section class="section dashboard">
         <div class="row">
@@ -25,9 +25,9 @@
 
                             <div class="card-body pb-0">
                                 @if($path2 == $path)
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary"> [All] </span></h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary">| All </span></h5>
                                 @else
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary"> [{{ $path2 }}] </span></h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary">| {{ $path2 }} </span></h5>
                                 @endif
                                 
                                 <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
@@ -69,15 +69,11 @@
                                         <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->detail_kendala }}</td>
 
                                         {{-- Kolom Dibuat Pada --}}
-                                        @if($ticket->jam_kerja == 'ya')
-                                        <td>{{ date('d-M-Y H:i:s', strtotime($ticket->created_at)) }} <span class="badge bg-success">JAM KERJA</span></td>
-                                        @else
-                                        <td>{{ date('d-M-Y H:i:s', strtotime($ticket->created_at)) }} <span class="badge bg-warning">BUKAN JAM KERJA</span></td>
-                                        @endif
+                                        <td>{{ date('d-M-Y H:i:s', strtotime($ticket->created_at)) }}</td>
 
                                         {{-- Kolom PIC --}}
                                         @if($ticket->agent->nama_agent == auth()->user()->nama)
-                                        <td>{{ $ticket->agent->nama_agent }} <span class="badge bg-info">saya</span></td>
+                                        <td><span class="badge bg-info">saya</span></td>
                                         @else
                                         <td>{{ $ticket->agent->nama_agent }}</td>
                                         @endif
@@ -301,7 +297,7 @@
                                         </tr>
 
                                         {{-- Assign Modal --}}
-                                        <div class="modal fade" id="assignModal" tabindex="-1">
+                                        <div class="modal fade w-100" id="assignModal" tabindex="-1">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content" id="modalContent">
                                                 </div>

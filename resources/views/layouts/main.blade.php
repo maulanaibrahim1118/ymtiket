@@ -2,46 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <title>.:: GCITOP | {{ $title }}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="dist/img/favicon1.ico" rel="icon">
-    <link href="dist/img/favicon1.ico" rel="apple-touch-icon">
+    <link href="{{ asset('dist/img/favicon1.ico') }}" rel="icon">
+    <link href="{{ asset('dist/img/favicon1.ico') }}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
-    <link href="dist/css/google-fonts.css" rel="stylesheet">
+    <link href="{{ asset('dist/css/google-fonts.css') }}" rel="stylesheet">
 
     <!-- Vendor CSS Files -->
-    <link href="dist/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="dist/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="dist/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="dist/vendor/quill/quill.snow.css" rel="stylesheet">
-    <link href="dist/vendor/quill/quill.bubble.css" rel="stylesheet">
-    <link href="dist/vendor/remixicon/remixicon.css" rel="stylesheet">
-    <link href="dist/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/quill/quill.snow.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/simple-datatables/style.css') }}" rel="stylesheet">
 
     <!-- Template Main CSS File -->
-    <link href="dist/css/style.css" rel="stylesheet">
+    <link href="{{ asset('dist/css/style.css') }}" rel="stylesheet">
 
     <!-- DataTables -->
-    <link href="dist/DataTables/datatables.min.css" rel="stylesheet">
-    <script src="dist/DataTables/datatables.min.js"></script>
-    <script src="dist/DataTables/DataTables-1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="dist/DataTables/DataTables-1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
     <!-- Javascript -->
-    <script src="dist/js/config.js"></script>
-    <script src="dist/js/jquery-3.6.3.min.js"></script>
-    <script src="dist/js/sweetalert.min.js"></script>
+    <script src="{{ asset('dist/js/config.js') }}"></script>
+    <script src="{{ asset('dist/js/jquery-3.6.3.min.js') }}"></script>
+    <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
 
     <script type="text/javascript">
             var myVar;
 
             function myFunction() {
+                var lebarLayar = window.innerWidth;
+
+                // Mengatur ukuran layar menjadi 80% dari lebar 1366 piksel
+                if (lebarLayar >= 1366) {
+                    var ukuranBaru = 0.8 * 1366; // 80% dari 1366 piksel
+                    document.body.zoom = ukuranBaru + 'px';
+                }
+                
                 myVar = setTimeout(showPage, 300);
             }
 
@@ -51,11 +55,10 @@
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("status").style.display = "none";
             }
-
-            $('#example').DataTable();
     </script>
 </head>
 <body onload="myFunction()">
+    <div class="container-fluid">
     <div id="preloader" class="d-flex align-items-center">
         <div id="loader"></div>
         <strong id="status" role="status" class="position-absolute text-primary" style="top: 60%; left: 45%;">Memuat Halaman...</strong>
@@ -65,7 +68,7 @@
         <header id="header" class="header fixed-top d-flex align-items-center">
             <div class="d-flex align-items-center justify-content-between">
                 <a href="/dashboard" class="logo d-flex align-items-center">
-                    <img src="dist/img/logo/logo.png" alt="">
+                    <img src="{{ asset('dist/img/logo/logo.png') }}" alt="">
                     <span class="d-none d-lg-block pt-1"><b>GC-ITOP</b></span>
                 </a>
                 <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -81,7 +84,7 @@
                     <li class="nav-item dropdown pe-3">
                         <div class="nav-link nav-profile d-flex align-items-center ms-3 me-3">
                             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                            <img src="dist/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                            <img src="{{ asset('dist/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle">
                             <span class="position-absolute bottom-0 ms-4 p-1 border border-light rounded-circle" style="background-color: rgb(22, 224, 22)">
                                 <span class="visually-hidden">Online</span>
                             </span>
@@ -132,7 +135,12 @@
                     <ol class="breadcrumb">
                         <h1 class="border-end border-2 pe-3 me-3"><b>{{ $path }}</b></h1>
                         <li class="breadcrumb-item" style="padding-top:5px;"><a href="/dashboard">Home</a></li><i class="bx bxs-chevron-right p-2"></i>
+                        @if($path == $path2)
                         <li class="breadcrumb-item active" style="padding-top:5px;">{{ $path }}</li>
+                        @else
+                        <li class="breadcrumb-item" style="padding-top:5px;">{{ $path }}</li><i class="bx bxs-chevron-right p-2"></i>
+                        <li class="breadcrumb-item active" style="padding-top:5px;">{{ $path2 }}</li>
+                        @endif
                     </ol>
                 </nav>
             </div><!-- End Title Bar -->
@@ -148,17 +156,18 @@
         <!-- Back to top -->
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
     </div>
+    </div>
     <!-- Vendor JS Files -->
-    <script src="dist/vendor/apexcharts/apexcharts.min.js"></script>
-    <script src="dist/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="dist/vendor/chart.js/chart.min.js"></script>
-    <script src="dist/vendor/echarts/echarts.min.js"></script>
-    <script src="dist/vendor/quill/quill.min.js"></script>
-    <script src="dist/vendor/simple-datatables/simple-datatables.js"></script>
-    <script src="dist/vendor/tinymce/tinymce.min.js"></script>
-    <script src="dist/vendor/php-email-form/validate.js"></script>
+    <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/chart.js/chart.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/echarts/echarts.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ asset('dist/vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/php-email-form/validate.js') }}"></script>
 
     <!-- Template Main JS File -->
-    <script src="dist/js/main.js"></script>
+    <script src="{{ asset('dist/js/main.js') }}"></script>
 </body>
 </html>

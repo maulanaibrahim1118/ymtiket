@@ -20,6 +20,7 @@ class LocationController extends Controller
             "url"       => "",
             "title"     => "Location List",
             "path"      => "Location",
+            "path2"     => "Location",
             "locations" => $locations
         ]);
     }

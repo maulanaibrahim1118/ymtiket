@@ -109,11 +109,11 @@ Route::resource('/ticket-comments', TicketCommentController::class)
     ->middleware('auth');
 
 // Route Agent
-Route::get('/agents', [AgentController::class, 'index'])
+Route::get('/agents/{location}', [AgentController::class, 'index'])
     ->middleware('auth')->name('agent.index');
 Route::post('/agents-update{id}', [AgentController::class, 'update'])
     ->middleware('auth')->name('agent.update');
-    Route::get('/agents-refresh', 'AgentController@agentsRefresh');
+    Route::get('/agents/refresh/{id}', 'AgentController@agentsRefresh');
 
 // Route Client
 Route::resource('/clients', ClientController::class)

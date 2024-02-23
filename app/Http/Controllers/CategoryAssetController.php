@@ -19,6 +19,7 @@ class CategoryAssetController extends Controller
             "url"               => "",
             "title"             => "Category Asset List",
             "path"              => "Category Asset",
+            "path2"             => "Category Asset",
             "category_assets"   => $category_assets
         ]);
     }

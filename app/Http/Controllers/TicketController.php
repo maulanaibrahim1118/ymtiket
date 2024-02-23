@@ -92,18 +92,6 @@ class TicketController extends Controller
         $ticketDeleted  = Ticket::where([['user_id', $id2],['status', 'deleted']])->count();
         $ticketUnclosed = $totalTicket-$ticketClosed-$ticketDeleted;
 
-        $getMY          = date('my');
-        $ticketDefault  = $getMY.'0000';
-        $countTicket    = Ticket::where('no_ticket', 'LIKE', 'T'.$getMY.'%')->count();
-
-        if($countTicket == 0){ // Jika jumlah ticket nol, nomor dimulai dari angka 1
-            $noTicket       = $ticketDefault+1;
-            $ticketNumber   = $noTicket;
-        }else{ // Jika jumlah ticket > 0, no ticket = jumlah ticket ditambah 1
-            $noTicket       = $ticketDefault+$countTicket+1; 
-            $ticketNumber   = $noTicket;
-        }
-
         $ticketFors  = ["information technology", "inventory control", "project me", "project sipil"];
 
         if($role2 == "client"){
@@ -126,7 +114,6 @@ class TicketController extends Controller
                 "title"         => "Create Ticket",
                 "path"          => "Ticket",
                 "path2"         => "Tambah",
-                "ticketNumber"  => $ticketNumber,
                 "ticketFors"    => $ticketFors,
                 "clients"       => Client::orderBy('nama_client', 'ASC')->get()
             ]);
@@ -240,7 +227,6 @@ class TicketController extends Controller
 
         // Saving data to ticket table
         $ticket                 = new Ticket;
-        $ticket->no_ticket      = $data['no_ticket'];
         $ticket->kendala        = $data['kendala'];
         $ticket->detail_kendala = $data['detail_kendala'];
         $ticket->asset_id       = $data['asset_id'];

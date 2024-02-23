@@ -52,4 +52,19 @@ class Ticket extends Model
     {
         return $this->hasMany('App\Ticket_detail');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($ticket) {
+            $ticket->no_ticket = static::generateTicketNumber();
+        });
+    }
+
+    protected static function generateTicketNumber()
+    {
+        // Logic untuk menghasilkan nomor ticket
+        return 'T' . date('my') . str_pad(static::count() + 1, 4, '0', STR_PAD_LEFT);
+    }
 }

@@ -11,7 +11,7 @@
                             </div> <!-- End Filter -->
 
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-person-circle me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-person-check me-2"></i>{{ $title }}</h5>
                                 
                                 <a href="users/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
 

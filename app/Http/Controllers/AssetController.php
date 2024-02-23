@@ -21,6 +21,7 @@ class AssetController extends Controller
             "url"       => "",
             "title"     => "Asset List",
             "path"      => "Asset",
+            "path2"     => "Asset",
             "assets"    => $assets
         ]);
     }

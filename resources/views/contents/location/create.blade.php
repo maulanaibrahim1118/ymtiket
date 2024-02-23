@@ -1,4 +1,4 @@
-@extends('layouts.secondary')
+@extends('layouts.main')
 @section('content')
     <section class="section dashboard">
         <div class="row">

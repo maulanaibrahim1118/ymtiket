@@ -1,4 +1,4 @@
-@extends('layouts.secondary')
+@extends('layouts.main')
 @section('content')
     <section class="section dashboard">
         <div class="row">
@@ -8,12 +8,12 @@
                         <div class="card info-card">
 
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-people me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-person-check me-2"></i>{{ $title }}</h5>
                                 
                                 <form class="row g-3 mb-3" action="/users" method="POST">
                                     @csrf
-                                    <div class="col-md-2">
-                                        <label for="nik" class="form-label">NIK Karyawan / Site Cabang</label>
+                                    <div class="col-lg-2">
+                                        <label for="nik" class="form-label">NIK / Site User</label>
                                         <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik') }}" maxlength="8" title="Tolong di input dalam bentuk nomor." required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -28,7 +28,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="nama" class="form-label">Nama Lengkap / Nama Cabang</label>
+                                        <label for="nama" class="form-label">Nama User</label>
                                         <input type="text" name="nama" class="form-control text-capitalize @error('nama') is-invalid @enderror" id="nama" value="{{ old('nama') }}" required>
 
                                         <!-- Showing notification error for input validation -->
@@ -39,7 +39,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="password" class="form-label">Password</label>
                                         <input type="password" name="password" class="form-control text-capitalize @error('password') is-invalid @enderror" id="password" value="{{ old('password') }}" required>
                                         
@@ -79,7 +79,7 @@
                                         <p class="border-bottom mt-2 mb-0"></p>
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="position_id" class="form-label">Jabatan</label>
                                         <select class="form-select @error('position_id') is-invalid @enderror" name="position_id" id="position_id" value="{{ old('position_id') }}">
                                             <option selected disabled>Choose...</option>
@@ -139,10 +139,10 @@
 
                                     <div class="col-md-4">
                                         <label for="ipAddress" class="form-label me-2">IP Address :</label><br>
-                                        <input type="text" name="ip_1" id="ip1" pattern="[0-9]+" class="form-control text-center d-inline" style="width:11%;margin-right:5px;" maxlength="3" title="Tolong di input dalam bentuk nomor." required><b>.</b>
-                                        <input type="text" name="ip_2" id="ip2" pattern="[0-9]+" class="form-control text-center d-inline" style="width:11%;margin-right:5px;" maxlength="3" title="Tolong di input dalam bentuk nomor." required><b>.</b>
-                                        <input type="text" name="ip_3" id="ip3" pattern="[0-9]+" class="form-control text-center d-inline" style="width:11%;margin-right:5px;" maxlength="3" title="Tolong di input dalam bentuk nomor." required><b>.</b>
-                                        <input type="text" name="ip_4" id="ip4" pattern="[0-9]+" class="form-control text-center d-inline" style="width:11%;margin-right:5px;" maxlength="3" title="Tolong di input dalam bentuk nomor." required>
+                                        <input type="text" name="ip_1" id="ip1" pattern="[0-9]+" class="form-control text-center d-inline" style="width:15%;margin-right:5px;" maxlength="3" title="Tolong di input dalam bentuk nomor." required><b>.</b>
+                                        <input type="text" name="ip_2" id="ip2" pattern="[0-9]+" class="form-control text-center d-inline" style="width:15%;margin-right:5px;" maxlength="3" title="Tolong di input dalam bentuk nomor." required><b>.</b>
+                                        <input type="text" name="ip_3" id="ip3" pattern="[0-9]+" class="form-control text-center d-inline" style="width:15%;margin-right:5px;" maxlength="3" title="Tolong di input dalam bentuk nomor." required><b>.</b>
+                                        <input type="text" name="ip_4" id="ip4" pattern="[0-9]+" class="form-control text-center d-inline" style="width:15%;margin-right:5px;" maxlength="3" title="Tolong di input dalam bentuk nomor." required>
                                     </div>
 
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>

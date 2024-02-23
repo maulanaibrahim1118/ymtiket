@@ -27,7 +27,7 @@ class CreateAgentsTable extends Migration
             ['nik' => 23010124, 
             'nama_agent' => 'maulana ibrahim',
             'location_id' => 10,
-            'status' => 'idle',
+            'status' => 'present',
             'updated_by' => 'maulana ibrahim'
             ]
         ]);

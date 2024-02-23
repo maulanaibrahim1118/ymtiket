@@ -21,7 +21,7 @@ class CreateWilayahsTable extends Migration
 
         DB::table('wilayahs')->insert([
             ['name' => 'distribution center'],
-            ['name' => 'heead office'],
+            ['name' => 'head office'],
             ['name' => 'Wilayah 1'],
             ['name' => 'Wilayah 2'],
             ['name' => 'Wilayah 3'],

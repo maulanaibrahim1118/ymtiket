@@ -1,4 +1,4 @@
-@extends('layouts.third')
+@extends('layouts.main')
 @section('content')
     <section class="section dashboard">
         <div class="row">
@@ -25,7 +25,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="client_id" class="form-label">Client</label>
                                         <select class="form-select @error('client_id') is-invalid @enderror" name="client_id" id="client_id">
                                             <option selected disabled>Choose...</option>
@@ -55,13 +55,13 @@
                                         <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="location" value="{{ old('location', $ticket->location->nama_lokasi) }}" disabled>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <label for="asset_id" class="form-label">No. Asset</label>
+                                    <div class="col-md-3">
+                                        <label for="asset_id" class="form-label">Asset</label>
                                         <select class="form-select @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id">
                                             <option selected disabled>Choose...</option>
                                             @foreach($assets as $asset)
                                             @if(old('asset_id', $ticket->asset_id) == $asset->id)
-                                            <option selected value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }}</option>
+                                            <option selected value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} - {{ ucwords($asset->nama_barang) }}</option>
                                             @else
                                             <option value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }}</option>
                                             @endif
@@ -114,7 +114,7 @@
                                                                 assetDropdown.empty();
                                                                 assetDropdown.append('<option selected disabled>Choose...</option>');
                                                                 $.each(response, function (key, value) {
-                                                                    assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + '</option>');
+                                                                    assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + ' - ' + value.nama_barang + '</option>');
                                                                 });
                                                                 // Aktifkan dropdown no. asset
                                                                 assetDropdown.prop('disabled', false);
@@ -150,12 +150,9 @@
                                         @enderror
                                     </div>
                                     
-                                    <div class="col-md-2">
-                                    </div>
-
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <label for="kendala" class="form-label">Kendala</label>
-                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="30" value="{{ old('kendala', $ticket->kendala) }}" required>
+                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="50" value="{{ old('kendala', $ticket->kendala) }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('kendala')
@@ -163,6 +160,24 @@
                                             {{ $message }}
                                         </div>
                                         @enderror
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label for="detail_kendala" class="form-label">Lampiran</label>
+                                        <input type="file" name="file" id="file" accept="image/jpeg, image/jpg, image/png, image/gif" class="form-control text-capitalize @error('file') is-invalid @enderror">
+                                        <input type="text" name="old_file" value="{{ $ticket->file }}" hidden>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('file')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                        @if ($ticket->file == NULL)
+                                        Lampiran sebelumnya: Tidak ada
+                                        @else
+                                        Lampiran sebelumnya: <a href="#" data-bs-toggle="modal" data-bs-target="#lampiranModal">{{ $ticket->file }}</a>
+                                        @endif
                                     </div>
 
                                     <div class="col-md-12">
@@ -176,25 +191,6 @@
                                         </div>
                                         @enderror
                                     </div>
-
-                                    <div class="col-md-6">
-                                        <label for="detail_kendala" class="form-label">Lampiran (opsional)</label>
-                                        <input type="file" name="file" id="file" accept="image/jpeg, image/jpg, image/png, image/gif" class="form-control text-capitalize @error('file') is-invalid @enderror">
-                                        <input type="text" name="old_file" value="{{ $ticket->file }}" hidden>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('file')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    @if ($ticket->file == NULL)
-                                    <div class="col-md-12">Lampiran sebelumnya: Tidak ada</div>
-                                    @else
-                                    <div class="col-md-12">Lampiran sebelumnya: <a href="#" data-bs-toggle="modal" data-bs-target="#lampiranModal">{{ $ticket->file }}</a></div>
-                                    @endif
 
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>

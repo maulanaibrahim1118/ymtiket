@@ -1,4 +1,4 @@
-@extends('layouts.third')
+@extends('layouts.main')
 @section('content')
     <section class="section dashboard">
         <div class="row">
@@ -12,19 +12,8 @@
                                 
                                 <form class="row g-3 mb-3" action="/tickets/store" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <div class="col-md-1">
-                                        <label for="no_ticket" class="form-label">No. Ticket</label>
-                                        <input type="text" name="no_ticket" class="form-control text-capitalize bg-light @error('no_ticket') is-invalid @enderror" id="no_ticket" value="{{ old('no_ticket', 'T'.sprintf('%08d', $ticketNumber)) }}" readonly>
-                                        
-                                        <!-- Showing notification error for input validation -->
-                                        @error('no_ticket')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="client_id" class="form-label">Client</label>
                                         <select class="form-select @error('client_id') is-invalid @enderror" name="client_id" id="client_id">
                                             <option selected disabled>Choose...</option>
@@ -54,8 +43,8 @@
                                         <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="location" value="{{ old('location') }}" disabled>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <label for="asset_id" class="form-label">No. Asset</label>
+                                    <div class="col-md-3">
+                                        <label for="asset_id" class="form-label">Asset</label>
                                         <select class="form-select @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id" disabled>
                                             <option selected disabled>Choose...</option>
                                         </select>
@@ -106,7 +95,7 @@
                                                                 assetDropdown.empty();
                                                                 assetDropdown.append('<option selected disabled>Choose...</option>');
                                                                 $.each(response, function (key, value) {
-                                                                    assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + '</option>');
+                                                                    assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + ' - ' + value.nama_barang + '</option>');
                                                                 });
                                                                 // Aktifkan dropdown no. asset
                                                                 assetDropdown.prop('disabled', false);
@@ -142,15 +131,27 @@
                                         @enderror
                                     </div>
                                     
-                                    <div class="col-md-2">
+                                    <div class="col-md-1">
                                     </div>
 
                                     <div class="col-md-3">
                                         <label for="kendala" class="form-label">Kendala</label>
-                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="30" value="{{ old('kendala') }}" required>
+                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="50" value="{{ old('kendala') }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('kendala')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="detail_kendala" class="form-label">Lampiran</label>
+                                        <input type="file" name="file" id="file" accept="image/jpeg, image/jpg, image/png, image/gif, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}">
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('file')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -169,18 +170,6 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <label for="detail_kendala" class="form-label">Lampiran (jpg, jpeg, png, gif, xlsx)</label>
-                                        <input type="file" name="file" id="file" accept="image/jpeg, image/jpg, image/png, image/gif, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}">
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('file')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
                                     <input type="text" name="url" value="{{ $url }}" hidden>

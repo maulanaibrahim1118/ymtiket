@@ -11,14 +11,13 @@
                             </div> <!-- End Filter -->
 
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-people me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-person-workspace me-2"></i>{{ $title }}</h5>
                                 
                                 <table class="table datatable" id="agentTable">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
                                         <th scope="col">NIK</th>
                                         <th scope="col">NAMA AGENT</th>
-                                        <th scope="col">DIVISI</th>
                                         <th scope="col">TOTAL TICKET</th>
                                         <th scope="col">TOTAL WAKTU KERJA</th>
                                         <th scope="col">RATA-RATA RESOLVED</th>
@@ -32,7 +31,6 @@
                                         <tr>
                                         <td>{{ $agent->nik }}</td>
                                         <td>{{ $agent->nama_agent }}</td>
-                                        <td>{{ $agent->location->nama_lokasi }}</td>
                                         <td>{{ $agent->total_ticket }}</td>
                                         @php
                                             $workload = \Carbon\Carbon::parse($agent->processed_time-$agent->pending_time);
@@ -61,6 +59,7 @@
                                         <td>
                                         <label class="form-check form-switch">
                                             <input type="checkbox" class="form-check-input" data-id="{{ $agent->id }}" {{ $agent->status ? 'checked' : '' }}>
+                                            <input type="text" id="location_id" value="{{ $agent->location_id }}" hidden>
                                             <span class="slider round"></span>
                                         </label>
                                         </td>
@@ -71,20 +70,6 @@
 
                                 <script>
                                     $(document).ready(function () {
-                                        function refreshTable() {
-                                            $.ajax({
-                                                url: '/agents-refresh', 
-                                                method: 'GET',
-                                                success: function(data) {
-                                                    // Memperbarui tabel dengan data terbaru
-                                                    $('#agentTable').html(data);
-                                                },
-                                                error: function(error) {
-                                                    console.log(error);
-                                                }
-                                            });
-                                        }
-                                
                                         $('.form-check-input').change(function () {
                                             var id = $(this).data('id');
                                             var status = $(this).prop('checked') ? 1 : 0;
@@ -106,6 +91,21 @@
                                                 }
                                             });
                                         });
+
+                                        function refreshTable() {
+                                            var id = document.getElementById('location_id').value;
+                                            $.ajax({
+                                                url: '/agents/refresh/' + id, 
+                                                method: 'GET',
+                                                success: function(response) {
+                                                    // Memperbarui tabel dengan data terbaru
+                                                    $('#agentTable tbody').html(response.data);
+                                                },
+                                                error: function(error) {
+                                                    console.log('Error:', error);
+                                                }
+                                            });
+                                        }
                                     });
                                 </script>
                             </div><!-- End Card Body -->

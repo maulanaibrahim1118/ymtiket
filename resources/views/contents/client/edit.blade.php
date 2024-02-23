@@ -1,4 +1,4 @@
-@extends('layouts.third')
+@extends('layouts.main')
 @section('content')
     <section class="section dashboard">
         <div class="row">
@@ -13,7 +13,7 @@
                                 <form class="row g-3 mb-3" action="/clients/{{ $client->id }}" method="POST">
                                     @method('put')
                                     @csrf
-                                    <div class="col-md-1">
+                                    <div class="col-md-2">
                                         <label for="nik" class="form-label">NIK</label>
                                         <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik', $client->nik) }}" maxlength="8" title="Tolong di input dalam bentuk nomor." required>
                                         
@@ -25,7 +25,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="nama_client" class="form-label">Nama Client</label>
                                         <input type="text" name="nama_client" class="form-control text-capitalize @error('nama_client') is-invalid @enderror" id="nama_client" value="{{ old('nama_client', $client->nama_client) }}" required>
 
@@ -37,7 +37,7 @@
                                         @enderror
                                     </div>
                                     
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="position_id" class="form-label">Jabatan</label>
                                         <!-- Showing notification error for input validation -->
                                         @error('position_id')
@@ -52,7 +52,11 @@
                                                 @if(old('position_id', $client->position_id) == $position->id)
                                                 <option selected value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
                                                 @else
-                                                <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
+                                                @if($position->id == 5)
+                                                    <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }} (khusus cabang)</option>
+                                                    @else
+                                                    <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         </select>

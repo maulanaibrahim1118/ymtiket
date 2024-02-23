@@ -21,9 +21,7 @@ Laporan yang diharapkan :
 <!--
 1. Bisa mengetahui berapa banyak kategori kendala (done)
 2. Bisa mengetahui berapa waktu rata-rata resolved dari setiap agent/service desk berdasarkan periode tertentu (done)
--->
-3. Bisa mengetahui berapa lama waktu penyelesaian setiap kategori
-<!--
+3. Bisa mengetahui berapa lama waktu penyelesaian setiap kategori (done)
 4. Bisa menghitung ticket yang masuk di jam kerja dan diluar jam kerja (done)
 5. Bisa mengetahui workload / beban kerja setiap agent (done)
 -->
@@ -44,3 +42,6 @@ Revisi:
 9. Ukuran komponen diperkecil / lebih responsive.
 10. Nomor Ticket jangan ditampilkan pada saat membuat ticket baru.
 11. Nama Barang ditampilkan saat memilih No. Asset (Create Ticket)
+
+Commit:
+Edit Main Layout, Asset, Ticket.

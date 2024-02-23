@@ -19,6 +19,7 @@ class CategoryTicketController extends Controller
             "url"               => "",
             "title"             => "Category Ticket List",
             "path"              => "Category Ticket",
+            "path2"             => "Category Ticket",
             "category_tickets"  => Category_ticket::all()
         ]);
     }

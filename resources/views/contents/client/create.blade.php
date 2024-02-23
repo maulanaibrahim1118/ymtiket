@@ -1,4 +1,4 @@
-@extends('layouts.secondary')
+@extends('layouts.main')
 @section('content')
     <section class="section dashboard">
         <div class="row">
@@ -12,7 +12,7 @@
                                 
                                 <form class="row g-3 mb-3" action="/clients" method="POST">
                                     @csrf
-                                    <div class="col-md-1">
+                                    <div class="col-md-2">
                                         <label for="nik" class="form-label">NIK</label>
                                         <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik') }}" maxlength="8" title="Tolong di input dalam bentuk nomor." required>
                                         
@@ -24,7 +24,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="nama_client" class="form-label">Nama Client</label>
                                         <input type="text" name="nama_client" class="form-control text-capitalize @error('nama_client') is-invalid @enderror" id="nama_client" value="{{ old('nama_client') }}" required>
 
@@ -92,10 +92,10 @@
 
                                     <div class="col-md-4">
                                         <label for="ipAddress" class="form-label me-2">IP Address :</label><br>
-                                        <input type="text" name="ip_1" id="ip1" pattern="[0-9]+" class="form-control text-center d-inline" style="width:11%;margin-right:5px;" maxlength="3" value="{{ old('ip_1') }}" title="Tolong di input dalam bentuk nomor." required><b>.</b>
-                                        <input type="text" name="ip_2" id="ip2" pattern="[0-9]+" class="form-control text-center d-inline" style="width:11%;margin-right:5px;" maxlength="3" value="{{ old('ip_2') }}" title="Tolong di input dalam bentuk nomor." required><b>.</b>
-                                        <input type="text" name="ip_3" id="ip3" pattern="[0-9]+" class="form-control text-center d-inline" style="width:11%;margin-right:5px;" maxlength="3" value="{{ old('ip_3') }}" title="Tolong di input dalam bentuk nomor." required><b>.</b>
-                                        <input type="text" name="ip_4" id="ip4" pattern="[0-9]+" class="form-control text-center d-inline" style="width:11%;margin-right:5px;" maxlength="3" value="{{ old('ip_4') }}" title="Tolong di input dalam bentuk nomor." required>
+                                        <input type="text" name="ip_1" id="ip1" pattern="[0-9]+" class="form-control text-center d-inline" style="width:15%;margin-right:5px;" maxlength="3" value="{{ old('ip_1') }}" title="Tolong di input dalam bentuk nomor." required><b>.</b>
+                                        <input type="text" name="ip_2" id="ip2" pattern="[0-9]+" class="form-control text-center d-inline" style="width:15%;margin-right:5px;" maxlength="3" value="{{ old('ip_2') }}" title="Tolong di input dalam bentuk nomor." required><b>.</b>
+                                        <input type="text" name="ip_3" id="ip3" pattern="[0-9]+" class="form-control text-center d-inline" style="width:15%;margin-right:5px;" maxlength="3" value="{{ old('ip_3') }}" title="Tolong di input dalam bentuk nomor." required><b>.</b>
+                                        <input type="text" name="ip_4" id="ip4" pattern="[0-9]+" class="form-control text-center d-inline" style="width:15%;margin-right:5px;" maxlength="3" value="{{ old('ip_4') }}" title="Tolong di input dalam bentuk nomor." required>
                                     </div>
 
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>

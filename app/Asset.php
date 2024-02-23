@@ -22,4 +22,14 @@ class Asset extends Model
     {
         return $this->belongsTo('App\Location');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $model->no_asset = strtoupper($model->no_asset);
+            $model->nama_barang = ucwords($model->nama_barang);
+        });
+    }
 }

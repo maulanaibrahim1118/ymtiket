@@ -21,6 +21,7 @@ class ClientController extends Controller
             "url"       => "",
             "title"     => "Client List",
             "path"      => "Client",
+            "path2"     => "Client",
             "clients"   => $clients
         ]);
     }

@@ -14,9 +14,11 @@ class AgentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($location = 0)
     {
-        $data = Agent::where('location_id', 10)
+        $location_id    = decrypt($location);
+
+        $data = Agent::where('location_id', $location_id)
             ->withCount('ticket_detail')
             ->select(
                 'agents.*', 
@@ -29,15 +31,25 @@ class AgentController extends Controller
             "url"       => "",
             "title"     => "Agent List",
             "path"      => "Agent",
+            "path2"     => "Agent",
             "data"      => $data
         ]);
     }
 
-    public function agentsRefresh()
+    public function agentsRefresh($id)
     {
-        $data = Agent::latest()->get();
+        $agents   = Agent::where('location_id', $id)
+            ->withCount('ticket_detail')
+            ->select(
+                'agents.*', 
+                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id) as total_ticket'),
+                DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
+                DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
+            )
+            ->latest()->get();
+        $data = view('contents.agent.partials.table', compact('agents'))->render();
 
-        return view('contents.agent.partials.table', ['data' => $data]);
+        return response()->json(['data' => $data]);
     }
 
     /**

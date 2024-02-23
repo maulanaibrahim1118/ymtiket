@@ -1,4 +1,4 @@
-<div class="col-xxl-12 col-md-12 pb-0">
+<div class="col-md-12 pb-0">
     <div class="card">
 
     <div class="filter">
@@ -15,16 +15,16 @@
     </div>
     <div class="card-body">
         @if($path2 == $path)
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span class="text-secondary"> [All] </span></h5>
+        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span class="text-secondary">| All</span></h5>
         @else
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span class="text-secondary"> [{{ $path2 }}] </span></h5>
+        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span class="text-secondary">| {{ $path2 }}</span></h5>
         @endif
     </div>
 
     </div>
 </div>
 
-<div class="col-xxl-3 col-md-6">
+<div class="col-md-3">
     @if($path2 == "Hari Ini")
     <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     @elseif($path2 == "Bulan Ini")
@@ -54,7 +54,7 @@
     </a>
 </div><!-- End Secondary Card -->
 
-<div class="col-xxl-3 col-md-6">
+<div class="col-md-3">
     @if($path2 == "Hari Ini")
     <a href="/tickets/{{ encrypt('Onprocess') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     @elseif($path2 == "Bulan Ini")
@@ -84,7 +84,7 @@
     </a>
 </div><!-- End Warning Card -->
 
-<div class="col-xxl-3 col-md-6">
+<div class="col-md-3">
     @if($path2 == "Hari Ini")
     <a href="/tickets/{{ encrypt('Pending') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     @elseif($path2 == "Bulan Ini")
@@ -114,7 +114,7 @@
     </a>
 </div><!-- End Danger Card -->
 
-<div class="col-xxl-3 col-md-6">
+<div class="col-md-3">
     @if($path2 == "Hari Ini")
     <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     @elseif($path2 == "Bulan Ini")
