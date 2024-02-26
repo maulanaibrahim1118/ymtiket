@@ -23,27 +23,8 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-3">
-                                        <label for="location_id" class="form-label">Lokasi</label>
-                                        <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location_id" value="{{ old('location_id') }}">
-                                            <option selected disabled>Choose...</option>
-                                            @foreach($locations as $location)
-                                                @if(old('location_id') == $location->id)
-                                                <option selected value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
-                                                @else
-                                                <option value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('location_id')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
+                                    <input type="text" name="url" value="/category-tickets/{{ encrypt(auth()->user()->location_id) }}" hidden>
+                                    <input type="text" name="location_id" value="{{ auth()->user()->location_id }}" hidden>
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     
                                     <div class="col-md-12">
@@ -53,7 +34,7 @@
                                     <div class="col-md-12">
                                         <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Simpan</button>
                                         <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
-                                        <a href="/category-tickets"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
                             </div><!-- End Card Body -->

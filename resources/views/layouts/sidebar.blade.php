@@ -62,7 +62,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/category-tickets" class="{{ Request::is('category-tickets*') ? 'active' : '' }}">
+                    <a href="/category-tickets/{{ encrypt(auth()->user()->location_id) }}" class="{{ Request::is('category-tickets*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Category Ticket</span>
                     </a>
                 </li>

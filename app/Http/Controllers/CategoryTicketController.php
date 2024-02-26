@@ -13,14 +13,17 @@ class CategoryTicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
+        $location_id    = decrypt($id);
+        $data           = Category_ticket::where('location_id', $location_id)->get();
+
         return view('contents.category_ticket.index', [
             "url"               => "",
             "title"             => "Category Ticket List",
             "path"              => "Category Ticket",
             "path2"             => "Category Ticket",
-            "category_tickets"  => Category_ticket::all()
+            "category_tickets"  => $data
         ]);
     }
 
@@ -29,7 +32,7 @@ class CategoryTicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id)
     {
         $locations  = Location::where('id', 10)->orWhere('id', 12)->orWhere('id', 83)->orWhere('id', 84)->get();
 
@@ -69,8 +72,9 @@ class CategoryTicketController extends Controller
         Category_ticket::create($validatedData);
 
         // Redirect to the Category Asset view if create data succeded
-        $nama_kategori = $request['nama_kategori'];
-        return redirect('/category-tickets')->with('success', ucwords($nama_kategori).' telah ditambahkan!');
+        $nama_kategori  = $request['nama_kategori'];
+        $url            = $request['url'];
+        return redirect($url)->with('success', ucwords($nama_kategori).' telah ditambahkan!');
     }
 
     /**
@@ -90,7 +94,7 @@ class CategoryTicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category_ticket $category_ticket)
+    public function edit($id = 0, Category_ticket $category_ticket)
     {
         $locations  = Location::where('id', 10)->orWhere('id', 12)->orWhere('id', 83)->orWhere('id', 84)->get();
 
@@ -133,7 +137,8 @@ class CategoryTicketController extends Controller
         ]);
         Category_ticket::where('id', $category_ticket->id)->update($validatedData);
 
-        return redirect('/category-tickets')->with('success', 'Data Category Ticket telah diubah!');
+        $url    = $request['url'];
+        return redirect($url)->with('success', 'Data Category Ticket telah diubah!');
     }
 
     /**

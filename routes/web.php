@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketDetailController;
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\CategoryTicketController;
 use App\Http\Controllers\SubCategoryTicketController;
 
 /*
@@ -136,8 +137,16 @@ Route::resource('/category-assets', CategoryAssetController::class)
     ->middleware('auth');
 
 // Route Category Ticket
-Route::resource('/category-tickets', CategoryTicketController::class)
-    ->middleware('auth');
+Route::get('/category-tickets/{id}', [CategoryTicketController::class, 'index'])
+    ->middleware('auth')->name('ct.index');
+Route::get('/category-tickets/{id}/create', [CategoryTicketController::class, 'create'])
+    ->middleware('auth')->name('ct.create');
+Route::post('/category-tickets', [CategoryTicketController::class, 'store'])
+    ->middleware('auth')->name('ct.store');
+Route::get('/category-tickets/{id}/edit{category_ticket}', [CategoryTicketController::class, 'edit'])
+    ->middleware('auth')->name('ct.edit');
+Route::put('/category-tickets/{category_ticket}', [CategoryTicketController::class, 'update'])
+    ->middleware('auth')->name('ct.update');
 
 // Route Sub Category Ticket
 Route::get('/category-sub-tickets/{id}', [SubCategoryTicketController::class, 'index'])

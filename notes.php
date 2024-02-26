@@ -38,10 +38,10 @@ Revisi:
 6. Agent hanya dapat meng assign ticket ke service desk saja. (done)
 7. Saran tindakan tidak boleh kosong. (done)
 8. Pending ticket oleh service desk / agent harus disertai alasan. (done)
--->
 9. Ukuran komponen diperkecil / lebih responsive.
 10. Nomor Ticket jangan ditampilkan pada saat membuat ticket baru.
 11. Nama Barang ditampilkan saat memilih No. Asset (Create Ticket)
+-->
 
-Commit:
-Edit Main Layout, Asset, Ticket.
+Git Commit:
+- Edit Category Ticket,
