@@ -216,11 +216,11 @@
                                                 <td>-</td>
                                                 @else
                                                     @php
-                                                        $carbonInstance = \Carbon\Carbon::parse($td->processed_time-$td->pending_time);
+                                                        $carbonInstance = \Carbon\Carbon::parse($td->processed_time);
                                                     @endphp
-                                                    @if($td->processed_time-$td->pending_time >= 3600)
+                                                    @if($td->processed_time >= 3600)
                                                     <td>{{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
-                                                    @elseif($td->processed_time-$td->pending_time >= 60)
+                                                    @elseif($td->processed_time >= 60)
                                                     <td>{{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
                                                     @else
                                                     <td>{{ $carbonInstance->second }} detik</td>

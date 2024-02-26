@@ -711,7 +711,9 @@ class TicketController extends Controller
         $getDetail      = Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->first();
         $processAt2     = Carbon::parse($getDetail->process_at);
         $now            = Carbon::parse($now);
+        $pendingTime    = $getDetail->pending_time;
         $processedTime2 = $processAt2->diffInSeconds($now);
+        $processedTime3 = $processedTime2-$pendingTime;
 
         Ticket::where('id', $id)->update([
             'status'            => "resolved",
@@ -721,7 +723,7 @@ class TicketController extends Controller
 
         Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->update([
             'status'            => "resolved",
-            'processed_time'    => $processedTime2,
+            'processed_time'    => $processedTime3,
             'updated_by'        => $updatedBy
         ]);
 
