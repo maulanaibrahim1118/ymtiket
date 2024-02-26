@@ -35,26 +35,18 @@
     <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
 
     <script type="text/javascript">
-            var myVar;
+        var myVar;
 
-            function myFunction() {
-                var lebarLayar = window.innerWidth;
+        function myFunction() {
+            myVar = setTimeout(showPage, 300);
+        }
 
-                // Mengatur ukuran layar menjadi 80% dari lebar 1366 piksel
-                if (lebarLayar >= 1366) {
-                    var ukuranBaru = 0.8 * 1366; // 80% dari 1366 piksel
-                    document.body.zoom = ukuranBaru + 'px';
-                }
-                
-                myVar = setTimeout(showPage, 300);
-            }
-
-            function showPage() {
-                document.getElementById("content").style.display = "block";
-                document.getElementById("preloader").style.display = "none";
-                document.getElementById("loader").style.display = "none";
-                document.getElementById("status").style.display = "none";
-            }
+        function showPage() {
+            document.getElementById("content").style.display = "block";
+            document.getElementById("preloader").style.display = "none";
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("status").style.display = "none";
+        }
     </script>
 </head>
 <body onload="myFunction()">

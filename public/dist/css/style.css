@@ -18,8 +18,10 @@ body {
   color: #444444;
 }
 
-.container-fluid {
-  zoom: 0.8;
+@media (max-width: 1366px) {
+  .container-fluid {
+    zoom: 0.8;
+  }
 }
 
 /* Center the loader */

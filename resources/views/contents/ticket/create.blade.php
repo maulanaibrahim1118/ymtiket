@@ -110,7 +110,7 @@
                                         });
                                     </script>
                                     
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="ticket_for" class="form-label">Diajukan Kepada</label>
                                         <select class="form-select @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for">
                                             <option selected disabled>Choose...</option>
@@ -129,9 +129,6 @@
                                             {{ $message }}
                                         </div>
                                         @enderror
-                                    </div>
-                                    
-                                    <div class="col-md-1">
                                     </div>
 
                                     <div class="col-md-3">
