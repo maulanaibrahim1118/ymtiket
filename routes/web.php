@@ -159,3 +159,5 @@ Route::get('/category-sub-tickets/{id}/edit{category_sub_ticket}', [SubCategoryT
     ->middleware('auth')->name('sct.edit');
 Route::put('/category-sub-tickets/{category_sub_ticket}', [SubCategoryTicketController::class, 'update'])
     ->middleware('auth')->name('sct.update');
+
+Route::view('/error-403', 'contents.403')->name('403');

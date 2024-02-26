@@ -24,6 +24,12 @@ body {
   }
 }
 
+@media (max-width: 1920px) {
+  .container-fluid {
+    zoom: 1;
+  }
+}
+
 /* Center the loader */
 #loader {
   position: absolute;
