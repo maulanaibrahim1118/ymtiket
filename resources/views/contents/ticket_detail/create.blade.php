@@ -42,7 +42,7 @@
                                         <label for="no_asset" class="form-label fw-bold">No. Asset</label>
                                     </div>
                                     <div class="col-md-4 m-0">
-                                        <label for="no_asset" class="form-label">: {{ $ticket->asset->no_asset }}</label>
+                                        <label for="no_asset" class="form-label">: <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}/{{ $ticket->asset_id }}">{{ $ticket->asset->no_asset }}</a></label>
                                     </div>
                                     <div class="col-md-2 m-0">
                                         <label for="estimated" class="form-label fw-bold">Waktu Estimasi</label>

@@ -144,7 +144,7 @@
     </a>
 </div><!-- End Secondary Card -->
 
-<div class="col-md-4">
+<div class="col-md-3">
     <a href="#">
     <div class="card info-card warning-card">
 
@@ -161,7 +161,7 @@
             @endphp
             @if($workload >= 3600)
             <h6>{{ $carbonInstance->hour }} Jam</h6>
-            <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit</span>
+            <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit | {{ $carbonInstance->second }} Detik</span>
             @elseif($workload >= 60)
             <h6>{{ $carbonInstance->minute }} Menit</h6>
             <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->second }} Detik</span>
@@ -177,7 +177,7 @@
     </a>
 </div><!-- End Warning Card -->
 
-<div class="col-md-4">
+<div class="col-md-3">
     <a href="#">
     <div class="card info-card success-card">
 
@@ -210,7 +210,37 @@
     </a>
 </div><!-- End Primary Card -->
 
-<div class="col-md-4">
+<div class="col-md-3">
+    @if($path2 == "Hari Ini")
+    <a href="/assets/{{ encrypt('Berkendala') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Bulan Ini")
+    <a href="/assets/{{ encrypt('Berkendala') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @elseif($path2 == "Tahun Ini")
+    <a href="/assets/{{ encrypt('Berkendala') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @else
+    <a href="/assets/{{ encrypt('Berkendala') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    @endif
+    <div class="card info-card primary-card">
+
+    <div class="card-body">
+        <h5 class="card-title">Asset Berkendala</h5>
+
+        <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+            <i class="bi bi-box2"></i>
+        </div>
+        <div class="ps-3">
+            <h6>{{ $asset }}</h6>
+            <span class="text-primary small pt-1 fw-bold">Asset</span>
+        </div>
+        </div>
+    </div>
+
+    </div>
+    </a>
+</div><!-- End Primary Card -->
+
+<div class="col-md-3">
     <a href="/category-sub-tickets/{{ encrypt(auth()->user()->location_id) }}">
     <div class="card info-card secondary-card">
 
@@ -219,7 +249,7 @@
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-            <i class="bi bi-ticket-perforated"></i>
+            <i class="bi bi-ui-radios-grid"></i>
         </div>
         <div class="ps-3">
             <h6>{{ $category }}</h6>

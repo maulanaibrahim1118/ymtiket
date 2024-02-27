@@ -75,6 +75,22 @@ class TicketController extends Controller
         ]);
     }
 
+    public function asset($id = 0, $role = 0, $asset = 0)
+    {
+        $getAsset   = Asset::where('id', $asset)->first();
+        $noAsset    = $getAsset->no_asset;
+        $tickets    = Ticket::where('asset_id', $asset)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
+
+        return view('contents.ticket.index', [
+            "url"       => $noAsset,
+            "title"     => "Ticket",
+            "path"      => "Ticket",
+            "path2"     => $noAsset,
+            "agents"    => Agent::all(),
+            "tickets"   => $tickets
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

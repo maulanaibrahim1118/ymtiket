@@ -49,7 +49,7 @@
                                         <label for="no_asset" class="form-label fw-bold">No. Asset</label>
                                     </div>
                                     <div class="col-md-4 m-0">
-                                        <label for="no_asset" class="form-label">: {{ $ticket->asset->no_asset }}</label>
+                                        <label for="no_asset" class="form-label">: <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}/{{ $ticket->asset_id }}">{{ $ticket->asset->no_asset }}</a></label>
                                     </div>
                                     <div class="col-md-2 m-0">
                                         <label for="estimated" class="form-label fw-bold">Waktu Estimasi</label>
@@ -130,7 +130,7 @@
                                         <label for="tanggal" class="form-label">: {{ ucfirst($ticket->detail_kendala) }}</label>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-9">
                                         {{-- Tombol Lampiran --}}
                                         @if($ext == "xlsx")
                                         <a href="{{ asset('uploads/' . $ticket->file) }}"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark me-1"></i> Lampiran</button></a>
@@ -157,6 +157,31 @@
                                                 </div>
                                             </div>
                                         </div><!-- End Lampiran Modal-->
+                                    </div>
+
+                                    <div class="col-md-3 mb-0">
+                                    <table class="table table-sm table-bordered text-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                @php
+                                                    $carbonInstance = \Carbon\Carbon::parse($ticket->pending_time);
+                                                @endphp
+                                                @if($ticket->pending_time >= 3600)
+                                                <td class="col-md-1 fw-bold bg-light">Ticket Pending </td>
+                                                <td class="col-md-2">{{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
+                                                @elseif($ticket->pending_time >= 60)
+                                                <td class="col-md-1 fw-bold bg-light">Ticket Pending </td>
+                                                <td class="col-md-2">{{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
+                                                @elseif($ticket->pending_time == 0)
+                                                <td class="col-md-1 fw-bold bg-light">Ticket Pending </td>
+                                                <td class="col-md-2">0 detik</td>
+                                                @else
+                                                <td class="col-md-1 fw-bold bg-light">Ticket Pending </td>
+                                                <td class="col-md-2">{{ $carbonInstance->second }} detik</td>
+                                                @endif
+                                            </tr>
+                                        </thead>
+                                    </table>
                                     </div>
 
                                     <div class="col-md-12">
@@ -236,20 +261,6 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                        <div class="col-md-6">
-                                            @php
-                                                $carbonInstance = \Carbon\Carbon::parse($ticket->pending_time);
-                                            @endphp
-                                            @if($ticket->pending_time >= 3600)
-                                            <label class="form-label fw-bold">Ticket Pending </label> : {{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik
-                                            @elseif($ticket->pending_time >= 60)
-                                            <label class="form-label fw-bold">Ticket Pending </label> : {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik
-                                            @elseif($ticket->pending_time == 0)
-                                            <label class="form-label fw-bold">Ticket Pending </label> : 0 detik
-                                            @else
-                                            <label class="form-label fw-bold">Ticket Pending </label> : {{ $carbonInstance->second }} detik
-                                            @endif
-                                        </div>
                                     </div>
 
                                     {{-- Action Modal --}}

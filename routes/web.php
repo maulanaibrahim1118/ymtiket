@@ -34,10 +34,14 @@ Route::get('/dashboard/{filter}/{id}-{role}', [DashboardController::class, 'filt
     ->middleware('auth')->name('dashboard.filter');
 Route::get('/tickets/{status}-{filter}-{id}-{role}', [DashboardController::class, 'ticket'])
     ->middleware('auth')->name('ticket.filter');
+Route::get('/assets/{status}-{filter}-{id}-{role}', [DashboardController::class, 'asset'])
+    ->middleware('auth', 'service.desk')->name('asset.filter');
 
 // Route Ticket
 Route::get('/tickets/{id}-{role}', [TicketController::class, 'index'])
     ->middleware('auth')->name('ticket.index');
+Route::get('/tickets/{id}-{role}/{asset}', [TicketController::class, 'asset'])
+    ->middleware('auth')->name('ticket.asset');
     
 Route::middleware(['auth', 'manage.ticket'])->group(function () {
     Route::get('/tickets/{id}-{role}/create', [TicketController::class, 'create'])->name('ticket.create');

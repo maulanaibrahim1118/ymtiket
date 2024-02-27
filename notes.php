@@ -24,8 +24,8 @@ Laporan yang diharapkan :
 3. Bisa mengetahui berapa lama waktu penyelesaian setiap kategori (done)
 4. Bisa menghitung ticket yang masuk di jam kerja dan diluar jam kerja (done)
 5. Bisa mengetahui workload / beban kerja setiap agent (done)
+6. Bisa mengetahui berapa lama waktu suatu ticket di pending (done)
 -->
-6. Bisa mengetahui berapa lama waktu suatu ticket di pending
 7. Bisa mengetahui history no. asset yang sering ada kendala
 
 Revisi:
@@ -42,5 +42,6 @@ Revisi:
 10. Nomor Ticket jangan ditampilkan pada saat membuat ticket baru. (done)
 11. Nama Barang ditampilkan saat memilih No. Asset pada Create Ticket. (done)
 -->
+12. Bisa mencari ticket di halaman login.
 
 Git Commit:

@@ -31,7 +31,9 @@
                                 @endif
                                 
                                 @can('manage-ticket')
+                                @if($url == "")
                                 <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
+                                @endif
                                 @endcan
 
                                 <!-- Showing Notification Create Error -->

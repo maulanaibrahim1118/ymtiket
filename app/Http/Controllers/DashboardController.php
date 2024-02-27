@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Agent;
+use App\Asset;
 use App\Ticket;
 use App\Ticket_detail;
 use App\Location;
@@ -96,9 +97,6 @@ class DashboardController extends Controller
                     ->count();
                 $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned']])->count();
 
-                // Menghitung Total Kategori Kendala
-                $category       = 0;
-                
                 // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
                 $workTimeTicket = 0;
                 $freeTimeTicket = 0;
@@ -120,6 +118,12 @@ class DashboardController extends Controller
                     $roundedAvg     = round($resolvedAvg);
                 }
 
+                // Menghitung Total Ticket by Asset
+                $asset  = 0;
+
+                // Menghitung Total Kategori Kendala
+                $category       = 0;
+
                 $agent      = Agent::where('nik', $nik)->first();
                 $onProcess  = Ticket::where([['agent_id', $agentId],['status', 'onprocess']])
                                     ->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'tidak']])->get();
@@ -133,11 +137,6 @@ class DashboardController extends Controller
                     ->count();
                 $assigned       = 0;
 
-                // Menghitung Total Kategori Kendala
-                $category       = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
-                    ->where('category_tickets.location_id', $locationId)
-                    ->count();
-                
                 // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
                 $workTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya']])->whereNotIn('status', ['deleted'])->count();
                 $freeTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'tidak']])->whereNotIn('status', ['deleted'])->count();
@@ -159,6 +158,16 @@ class DashboardController extends Controller
                     $roundedAvg     = round($resolvedAvg);
                 }
 
+                // Menghitung Total Ticket by Asset
+                $asset  = Asset::withCount(['ticket' => function ($query) use ($location) {
+                    $query->where('ticket_for', $location);
+                }])->count();
+
+                // Menghitung Total Kategori Kendala
+                $category       = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
+                    ->where('category_tickets.location_id', $locationId)
+                    ->count();
+
                 $agent      = Agent::where('nik', $nik)->first();
                 $onProcess  = Ticket::where([['ticket_for', $location],['status', 'onprocess']])
                                     ->orWhere([['ticket_for', $location],['status', 'pending'],['assigned', 'tidak']])->orderBy('created_at', 'DESC')->get();
@@ -177,6 +186,7 @@ class DashboardController extends Controller
                 "total"             => $total,
                 "resolved"          => $resolved,
                 "assigned"          => $assigned,
+                "asset"             => $asset,
                 "category"          => $category,
                 "workTimeTicket"    => $workTimeTicket,
                 "freeTimeTicket"    => $freeTimeTicket,
@@ -278,9 +288,6 @@ class DashboardController extends Controller
                 $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned'],['created_at', 'like', $filter2.'%']])->count();
                 $total          = $ticketAgent+$assigned;
 
-                // Menghitung Total Kategori Kendala
-                $category       = 0;
-                
                 // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
                 $workTimeTicket = 0;
                 $freeTimeTicket = 0;
@@ -302,6 +309,12 @@ class DashboardController extends Controller
                     $roundedAvg     = round($resolvedAvg);
                 }
 
+                // Menghitung Total Ticket by Asset
+                $asset  = 0;
+
+                // Menghitung Total Kategori Kendala
+                $category   = 0;
+
                 $agent      = Agent::where('nik', $nik)->first();
                 $onProcess  = Ticket::where([['agent_id', $agentId],['status', 'onprocess'],['created_at', 'like', $filter2.'%']])
                                     ->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'tidak'],['created_at', 'like', $filter2.'%']])->get();
@@ -315,11 +328,6 @@ class DashboardController extends Controller
                     ->count();
                 $assigned   = 0;
 
-                // Menghitung Total Kategori Kendala
-                $category       = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
-                    ->where('category_tickets.location_id', $locationId)
-                    ->count();
-                
                 // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
                 $workTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
                 $freeTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'tidak'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
@@ -341,6 +349,16 @@ class DashboardController extends Controller
                     $roundedAvg     = round($resolvedAvg);
                 }
 
+                // Menghitung Total Ticket by Asset
+                $asset  = Asset::where('created_at', 'like', $filter2.'%')->withCount(['ticket' => function ($query) use ($location) {
+                    $query->where('ticket_for', $location);
+                }])->count();
+                
+                // Menghitung Total Kategori Kendala
+                $category       = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
+                    ->where('category_tickets.location_id', $locationId)
+                    ->count();
+
                 $agent      = Agent::where('nik', $nik)->first();
                 $onProcess  = Ticket::where([['ticket_for', $location],['status', 'onprocess'],['created_at', 'like', $filter2.'%']])
                                     ->orWhere([['ticket_for', $location],['status', 'pending'],['assigned', 'tidak'],['created_at', 'like', $filter2.'%']])->get();
@@ -359,6 +377,7 @@ class DashboardController extends Controller
                 "total"             => $total,
                 "resolved"          => $resolved,
                 "assigned"          => $assigned,
+                "asset"             => $asset,
                 "category"          => $category,
                 "workTimeTicket"    => $workTimeTicket,
                 "freeTimeTicket"    => $freeTimeTicket,
@@ -490,6 +509,44 @@ class DashboardController extends Controller
             "path2"     => $status." - ".$path2,
             "agents"    => Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get(),
             "tickets"   => $tickets
+        ]);
+    }
+
+    public function asset($status = 0, $filter = 0, $id = 0, $role = 0)
+    {
+        $status     = decrypt($status);
+        $filter     = decrypt($filter);
+        $id         = decrypt($id);
+        $role       = decrypt($role);
+        $url        = $status;
+
+        if($filter == "today"){
+            $filter2    = date('Y-m-d');
+            $path2      = "Hari Ini";
+        }elseif($filter == "monthly"){
+            $filter2    = date('Y-m');
+            $path2      = "Bulan Ini";
+        }elseif($filter == "yearly"){
+            $filter2    = date('Y');
+            $path2      = "Tahun Ini";
+        }else{
+            $filter2    = "";
+            $path2      = "All";
+        }
+
+        $getUser    = User::where('id', $id)->first();
+        $location   = $getUser->location->nama_lokasi;
+        
+        $assets = Asset::where('created_at', 'like', $filter2.'%')->withCount(['ticket' => function ($query) use ($location) {
+                $query->where('ticket_for', $location);
+            }])->orderBy('ticket_count', 'DESC')->get();
+
+        return view('contents.asset.countTicket.index', [
+            "url"       => $url,
+            "title"     => "Asset",
+            "path"      => "Asset",
+            "path2"     => $status." - ".$path2,
+            "assets"    => $assets
         ]);
     }
 
