@@ -25,6 +25,31 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // Menetapkan peran "Service Desk"
+        Gate::define('isServiceDesk', function ($user) {
+            return $user->role === 'service desk';
+        });
+
+        // Menetapkan peran "Agent"
+        Gate::define('isAgent', function ($user) {
+            return $user->role === 'agent';
+        });
+
+        // Menetapkan peran "Agent"
+        Gate::define('isClient', function ($user) {
+            return $user->role === 'client';
+        });
+
+        Gate::define('manage-ticket', function ($user) {
+            return $user->role === 'service desk' || $user->role === 'client';
+        });
+
+        Gate::define('agent-info', function ($user) {
+            return $user->role === 'service desk' || $user->role === 'agent';
+        });
+
+        Gate::define('isKorwil', function ($user) {
+            return $user->position_id === 6;
+        });
     }
 }

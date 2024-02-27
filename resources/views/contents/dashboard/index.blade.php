@@ -5,13 +5,17 @@
             <div class="col-lg-12">
                 <div class="row">
                     
-                    @if(auth()->user()->role == "service desk")
+                    @can('isServiceDesk')
                     @include('contents.dashboard.partials.service_desk')
-                    @elseif(auth()->user()->role == "agent")
+                    @endcan
+
+                    @can('isAgent')
                     @include('contents.dashboard.partials.agent')
-                    @else
+                    @endcan
+
+                    @can('isClient')
                     @include('contents.dashboard.partials.client')
-                    @endif
+                    @endcan
                     
                 </div> <!-- End row -->
             </div> <!-- End col-lg-12 -->

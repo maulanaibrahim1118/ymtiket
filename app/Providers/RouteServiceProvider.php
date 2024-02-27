@@ -21,7 +21,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/error-403';
+    public const HOME = '/error-403-authenticated';
 
     /**
      * Define your route model bindings, pattern filters, etc.

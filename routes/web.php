@@ -38,42 +38,28 @@ Route::get('/tickets/{status}-{filter}-{id}-{role}', [DashboardController::class
 // Route Ticket
 Route::get('/tickets/{id}-{role}', [TicketController::class, 'index'])
     ->middleware('auth')->name('ticket.index');
-Route::get('/tickets/{id}-{role}/create', [TicketController::class, 'create'])
-    ->middleware('auth')->name('ticket.create');
-Route::post('/tickets/store', [TicketController::class, 'store'])
-    ->middleware('auth')->name('ticket.store');
-Route::get('/tickets/{id}-{role}/edit{ticket}', [TicketController::class, 'edit'])
-    ->middleware('auth')->name('ticket.edit');
-Route::put('/tickets/update{id}', [TicketController::class, 'update'])
-    ->middleware('auth')->name('ticket.update');
-Route::put('/tickets/delete{id}', [TicketController::class, 'delete'])
-    ->middleware('auth')->name('ticket.delete');
-Route::put('/tickets/{id}/process1', [TicketController::class, 'process1'])
-    ->middleware('auth')->name('ticket.process1');
-Route::put('/tickets/{id}/process2', [TicketController::class, 'process2'])
-    ->middleware('auth')->name('ticket.process2');
-Route::put('/tickets/queue{id}', [TicketController::class, 'queue'])
-    ->middleware('auth')->name('ticket.queue');
-Route::put('/tickets/assign', [TicketController::class, 'assign'])
-    ->middleware('auth')->name('ticket.assign');
-Route::put('/tickets/assign2', [TicketController::class, 'assign2'])
-    ->middleware('auth')->name('ticket.assign2');
-Route::put('/tickets/pending{id}', [TicketController::class, 'pending'])
-    ->middleware('auth')->name('ticket.pending');
-Route::put('/tickets/{id}/reProcess1', [TicketController::class, 'reProcess1'])
-    ->middleware('auth')->name('ticket.reProcess1');
-Route::get('/tickets/{id}/reProcess2', [TicketController::class, 'reProcess2'])
-    ->middleware('auth')->name('ticket.reProcess2');
-Route::put('/tickets/resolved{id}', [TicketController::class, 'resolved'])
-    ->middleware('auth')->name('ticket.resolved');
-Route::put('/tickets/finished{id}', [TicketController::class, 'finished'])
-    ->middleware('auth')->name('ticket.finished');
     
-// Route::put('/tickets/{id}/process2', [TicketController::class, 'process2'])
-//     ->middleware('auth')->name('ticket.process2');
-// Route::get('/tickets/{id}-{nik}/process3', [TicketController::class, 'process3'])
-//     ->middleware('auth')->name('ticket.process3');
-
+Route::middleware(['auth', 'manage.ticket'])->group(function () {
+    Route::get('/tickets/{id}-{role}/create', [TicketController::class, 'create'])->name('ticket.create');
+    Route::post('/tickets/store', [TicketController::class, 'store'])->name('ticket.store');
+    Route::get('/tickets/{id}-{role}/edit{ticket}', [TicketController::class, 'edit'])->name('ticket.edit');
+    Route::put('/tickets/update{id}', [TicketController::class, 'update'])->name('ticket.update');
+    Route::put('/tickets/delete{id}', [TicketController::class, 'delete'])->name('ticket.delete');
+});
+Route::middleware(['auth', 'agent.info'])->group(function () {
+    Route::put('/tickets/{id}/process1', [TicketController::class, 'process1'])->name('ticket.process1');
+    Route::put('/tickets/{id}/process2', [TicketController::class, 'process2'])->name('ticket.process2');
+    Route::put('/tickets/queue{id}', [TicketController::class, 'queue'])->name('ticket.queue');
+    Route::put('/tickets/assign', [TicketController::class, 'assign'])->name('ticket.assign');
+    Route::put('/tickets/assign2', [TicketController::class, 'assign2'])->name('ticket.assign2');
+    Route::put('/tickets/pending{id}', [TicketController::class, 'pending'])->name('ticket.pending');
+    Route::put('/tickets/{id}/reProcess1', [TicketController::class, 'reProcess1'])->name('ticket.reProcess1');
+    Route::get('/tickets/{id}/reProcess2', [TicketController::class, 'reProcess2'])->name('ticket.reProcess2');
+    Route::put('/tickets/resolved{id}', [TicketController::class, 'resolved'])->name('ticket.resolved');
+});
+Route::put('/tickets/finished{id}', [TicketController::class, 'finished'])
+    ->middleware('auth', 'client')->name('ticket.finished');
+    
 // Route Dropdown Getting Ticket
 Route::get('/tickets/create2{id}', [TicketController::class, 'getClient'])
     ->middleware('auth')->name('getClient');
@@ -85,21 +71,13 @@ Route::get('/tickets/create4{id}', [TicketController::class, 'getAssets'])
 // Route Ticket Detail
 Route::get('/ticket-details/{id}', [TicketDetailController::class, 'index'])
     ->middleware('auth')->name('ticket-detail.index');
-Route::get('/ticket-details/{id}/create', [TicketDetailController::class, 'create'])
-    ->middleware('auth')->name('ticket-detail.create');
-Route::post('/ticket-details/process', [TicketDetailController::class, 'store'])
-    ->middleware('auth')->name('ticket-detail.store');
-Route::get('/ticket-details/{id}/edit', [TicketDetailController::class, 'edit'])
-    ->middleware('auth')->name('ticket-detail.edit');
-Route::put('/ticket-details/update{id}', [TicketDetailController::class, 'update'])
-    ->middleware('auth')->name('ticket-detail.update');
-
-// Route::put('/ticket-details/{id}/reProcess', [TicketDetailController::class, 'reProcess'])
-//     ->middleware('auth')->name('ticket-detail.reProcess');
-// Route::put('/ticket-details/{id}/assign1', [TicketDetailController::class, 'assign1'])
-//     ->middleware('auth')->name('ticket-detail.assign1');
-// Route::put('/ticket-details/{id}/assign2', [TicketDetailController::class, 'assign2'])
-//     ->middleware('auth')->name('ticket-detail.assign2');
+    
+Route::middleware(['auth', 'agent.info'])->group(function () {
+    Route::get('/ticket-details/{id}/create', [TicketDetailController::class, 'create'])->name('ticket-detail.create');
+    Route::post('/ticket-details/process', [TicketDetailController::class, 'store'])->name('ticket-detail.store');
+    Route::get('/ticket-details/{id}/edit', [TicketDetailController::class, 'edit'])->name('ticket-detail.edit');
+    Route::put('/ticket-details/update{id}', [TicketDetailController::class, 'update'])->name('ticket-detail.update');
+});
 
 // Route Dropdown Getting Category Ticket
 Route::get('/ticket-details/{id}/create1', [TicketDetailController::class, 'getSubCategoryTicket'])
@@ -110,54 +88,56 @@ Route::resource('/ticket-comments', TicketCommentController::class)
     ->middleware('auth');
 
 // Route Agent
-Route::get('/agents/{location}', [AgentController::class, 'index'])
-    ->middleware('auth')->name('agent.index');
-Route::post('/agents-update{id}', [AgentController::class, 'update'])
-    ->middleware('auth')->name('agent.update');
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::get('/agents/{location}', [AgentController::class, 'index'])
+        ->name('agent.index');
+    Route::post('/agents-update{id}', [AgentController::class, 'update'])
+        ->name('agent.update');
     Route::get('/agents/refresh/{id}', 'AgentController@agentsRefresh');
+});
 
 // Route Client
-Route::resource('/clients', ClientController::class)
-    ->middleware('auth');
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::resource('/clients', ClientController::class);
+});
 
 // Route User
-Route::resource('/users', UserController::class)
-    ->middleware('auth');
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::resource('/users', UserController::class);
+});
 
 // Route Location
-Route::resource('/locations', LocationController::class)
-    ->middleware('auth');
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::resource('/locations', LocationController::class);
+});
 
 // Route Asset
-Route::resource('/assets', AssetController::class)
-    ->middleware('auth');
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::resource('/assets', AssetController::class);
+});
 
 // Route Category Asset
-Route::resource('/category-assets', CategoryAssetController::class)
-    ->middleware('auth');
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::resource('/category-assets', CategoryAssetController::class);
+});
 
 // Route Category Ticket
-Route::get('/category-tickets/{id}', [CategoryTicketController::class, 'index'])
-    ->middleware('auth')->name('ct.index');
-Route::get('/category-tickets/{id}/create', [CategoryTicketController::class, 'create'])
-    ->middleware('auth')->name('ct.create');
-Route::post('/category-tickets', [CategoryTicketController::class, 'store'])
-    ->middleware('auth')->name('ct.store');
-Route::get('/category-tickets/{id}/edit{category_ticket}', [CategoryTicketController::class, 'edit'])
-    ->middleware('auth')->name('ct.edit');
-Route::put('/category-tickets/{category_ticket}', [CategoryTicketController::class, 'update'])
-    ->middleware('auth')->name('ct.update');
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::get('/category-tickets/{id}', [CategoryTicketController::class, 'index'])->name('ct.index');
+    Route::get('/category-tickets/{id}/create', [CategoryTicketController::class, 'create'])->name('ct.create');
+    Route::post('/category-tickets', [CategoryTicketController::class, 'store'])->name('ct.store');
+    Route::get('/category-tickets/{id}/edit{category_ticket}', [CategoryTicketController::class, 'edit'])->name('ct.edit');
+    Route::put('/category-tickets/{category_ticket}', [CategoryTicketController::class, 'update'])->name('ct.update');
+});
 
 // Route Sub Category Ticket
-Route::get('/category-sub-tickets/{id}', [SubCategoryTicketController::class, 'index'])
-    ->middleware('auth')->name('sct.index');
-Route::get('/category-sub-tickets/{id}/create', [SubCategoryTicketController::class, 'create'])
-    ->middleware('auth')->name('sct.create');
-Route::post('/category-sub-tickets', [SubCategoryTicketController::class, 'store'])
-    ->middleware('auth')->name('sct.store');
-Route::get('/category-sub-tickets/{id}/edit{category_sub_ticket}', [SubCategoryTicketController::class, 'edit'])
-    ->middleware('auth')->name('sct.edit');
-Route::put('/category-sub-tickets/{category_sub_ticket}', [SubCategoryTicketController::class, 'update'])
-    ->middleware('auth')->name('sct.update');
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::get('/category-sub-tickets/{id}', [SubCategoryTicketController::class, 'index'])->name('sct.index');
+    Route::get('/category-sub-tickets/{id}/create', [SubCategoryTicketController::class, 'create'])->name('sct.create');
+    Route::post('/category-sub-tickets', [SubCategoryTicketController::class, 'store'])->name('sct.store');
+    Route::get('/category-sub-tickets/{id}/edit{category_sub_ticket}', [SubCategoryTicketController::class, 'edit'])->name('sct.edit');
+    Route::put('/category-sub-tickets/{category_sub_ticket}', [SubCategoryTicketController::class, 'update'])->name('sct.update');
+});
 
-Route::view('/error-403', 'contents.403')->name('403');
+Route::view('/error-403-authenticated', 'contents.403-authenticated')->name('403.authenticated');
+Route::view('/error-403-unauthorized', 'contents.403-unauthorized')->name('403.unauthorized');

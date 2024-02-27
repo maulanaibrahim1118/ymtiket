@@ -10,72 +10,72 @@
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
                                 <div class="row g-3 mb-3 pt-3" style="font-size: 14px">
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="tanggal" class="form-label fw-bold">Tanggal/Waktu</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         @if($ticket->jam_kerja == "ya")
-                                        <label for="tanggal" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-success">Jam Kerja</span></label>
+                                        <label for="jam_kerja" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-success">Jam Kerja</span></label>
                                         @elseif($ticket->jam_kerja == "tidak")
-                                        <label for="tanggal" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-warning">Diluar Jam Kerja</span></label>
+                                        <label for="jam_kerja" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-warning">Diluar Jam Kerja</span></label>
                                         @endif
                                     </div>
-                                    <div class="col-md-1 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">Telp/Ext</label>
+                                    <div class="col-md-2 m-0">
+                                        <label for="telp" class="form-label fw-bold">Telp/Ext</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
-                                        <label for="tanggal" class="form-label">: {{ $ticket->client->telp }}</label>
+                                    <div class="col-md-4 m-0">
+                                        <label for="telp" class="form-label">: {{ $ticket->client->telp }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">No. Ticket</label>
+                                    <div class="col-md-2 m-0">
+                                        <label for="no_ticket" class="form-label fw-bold">No. Ticket</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
-                                        <label for="tanggal" class="form-label">: {{ $ticket->no_ticket }}</label>
+                                    <div class="col-md-4 m-0">
+                                        <label for="no_ticket" class="form-label">: {{ $ticket->no_ticket }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">IP Address</label>
+                                    <div class="col-md-2 m-0">
+                                        <label for="ip_address" class="form-label fw-bold">IP Address</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
-                                        <label for="tanggal" class="form-label">: {{ $ticket->client->ip_address }}</label>
+                                    <div class="col-md-4 m-0">
+                                        <label for="ip_address" class="form-label">: {{ $ticket->client->ip_address }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">No. Asset</label>
+                                    <div class="col-md-2 m-0">
+                                        <label for="no_asset" class="form-label fw-bold">No. Asset</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
-                                        <label for="tanggal" class="form-label">: {{ $ticket->asset->no_asset }}</label>
+                                    <div class="col-md-4 m-0">
+                                        <label for="no_asset" class="form-label">: {{ $ticket->asset->no_asset }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">Waktu Estimasi</label>
+                                    <div class="col-md-2 m-0">
+                                        <label for="estimated" class="form-label fw-bold">Waktu Estimasi</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
-                                        <label for="tanggal" class="form-label">: {{ $ticket->estimated }}</label>
+                                    <div class="col-md-4 m-0">
+                                        <label for="estimated" id="estimated" class="form-label">: {{ $ticket->estimated }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">Client/Lokasi</label>
+                                    <div class="col-md-2 m-0">
+                                        <label for="client/lokasi" class="form-label fw-bold">Client/Lokasi</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         @if ($ticket->client->nama_client == $ticket->location->nama_lokasi)
                                         <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->client->nik) }} - {{ ucwords($ticket->client->nama_client) }} / Store</label>
                                         @else
                                         <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->client->nama_client) }} / {{ ucwords($ticket->location->nama_lokasi) }}</label>
                                         @endif
                                     </div>
-                                    <div class="col-md-1 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">PIC Agent</label>
+                                    <div class="col-md-2 m-0">
+                                        <label for="agent" class="form-label fw-bold">Ditujukan Pada</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
-                                        <label for="tanggal" class="form-label">: {{ ucwords($ticket->agent->nama_agent) }} - <i>{{ ucwords($ticket->agent->location->nama_lokasi) }}</i></label>
+                                    <div class="col-md-4 m-0">
+                                        <label for="agent" class="form-label">: {{ ucwords($ticket->agent->location->nama_lokasi) }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">Kendala</label>
+                                    <div class="col-md-2 m-0">
+                                        <label for="kendala" class="form-label fw-bold">Kendala</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
-                                        <label for="tanggal" class="form-label">: {{ ucwords($ticket->kendala) }}</label>
+                                    <div class="col-md-4 m-0">
+                                        <label for="kendala" class="form-label">: {{ ucwords($ticket->kendala) }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">Status</label>
+                                    <div class="col-md-2 m-0">
+                                        <label for="status" class="form-label fw-bold">Status</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         @if($ticket->status == 'created')
                                         <label for="status" class="form-label">: <span class="badge bg-secondary">{{ ucwords($ticket->status) }}</span></label>
                                         @elseif($ticket->status == 'onprocess')
@@ -88,7 +88,7 @@
                                         <label for="status" class="form-label">: <span class="badge bg-success">{{ ucwords($ticket->status) }}</span></label>
                                         @endif
                                     </div>
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="tanggal" class="form-label fw-bold">Detail Kendala</label>
                                     </div>
                                     <div class="col-md-10 m-0">

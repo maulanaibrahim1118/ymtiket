@@ -17,72 +17,72 @@
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
                                 <div class="row g-3 mb-3 pt-3" style="font-size: 14px">
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="tanggal" class="form-label fw-bold">Tanggal/Waktu</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         @if($ticket->jam_kerja == "ya")
                                         <label for="jam_kerja" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-success">Jam Kerja</span></label>
                                         @elseif($ticket->jam_kerja == "tidak")
                                         <label for="jam_kerja" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-warning">Diluar Jam Kerja</span></label>
                                         @endif
                                     </div>
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="telp" class="form-label fw-bold">Telp/Ext</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         <label for="telp" class="form-label">: {{ $ticket->client->telp }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="no_ticket" class="form-label fw-bold">No. Ticket</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         <label for="no_ticket" class="form-label">: {{ $ticket->no_ticket }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="ip_address" class="form-label fw-bold">IP Address</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         <label for="ip_address" class="form-label">: {{ $ticket->client->ip_address }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="no_asset" class="form-label fw-bold">No. Asset</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         <label for="no_asset" class="form-label">: {{ $ticket->asset->no_asset }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="estimated" class="form-label fw-bold">Waktu Estimasi</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         <label for="estimated" id="estimated" class="form-label">: {{ $ticket->estimated }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="client/lokasi" class="form-label fw-bold">Client/Lokasi</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         @if ($ticket->client->nama_client == $ticket->location->nama_lokasi)
                                         <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->client->nik) }} - {{ ucwords($ticket->client->nama_client) }} / Store</label>
                                         @else
                                         <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->client->nama_client) }} / {{ ucwords($ticket->location->nama_lokasi) }}</label>
                                         @endif
                                     </div>
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="agent" class="form-label fw-bold">Ditujukan Pada</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         <label for="agent" class="form-label">: {{ ucwords($ticket->agent->location->nama_lokasi) }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="kendala" class="form-label fw-bold">Kendala</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         <label for="kendala" class="form-label">: {{ ucwords($ticket->kendala) }}</label>
                                     </div>
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="status" class="form-label fw-bold">Status</label>
                                     </div>
-                                    <div class="col-md-5 m-0">
+                                    <div class="col-md-4 m-0">
                                         @if($ticket->status == 'created')
                                         <label for="tanggal" class="form-label">: <span class="badge bg-secondary">{{ ucwords($ticket->status) }}</span></label>
                                         @elseif($ticket->status == 'onprocess')
@@ -123,14 +123,14 @@
                                         </div>
                                     </div><!-- End Vertically centered Modal-->
                                     
-                                    <div class="col-md-1 m-0">
+                                    <div class="col-md-2 m-0">
                                         <label for="tanggal" class="form-label fw-bold">Detail Kendala</label>
                                     </div>
                                     <div class="col-md-10 m-0">
                                         <label for="tanggal" class="form-label">: {{ ucfirst($ticket->detail_kendala) }}</label>
                                     </div>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         {{-- Tombol Lampiran --}}
                                         @if($ext == "xlsx")
                                         <a href="{{ asset('uploads/' . $ticket->file) }}"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark me-1"></i> Lampiran</button></a>
@@ -172,9 +172,11 @@
                                                 <td>Sub Kategori Ticket</td>
                                                 <td>Biaya</td>
                                                 <td>PIC Agent</td>
+                                                @can('agent-info')
                                                 <td>Status</td>
                                                 <td>Lama Pending</td>
                                                 <td>Lama Proses</td>
+                                                @endcan
                                                 <td>Saran Tindakan</td>
                                                 </tr>
                                             </thead>
@@ -187,6 +189,7 @@
                                                 <td>IDR. {{ number_format($td->biaya,2,'.',',') }}</td>
                                                 <td>{{ $td->agent->nama_agent }}</td>
 
+                                                @can('agent-info')
                                                 @if($td->status == 'onprocess')
                                                 <td><span class="badge bg-warning">{{ $td->status }}</span></td>
                                                 @elseif($td->status == 'pending')
@@ -226,12 +229,27 @@
                                                     <td>{{ $carbonInstance->second }} detik</td>
                                                     @endif
                                                 @endif
+                                                @endcan
 
                                                 <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{{ $td->note }}" onclick="tampilkanData(this)"><i class="bi bi-search me-1"></i> Lihat</button></td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
+                                        <div class="col-md-6">
+                                            @php
+                                                $carbonInstance = \Carbon\Carbon::parse($ticket->pending_time);
+                                            @endphp
+                                            @if($ticket->pending_time >= 3600)
+                                            <label class="form-label fw-bold">Ticket Pending </label> : {{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik
+                                            @elseif($ticket->pending_time >= 60)
+                                            <label class="form-label fw-bold">Ticket Pending </label> : {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik
+                                            @elseif($ticket->pending_time == 0)
+                                            <label class="form-label fw-bold">Ticket Pending </label> : 0 detik
+                                            @else
+                                            <label class="form-label fw-bold">Ticket Pending </label> : {{ $carbonInstance->second }} detik
+                                            @endif
+                                        </div>
                                     </div>
 
                                     {{-- Action Modal --}}
@@ -270,7 +288,7 @@
                                     </script>
 
                                     <div class="col-md-12">
-                                        @if(auth()->user()->role == "client") {{-- Jika role sebagai Client --}}
+                                        @can('isClient') {{-- Jika role sebagai Client --}}
                                             @if($ticket->status == "resolved") {{-- Jika status resolved, muncul tombol close/selesai --}}
                                                 {{-- Tombol Close --}}
                                                 <button type="button" class="btn btn-sm btn-success float-end ms-1" id="closedButton" data-bs-toggle="modal" data-bs-target="#closedModal"><i class="bi bi-check-circle me-1"></i> Close</button>
@@ -308,8 +326,9 @@
                                                 </div><!-- End Pending Modal-->
                                             @else {{-- Jika status bukan resolved, tidak akan muncul tombol apapun --}}
                                             @endif
-                                            
-                                        @else {{-- Jika role sebagai Agent/Service Desk --}}
+                                        @endcan
+
+                                        @can('agent-info'){{-- Jika role sebagai Agent/Service Desk --}}
                                             @if($ticket->status == "onprocess" AND $ticket->agent->nik == auth()->user()->nik)
                                                 {{-- Tombol Selesai --}}
                                                 <form action="/tickets/resolved{{ $ticket->id }}" method="POST">

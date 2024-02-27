@@ -101,7 +101,6 @@ class TicketController extends Controller
                     "title"         => "Create Ticket",
                     "path"          => "Ticket",
                     "path2"         => "Tambah",
-                    "ticketNumber"  => $ticketNumber,
                     "ticketFors"    => $ticketFors,
                     "clients"       => Client::where('location_id', $locationId)->orderBy('nama_client', 'ASC')->get()
                 ]);

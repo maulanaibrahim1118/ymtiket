@@ -30,8 +30,11 @@
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary">| {{ $path2 }} </span></h5>
                                 @endif
                                 
+                                @can('manage-ticket')
                                 <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
-                                <!-- Showing Notification Login Error -->
+                                @endcan
+
+                                <!-- Showing Notification Create Error -->
                                 @if(session()->has('createError'))
                                 <script>
                                     swal("Mohon Maaf!", "{{ session('createError') }}", "warning", {
@@ -51,32 +54,42 @@
                                 <table class="table datatable">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
+                                        <th scope="col">DIBUAT PADA</th>
                                         <th scope="col">NO. TICKET</th>
+                                        @can('isClient')
+                                        <th scope="col">CLIENT/CABANG</th>
+                                        @endcan
                                         <th scope="col">KENDALA</th>
                                         <th scope="col">DETAIL KENDALA</th>
-                                        <th scope="col">DIBUAT PADA</th>
+                                        @can('agent-info')
                                         <th scope="col">PIC</th>
+                                        @endcan
                                         <th scope="col">STATUS</th>
+                                        @can('isServiceDesk')
                                         <th scope="col">KETERANGAN</th>
+                                        @endcan
                                         <th scope="col">AKSI</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
                                         @foreach($tickets as $ticket)
                                         <tr>
+                                        <td>{{ date('d-M-Y H:i', strtotime($ticket->created_at)) }}</td>
                                         <td>{{ $ticket->no_ticket }}</td>
+                                        @can('isClient')
+                                        <td>{{ $ticket->client->nama_client }}</td>
+                                        @endcan
                                         <td>{{ $ticket->kendala }}</td>
                                         <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->detail_kendala }}</td>
 
-                                        {{-- Kolom Dibuat Pada --}}
-                                        <td>{{ date('d-M-Y H:i:s', strtotime($ticket->created_at)) }}</td>
-
+                                        @can('agent-info')
                                         {{-- Kolom PIC --}}
                                         @if($ticket->agent->nama_agent == auth()->user()->nama)
                                         <td><span class="badge bg-info">saya</span></td>
                                         @else
                                         <td>{{ $ticket->agent->nama_agent }}</td>
                                         @endif
+                                        @endcan
 
                                         {{-- Kolom Status --}}
                                         @if($ticket->status == 'created')
@@ -93,6 +106,7 @@
                                         <td><span class="badge bg-danger">{{ $ticket->status }}</span></td>
                                         @endif
 
+                                        @can('isServiceDesk')
                                         {{-- Kolom Keterangan --}}
                                         @if($ticket->assigned == "ya" AND $ticket->status == "created" OR $ticket->assigned == "ya" AND $ticket->status == "pending")
                                         <td><span class="badge bg-primary">direct assign</span></td>
@@ -109,6 +123,7 @@
                                             <td></td>
                                             @endif
                                         @endif
+                                        @endcan
 
                                         {{-- Kolom Aksi --}}
                                         <td class="dropdown">
@@ -116,7 +131,7 @@
                                             <ul class="dropdown-menu">
 
                                             {{-- ========== Aksi untuk role client ========== --}}
-                                            @if(auth()->user()->role == "client")
+                                            @can('isClient')
                                                 {{-- Tombol Detail --}}
                                                 <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{  encrypt($ticket->id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
 
@@ -137,9 +152,10 @@
                                                     @endif
                                                 @else {{-- Jika status selain created, tombol hapus dan edit di hilangkan --}}
                                                 @endif
+                                            @endcan
 
                                             {{-- ========== Aksi untuk role service desk ========== --}}
-                                            @elseif(auth()->user()->role == "service desk")
+                                            @can('isServiceDesk')
                                                 {{-- Jika status ticket created --}}
                                                 @if($ticket->status == "created" AND $ticket->agent->nik == auth()->user()->nik)
                                                     {{-- Tombol Tangani --}}
@@ -233,10 +249,10 @@
                                                     {{-- Tombol Detail --}}
                                                     <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{  encrypt($ticket->id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                                                 @endif
-
+                                            @endcan
 
                                             {{-- ========== Aksi untuk role agent ========== --}}
-                                            @else
+                                            @can('isAgent')
                                                 {{-- Jika ticket di assign dan belum di tangani oleh service desk --}}
                                                 @if($ticket->status == "created")
                                                     {{-- Tombol Tangani --}}
@@ -291,7 +307,7 @@
                                                     {{-- Tombol Detail --}}
                                                     <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{  encrypt($ticket->id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                                                 @endif
-                                            @endif
+                                            @endcan
                                             </ul>
                                         </td>
                                         </tr>

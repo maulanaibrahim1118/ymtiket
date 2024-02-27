@@ -131,7 +131,7 @@
             @endphp
             @if($workload >= 3600)
             <h6>{{ $carbonInstance->hour }} Jam</h6>
-            <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit</span>
+            <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit | {{ $carbonInstance->second }} Detik</span>
             @elseif($workload >= 60)
             <h6>{{ $carbonInstance->minute }} Menit</h6>
             <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->second }} Detik</span>

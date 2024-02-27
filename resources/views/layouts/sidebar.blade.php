@@ -14,6 +14,7 @@
             </a>
         </li><!-- End Ticket -->
 
+        @can('isServiceDesk')
         <li class="nav-heading pt-3">MASTER DATA</li>
 
         <li class="nav-item">
@@ -73,6 +74,7 @@
                 </li>
             </ul>
         </li><!-- End Master Data -->
+        @endcan
 
         <li class="nav-heading pt-3">PAGES</li>
 

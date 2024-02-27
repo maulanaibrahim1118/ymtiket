@@ -20,13 +20,7 @@ body {
 
 @media (max-width: 1366px) {
   .container-fluid {
-    zoom: 0.8;
-  }
-}
-
-@media (max-width: 1920px) {
-  .container-fluid {
-    zoom: 1;
+    zoom: 0.75;
   }
 }
 
