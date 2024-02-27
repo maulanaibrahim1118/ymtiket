@@ -75,11 +75,12 @@ class TicketController extends Controller
         ]);
     }
 
-    public function asset($id = 0, $role = 0, $asset = 0)
+    public function asset($asset)
     {
-        $getAsset   = Asset::where('id', $asset)->first();
+        $assetId    = decrypt($asset);
+        $getAsset   = Asset::where('id', $assetId)->first();
         $noAsset    = $getAsset->no_asset;
-        $tickets    = Ticket::where('asset_id', $asset)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
+        $tickets    = Ticket::where('asset_id', $assetId)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
 
         return view('contents.ticket.index', [
             "url"       => $noAsset,

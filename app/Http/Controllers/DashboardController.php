@@ -159,9 +159,10 @@ class DashboardController extends Controller
                 }
 
                 // Menghitung Total Ticket by Asset
-                $asset  = Asset::withCount(['ticket' => function ($query) use ($location) {
-                    $query->where('ticket_for', $location);
-                }])->count();
+                $asset  = Ticket::where('ticket_for', $location)->whereNotIn('status', ['deleted'])->distinct()->count('asset_id');
+                // $asset  = Asset::withCount(['ticket' => function ($query) use ($location) {
+                //     $query->where('ticket_for', $location)->whereNotIn('status', ['deleted']);
+                // }])->count();
 
                 // Menghitung Total Kategori Kendala
                 $category       = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
@@ -350,10 +351,8 @@ class DashboardController extends Controller
                 }
 
                 // Menghitung Total Ticket by Asset
-                $asset  = Asset::where('created_at', 'like', $filter2.'%')->withCount(['ticket' => function ($query) use ($location) {
-                    $query->where('ticket_for', $location);
-                }])->count();
-                
+                $asset  = Ticket::where([['created_at', 'like', $filter2.'%'],['ticket_for', $location]])->whereNotIn('status', ['deleted'])->distinct()->count('asset_id');
+
                 // Menghitung Total Kategori Kendala
                 $category       = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
                     ->where('category_tickets.location_id', $locationId)
@@ -537,16 +536,17 @@ class DashboardController extends Controller
         $getUser    = User::where('id', $id)->first();
         $location   = $getUser->location->nama_lokasi;
         
-        $assets = Asset::where('created_at', 'like', $filter2.'%')->withCount(['ticket' => function ($query) use ($location) {
-                $query->where('ticket_for', $location);
-            }])->orderBy('ticket_count', 'DESC')->get();
+        $tickets  = Ticket::where([['created_at', 'like', $filter2.'%'],['ticket_for', $location]])->whereNotIn('status', ['deleted'])
+            ->groupBy('asset_id')
+            ->select('asset_id', \DB::raw('count(*) as asset_count'))
+            ->get();
 
         return view('contents.asset.countTicket.index', [
             "url"       => $url,
             "title"     => "Asset",
             "path"      => "Asset",
             "path2"     => $status." - ".$path2,
-            "assets"    => $assets
+            "tickets"   => $tickets
         ]);
     }
 

@@ -32,15 +32,15 @@
                                         </tr>
                                     </thead>
                                     <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                                        @foreach($assets as $asset)
+                                        @foreach($tickets as $ticket)
                                         <tr>
-                                        <td>{{ $asset->no_asset }}</td>
-                                        <td>{{ $asset->nama_barang }}</td>
-                                        <td>{{ $asset->merk }}</td>
-                                        <td>{{ $asset->model }}</td>
-                                        <td>{{ $asset->status }}</td>
-                                        <td>{{ $asset->location->nama_lokasi }}</td>
-                                        <td><a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}/{{ $asset->id }}">{{ $asset->ticket_count }}</a></td>
+                                        <td>{{ $ticket->asset->no_asset }}</td>
+                                        <td>{{ $ticket->asset->nama_barang }}</td>
+                                        <td>{{ $ticket->asset->merk }}</td>
+                                        <td>{{ $ticket->asset->model }}</td>
+                                        <td>{{ $ticket->asset->status }}</td>
+                                        <td>{{ $ticket->asset->location->nama_lokasi }}</td>
+                                        <td><a href="/tickets/asset{{ encrypt($ticket->asset_id) }}">{{ $ticket->asset_count }}</a></td>
                                         </tr>
                                         @endforeach
                                     </tbody>

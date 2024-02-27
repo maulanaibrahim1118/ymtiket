@@ -40,7 +40,7 @@ Route::get('/assets/{status}-{filter}-{id}-{role}', [DashboardController::class,
 // Route Ticket
 Route::get('/tickets/{id}-{role}', [TicketController::class, 'index'])
     ->middleware('auth')->name('ticket.index');
-Route::get('/tickets/{id}-{role}/{asset}', [TicketController::class, 'asset'])
+Route::get('/tickets/asset{asset}', [TicketController::class, 'asset'])
     ->middleware('auth')->name('ticket.asset');
     
 Route::middleware(['auth', 'manage.ticket'])->group(function () {
