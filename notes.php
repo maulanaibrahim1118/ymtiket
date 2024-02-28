@@ -20,13 +20,15 @@ Aplikasi dapat :
 Laporan yang diharapkan :
 <!--
 1. Bisa mengetahui berapa banyak kategori kendala (done)
-2. Bisa mengetahui berapa waktu rata-rata resolved dari setiap agent/service desk berdasarkan periode tertentu (done)
+-->
+2. Bisa mengetahui berapa waktu rata-rata resolved dari setiap agent/service desk berdasarkan periode tertentu
+<!--
 3. Bisa mengetahui berapa lama waktu penyelesaian setiap kategori (done)
 4. Bisa menghitung ticket yang masuk di jam kerja dan diluar jam kerja (done)
 5. Bisa mengetahui workload / beban kerja setiap agent (done)
 6. Bisa mengetahui berapa lama waktu suatu ticket di pending (done)
--->
 7. Bisa mengetahui history no. asset yang sering ada kendala
+-->
 
 Revisi:
 <!--
@@ -41,7 +43,11 @@ Revisi:
 9. Ukuran komponen diperkecil / lebih responsive. (done)
 10. Nomor Ticket jangan ditampilkan pada saat membuat ticket baru. (done)
 11. Nama Barang ditampilkan saat memilih No. Asset pada Create Ticket. (done)
+12. Bisa mencari ticket di halaman login. (done)
 -->
-12. Bisa mencari ticket di halaman login.
+13. Antrian ticket untuk agent sesuai lokasi (GC/Cabang).
+14. Filter Dashboard per Agent.
+15. Status Barang Asset berubah jika kondisi barang tidak dapat di perbaiki. (Parameter berdasarkan sub category ticket).
+16. Membuat API (generate setiap 30 menit).
 
 Git Commit:

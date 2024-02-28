@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SearchTicketController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketDetailController;
@@ -20,12 +21,17 @@ use App\Http\Controllers\SubCategoryTicketController;
 |
 */
 
+// Route Login
 Route::get('/', [LoginController::class, 'index'])
     ->middleware('guest')->name('login.index');
 Route::post('/login', [LoginController::class, 'authenticate'])
     ->name('login.auth');
 Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')->name('login.out');
+
+// Route Cari Ticket
+Route::post('/search-ticket', [SearchTicketController::class, 'show'])
+    ->middleware('guest')->name('search.ticket');
 
 // Route Dashboard
 Route::get('/dashboard/{id}-{role}', [DashboardController::class, 'index'])
@@ -143,5 +149,5 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::put('/category-sub-tickets/{category_sub_ticket}', [SubCategoryTicketController::class, 'update'])->name('sct.update');
 });
 
-Route::view('/error-403-authenticated', 'contents.403-authenticated')->name('403.authenticated');
-Route::view('/error-403-unauthorized', 'contents.403-unauthorized')->name('403.unauthorized');
+Route::view('/error-403-authenticated', 'contents.error.403-authenticated')->name('403.authenticated');
+Route::view('/error-403-unauthorized', 'contents.error.403-unauthorized')->name('403.unauthorized');

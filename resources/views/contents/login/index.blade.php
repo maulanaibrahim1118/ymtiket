@@ -58,14 +58,14 @@
             }
         }
 
-        // Menampilkan informasi pendaftaran akun
-        function register() {
-            swal({
-                title: "Mohon Maaf",
-                text: "Silakan hubungi Staff IT untuk Daftar Akun!",
-                icon: "info",
-            });
-        }
+        // // Menampilkan informasi pendaftaran akun
+        // function register() {
+        //     swal({
+        //         title: "Mohon Maaf",
+        //         text: "Silakan hubungi Staff IT untuk Daftar Akun!",
+        //         icon: "info",
+        //     });
+        // }
     </script>
 </head>
 <body onload="preloader()">
@@ -86,6 +86,14 @@
                             });
                         </script>
                         @endif
+                        @if(session()->has('error'))
+                        <script>
+                            swal("Gagal!", "{{ session('error') }}", "warning", {
+                                timer: 3000
+                            });
+                        </script>
+                        @endif
+                        
                         <div class="row justify-content-center">
                             <div class="col-lg-5 col-md-6 d-flex flex-column align-items-center justify-content-center">
                                     
@@ -94,7 +102,7 @@
                                         <!-- Login Title -->
                                         <div class="col-12">
                                             <h5 class="card-title text-primary text-center pb-2 fs-4 fw-bold">Form Login</h5>
-                                            <p class="text-center small px-3">Masukkan No. Induk Karyawan / Site Cabang dan Password akun anda untuk dapat masuk & mulai bekerja.</p>
+                                            <p class="text-center small px-3">Masukkan No. Induk Karyawan / Site Cabang dan Password akun anda untuk mulai bekerja.</p>
                                         </div>
                                     </div>
 
@@ -122,12 +130,16 @@
                                                 <button class="btn btn-primary w-100 rounded-5" type="submit">Masuk<i class="bi bi-box-arrow-in-right ms-2"></i></button>
                                             </div>
                                                 
-                                            <div class="col-12">
+                                            {{-- <div class="col-12">
                                                 <p class="small mb-0 text-center">Belum punya akun? Silakan <a href="#" onclick="register()">Daftar</a></p>
-                                            </div>
+                                            </div> --}}
                                         </form> <!-- End Login Form -->
                                     </div> <!-- End card-body -->
                                 </div> <!-- End card mb-3 p-4 -->
+
+                                <div class="col-md-12 text-center border-bottom mb-4 text-secondary">
+                                    <p style="font-size: 14px;">Cari ticket tanpa perlu login? <span class="fst-italic"> Klik <a href="#" class="text-success" data-bs-toggle="modal" data-bs-target="#searchModal">disini</a></span></p>
+                                </div>
         
                                 <!-- Copyright Footer -->
                                 <div class="credits mt-3">
@@ -137,6 +149,29 @@
                         </div> <!-- End Row Content -->
                     </div> <!-- End Container -->
                 </section>
+                <!-- Modal -->
+                <div class="modal fade" id="searchModal" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h1 class="modal-title fs-5 fw-bold text-success" id="exampleModalLabel">.:: Cari Ticket</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="row g-3" action="/search-ticket" method="post">
+                                @csrf
+                                <div class="input-group">
+                                    <input type="text" name="no_ticket" class="form-control" placeholder="Tuliskan Nomor Ticket..." aria-label="Recipient's username" aria-describedby="button-addon2">
+                                    <button class="btn btn-outline-success" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
             </div> <!-- End Container -->
         </main><!-- End #main -->
 
