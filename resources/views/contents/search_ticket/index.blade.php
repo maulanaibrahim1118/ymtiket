@@ -62,7 +62,7 @@
                         <div class="col-12">
                             <div class="card info-card mb-4">
                                 <div class="card-body pb-0">
-                                    <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
+                                    <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary"> | {{ $ticket->no_ticket }}</span></h5>
                                     
                                     <div class="row g-3 mb-3 pt-3" style="font-size: 14px">
                                         <div class="col-md-2 m-0">
@@ -76,50 +76,33 @@
                                             @endif
                                         </div>
                                         <div class="col-md-2 m-0">
-                                            <label for="telp" class="form-label fw-bold">Telp/Ext</label>
+                                            <label for="no_asset" class="form-label fw-bold">Waktu Estimasi</label>
                                         </div>
                                         <div class="col-md-4 m-0">
-                                            <label for="telp" class="form-label">: {{ $ticket->client->telp }}</label>
-                                        </div>
-                                        <div class="col-md-2 m-0">
-                                            <label for="no_ticket" class="form-label fw-bold">No. Ticket</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            <label for="no_ticket" class="form-label">: {{ $ticket->no_ticket }}</label>
-                                        </div>
-                                        <div class="col-md-2 m-0">
-                                            <label for="ip_address" class="form-label fw-bold">IP Address</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            <label for="ip_address" class="form-label">: {{ $ticket->client->ip_address }}</label>
-                                        </div>
-                                        <div class="col-md-2 m-0">
-                                            <label for="no_asset" class="form-label fw-bold">No. Asset</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            <label for="no_asset" class="form-label">: <a href="/tickets/asset{{ encrypt($ticket->asset_id) }}">{{ $ticket->asset->no_asset }}</a></label>
-                                        </div>
-                                        <div class="col-md-2 m-0">
-                                            <label for="estimated" class="form-label fw-bold">Waktu Estimasi</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            <label for="estimated" id="estimated" class="form-label">: {{ $ticket->estimated }}</label>
-                                        </div>
-                                        <div class="col-md-2 m-0">
-                                            <label for="client/lokasi" class="form-label fw-bold">Client/Lokasi</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            @if ($ticket->client->nama_client == $ticket->location->nama_lokasi)
-                                            <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->client->nik) }} - {{ ucwords($ticket->client->nama_client) }} / Store</label>
-                                            @else
-                                            <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->client->nama_client) }} / {{ ucwords($ticket->location->nama_lokasi) }}</label>
-                                            @endif
+                                            <label for="no_asset" class="form-label">: {{ $ticket->estimated }}</label>
                                         </div>
                                         <div class="col-md-2 m-0">
                                             <label for="agent" class="form-label fw-bold">Ditujukan Pada</label>
                                         </div>
                                         <div class="col-md-4 m-0">
                                             <label for="agent" class="form-label">: {{ ucwords($ticket->agent->location->nama_lokasi) }}</label>
+                                        </div>
+                                        <div class="col-md-2 m-0">
+                                            <label for="estimated" class="form-label fw-bold">Ticket Pending</label>
+                                        </div>
+                                        <div class="col-md-4 m-0">
+                                            @php
+                                                $carbonInstance = \Carbon\Carbon::parse($ticket->pending_time);
+                                            @endphp
+                                            @if($ticket->pending_time >= 3600)
+                                            <label for="estimated" class="form-label">: {{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</label>
+                                            @elseif($ticket->pending_time >= 60)
+                                            <label for="estimated" class="form-label">: {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</label>
+                                            @elseif($ticket->pending_time == 0)
+                                            <label for="estimated" class="form-label">: 0 detik</label>
+                                            @else
+                                            <label for="estimated" class="form-label">: {{ $carbonInstance->second }} detik</label>
+                                            @endif
                                         </div>
                                         <div class="col-md-2 m-0">
                                             <label for="kendala" class="form-label fw-bold">Kendala</label>
@@ -149,31 +132,6 @@
                                         </div>
                                         <div class="col-md-10 m-0">
                                             <label for="tanggal" class="form-label">: {{ ucfirst($ticket->detail_kendala) }}</label>
-                                        </div>
-    
-                                        <div class="col-md-3 mb-0">
-                                        <table class="table table-sm table-bordered text-center mb-0">
-                                            <thead>
-                                                <tr>
-                                                    @php
-                                                        $carbonInstance = \Carbon\Carbon::parse($ticket->pending_time);
-                                                    @endphp
-                                                    @if($ticket->pending_time >= 3600)
-                                                    <td class="col-md-2 fw-bold bg-light">Ticket Pending </td>
-                                                    <td class="col-md-2">{{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
-                                                    @elseif($ticket->pending_time >= 60)
-                                                    <td class="col-md-2 fw-bold bg-light">Ticket Pending </td>
-                                                    <td class="col-md-2">{{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
-                                                    @elseif($ticket->pending_time == 0)
-                                                    <td class="col-md-2 fw-bold bg-light">Ticket Pending </td>
-                                                    <td class="col-md-2">0 detik</td>
-                                                    @else
-                                                    <td class="col-md-2 fw-bold bg-light">Ticket Pending </td>
-                                                    <td class="col-md-2">{{ $carbonInstance->second }} detik</td>
-                                                    @endif
-                                                </tr>
-                                            </thead>
-                                        </table>
                                         </div>
     
                                         <div class="col-md-12">
