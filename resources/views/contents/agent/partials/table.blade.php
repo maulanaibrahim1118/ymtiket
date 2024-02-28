@@ -1,75 +1,63 @@
-<table class="table datatable" id="agentTable">
-    <thead class="bg-light" style="height: 45px;font-size:14px;">
-        <tr>
-        <th scope="col">NIK</th>
-        <th scope="col">NAMA AGENT</th>
-        <th scope="col">TOTAL TICKET</th>
-        <th scope="col">TOTAL WAKTU KERJA</th>
-        <th scope="col">RATA-RATA RESOLVED</th>
-        <th scope="col">UPDATE TERAKHIR</th>
-        <th scope="col">STATUS</th>
-        <th scope="col">AKSI</th>
-        </tr>
-    </thead>
-    <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-        @foreach($data as $agent)
-        <tr>
-        <td>{{ $agent->nik }}</td>
-        <td>{{ $agent->nama_agent }}</td>
-        <td>{{ $agent->total_ticket }}</td>
-        @php
-            $workload = \Carbon\Carbon::parse($agent->processed_time-$agent->pending_time);
-            $average = \Carbon\Carbon::parse($agent->avg);
-        @endphp
-        @if( $agent->processed_time-$agent->pending_time >= 3600)
-        <td>{{ $workload->hour }} Jam {{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
-        @elseif( $agent->processed_time-$agent->pending_time >= 60)
-        <td>{{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
-        @else
-        <td>{{ $workload->second }} Detik</td>
-        @endif
-        @if( $agent->avg >= 3600)
-        <td>{{ $average->hour }} Jam {{ $average->minute }} Menit {{ $average->second }} Detik</td>
-        @elseif( $agent->avg >= 60)
-        <td>{{ $average->minute }} Menit {{ $average->second }} Detik</td>
-        @else
-        <td>{{ $average->second }} Detik</td>
-        @endif
-        <td>{{ date('d-M-Y H:i:s', strtotime($agent->updated_at)) }}</td>
-        @if($agent->status == "present")
-        <td><span class="badge bg-primary">HADIR</span></td>
-        @else
-        <td><span class="badge bg-secondary">TIDAK HADIR</span></td>
-        @endif
-        <td>
-        <label class="form-check form-switch">
-            <input type="checkbox" class="form-check-input" data-id="{{ $agent->id }}" {{ $agent->status ? 'checked' : '' }}>
-            <input type="text" id="location_id" value="{{ $agent->location_id }}" hidden>
-            <span class="slider round"></span>
-        </label>
-        </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+<div id="table-container">
+    <table class="table datatable table-hover">
+        <thead class="bg-light" style="height: 45px;font-size:14px;">
+            <tr>
+            <th scope="col">NIK</th>
+            <th scope="col">NAMA AGENT</th>
+            <th scope="col">TOTAL TICKET</th>
+            <th scope="col">TOTAL WAKTU KERJA</th>
+            <th scope="col">RATA-RATA RESOLVED</th>
+            <th scope="col">STATUS</th>
+            <th scope="col">AKSI</th>
+            </tr>
+        </thead>
+        <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
+            @foreach($data as $data)
+            <tr>
+            <td>{{ $data->nik }}</td>
+            <td>{{ $data->nama_agent }}</td>
+            <td>{{ $data->total_ticket }}</td>
+            @php
+                $workload = \Carbon\Carbon::parse($data->processed_time-$data->pending_time);
+                $average = \Carbon\Carbon::parse($data->avg);
+            @endphp
+            @if( $data->processed_time-$data->pending_time >= 3600)
+            <td>{{ $workload->hour }} Jam {{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
+            @elseif( $data->processed_time-$data->pending_time >= 60)
+            <td>{{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
+            @else
+            <td>{{ $workload->second }} Detik</td>
+            @endif
+
+            @if( $data->avg >= 3600)
+            <td>{{ $average->hour }} Jam {{ $average->minute }} Menit {{ $average->second }} Detik</td>
+            @elseif( $data->avg >= 60)
+            <td>{{ $average->minute }} Menit {{ $average->second }} Detik</td>
+            @elseif( $data->avg == 0)
+            <td>0 Detik</td>
+            @else
+            <td>{{ $average->second }} Detik</td>
+            @endif
+            @if($data->status == "present")
+            <td><span class="badge bg-primary">HADIR</span></td>
+            @else
+            <td><span class="badge bg-secondary">TIDAK HADIR</span></td>
+            @endif
+            <td>
+            <label class="form-check form-switch">
+                <input type="checkbox" class="form-check-input" data-id="{{ $data->id }}" {{ $data->status ? 'checked' : '' }}>
+                <input type="text" id="location_id" value="{{ $data->location_id }}" hidden>
+                <span class="slider round"></span>
+            </label>
+            </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
 <script>
     $(document).ready(function () {
-        function refreshTable() {
-            var id = document.getElementById('location_id').value;
-            $.ajax({
-                url: '/agents/refresh/' + id, 
-                method: 'GET',
-                success: function(response) {
-                    // Memperbarui tabel dengan data terbaru
-                    $('#agentTable tbody').html(response.data);
-                },
-                error: function(error) {
-                    console.log('Error:', error);
-                }
-            });
-        }
-
         $('.form-check-input').change(function () {
             var id = $(this).data('id');
             var status = $(this).prop('checked') ? 1 : 0;
@@ -91,5 +79,23 @@
                 }
             });
         });
+
+        function refreshTable() {
+            var id = document.getElementById('location_id').value;
+            $.ajax({
+                url: '/agents/refresh/' + id, 
+                method: 'GET',
+                success: function(response) {
+                    // Memperbarui tabel dengan data terbaru
+                    $('#table-container').html(response);
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        }
     });
 </script>
+
+<!-- Template Main JS File -->
+<script src="{{ asset('dist/js/main.js') }}"></script>

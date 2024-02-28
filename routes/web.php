@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SearchTicketController;
+use App\Http\Controllers\FilterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketDetailController;
@@ -36,10 +37,14 @@ Route::post('/search-ticket', [SearchTicketController::class, 'show'])
 // Route Dashboard
 Route::get('/dashboard/{id}-{role}', [DashboardController::class, 'index'])
     ->middleware('auth')->name('dashboard.index');
-Route::get('/dashboard/{filter}/{id}-{role}', [DashboardController::class, 'filter'])
+
+// Route Filter
+Route::get('/dashboard/{filter}/{id}-{role}', [FilterController::class, 'filterDashboard'])
     ->middleware('auth')->name('dashboard.filter');
 Route::get('/tickets/{status}-{filter}-{id}-{role}', [DashboardController::class, 'ticket'])
     ->middleware('auth')->name('ticket.filter');
+Route::get('/agents/{status}-{filter}-{location}', [FilterController::class, 'filterAgent'])
+    ->middleware('auth')->name('agent.filter');
 Route::get('/assets/{status}-{filter}-{id}-{role}', [DashboardController::class, 'asset'])
     ->middleware('auth', 'service.desk')->name('asset.filter');
 

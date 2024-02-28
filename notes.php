@@ -1,33 +1,31 @@
 
 Aplikasi dapat :
 <!--
-1. User dapat buat ticket sendiri (done)
-2. User dapat melihat progress ticketnya (done)
-3. Setiap user hanya bisa melihat ticket nya sendiri (done)
-4. User tidak dapat membuat ticket kalau ada ticket yang sudah resolved tapi belum di close (done)
-5. Service Desk dapat membuat ticket untuk User (done)
-6. Setiap ticket yang masuk dapat ditangani oleh Service Desk (done)
-7. Setiap ticket yang tidak selesai oleh Service Desk dapat dilempar ke Agent (done)
-8. Setiap Agent hanya dapat melihat ticket yang di assign ke dirinya sendiri (done)
-9. Setiap Service Desk hanya dapat melihat ticket yang masuk khusus Divisinya saja (done)
-10. Untuk user level Chief & Korwil hanya bisa melihat ticket areanya saja (done)
+1. User dapat buat ticket sendiri. (done)
+2. User dapat melihat progress ticketnya. (done)
+3. Setiap user hanya bisa melihat ticket nya sendiri. (done)
+4. User tidak dapat membuat ticket kalau ada ticket yang sudah resolved tapi belum di close. (done)
+5. Service Desk dapat membuat ticket untuk User. (done)
+6. Setiap ticket yang masuk dapat ditangani oleh Service Desk. (done)
+7. Setiap ticket yang tidak selesai oleh Service Desk dapat dilempar ke Agent. (done)
+8. Setiap Agent hanya dapat melihat ticket yang di assign ke dirinya sendiri. (done)
+9. Setiap Service Desk hanya dapat melihat ticket yang masuk khusus Divisinya saja. (done)
+10. Untuk user level Chief & Korwil hanya bisa melihat ticket areanya saja. (done)
 -->
-11. Setiap solusi yang sudah diberikan oleh Agent/Service Desk, dapat dilihat oleh agent sebagai saran untuk perbaikan hal yang masuk
+11. Setiap solusi yang sudah diberikan oleh Agent/Service Desk, dapat dilihat oleh agent sebagai saran untuk perbaikan hal yang masuk.
 <!--
 12. User tidak dapat menghapus dan merubah ticket kalau sudah onprocess. (done)
 -->
 
 Laporan yang diharapkan :
 <!--
-1. Bisa mengetahui berapa banyak kategori kendala (done)
--->
-2. Bisa mengetahui berapa waktu rata-rata resolved dari setiap agent/service desk berdasarkan periode tertentu
-<!--
-3. Bisa mengetahui berapa lama waktu penyelesaian setiap kategori (done)
-4. Bisa menghitung ticket yang masuk di jam kerja dan diluar jam kerja (done)
-5. Bisa mengetahui workload / beban kerja setiap agent (done)
-6. Bisa mengetahui berapa lama waktu suatu ticket di pending (done)
-7. Bisa mengetahui history no. asset yang sering ada kendala
+1. Bisa mengetahui berapa banyak kategori kendala. (done)
+2. Bisa mengetahui berapa waktu rata-rata resolved dari setiap agent/service desk berdasarkan periode tertentu. (done)
+3. Bisa mengetahui berapa lama waktu penyelesaian setiap kategori. (done)
+4. Bisa menghitung ticket yang masuk di jam kerja dan diluar jam kerja. (done)
+5. Bisa mengetahui workload / beban kerja setiap agent. (done)
+6. Bisa mengetahui berapa lama waktu suatu ticket di pending. (done)
+7. Bisa mengetahui history no. asset yang sering ada kendala. (done)
 -->
 
 Revisi:

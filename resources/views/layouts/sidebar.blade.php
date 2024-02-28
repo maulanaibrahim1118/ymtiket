@@ -15,6 +15,13 @@
         </li><!-- End Ticket -->
 
         @can('isServiceDesk')
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('agents*') ? '' : 'collapsed' }}" href="/agents/{{ encrypt(auth()->user()->location_id) }}">
+                <i class="bi bi-person-workspace"></i>
+                <span>Agent</span>
+            </a>
+        </li><!-- End Agent -->
+
         <li class="nav-heading pt-3">MASTER DATA</li>
 
         <li class="nav-item">
@@ -23,13 +30,6 @@
                 <span>User</span>
             </a>
         </li><!-- End User -->
-
-        <li class="nav-item">
-            <a class="nav-link {{ Request::is('agents*') ? '' : 'collapsed' }}" href="/agents/{{ encrypt(auth()->user()->location_id) }}">
-                <i class="bi bi-person-workspace"></i>
-                <span>Agent</span>
-            </a>
-        </li><!-- End Agent -->
 
         <li class="nav-item">
             <a class="nav-link {{ Request::is('clients*') ? '' : 'collapsed' }}" href="/clients">

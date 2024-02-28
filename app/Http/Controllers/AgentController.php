@@ -38,7 +38,7 @@ class AgentController extends Controller
 
     public function agentsRefresh($id)
     {
-        $agents   = Agent::where('location_id', $id)
+        $data   = Agent::where('location_id', $id)
             ->withCount('ticket_detail')
             ->select(
                 'agents.*', 
@@ -46,10 +46,8 @@ class AgentController extends Controller
                 DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
                 DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
             )
-            ->latest()->get();
-        $data = view('contents.agent.partials.table', compact('agents'))->render();
-
-        return response()->json(['data' => $data]);
+            ->get();
+        return view('contents.agent.partials.table', compact('data'));
     }
 
     /**
