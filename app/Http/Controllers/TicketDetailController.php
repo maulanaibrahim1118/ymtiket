@@ -23,10 +23,11 @@ class TicketDetailController extends Controller
     public function index($id = 0)
     {
         $id = decrypt($id);
-        $ticket             = Ticket::where('id', $id)->first();
-        $agentId            = $ticket->agent_id;
-        $getAgent           = Agent::where('id', $agentId)->first();
-        $locationId         = $getAgent->location_id;
+
+        $ticket     = Ticket::where('id', $id)->first();
+        $agentId    = $ticket->agent_id;
+        $getAgent   = Agent::where('id', $agentId)->first();
+        $locationId = $getAgent->location_id;
 
         // Cek apakah dia agent atau service desk
         $nik        = $getAgent->nik;
@@ -57,6 +58,7 @@ class TicketDetailController extends Controller
             "checkComment"      => Comment::where('ticket_id', $id)->count(),
             "progress_tickets"  => Progress_ticket::where('ticket_id', $id)->orderBy('created_at', 'DESC')->get(),
             "ticket_details"    => Ticket_detail::where('ticket_id', $id)->get(),
+            "countDetail"       => Ticket_detail::where('ticket_id', $id)->count(),
             "agents"            => $agents,
             "ext"               => $ext
         ]);

@@ -124,7 +124,7 @@ class TicketController extends Controller
                     "clients"       => Client::where('location_id', $locationId)->orderBy('nama_client', 'ASC')->get()
                 ]);
             }else{ // Jika masih ada ticket yang belum di close
-                return back()->with('createError', 'Ticket sebelumnya belum selesai / belum ditutup!');
+                return back()->with('createError', 'Ticket sebelumnya belum selesai / belum diclose!');
             }
         }elseif($role2 == "service desk"){
             return view('contents.ticket.create', [
@@ -908,21 +908,6 @@ class TicketController extends Controller
                 }
             }
 
-            // Membuatkan No. Ticket Baru
-            $getMY          = date('my');
-            $ticketDefault  = $getMY.'0000';
-            $countTicket    = Ticket::where('no_ticket', 'LIKE', 'T'.$getMY.'%')->count();
-
-            if($countTicket == 0){ // Jika jumlah ticket nol, nomor dimulai dari angka 1
-                $noTicket       = $ticketDefault+1;
-                $ticketNumber   = $noTicket;
-            }else{ // Jika jumlah ticket > 0, no ticket = jumlah ticket ditambah 1
-                $noTicket       = $ticketDefault+$countTicket+1; 
-                $ticketNumber   = $noTicket;
-            }
-
-            $no_ticket  = 'T'.sprintf('%08d', $ticketNumber);
-
             // Updating data to ticket table
             Ticket::where('id', $id)->update([
                 'status'        => "finished",
@@ -940,7 +925,6 @@ class TicketController extends Controller
 
             // Saving data to ticket table
             $ticket                 = new Ticket;
-            $ticket->no_ticket      = $no_ticket;
             $ticket->kendala        = "Re: (".$getTicket->no_ticket.') '.$kendala;
             $ticket->detail_kendala = $getTicket->detail_kendala;
             $ticket->asset_id       = $getTicket->asset_id;
@@ -960,6 +944,19 @@ class TicketController extends Controller
             $ticket->file           = $getTicket->file;
             $ticket->updated_by     = $updatedBy;
             $ticket->save();
+
+            // Get id ticket yang baru dibuat
+            $ticket_id  = $ticket->id;
+            $now        = date('d-m-Y H:i:s');
+
+            // Saving data to progress ticket table
+            $progress_ticket                = new Progress_ticket;
+            $progress_ticket->ticket_id     = $ticket_id;
+            $progress_ticket->tindakan      = "Ticket di buat oleh Sistem";
+            $progress_ticket->process_at    = $now;
+            $progress_ticket->status        = "created";
+            $progress_ticket->updated_by    = "Sistem";
+            $progress_ticket->save();
          
             return redirect($request['url'])->with('success', 'Ticket berhasil di close!');
         }

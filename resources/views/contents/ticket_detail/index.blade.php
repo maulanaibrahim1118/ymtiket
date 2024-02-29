@@ -46,18 +46,6 @@
                                         <label for="ip_address" class="form-label">: {{ $ticket->client->ip_address }}</label>
                                     </div>
                                     <div class="col-md-2 m-0">
-                                        <label for="no_asset" class="form-label fw-bold">No. Asset</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        <label for="no_asset" class="form-label">: <a href="/tickets/asset{{ encrypt($ticket->asset_id) }}">{{ $ticket->asset->no_asset }}</a></label>
-                                    </div>
-                                    <div class="col-md-2 m-0">
-                                        <label for="estimated" class="form-label fw-bold">Waktu Estimasi</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        <label for="estimated" id="estimated" class="form-label">: {{ $ticket->estimated }}</label>
-                                    </div>
-                                    <div class="col-md-2 m-0">
                                         <label for="client/lokasi" class="form-label fw-bold">Client/Lokasi</label>
                                     </div>
                                     <div class="col-md-4 m-0">
@@ -68,10 +56,22 @@
                                         @endif
                                     </div>
                                     <div class="col-md-2 m-0">
+                                        <label for="no_asset" class="form-label fw-bold">No. Asset</label>
+                                    </div>
+                                    <div class="col-md-4 m-0">
+                                        <label for="no_asset" class="form-label">: <a href="/tickets/asset{{ encrypt($ticket->asset_id) }}">{{ $ticket->asset->no_asset }}</a></label>
+                                    </div>
+                                    <div class="col-md-2 m-0">
                                         <label for="agent" class="form-label fw-bold">Ditujukan Pada</label>
                                     </div>
                                     <div class="col-md-4 m-0">
                                         <label for="agent" class="form-label">: {{ ucwords($ticket->agent->location->nama_lokasi) }}</label>
+                                    </div>
+                                    <div class="col-md-2 m-0">
+                                        <label for="estimated" class="form-label fw-bold">Waktu Estimasi</label>
+                                    </div>
+                                    <div class="col-md-4 m-0">
+                                        <label for="estimated" id="estimated" class="form-label">: {{ $ticket->estimated }}</label>
                                     </div>
                                     <div class="col-md-2 m-0">
                                         <label for="kendala" class="form-label fw-bold">Kendala</label>
@@ -80,7 +80,7 @@
                                         <label for="kendala" class="form-label">: {{ ucwords($ticket->kendala) }}</label>
                                     </div>
                                     <div class="col-md-2 m-0">
-                                        <label for="status" class="form-label fw-bold">Status</label>
+                                        <label for="status" class="form-label fw-bold">Status Ticket</label>
                                     </div>
                                     <div class="col-md-4 m-0">
                                         @if($ticket->status == 'created')
@@ -197,8 +197,8 @@
                                                 <td>Sub Kategori Ticket</td>
                                                 <td>Biaya</td>
                                                 <td>PIC Agent</td>
-                                                @can('agent-info')
                                                 <td>Status</td>
+                                                @can('agent-info')
                                                 <td>Lama Pending</td>
                                                 <td>Lama Proses</td>
                                                 @endcan
@@ -206,6 +206,15 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="text-capitalize">
+                                                @if($countDetail == 0) 
+                                                <tr>
+                                                    @if($ticket->status == "created")
+                                                    <td colspan="7" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
+                                                    @else
+                                                    <td colspan="7" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
+                                                    @endif
+                                                </tr>
+                                                @else
                                                 @foreach($ticket_details as $td)
                                                 <tr>
                                                 <td>{{ $td->jenis_ticket }}</td>
@@ -214,7 +223,6 @@
                                                 <td>IDR. {{ number_format($td->biaya,2,'.',',') }}</td>
                                                 <td>{{ $td->agent->nama_agent }}</td>
 
-                                                @can('agent-info')
                                                 @if($td->status == 'onprocess')
                                                 <td><span class="badge bg-warning">{{ $td->status }}</span></td>
                                                 @elseif($td->status == 'pending')
@@ -225,6 +233,7 @@
                                                 <td><span class="badge bg-danger">{{ $td->status }}</span></td>
                                                 @endif
 
+                                                @can('agent-info')
                                                 @if($td->pending_time == NULL)
                                                 <td>-</td>
                                                 @else
@@ -259,6 +268,7 @@
                                                 <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{{ $td->note }}" onclick="tampilkanData(this)"><i class="bi bi-search me-1"></i> Lihat</button></td>
                                                 </tr>
                                                 @endforeach
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>
