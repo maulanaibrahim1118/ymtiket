@@ -36,7 +36,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles  = ["client", "service desk", "agent"];
+        $roles  = ["client", "service desk", "agent store", "agent head office"];
 
         return view('contents.user.create', [
             "url"       => "",
@@ -124,12 +124,21 @@ class UserController extends Controller
             $client->updated_by     = $data['updated_by'];
             $client->save();
         }else{
-            $agent                         = new Agent;
-            $agent->nik                    = $data['nik'];
-            $agent->nama_agent             = $data['nama'];
-            $agent->location_id            = $data['location_id'];
-            $agent->status                 = 'present';
-            $agent->updated_by             = $data['updated_by'];
+            if($role == "service desk"){
+                $picTicket  = "all";
+            }elseif($role == "agent store"){
+                $picTicket  = "store";
+            }else{
+                $picTicket  = "ho";
+            }
+
+            $agent              = new Agent;
+            $agent->nik         = $data['nik'];
+            $agent->nama_agent  = $data['nama'];
+            $agent->location_id = $data['location_id'];
+            $agent->pic_ticket  = $picTicket;
+            $agent->status      = 'present';
+            $agent->updated_by  = $data['updated_by'];
             $agent->save();
         }
 
@@ -157,7 +166,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $roles  = ["service desk", "agent"];
+        $roles  = ["service desk", "agent store", "agent head office"];
 
         return view('contents.user.edit', [
             "title"     => "Edit User",
@@ -180,7 +189,6 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $nik    = $user->nik;
-        $role   = $user->role;
         $data   = $request->all();
 
         // Validating data request
@@ -223,6 +231,8 @@ class UserController extends Controller
         // Updating data to user table
         User::where('id', $user->id)->update($validatedData);
 
+        $role   = $data['role'];
+
         if($role == "client"){
             // Updating data to client table
             Client::where('nik', $nik)->update([
@@ -233,9 +243,18 @@ class UserController extends Controller
                 'updated_by'    => $data['updated_by']
             ]);
         }else{
+            if($role == "service desk"){
+                $picTicket  = "all";
+            }elseif($role == "agent store"){
+                $picTicket  = "store";
+            }else{
+                $picTicket  = "ho";
+            }
+
             // Updating data to agent table
             Agent::where('nik', $nik)->update([
                 'location_id'   => $data['location_id'],
+                'pic_ticket'    => $picTicket,
                 'updated_by'    => $data['updated_by']
             ]);
         }

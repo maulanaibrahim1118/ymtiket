@@ -39,6 +39,8 @@
                                         <td>{{ $average->hour }} Jam {{ $average->minute }} Menit {{ $average->second }} Detik</td>
                                         @elseif( $sct->avg >= 60)
                                         <td>{{ $average->minute }} Menit {{ $average->second }} Detik</td>
+                                        @elseif( $sct->avg == 0)
+                                        <td>0 Detik</td>
                                         @else
                                         <td>{{ $average->second }} Detik</td>
                                         @endif

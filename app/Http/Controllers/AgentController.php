@@ -22,7 +22,7 @@ class AgentController extends Controller
             ->withCount('ticket_detail')
             ->select(
                 'agents.*', 
-                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id) as total_ticket'),
+                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),
                 DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
                 DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
             )
@@ -42,7 +42,7 @@ class AgentController extends Controller
             ->withCount('ticket_detail')
             ->select(
                 'agents.*', 
-                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id) as total_ticket'),
+                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),
                 DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
                 DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
             )

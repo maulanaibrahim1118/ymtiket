@@ -11,9 +11,7 @@ Aplikasi dapat :
 8. Setiap Agent hanya dapat melihat ticket yang di assign ke dirinya sendiri. (done)
 9. Setiap Service Desk hanya dapat melihat ticket yang masuk khusus Divisinya saja. (done)
 10. Untuk user level Chief & Korwil hanya bisa melihat ticket areanya saja. (done)
--->
 11. Setiap solusi yang sudah diberikan oleh Agent/Service Desk, dapat dilihat oleh agent sebagai saran untuk perbaikan hal yang masuk.
-<!--
 12. User tidak dapat menghapus dan merubah ticket kalau sudah onprocess. (done)
 -->
 
@@ -42,8 +40,8 @@ Revisi:
 10. Nomor Ticket jangan ditampilkan pada saat membuat ticket baru. (done)
 11. Nama Barang ditampilkan saat memilih No. Asset pada Create Ticket. (done)
 12. Bisa mencari ticket di halaman login. (done)
+13. Antrian ticket untuk agent sesuai lokasi (HO/Store). (done)
 -->
-13. Antrian ticket untuk agent sesuai lokasi (GC/Cabang).
 14. Filter Dashboard per Agent.
 15. Status Barang Asset berubah jika kondisi barang tidak dapat di perbaiki. (Parameter berdasarkan sub category ticket).
 16. Membuat API (generate setiap 30 menit).

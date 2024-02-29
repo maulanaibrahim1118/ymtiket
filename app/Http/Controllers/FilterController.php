@@ -96,48 +96,7 @@ class FilterController extends Controller
                 "unClosed"      => $unClosed
             ]);
         }else{ // Jika role Agent / Service Desk
-            if($role == "agent"){
-                // Menghitung Total Ticket Agent
-                $ticketAgent    = Ticket::where([['agent_id', $agentId],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
-                $resolved       = Ticket::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
-                    ->orWhere([['agent_id', $agentId],['status', 'finished'],['created_at', 'like', $filter2.'%']])
-                    ->count();
-                $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned'],['created_at', 'like', $filter2.'%']])->count();
-                $total          = $ticketAgent+$assigned;
-
-                // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
-                $workTimeTicket = 0;
-                $freeTimeTicket = 0;
-
-                // Menghitung Workload Agent
-                $processedTime  = Ticket_detail::where([['agent_id', $agentId],['created_at', 'like', $filter2.'%']])->sum('processed_time');
-                $pendingTime    = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])->sum('pending_time');
-                $workload       = $processedTime-$pendingTime;
-
-                // Menghitung Waktu Rata-rata Ticket Resolved
-                $resolvedCount  = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])->count();
-                $resolvedTime   = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])->sum('processed_time');
-
-                if($resolvedCount == 0){
-                    $resolvedAvg    = 0;
-                    $roundedAvg     = 0;
-                }else {
-                    $resolvedAvg    = ($resolvedTime-$pendingTime)/$resolvedCount;
-                    $roundedAvg     = round($resolvedAvg);
-                }
-
-                // Menghitung Total Ticket by Asset
-                $asset  = 0;
-
-                // Menghitung Total Kategori Kendala
-                $category   = 0;
-
-                $agent      = Agent::where('nik', $nik)->first();
-                $onProcess  = Ticket::where([['agent_id', $agentId],['status', 'onprocess'],['created_at', 'like', $filter2.'%']])
-                                    ->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'tidak'],['created_at', 'like', $filter2.'%']])->get();
-                $newTicket  = Ticket::where([['agent_id', $agentId],['status', 'created'],['created_at', 'like', $filter2.'%']])
-                                    ->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'ya'],['created_at', 'like', $filter2.'%']])->get();
-            }else{
+            if($role == "sercice desk"){
                 // Menghitung Total Ticket Service Desk
                 $total      = Ticket::where([['ticket_for', $location],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
                 $resolved   = Ticket::where([['ticket_for', $location],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
@@ -179,6 +138,47 @@ class FilterController extends Controller
                                     ->orWhere([['ticket_for', $location],['status', 'pending'],['assigned', 'tidak'],['created_at', 'like', $filter2.'%']])->get();
                 $newTicket  = Ticket::where([['ticket_for', $location],['status', 'created'],['created_at', 'like', $filter2.'%']])
                                     ->orWhere([['ticket_for', $location],['status', 'pending'],['assigned', 'ya'],['created_at', 'like', $filter2.'%']])->get();
+            }else{
+                // Menghitung Total Ticket Agent
+                $ticketAgent    = Ticket::where([['agent_id', $agentId],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
+                $resolved       = Ticket::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
+                    ->orWhere([['agent_id', $agentId],['status', 'finished'],['created_at', 'like', $filter2.'%']])
+                    ->count();
+                $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned'],['created_at', 'like', $filter2.'%']])->count();
+                $total          = $ticketAgent+$assigned;
+
+                // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
+                $workTimeTicket = 0;
+                $freeTimeTicket = 0;
+
+                // Menghitung Workload Agent
+                $processedTime  = Ticket_detail::where([['agent_id', $agentId],['created_at', 'like', $filter2.'%']])->sum('processed_time');
+                $pendingTime    = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])->sum('pending_time');
+                $workload       = $processedTime-$pendingTime;
+
+                // Menghitung Waktu Rata-rata Ticket Resolved
+                $resolvedCount  = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])->count();
+                $resolvedTime   = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])->sum('processed_time');
+
+                if($resolvedCount == 0){
+                    $resolvedAvg    = 0;
+                    $roundedAvg     = 0;
+                }else {
+                    $resolvedAvg    = ($resolvedTime-$pendingTime)/$resolvedCount;
+                    $roundedAvg     = round($resolvedAvg);
+                }
+
+                // Menghitung Total Ticket by Asset
+                $asset  = 0;
+
+                // Menghitung Total Kategori Kendala
+                $category   = 0;
+
+                $agent      = Agent::where('nik', $nik)->first();
+                $onProcess  = Ticket::where([['agent_id', $agentId],['status', 'onprocess'],['created_at', 'like', $filter2.'%']])
+                                    ->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'tidak'],['created_at', 'like', $filter2.'%']])->get();
+                $newTicket  = Ticket::where([['agent_id', $agentId],['status', 'created'],['created_at', 'like', $filter2.'%']])
+                                    ->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'ya'],['created_at', 'like', $filter2.'%']])->get();
             }
 
             return view('contents.dashboard.index', [

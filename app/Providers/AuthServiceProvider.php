@@ -32,10 +32,10 @@ class AuthServiceProvider extends ServiceProvider
 
         // Menetapkan peran "Agent"
         Gate::define('isAgent', function ($user) {
-            return $user->role === 'agent';
+            return $user->role === 'agent store' || $user->role === 'agent head office';
         });
 
-        // Menetapkan peran "Agent"
+        // Menetapkan peran "Client"
         Gate::define('isClient', function ($user) {
             return $user->role === 'client';
         });
@@ -45,7 +45,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('agent-info', function ($user) {
-            return $user->role === 'service desk' || $user->role === 'agent';
+            return $user->role === 'service desk' || $user->role === 'agent store' || $user->role === 'agent head office';
         });
 
         Gate::define('isKorwil', function ($user) {

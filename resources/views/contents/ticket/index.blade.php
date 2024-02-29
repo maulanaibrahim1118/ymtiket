@@ -53,13 +53,16 @@
                                 </script>
                                 @endif
 
-                                <table class="table datatable">
+                                <table class="table datatable table-hover">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
                                         <th scope="col">DIBUAT PADA</th>
                                         <th scope="col">NO. TICKET</th>
                                         @can('isClient')
                                         <th scope="col">CLIENT/CABANG</th>
+                                        @endcan
+                                        @can('isServiceDesk')
+                                        <th scope="col">LOKASI</th>
                                         @endcan
                                         <th scope="col">KENDALA</th>
                                         <th scope="col">DETAIL KENDALA</th>
@@ -80,6 +83,13 @@
                                         <td>{{ $ticket->no_ticket }}</td>
                                         @can('isClient')
                                         <td>{{ $ticket->client->nama_client }}</td>
+                                        @endcan
+                                        @can('isServiceDesk')
+                                        @if($ticket->location->wilayah == "head office")
+                                        <td>head office</td>
+                                        @else
+                                        <td>store</td>
+                                        @endif
                                         @endcan
                                         <td>{{ $ticket->kendala }}</td>
                                         <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->detail_kendala }}</td>
@@ -189,7 +199,7 @@
                                                     @endif
                                                     
                                                     {{-- Tombol Assign --}}
-                                                    <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" onclick="tampilkanData(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
+                                                    <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
 
                                                     {{-- ========== Jika ticket dibuat oleh service desk ========== --}}
                                                     @if($ticket->user_id == auth()->user()->id)
@@ -328,35 +338,67 @@
                                             var modalContent = document.getElementById("modalContent");
                                         
                                             // Menampilkan data pada modalContent
-                                            modalContent.innerHTML  =
-                                            '<div class="modal-header">'+
-                                                '<h5 class="modal-title">Pilih Nama Agent</h5>'+
-                                                '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
-                                            '</div>'+
-                                            '<form action="/tickets/assign" method="post">'+
-                                            '@method("put")'+
-                                            '@csrf'+
-                                            '<div class="modal-body">'+
-                                                '<div class="col-md-12">'+
-                                                    '<label for="agent_id" class="form-label">Nama Agent</label>'+
-                                                    '<select class="form-select" name="agent_id" id="agent_id" required>'+
-                                                        '<option selected disabled>Choose...</option>'+
-                                                        '@foreach($agents as $agent)'+
-                                                            '@if(old("agent_id") == $agent->id)'+
-                                                            '<option selected value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>'+
-                                                            '@else'+
-                                                            '<option value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>'+
-                                                            '@endif'+
-                                                        '@endforeach'+
-                                                    '</select>'+
+                                            if(ticket_id.value === "ho"){
+                                                modalContent.innerHTML  =
+                                                '<div class="modal-header">'+
+                                                    '<h5 class="modal-title">Pilih Nama Agent</h5>'+
+                                                    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
                                                 '</div>'+
-                                                '<input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>'+
-                                                '<input type="text" id="ticket_id" name="ticket_id" value="'+ticket_id.name+'" hidden>'+
-                                            '</div>'+
-                                            '<div class="modal-footer">'+
-                                                '<button type="submit" class="btn btn-primary"><i class="bx bx-share me-2"></i>Assign</button>'+
-                                            '</div>'+
-                                            '</form>';
+                                                '<form action="/tickets/assign" method="post">'+
+                                                '@method("put")'+
+                                                '@csrf'+
+                                                '<div class="modal-body">'+
+                                                    '<div class="col-md-12">'+
+                                                        '<label for="agent_id" class="form-label">Nama Agent</label>'+
+                                                        '<select class="form-select" name="agent_id" id="agent_id" required>'+
+                                                            '<option selected disabled>Choose...</option>'+
+                                                            '@foreach($hoAgents as $hoAgent)'+
+                                                                '@if(old("agent_id") == $hoAgent->id)'+
+                                                                '<option selected value="{{ $hoAgent->id }}">{{ ucwords($hoAgent->nama_agent) }}</option>'+
+                                                                '@else'+
+                                                                '<option value="{{ $hoAgent->id }}">{{ ucwords($hoAgent->nama_agent) }}</option>'+
+                                                                '@endif'+
+                                                            '@endforeach'+
+                                                        '</select>'+
+                                                    '</div>'+
+                                                    '<input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>'+
+                                                    '<input type="text" id="ticket_id" name="ticket_id" value="'+ticket_id.name+'" hidden>'+
+                                                '</div>'+
+                                                '<div class="modal-footer">'+
+                                                    '<button type="submit" class="btn btn-primary"><i class="bx bx-share me-2"></i>Assign</button>'+
+                                                '</div>'+
+                                                '</form>';
+                                            }else{
+                                                modalContent.innerHTML  =
+                                                '<div class="modal-header">'+
+                                                    '<h5 class="modal-title">Pilih Nama Agent</h5>'+
+                                                    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
+                                                '</div>'+
+                                                '<form action="/tickets/assign" method="post">'+
+                                                '@method("put")'+
+                                                '@csrf'+
+                                                '<div class="modal-body">'+
+                                                    '<div class="col-md-12">'+
+                                                        '<label for="agent_id" class="form-label">Nama Agent</label>'+
+                                                        '<select class="form-select" name="agent_id" id="agent_id" required>'+
+                                                            '<option selected disabled>Choose...</option>'+
+                                                            '@foreach($storeAgents as $storeAgent)'+
+                                                                '@if(old("agent_id") == $storeAgent->id)'+
+                                                                '<option selected value="{{ $storeAgent->id }}">{{ ucwords($storeAgent->nama_agent) }}</option>'+
+                                                                '@else'+
+                                                                '<option value="{{ $storeAgent->id }}">{{ ucwords($storeAgent->nama_agent) }}</option>'+
+                                                                '@endif'+
+                                                            '@endforeach'+
+                                                        '</select>'+
+                                                    '</div>'+
+                                                    '<input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>'+
+                                                    '<input type="text" id="ticket_id" name="ticket_id" value="'+ticket_id.name+'" hidden>'+
+                                                '</div>'+
+                                                '<div class="modal-footer">'+
+                                                    '<button type="submit" class="btn btn-primary"><i class="bx bx-share me-2"></i>Assign</button>'+
+                                                '</div>'+
+                                                '</form>';
+                                            }
                                         }
                                         </script>
 

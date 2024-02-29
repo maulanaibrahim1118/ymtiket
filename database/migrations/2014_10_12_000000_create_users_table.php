@@ -22,21 +22,21 @@ class CreateUsersTable extends Migration
             $table->bigInteger('location_id');
             $table->string('telp', 15);
             $table->string('ip_address', 15);
-            $table->enum('role', ['client', 'service desk', 'agent']);
+            $table->enum('role', ['client', 'service desk', 'agent store', 'agent head office']);
             $table->string('updated_by', 40);
             $table->timestamps();
         });
 
         DB::table('users')->insert([
-            ['nik' => 23010124, 
-            'nama' => 'maulana ibrahim', 
+            ['nik' => 23010120, 
+            'nama' => 'irwan muharramsyah', 
             'password' => Hash::make('password'),
-            'position_id' => 1,
+            'position_id' => 9,
             'location_id' => 10,
             'telp' => '083820326382',
-            'ip_address' => '172.17.7.106',
+            'ip_address' => '172.17.7.1',
             'role' => 'service desk',
-            'updated_by' => 'maulana ibrahim'
+            'updated_by' => 'irwan muharramsyah'
             ]
         ]);
     }

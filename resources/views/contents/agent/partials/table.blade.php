@@ -4,6 +4,7 @@
             <tr>
             <th scope="col">NIK</th>
             <th scope="col">NAMA AGENT</th>
+            <th scope="col">PIC TICKET</th>
             <th scope="col">TOTAL TICKET</th>
             <th scope="col">TOTAL WAKTU KERJA</th>
             <th scope="col">RATA-RATA RESOLVED</th>
@@ -16,6 +17,7 @@
             <tr>
             <td>{{ $data->nik }}</td>
             <td>{{ $data->nama_agent }}</td>
+            <td>{{ $data->pic_ticket }}</td>
             <td>{{ $data->total_ticket }}</td>
             @php
                 $workload = \Carbon\Carbon::parse($data->processed_time-$data->pending_time);

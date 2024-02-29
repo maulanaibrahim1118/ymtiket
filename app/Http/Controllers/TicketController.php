@@ -62,16 +62,17 @@ class TicketController extends Controller
         }elseif($role == "service desk"){ // Jika role Service Desk
             $tickets    = Ticket::where('ticket_for', $namaLokasi)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
         }else{ // Jika role Agent
-            $tickets    = Ticket::where([['ticket_for', $namaLokasi],['role', $role],['agent_id', $agentId]])->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
+            $tickets    = Ticket::where([['ticket_for', $namaLokasi],['agent_id', $agentId]])->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
         }
 
         return view('contents.ticket.index', [
-            "url"       => "",
-            "title"     => "Ticket",
-            "path"      => "Ticket",
-            "path2"     => "Ticket",
-            "agents"    => Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get(),
-            "tickets"   => $tickets
+            "url"           => "",
+            "title"         => "Ticket",
+            "path"          => "Ticket",
+            "path2"         => "Ticket",
+            "hoAgents"      => Agent::where([['location_id', $locationId],['pic_ticket', 'ho']])->whereNotIn('id', [$agentId])->get(),
+            "storeAgents"   => Agent::where([['location_id', $locationId],['pic_ticket', 'store']])->whereNotIn('id', [$agentId])->get(),
+            "tickets"       => $tickets
         ]);
     }
 
@@ -83,12 +84,13 @@ class TicketController extends Controller
         $tickets    = Ticket::where('asset_id', $assetId)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
 
         return view('contents.ticket.index', [
-            "url"       => $noAsset,
-            "title"     => "Ticket",
-            "path"      => "Ticket",
-            "path2"     => $noAsset,
-            "agents"    => Agent::all(),
-            "tickets"   => $tickets
+            "url"           => $noAsset,
+            "title"         => "Ticket",
+            "path"          => "Ticket",
+            "path2"         => "Asset: ". $noAsset,
+            "hoAgents"      => Agent::all(),
+            "storeAgents"   => Agent::all(),
+            "tickets"       => $tickets
         ]);
     }
 
@@ -213,7 +215,11 @@ class TicketController extends Controller
         $area           = substr($getLocation['area'], -1);
         $regional       = substr($getLocation['regional'], -1);
         $wilayah        = substr($getLocation['wilayah'], -2);
-        $ticketArea     = $area.$regional.$wilayah;
+        if($getLocation['wilayah'] == "head office"){
+            $ticketArea     = "ho";
+        }else{
+            $ticketArea     = $area.$regional.$wilayah;
+        }
 
         // Ambil waktu saat ini
         $currentDay     = date('D');
@@ -380,14 +386,30 @@ class TicketController extends Controller
             $request->file->move(public_path('uploads'), $imageName);
         }
 
+        // Mencari Area, Regional, Wilayah Client untuk mengisi data ticket_area
+        $clientId       = $request['client_id'];
+        $getClient      = Client::where('id', $clientId)->first();
+        $locationId     = $getClient['location_id'];
+        $getLocation    = Location::where('id', $locationId)->first();
+        $area           = substr($getLocation['area'], -1);
+        $regional       = substr($getLocation['regional'], -1);
+        $wilayah        = substr($getLocation['wilayah'], -2);
+        if($getLocation['wilayah'] == "head office"){
+            $ticketArea     = "ho";
+        }else{
+            $ticketArea     = $area.$regional.$wilayah;
+        }
+
         // Updating data to ticket table
         Ticket::where('id', $id->id)->update([
             'client_id'         => $request['client_id'],
+            'location_id'       => $locationId,
             'asset_id'          => $request['asset_id'],
             'ticket_for'        => $request['ticket_for'],
             'kendala'           => $request['kendala'],
             'detail_kendala'    => $request['detail_kendala'],
             'file'              => $imageName,
+            'ticket_area'       => $ticketArea,
             'updated_by'        => $request['client_id']
         ]);
 
@@ -758,6 +780,7 @@ class TicketController extends Controller
             $nik            = $request['nik'];
             $getAgent       = Agent::where('nik', $nik)->first();
             $agentId2       = $getAgent->id;
+            $picTicket      = $getAgent->pic_ticket;
             $agentStatus    = $getAgent->status;
 
             $countAntrian   = Ticket::where('is_queue', 'ya')->count();
@@ -768,8 +791,14 @@ class TicketController extends Controller
                 if($agentStatus != 'present'){ // Jika Agent tidak hadir, izin, keluar kota, dll
                     return redirect($url)->with('success', 'Ticket telah selesai diproses!');
                 }else{ // Jika agent hadir di kantor
-                    $getAntrian     = Ticket::where('is_queue', 'ya')->first();
-                    $ticketId       = $getAntrian->id;
+                    if($picTicket == "ho"){
+                        $getAntrian     = Ticket::where([['is_queue', 'ya'],['ticket_area', 'ho']])->first();
+                    }else{
+                        $getAntrian     = Ticket::where('is_queue', 'ya')->whereNotIn('ticket_area', ['ho'])->first();
+                    }
+
+                    $ticketId = $getAntrian->id;
+
                     Ticket::where('id', $ticketId)->update([
                         'agent_id'      => $agentId2,
                         'role'          => "agent",

@@ -18,17 +18,19 @@ class CreateAgentsTable extends Migration
             $table->bigInteger('nik')->unique();
             $table->string('nama_agent', 40);
             $table->bigInteger('location_id');
+            $table->enum('pic_ticket', ['all', 'ho', 'store']);
             $table->enum('status', ['present']);
             $table->string('updated_by', 40);
             $table->timestamps();
         });
 
         DB::table('agents')->insert([
-            ['nik' => 23010124, 
-            'nama_agent' => 'maulana ibrahim',
+            ['nik' => 23010120, 
+            'nama_agent' => 'irwan muharramsyah',
             'location_id' => 10,
+            'pic_ticket' => 'all',
             'status' => 'present',
-            'updated_by' => 'maulana ibrahim'
+            'updated_by' => 'irwan muharramsyah'
             ]
         ]);
     }
