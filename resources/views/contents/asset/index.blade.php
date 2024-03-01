@@ -38,7 +38,11 @@
                                         <td>{{ $asset->merk }}</td>
                                         <td>{{ $asset->model }}</td>
                                         <td>{{ $asset->serial_number }}</td>
-                                        <td>{{ $asset->status }}</td>
+                                        @if($asset->status == "digunakan")
+                                        <td><span class="badge bg-success">{{ $asset->status }}</span></td>
+                                        @else
+                                        <td><span class="badge bg-secondary">{{ $asset->status }}</span></td>
+                                        @endif
                                         <td>{{ $asset->location->nama_lokasi }}</td>
                                         <td class="text-capitalize"><a href="/assets/{{ $asset->id }}/edit" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
                                         </tr>

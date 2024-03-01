@@ -26,6 +26,7 @@ class TicketDetailController extends Controller
 
         $ticket     = Ticket::where('id', $id)->first();
         $agentId    = $ticket->agent_id;
+        $ticketArea = $ticket->ticket_area;
         $getAgent   = Agent::where('id', $agentId)->first();
         $locationId = $getAgent->location_id;
 
@@ -44,7 +45,11 @@ class TicketDetailController extends Controller
         $ext = substr($ticket->file, -4);
 
         if($role == "service desk"){
-            $agents = Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get();
+            if($ticketArea == "ho"){
+                $agents = Agent::where([['location_id', $locationId],['pic_ticket', 'ho'],['status', 'present']])->whereNotIn('id', [$agentId])->get();
+            }else{
+                $agents = Agent::where([['location_id', $locationId],['pic_ticket', 'store'],['status', 'present']])->whereNotIn('id', [$agentId])->get();
+            }
         }else{
             $agents = Agent::where([['location_id', $locationId],['id', $sdId]])->get();
         }

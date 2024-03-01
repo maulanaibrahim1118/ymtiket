@@ -33,15 +33,13 @@ class AssetController extends Controller
      */
     public function create()
     {
-        $statuses   = ["digunakan", "stock"];
         return view('contents.asset.create', [
             "url"               => "",
             "title"             => "Create Asset",
             "path"              => "Asset",
             "path2"             => "Tambah",
             "category_assets"   => Category_asset::orderBy('nama_kategori', 'ASC')->get(),
-            "locations"         => Location::orderBy('nama_lokasi', 'ASC')->get(),
-            "statuses"          => $statuses
+            "locations"         => Location::orderBy('nama_lokasi', 'ASC')->get()
         ]);
     }
 
@@ -81,7 +79,7 @@ class AssetController extends Controller
             'model.max'                     => 'Ketik maksimal 30 digit!',
             'serial_number.required'        => 'Serial Number harus diisi!',
             'serial_number.max'             => 'Ketik maksimal 30 digit!',
-            'status.required'               => 'Status harus dipilih!',
+            'status.required'               => 'Status harus diisi!',
             'location_id.required'          => 'Lokasi harus dipilih!',
             'updated_by.required'           => 'Wajib diisi!'
         ]);
@@ -112,14 +110,12 @@ class AssetController extends Controller
      */
     public function edit(Asset $asset)
     {
-        $statuses   = ["digunakan", "stock"];
         return view('contents.asset.edit', [
             "title"             => "Edit Asset",
             "path"              => "Asset",
             "path2"             => "Edit",
             "category_assets"   => Category_asset::orderBy('nama_kategori', 'ASC')->get(),
             "locations"         => Location::orderBy('nama_lokasi', 'ASC')->get(),
-            "statuses"          => $statuses,
             "asset"             => $asset
         ]);
     }
@@ -166,7 +162,7 @@ class AssetController extends Controller
             'model.max'                     => 'Ketik maksimal 30 digit!',
             'serial_number.required'        => 'Serial Number harus diisi!',
             'serial_number.max'             => 'Ketik maksimal 30 digit!',
-            'status.required'               => 'Status harus dipilih!',
+            'status.required'               => 'Status harus diisi!',
             'location_id.required'          => 'Lokasi harus dipilih!',
             'updated_by.required'           => 'Wajib diisi!'
         ]);

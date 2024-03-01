@@ -93,27 +93,6 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <label for="status" class="form-label">Status</label>
-                                        <select class="form-select @error('status') is-invalid @enderror" name="status" id="status">
-                                            <option selected>Choose...</option>
-                                            @for($i=0; $i < count($statuses); $i++){
-                                                @if(old('status', $asset->status) == $statuses[$i])
-                                                <option selected value="{{ $statuses[$i] }}">{{ ucwords($statuses[$i]) }}</option>
-                                                @else
-                                                <option value="{{ $statuses[$i] }}">{{ ucwords($statuses[$i]) }}</option>
-                                                @endif
-                                            }@endfor
-                                        </select>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('status')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    
                                     <div class="col-md-3">
                                         <label for="location_id" class="form-label">Lokasi</label>
                                         <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location_id" value="{{ old('location_id') }}">
@@ -136,6 +115,7 @@
                                     </div>
 
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                    <input type="text" name="status" value="digunakan" hidden>
 
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-2 mb-0"></p>

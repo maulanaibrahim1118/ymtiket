@@ -44,6 +44,27 @@
                                         @enderror
                                     </div>
 
+                                    <div class="col-md-2">
+                                        <label for="asset_change" class="form-label">Asset Change</label>
+                                        <select class="form-select @error('asset_change') is-invalid @enderror" name="asset_change" id="asset_change">
+                                            <option selected disabled>Choose...</option>
+                                            @for($i=0; $i < count($assetChange); $i++){
+                                                @if(old('asset_change') == $assetChange[$i])
+                                                <option selected value="{{ $assetChange[$i] }}">{{ ucwords($assetChange[$i]) }}</option>
+                                                @else
+                                                <option value="{{ $assetChange[$i] }}">{{ ucwords($assetChange[$i]) }}</option>
+                                                @endif
+                                            }@endfor
+                                        </select>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('asset_change')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="url" value="/category-sub-tickets/{{ encrypt(auth()->user()->location_id) }}" hidden>
 

@@ -43,7 +43,9 @@ Revisi:
 13. Antrian ticket untuk agent sesuai lokasi (HO/Store). (done)
 -->
 14. Filter Dashboard per Agent.
-15. Status Barang Asset berubah jika kondisi barang tidak dapat di perbaiki. (Parameter berdasarkan sub category ticket).
+<!--
+15. Status Barang Asset berubah jika kondisi barang tidak dapat di perbaiki. (Parameter berdasarkan sub category ticket). (done)
+-->
 16. Membuat API (generate setiap 30 menit).
 
 Git Commit:

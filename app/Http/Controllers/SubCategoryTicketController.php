@@ -41,15 +41,17 @@ class SubCategoryTicketController extends Controller
      */
     public function create($id)
     {
-        $locationId = decrypt($id);
-        $data       = Category_ticket::where('location_id', $locationId)->get();
+        $locationId     = decrypt($id);
+        $data           = Category_ticket::where('location_id', $locationId)->get();
+        $assetChange    = ["ya", "tidak"];
 
         return view('contents.sub_category_ticket.create', [
             "url"               => "",
             "title"             => "Create Sub Category Ticket",
             "path"              => "Sub Category Ticket",
             "path2"             => "Tambah",
-            "category_tickets"  => $data
+            "category_tickets"  => $data,
+            "assetChange"       => $assetChange
         ]);
     }
 
@@ -65,6 +67,7 @@ class SubCategoryTicketController extends Controller
         $validatedData = $request->validate([
             'nama_sub_kategori'     => 'required|min:5|max:50|unique:sub_category_tickets',
             'category_ticket_id'    => 'required',
+            'asset_change'          => 'required',
             'updated_by'            => 'required'
         ],
         // Create custom notification for the validation request
@@ -74,6 +77,7 @@ class SubCategoryTicketController extends Controller
             'nama_sub_kategori.max'         => 'Ketik maksimal 50 digit!',
             'unique'                        => 'Nama Kategori Ticket sudah ada!',
             'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
+            'asset_change.required'         => 'Asset Change harus dipilih!',
             'updated_by.required'           => 'Wajib diisi!'
         ]);
 
@@ -81,6 +85,7 @@ class SubCategoryTicketController extends Controller
         $sct                        = new Sub_category_ticket;
         $sct->nama_sub_kategori     = ucwords($request['nama_sub_kategori']);
         $sct->category_ticket_id    = $request['category_ticket_id'];
+        $sct->asset_change          = $request['asset_change'];
         $sct->updated_by            = $request['updated_by'];
         $sct->save();
 
@@ -109,15 +114,17 @@ class SubCategoryTicketController extends Controller
      */
     public function edit( $id = 0, Sub_category_ticket $category_sub_ticket)
     {
-        $locationId = decrypt($id);
-        $data       = Category_ticket::where('location_id', $locationId)->get();
+        $locationId     = decrypt($id);
+        $data           = Category_ticket::where('location_id', $locationId)->get();
+        $assetChange    = ["ya", "tidak"];
 
         return view('contents.sub_category_ticket.edit', [
             "title"             => "Edit Sub Category Ticket",
             "path"              => "Sub Category Ticket",
             "path2"             => "Edit",
             "sct"               => $category_sub_ticket,
-            "category_tickets"  => $data
+            "category_tickets"  => $data,
+            "assetChange"       => $assetChange
         ]);
     }
 
@@ -133,6 +140,7 @@ class SubCategoryTicketController extends Controller
         // Validating data request
         $rules = [
             'category_ticket_id'    => 'required',
+            'asset_change'          => 'required',
             'updated_by'            => 'required'
         ];
 
@@ -148,12 +156,14 @@ class SubCategoryTicketController extends Controller
             'nama_sub_kategori.max'         => 'Ketik maksimal 50 digit!',
             'unique'                        => 'Nama Kategori Ticket sudah ada!',
             'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
+            'asset_change.required'         => 'Asset Change harus dipilih!',
             'updated_by.required'           => 'Wajib diisi!'
         ]);
         
         Sub_category_ticket::where('id', $category_sub_ticket->id)->update([
             'nama_sub_kategori'     => ucwords($request['nama_sub_kategori']),
             'category_ticket_id'    => $request['category_ticket_id'],
+            'asset_change'          => $request['asset_change'],
             'updated_by'            => $request['updated_by']
         ]);
 

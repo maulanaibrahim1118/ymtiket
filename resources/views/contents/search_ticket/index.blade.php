@@ -150,6 +150,15 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-capitalize">
+                                                    @if($countDetail == 0) 
+                                                    <tr>
+                                                        @if($ticket->status == "created")
+                                                        <td colspan="5" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
+                                                        @else
+                                                        <td colspan="5" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
+                                                        @endif
+                                                    </tr>
+                                                    @else
                                                     @foreach($ticket_details as $td)
                                                     <tr>
                                                     <td>{{ $td->jenis_ticket }}</td>
@@ -159,6 +168,7 @@
                                                     <td>{{ $td->agent->nama_agent }}</td>
                                                     </tr>
                                                     @endforeach
+                                                    @endif
                                                 </tbody>
                                             </table>
                                         </div>

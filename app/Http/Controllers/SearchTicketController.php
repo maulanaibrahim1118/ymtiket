@@ -25,6 +25,7 @@ class SearchTicketController extends Controller
                     "path"              => "Ticket",
                     "path2"             => "Detail",
                     "ticket"            => $ticket,
+                    "countDetail"       => Ticket_detail::where('ticket_id', $ticketId)->count(),
                     "ticket_details"    => Ticket_detail::where('ticket_id', $ticketId)->get()
                 ]);
             }

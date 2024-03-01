@@ -21,7 +21,7 @@ class CreateAssetsTable extends Migration
             $table->string('merk', 30);
             $table->string('model', 30);
             $table->string('serial_number', 30);
-            $table->enum('status', ['digunakan', 'stock']);
+            $table->enum('status', ['digunakan', 'tidak digunakan']);
             $table->bigInteger('location_id');
             $table->string('updated_by', 40);
             $table->timestamps();

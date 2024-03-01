@@ -70,8 +70,8 @@ class TicketController extends Controller
             "title"         => "Ticket",
             "path"          => "Ticket",
             "path2"         => "Ticket",
-            "hoAgents"      => Agent::where([['location_id', $locationId],['pic_ticket', 'ho']])->whereNotIn('id', [$agentId])->get(),
-            "storeAgents"   => Agent::where([['location_id', $locationId],['pic_ticket', 'store']])->whereNotIn('id', [$agentId])->get(),
+            "hoAgents"      => Agent::where([['location_id', $locationId],['pic_ticket', 'ho'],['status', 'present']])->whereNotIn('id', [$agentId])->get(),
+            "storeAgents"   => Agent::where([['location_id', $locationId],['pic_ticket', 'store'],['status', 'present']])->whereNotIn('id', [$agentId])->get(),
             "tickets"       => $tickets
         ]);
     }
@@ -152,7 +152,7 @@ class TicketController extends Controller
 
     public function getAssets($id = 0)
     {
-        $data = Asset::where('location_id', $id)->get();
+        $data = Asset::where([['location_id', $id],['status', 'digunakan']])->get();
         return response()->json($data);
     }
 
@@ -356,7 +356,7 @@ class TicketController extends Controller
             'ticket_for'        => 'required',
             'kendala'           => 'required|min:5|max:50',
             'detail_kendala'    => 'required|min:10',
-            'file'              => 'required|max:1024',
+            'file'              => 'max:1024',
             'updated_by'        => 'required'
         ];
 
@@ -372,7 +372,6 @@ class TicketController extends Controller
             'detail_kendala.required'   => 'Detail Kendala harus diisi!',
             'detail_kendala.min'        => 'Ketik minimal 10 digit!',
             'updated_by.required'       => 'Wajib diisi!',
-            'file.required'             => 'Lampiran harus diisi!',
             'file.max'                  => 'Maksimal ukuran file 1Mb!',
         ]);
 
@@ -744,7 +743,6 @@ class TicketController extends Controller
         $now            = Carbon::parse($now);
         $processedTime1 = $processAt1->diffInSeconds($now);
 
-
         // Mencari lamanya ticket di proses berdasarkan agent/service desk
         $getDetail      = Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->first();
         $processAt2     = Carbon::parse($getDetail->process_at);
@@ -752,6 +750,20 @@ class TicketController extends Controller
         $pendingTime    = $getDetail->pending_time;
         $processedTime2 = $processAt2->diffInSeconds($now);
         $processedTime3 = $processedTime2-$pendingTime;
+
+        // Mencari Sub Category ID untuk mendapatkan data asset_change
+        $subCategoryId  = $getDetail->sub_category_ticket_id;
+        $subCategory    = Sub_category_ticket::where('id', $subCategoryId)->first();
+        $assetChange    = $subCategory->asset_change;
+
+        // Jika Sub Category Ticket tersebut 
+        if($assetChange == "ya"){
+            $assetId    = $getTicket->asset_id;
+            
+            Asset::where('id', $assetId)->update([
+                'status'    => "tidak digunakan"
+            ]);
+        }
 
         Ticket::where('id', $id)->update([
             'status'            => "resolved",

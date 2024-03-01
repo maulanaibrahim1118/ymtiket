@@ -88,7 +88,7 @@ class DashboardController extends Controller
                 "finished"      => $finished,
                 "unClosed"      => $unClosed
             ]);
-        }else{ // Jika role Agent / Service Desk
+        }else{ 
             if($role == "service desk"){
                 // Menghitung Total Ticket Service Desk
                 $total          = Ticket::where('ticket_for', $location)->whereNotIn('status', ['deleted'])->count();
