@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Agent;
 use App\Asset;
@@ -45,95 +46,90 @@ class DashboardController extends Controller
 
             if($positionId == "2"){ // Jika jabatan Chief
                 $total      = Ticket::where('ticket_area', 'like', $ticketChief.'%')->whereNotIn('status', ['deleted'])->count();
+                $unProcess  = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'created']])->count();
                 $onProcess  = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'onprocess']])->count();
                 $pending    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'pending']])->count();
                 $finished   = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'resolved']])
-                    ->orWhere([['ticket_area', 'like', $ticketChief.'%'],['status', 'finished']])->count();
+                                    ->orWhere([['ticket_area', 'like', $ticketChief.'%'],['status', 'finished']])->count();
+
                 // Menampilkan Data Ticket yang belum di Close
-                $unClosed   = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
+                $data1   = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
             }elseif($positionId == "6"){ // Jika jabatan Koordinator Wilayah
                 $total      = Ticket::where('ticket_area', $ticketKorwil)->whereNotIn('status', ['deleted'])->count();
+                $unProcess  = Ticket::where([['ticket_area', $ticketKorwil],['status', 'created']])->count();
                 $onProcess  = Ticket::where([['ticket_area', $ticketKorwil],['status', 'onprocess']])->count();
                 $pending    = Ticket::where([['ticket_area', $ticketKorwil],['status', 'pending']])->count();
                 $finished   = Ticket::where([['ticket_area', $ticketKorwil],['status', 'resolved']])
-                    ->orWhere([['ticket_area', $ticketKorwil],['status', 'finished']])->count();
+                                    ->orWhere([['ticket_area', $ticketKorwil],['status', 'finished']])->count();
+
                 // Menampilkan Data Ticket yang belum di Close
-                $unClosed   = Ticket::where([['ticket_area', $ticketKorwil],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
+                $data1   = Ticket::where([['ticket_area', $ticketKorwil],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
             }elseif($positionId == "7"){ // Jika jabatan Manager
                 $total      = Ticket::where('ticket_area', 'like', $area.'%')->whereNotIn('status', ['deleted'])->count();
+                $unProcess  = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'created']])->count();
                 $onProcess  = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'onprocess']])->count();
                 $pending    = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'pending']])->count();
                 $finished   = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'resolved']])
-                    ->orWhere([['ticket_area', 'like', $area.'%'],['status', 'finished']])->count();
+                                    ->orWhere([['ticket_area', 'like', $area.'%'],['status', 'finished']])->count();
+
                 // Menampilkan Data Ticket yang belum di Close
-                $unClosed   = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
+                $data1      = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
             }else{ // Jika jabatan selain Korwil, Chief dan Manager
                 $total      = Ticket::where('location_id', $locationId)->whereNotIn('status', ['deleted'])->count();
+                $unProcess  = Ticket::where([['location_id', $locationId],['status', 'created']])->count();
                 $onProcess  = Ticket::where([['location_id', $locationId],['status', 'onprocess']])->count();
                 $pending    = Ticket::where([['location_id', $locationId],['status', 'pending']])->count();
                 $finished   = Ticket::where([['location_id', $locationId],['status', 'resolved']])
-                    ->orWhere([['location_id', $locationId],['status', 'finished']])->count();
-                // Menampilkan Data Ticket yang belum di Close                
-                $unClosed   = Ticket::where([['location_id', $locationId],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
+                                    ->orWhere([['location_id', $locationId],['status', 'finished']])->count();
+
+                // Menampilkan Data Ticket yang belum di Close
+                $data1      = Ticket::where([['location_id', $locationId],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
             }
 
-            return view('contents.dashboard.index', [
-                "url"           => "",
-                "title"         => "Dashboard",
-                "path"          => "Dashboard",
-                "path2"         => "Dashboard",
-                "total"         => $total,
-                "onProcess"     => $onProcess,
-                "pending"       => $pending,
-                "finished"      => $finished,
-                "unClosed"      => $unClosed
-            ]);
+            $dataArray      = [$total, $unProcess, $onProcess, $pending, $finished];
+            $data2          = 0;
+            $data3          = 0;
+            $filterArray    = ["", ""];
         }else{ 
             if($role == "service desk"){
                 // Menghitung Total Ticket Service Desk
-                $total          = Ticket::where('ticket_for', $location)->whereNotIn('status', ['deleted'])->count();
-                $resolved       = Ticket::where([['ticket_for', $location],['status', 'resolved']])
+                $total      = Ticket::where('ticket_for', $location)->whereNotIn('status', ['deleted'])->count();
+                $unProcess  = Ticket::where([['ticket_for', $location],['status', 'created']])->count();
+                $onProcess  = Ticket::where([['ticket_for', $location],['status', 'onprocess']])->count();
+                $pending    = Ticket::where([['ticket_for', $location],['status', 'pending']])->count();
+                $resolved   = Ticket::where([['ticket_for', $location],['status', 'resolved']])
                     ->orWhere([['ticket_for', $location],['status', 'finished']])
                     ->count();
-                $assigned       = 0;
 
                 // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
                 $workTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya']])->whereNotIn('status', ['deleted'])->count();
                 $freeTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'tidak']])->whereNotIn('status', ['deleted'])->count();
 
-                // Menghitung Workload Service Desk
-                $processedTime  = Ticket_detail::where('agent_id', $agentId)->sum('processed_time');
-                $pendingTime    = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->sum('pending_time');
-                $workload       = $processedTime-$pendingTime;
-
-                // Menghitung Waktu Rata-rata Ticket Resolved
-                $resolvedCount  = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->count();
-                $resolvedTime   = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->sum('processed_time');
-
-                if($resolvedCount == 0){
-                    $resolvedAvg    = 0;
-                    $roundedAvg     = 0;
-                }else {
-                    $resolvedAvg    = ($resolvedTime-$pendingTime)/$resolvedCount;
-                    $roundedAvg     = round($resolvedAvg);
-                }
-
                 // Menghitung Total Ticket by Asset
                 $asset  = Ticket::where('ticket_for', $location)->whereNotIn('status', ['deleted'])->distinct()->count('asset_id');
-                // $asset  = Asset::withCount(['ticket' => function ($query) use ($location) {
-                //     $query->where('ticket_for', $location)->whereNotIn('status', ['deleted']);
-                // }])->count();
 
                 // Menghitung Total Kategori Kendala
-                $category       = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
-                    ->where('category_tickets.location_id', $locationId)
-                    ->count();
+                $category   = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')
+                ->where('tickets.ticket_for', $location)->distinct()->count('ticket_details.sub_category_ticket_id');
 
-                $agent      = Agent::where('nik', $nik)->first();
-                $onProcess  = Ticket::where([['ticket_for', $location],['status', 'onprocess']])
-                                    ->orWhere([['ticket_for', $location],['status', 'pending'],['assigned', 'tidak']])->orderBy('created_at', 'DESC')->get();
-                $newTicket  = Ticket::where([['ticket_for', $location],['status', 'created']])
-                                    ->orWhere([['ticket_for', $location],['status', 'pending'],['assigned', 'ya']])->orderBy('created_at', 'DESC')->get();
+                $dataArray  = [$total, $unProcess, $onProcess, $pending, $resolved, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
+
+                $data1 = Agent::where('location_id', $locationId)
+                                ->withCount('ticket_detail')
+                                ->select(
+                                    'agents.*', 
+                                    DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),
+                                    DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "created") as ticket_unprocessed'),
+                                    DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted","resolved","finished","created")) as ticket_onprocess'),
+                                    DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted","onprocess","pending","created")) as ticket_finish'),
+                                    DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
+                                    DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
+                                )
+                                ->get();
+
+                $data2 = Ticket::where([['status','created'],['is_queue', 'tidak'],['assigned', 'tidak']])->get();
+                $data3 = Ticket::where([['status','created'],['is_queue', 'ya']])->get();
+                $filterArray = ["", ""];
             }else{
                 // Menghitung Total Ticket Agent
                 $total          = Ticket::where('agent_id', $agentId)->whereNotIn('status', ['deleted'])->count();
@@ -141,10 +137,6 @@ class DashboardController extends Controller
                     ->orWhere([['agent_id', $agentId],['status', 'finished']])
                     ->count();
                 $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned']])->count();
-
-                // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
-                $workTimeTicket = 0;
-                $freeTimeTicket = 0;
 
                 // Menghitung Workload Agent
                 $processedTime  = Ticket_detail::where('agent_id', $agentId)->sum('processed_time');
@@ -163,203 +155,28 @@ class DashboardController extends Controller
                     $roundedAvg     = round($resolvedAvg);
                 }
 
-                // Menghitung Total Ticket by Asset
-                $asset  = 0;
+                $dataArray  = [$total, $resolved, $assigned, $workload, $roundedAvg];
 
-                // Menghitung Total Kategori Kendala
-                $category       = 0;
-
-                $agent      = Agent::where('nik', $nik)->first();
-                $onProcess  = Ticket::where([['agent_id', $agentId],['status', 'onprocess']])
-                                    ->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'tidak']])->get();
-                $newTicket  = Ticket::where([['agent_id', $agentId],['status', 'created']])
+                $data1  = Ticket::where([['agent_id', $agentId],['status', 'created']])
                                     ->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'ya']])->get();
-            }
-
-            return view('contents.dashboard.index', [
-                "url"               => "",
-                "title"             => "Dashboard",
-                "path"              => "Dashboard",
-                "path2"             => "Dashboard",
-                "agent"             => $agent,
-                "onProcess"         => $onProcess,
-                "newTicket"         => $newTicket,
-                "total"             => $total,
-                "resolved"          => $resolved,
-                "assigned"          => $assigned,
-                "asset"             => $asset,
-                "category"          => $category,
-                "workTimeTicket"    => $workTimeTicket,
-                "freeTimeTicket"    => $freeTimeTicket,
-                "workload"          => $workload,
-                "roundedAvg"        => $roundedAvg
-            ]);
-        }
-    }
-
-    
-
-    public function ticket($status = 0, $filter = 0, $id = 0, $role = 0)
-    {
-        $status     = decrypt($status);
-        $filter     = decrypt($filter);
-        $id         = decrypt($id);
-        $role       = decrypt($role);
-        $url        = $status;
-
-        if($filter == "today"){
-            $filter2    = date('Y-m-d');
-            $path2      = "Hari Ini";
-        }elseif($filter == "monthly"){
-            $filter2    = date('Y-m');
-            $path2      = "Bulan Ini";
-        }elseif($filter == "yearly"){
-            $filter2    = date('Y');
-            $path2      = "Tahun Ini";
-        }else{
-            $filter2    = "";
-            $path2      = "All";
-        }
-
-        $getUser    = User::where('id', $id)->first();
-        $nik        = $getUser['nik'];
-        $location   = $getUser->location->nama_lokasi;
-        $locationId = $getUser->location_id;
-        $positionId = $getUser['position_id'];
-        $getAgent   = Agent::where('nik', $nik)->first();
-        $agentId    = $getAgent['id'];
-
-        if($role == "client"){ // Jika role Client
-            // Mencari nama lokasi user untuk parameter ticket_for atau menampilkan halaman ticket Service Desk
-            $getLocation    = Location::where('id', $locationId)->first();
-            $namaLokasi     = $getLocation['nama_lokasi'];
-
-            // Mencari area, regional, wilayah user untuk parameter menampilkan halaman ticket bagi Manager, Chief, Korwil
-            $area           = substr($getLocation['area'], -1);
-            $regional       = substr($getLocation['regional'], -1);
-            $wilayah        = substr($getLocation['wilayah'], -2);
-            $ticketKorwil   = $area.$regional.$wilayah;
-            $ticketChief    = $area.$regional;
-
-            if($positionId == "2"){ // Jika jabatan Chief
-                if($status == "All"){
-                    $url        = "";
-                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
-                }elseif($status == "Selesai"){
-                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
-                        ->orWhere([['ticket_area', 'like', $ticketChief.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
-                }else{
-                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', strtolower($status)],['created_at', 'like', $filter2.'%']])->count();
-                }
-            }elseif($positionId == "6"){ // Jika jabatan Koordinator Wilayah
-                if($status == "All"){
-                    $url        = "";
-                    $tickets    = Ticket::where([['ticket_area', $ticketKorwil],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
-                }elseif($status == "Selesai"){
-                    $tickets   = Ticket::where([['ticket_area', $ticketKorwil],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
-                                        ->orWhere([['ticket_area', $ticketKorwil],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
-                }else{
-                    $ticket    = Ticket::where([['ticket_area', $ticketKorwil],['status', strtolower($status)],['created_at', 'like', $filter2.'%']])->count();
-                }
-            }elseif($positionId == "7"){ // Jika jabatan Manager
-                if($status == "All"){
-                    $url        = "";
-                    $tickets      = Ticket::where([['ticket_area', 'like', $area.'%'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
-                }elseif($status == "Selesai"){
-                    $tickets   = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
-                        ->orWhere([['ticket_area', 'like', $area.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
-                }else{
-                    $tickets  = Ticket::where([['ticket_area', 'like', $area.'%'],['status', strtolower($status)],['created_at', 'like', $filter2.'%']])->count();
-                }
-            }else{ // Jika jabatan selain Korwil, Chief dan Manager
-                if($status == "All"){
-                    $url        = "";
-                    $tickets    = Ticket::where([['location_id', $locationId],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
-                }elseif($status == "Selesai"){
-                    $tickets    = Ticket::where([['location_id', $locationId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
-                        ->orWhere([['location_id', $locationId],['status', 'finished'],['created_at', 'like', $filter2.'%']])->get();
-                }else{
-                    $tickets    = Ticket::where([['location_id', $locationId],['status', strtolower($status)],['created_at', 'like', $filter2.'%']])->get();
-                }
-            }
-        }else{ // Jika role Agent / Service Desk
-            if($role == "service desk"){
-                // Menghitung Total Ticket Service Desk
-                if($status == "All"){
-                    $url        = "";
-                    $tickets    = Ticket::where([['ticket_for', $location],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
-                }elseif($status == "Selesai"){
-                    $tickets   = Ticket::where([['ticket_for', $location],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
-                        ->orWhere([['ticket_for', $location],['status', 'finished'],['created_at', 'like', $filter2.'%']])
-                        ->get();
-                }elseif($status == "Jam Kerja"){
-                    $tickets    = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
-                }else{
-                    $tickets    = Ticket::where([['ticket_for', $location],['jam_kerja', 'tidak'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
-                }
-            }else{
-                // Menghitung Total Ticket Agent
-                if($status == "All"){
-                    $url        = "";
-                    $tickets    = Ticket::where([['agent_id', $agentId],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
-                }elseif($status == "Selesai"){
-                    $tickets       = Ticket::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
-                        ->orWhere([['agent_id', $agentId],['status', 'finished'],['created_at', 'like', $filter2.'%']])
-                        ->get();
-                }else{
-                    $tickets       = Ticket::join('ticket_details', 'tickets.id', '=', 'ticket_details.ticket_id')
-                        ->where([['ticket_details.agent_id', $agentId],['ticket_details.status', 'assigned'],['ticket_details.created_at', 'like', $filter2.'%']])
-                        ->get();
-                }
+                $data2  = Ticket::where([['agent_id', $agentId],['status', 'onprocess']])
+                                    ->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'tidak']])->get();
+                $data3  = 0;
+                $filterArray = [$agentId, ""];
             }
         }
 
-        return view('contents.ticket.index', [
-            "url"       => $url,
-            "title"     => "Ticket",
-            "path"      => "Ticket",
-            "path2"     => $status." - ".$path2,
-            "agents"    => Agent::where('location_id', $locationId)->whereNotIn('id', [$agentId])->get(),
-            "tickets"   => $tickets
-        ]);
-    }
-
-    public function asset($status = 0, $filter = 0, $id = 0, $role = 0)
-    {
-        $status     = decrypt($status);
-        $filter     = decrypt($filter);
-        $id         = decrypt($id);
-        $role       = decrypt($role);
-        $url        = $status;
-
-        if($filter == "today"){
-            $filter2    = date('Y-m-d');
-            $path2      = "Hari Ini";
-        }elseif($filter == "monthly"){
-            $filter2    = date('Y-m');
-            $path2      = "Bulan Ini";
-        }elseif($filter == "yearly"){
-            $filter2    = date('Y');
-            $path2      = "Tahun Ini";
-        }else{
-            $filter2    = "";
-            $path2      = "All";
-        }
-
-        $getUser    = User::where('id', $id)->first();
-        $location   = $getUser->location->nama_lokasi;
-        
-        $tickets  = Ticket::where([['created_at', 'like', $filter2.'%'],['ticket_for', $location]])->whereNotIn('status', ['deleted'])
-            ->groupBy('asset_id')
-            ->select('asset_id', \DB::raw('count(*) as asset_count'))
-            ->get();
-
-        return view('contents.asset.countTicket.index', [
-            "url"       => $url,
-            "title"     => "Asset",
-            "path"      => "Asset ",
-            "path2"     => $status." - ".$path2,
-            "tickets"   => $tickets
+        return view('contents.dashboard.index', [
+            "title"         => "Dashboard",
+            "path"          => "Dashboard",
+            "path2"         => "Dashboard",
+            "pathFilter"    => "Semua",
+            "dataArray"     => $dataArray,
+            "filterArray"   => $filterArray,
+            "data1"         => $data1,
+            "data2"         => $data2,
+            "data3"         => $data3,
+            "agents"        => Agent::where('location_id', $locationId)->get()
         ]);
     }
 

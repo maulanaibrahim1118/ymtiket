@@ -78,11 +78,46 @@
 
         <li class="nav-heading pt-3">PAGES</li>
 
+        @can('isServiceDesk')
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('setting*') ? '' : 'collapsed' }}" data-bs-target="#setting" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ Request::is('report*') ? '' : 'collapsed' }}" data-bs-target="#report" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-file-earmark-bar-graph"></i><span>Report</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="report" class="nav-content collapse {{ Request::is('report*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/report-agents" class="{{ Request::is('report-agents*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Agent</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/report-clients" class="{{ Request::is('report-clients*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Client</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/report-sub-categories" class="{{ Request::is('report-sub-categories*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Sub Category</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Report -->
+        @endcan
+
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('settings*') ? '' : 'collapsed' }}" data-bs-target="#setting" data-bs-toggle="collapse" href="#">
                 <i class="bx bx-cog"></i><span>Setting</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="setting" class="nav-content collapse {{ Request::is('setting*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+            <ul id="setting" class="nav-content collapse {{ Request::is('settings*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/settings-change-password" class="{{ Request::is('settings-change-password*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/settings-mutation" class="{{ Request::is('settings-mutation*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Change Password</span>
+                    </a>
+                </li>
             </ul>
         </li><!-- End Setting -->
     </ul>

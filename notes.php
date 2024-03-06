@@ -40,12 +40,13 @@ Revisi:
 10. Nomor Ticket jangan ditampilkan pada saat membuat ticket baru. (done)
 11. Nama Barang ditampilkan saat memilih No. Asset pada Create Ticket. (done)
 12. Bisa mencari ticket di halaman login. (done)
-13. Antrian ticket untuk agent sesuai lokasi (HO/Store). (done)
 -->
+13. Antrian ticket untuk agent sesuai lokasi (HO/Store - TS/HM/Infra).
 14. Filter Dashboard per Agent.
 <!--
 15. Status Barang Asset berubah jika kondisi barang tidak dapat di perbaiki. (Parameter berdasarkan sub category ticket). (done)
 -->
 16. Membuat API (generate setiap 30 menit).
 
-Git Commit:
+Stagging code:
+- Filter Dashboard

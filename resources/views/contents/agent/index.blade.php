@@ -7,26 +7,11 @@
                     <div class="col-12">
                         <div class="card info-card">
                             <div class="filter">
-                                <a class="icon pe-2" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                    </li>
-                
-                                    <li><a class="dropdown-item" href="/agents/{{ encrypt('All') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->location_id) }}">Hari Ini</a></li>
-                                    <li><a class="dropdown-item" href="/agents/{{ encrypt('All') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->location_id) }}">Bulan Ini</a></li>
-                                    <li><a class="dropdown-item" href="/agents/{{ encrypt('All') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->location_id) }}">Tahun Ini</a></li>
-                                </ul>
-
                                 <a class="icon" href="/agents/{{ encrypt(auth()->user()->location_id) }}"><i class="bx bx-revision"></i></a>
                             </div> <!-- End Filter -->
 
                             <div class="card-body pb-0">
-                                @if($path2 == $path)
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary">| All </span></h5>
-                                @else
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary">| {{ $path2 }} </span></h5>
-                                @endif
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-person-workspace me-2"></i>{{ $title }}</h5>
                                 
                                 <div id="table-container">
                                     <table class="table datatable table-hover">
@@ -35,13 +20,11 @@
                                             <th scope="col">NIK</th>
                                             <th scope="col">NAMA AGENT</th>
                                             <th scope="col">PIC TICKET</th>
-                                            <th scope="col">TOTAL TICKET</th>
-                                            <th scope="col">TOTAL WAKTU KERJA</th>
-                                            <th scope="col">RATA-RATA RESOLVED</th>
+                                            <th scope="col">SUB DIVISI</th>
+                                            <th scope="col">DIVISI</th>
                                             <th scope="col">STATUS</th>
-                                            @if($url == "")
+                                            <th scope="col">SWITCH</th>
                                             <th scope="col">AKSI</th>
-                                            @endif
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -50,35 +33,13 @@
                                             <td>{{ $data->nik }}</td>
                                             <td>{{ $data->nama_agent }}</td>
                                             <td>{{ $data->pic_ticket }}</td>
-                                            <td>{{ $data->total_ticket }}</td>
-                                            @php
-                                                $workload = \Carbon\Carbon::parse($data->processed_time-$data->pending_time);
-                                                $average = \Carbon\Carbon::parse($data->avg);
-                                            @endphp
-                                            @if( $data->processed_time-$data->pending_time >= 3600)
-                                            <td>{{ $workload->hour }} Jam {{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
-                                            @elseif( $data->processed_time-$data->pending_time >= 60)
-                                            <td>{{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
-                                            @else
-                                            <td>{{ $workload->second }} Detik</td>
-                                            @endif
-
-                                            @if( $data->avg >= 3600)
-                                            <td>{{ $average->hour }} Jam {{ $average->minute }} Menit {{ $average->second }} Detik</td>
-                                            @elseif( $data->avg >= 60)
-                                            <td>{{ $average->minute }} Menit {{ $average->second }} Detik</td>
-                                            @elseif( $data->avg == 0)
-                                            <td>0 Detik</td>
-                                            @else
-                                            <td>{{ $average->second }} Detik</td>
-                                            @endif
+                                            <td>{{ $data->sub_divisi }}</td>
+                                            <td>{{ $data->location->nama_lokasi }}</td>
                                             @if($data->status == "present")
                                             <td><span class="badge bg-primary">HADIR</span></td>
                                             @else
                                             <td><span class="badge bg-secondary">TIDAK HADIR</span></td>
                                             @endif
-
-                                            @if($url == "")
                                             <td>
                                             <label class="form-check form-switch">
                                                 <input type="checkbox" class="form-check-input" data-id="{{ $data->id }}" {{ $data->status ? 'checked' : '' }}>
@@ -86,7 +47,7 @@
                                                 <span class="slider round"></span>
                                             </label>
                                             </td>
-                                            @endif
+                                            <td class="text-capitalize"><a href="/agents/{{ $data->id }}/edit" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
                                             </tr>
                                             @endforeach
                                         </tbody>

@@ -29,7 +29,7 @@ class AgentController extends Controller
             ->get();
         return view('contents.agent.index', [
             "url"       => "",
-            "title"     => "Agent List",
+            "title"     => "Agent Panel",
             "path"      => "Agent",
             "path2"     => "Agent",
             "data"      => $data

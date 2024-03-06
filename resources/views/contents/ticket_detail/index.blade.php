@@ -358,6 +358,7 @@
                                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                                 <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
                                                 <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                                <input type="text" name="role" value="{{ auth()->user()->role }}" hidden>
                                                 <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
                                                 <button type="submit" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-check-circle me-1"></i> Selesai</button>
                                                 </form>

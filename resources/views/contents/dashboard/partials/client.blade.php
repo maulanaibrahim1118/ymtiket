@@ -2,22 +2,43 @@
     <div class="card">
 
     <div class="filter">
-        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-            <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" href="/dashboard/{{ encrypt('today') }}/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Hari Ini</a></li>
-        <li><a class="dropdown-item" href="/dashboard/{{ encrypt('monthly') }}/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Bulan Ini</a></li>
-        <li><a class="dropdown-item" href="/dashboard/{{ encrypt('yearly') }}/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Tahun Ini</a></li>
-        </ul>
+        <a class="icon" href="#" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bx bx-filter"></i></a>
+        <div class="modal fade" id="filterModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" id="modalContent4">
+                    <div class="modal-header">
+                        <h5 class="modal-title">.:: Filter Report Dashboard</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/dashboard/filter/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" method="GET">
+                    @csrf
+                    <div class="modal-body">
+                        <p>Pilih filter berdasarkan :</p>
+                        <div class="row">
+                        <input name="filter1" value="" hidden>
+                        <div class="col-md-6">
+                            <select class="form-select" name="filter2" id="filter2">
+                                <option value="">Semua Periode</option>
+                                <option value="today">Hari Ini</option>
+                                <option value="monthly">Bulan Ini</option>
+                                <option value="yearly">Tahun Ini</option>
+                            </select>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary"><i class="bx bx-filter-alt me-2"></i>Terapkan</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div><!-- End Filter Modal-->
     </div>
     <div class="card-body">
-        @if($path2 == $path)
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span class="text-secondary">| All</span></h5>
+        @if($pathFilter == "Semua")
+        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard</h5>
         @else
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span class="text-secondary">| {{ $path2 }}</span></h5>
+        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span>| {{ $pathFilter }}</span></h5>
         @endif
     </div>
 
@@ -25,15 +46,7 @@
 </div>
 
 <div class="col-md-3">
-    @if($path2 == "Hari Ini")
-    <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Bulan Ini")
-    <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Tahun Ini")
-    <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @else
-    <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @endif
+    <a href="/tickets/{{ encrypt('all') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     <div class="card info-card secondary-card">
 
     <div class="card-body">
@@ -44,7 +57,7 @@
             <i class="bi bi-ticket-perforated"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $total }}</h6>
+            <h6>{{ $dataArray[0] }}</h6>
             <span class="text-secondary small pt-1 fw-bold">Ticket</span>
         </div>
         </div>
@@ -54,27 +67,41 @@
     </a>
 </div><!-- End Secondary Card -->
 
-<div class="col-md-3">
-    @if($path2 == "Hari Ini")
-    <a href="/tickets/{{ encrypt('Onprocess') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Bulan Ini")
-    <a href="/tickets/{{ encrypt('Onprocess') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Tahun Ini")
-    <a href="/tickets/{{ encrypt('Onprocess') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @else
-    <a href="/tickets/{{ encrypt('Onprocess') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @endif
-    <div class="card info-card warning-card">
+<div class="col-md-2">
+    <a href="/tickets/{{ encrypt('unprocess') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <div class="card info-card primary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Sedang Diproses</h5>
+        <h5 class="card-title">Belum Di Proses</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
             <i class="bi bi-ticket-perforated"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $onProcess }}</h6>
+            <h6>{{ $dataArray[1] }}</h6>
+            <span class="text-primary small pt-1 fw-bold">Ticket</span>
+        </div>
+        </div>
+    </div>
+
+    </div>
+    </a>
+</div><!-- End Secondary Card -->
+
+<div class="col-md-2">
+    <a href="/tickets/{{ encrypt('onprocess') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <div class="card info-card warning-card">
+
+    <div class="card-body">
+        <h5 class="card-title">Sedang Diproses</h5>
+
+        <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+            <i class="bi bi-ticket-perforated"></i>
+        </div>
+        <div class="ps-3">
+            <h6>{{ $dataArray[2] }}</h6>
             <span class="text-warning small pt-1 fw-bold">Ticket</span>
         </div>
         </div>
@@ -84,27 +111,19 @@
     </a>
 </div><!-- End Warning Card -->
 
-<div class="col-md-3">
-    @if($path2 == "Hari Ini")
-    <a href="/tickets/{{ encrypt('Pending') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Bulan Ini")
-    <a href="/tickets/{{ encrypt('Pending') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Tahun Ini")
-    <a href="/tickets/{{ encrypt('Pending') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @else
-    <a href="/tickets/{{ encrypt('Pending') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @endif
+<div class="col-md-2">
+    <a href="/tickets/{{ encrypt('pending') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     <div class="card info-card danger-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Di Pending</h5>
+        <h5 class="card-title">Sedang Di Pending</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
             <i class="bi bi-ticket-perforated"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $pending }}</h6>
+            <h6>{{ $dataArray[3] }}</h6>
             <span class="text-danger small pt-1 fw-bold">Ticket</span>
         </div>
         </div>
@@ -115,15 +134,7 @@
 </div><!-- End Danger Card -->
 
 <div class="col-md-3">
-    @if($path2 == "Hari Ini")
-    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Bulan Ini")
-    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Tahun Ini")
-    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @else
-    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @endif
+    <a href="/tickets/{{ encrypt('selesai') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     <div class="card info-card success-card">
 
     <div class="card-body">
@@ -134,7 +145,7 @@
             <i class="bi bi-ticket-perforated"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $finished }}</h6>
+            <h6>{{ $dataArray[4] }}</h6>
             <span class="text-success small pt-1 fw-bold">Ticket</span>
         </div>
         </div>
@@ -175,37 +186,37 @@
                     </tr>
                 </thead>
                 <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                    @foreach($unClosed as $ticket)
+                    @foreach($data1 as $data)
                     <tr>
-                    <td>{{ $ticket->no_ticket }}</td>
-                    <td>{{ $ticket->kendala }}</td>
-                    <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->detail_kendala }}</td>
+                    <td>{{ $data->no_ticket }}</td>
+                    <td>{{ $data->kendala }}</td>
+                    <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
 
                     {{-- Kolom Dibuat Pada --}}
-                    @if($ticket->jam_kerja == 'ya')
-                    <td>{{ date('d-M-Y H:i:s', strtotime($ticket->created_at)) }} <span class="badge bg-success">JAM KERJA</span></td>
+                    @if($data->jam_kerja == 'ya')
+                    <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-success">JAM KERJA</span></td>
                     @else
-                    <td>{{ date('d-M-Y H:i:s', strtotime($ticket->created_at)) }} <span class="badge bg-warning">BUKAN JAM KERJA</span></td>
+                    <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-warning">BUKAN JAM KERJA</span></td>
                     @endif
 
                     {{-- Kolom PIC --}}
-                    @if($ticket->agent->nama_agent == auth()->user()->nama)
-                    <td>{{ $ticket->agent->nama_agent }} <span class="badge bg-info">saya</span></td>
+                    @if($data->agent->nama_agent == auth()->user()->nama)
+                    <td>{{ $data->agent->nama_agent }} <span class="badge bg-info">saya</span></td>
                     @else
-                    <td>{{ $ticket->agent->nama_agent }}</td>
+                    <td>{{ $data->agent->nama_agent }}</td>
                     @endif
 
                     {{-- Kolom Status --}}
-                    @if($ticket->status == 'created')
-                    <td><span class="badge bg-secondary">{{ $ticket->status }}</span></td>
-                    @elseif($ticket->status == 'onprocess')
-                    <td><span class="badge bg-warning">{{ $ticket->status }}</span></td>
-                    @elseif($ticket->status == 'pending')
-                    <td><span class="badge bg-danger">{{ $ticket->status }}</span></td>
-                    @elseif($ticket->status == 'resolved')
-                    <td><span class="badge bg-primary">{{ $ticket->status }}</span></td>
-                    @elseif($ticket->status == 'finished')
-                    <td><span class="badge bg-success">{{ $ticket->status }}</span></td>
+                    @if($data->status == 'created')
+                    <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'onprocess')
+                    <td><span class="badge bg-warning">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'pending')
+                    <td><span class="badge bg-danger">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'resolved')
+                    <td><span class="badge bg-primary">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'finished')
+                    <td><span class="badge bg-success">{{ $data->status }}</span></td>
                     @endif
                     <tr>
                     @endforeach

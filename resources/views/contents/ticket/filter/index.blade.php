@@ -6,34 +6,13 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card info-card">
-                            <div class="filter">
-                                <a class="icon" href="#"><i class="bx bx-revision"></i></a>
-                            </div> <!-- End Filter -->
-
-                            <div class="card-body pb-0">
+                            <div class="card-body pb-2">
+                                @if($pathFilter == "[Semua Agent] - [Semua Periode]" OR $pathFilter == "[Semua Periode]")
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
+                                @else
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary">| {{ $pathFilter }} </span></h5>
+                                @endif
                                 
-                                @can('manage-ticket')
-                                <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
-                                @endcan
-
-                                <!-- Showing Notification Create Error -->
-                                @if(session()->has('createError'))
-                                <script>
-                                    swal("Mohon Maaf!", "{{ session('createError') }}", "warning", {
-                                        timer: 3000
-                                    });
-                                </script>
-                                @endif
-
-                                @if(session()->has('error'))
-                                <script>
-                                    swal("Gagal!", "{{ session('error') }}", "warning", {
-                                        timer: 3000
-                                    });
-                                </script>
-                                @endif
-
                                 <table class="table datatable table-hover">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
@@ -386,6 +365,10 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                                <div class="col-md-12 border-top mb-3"></div>
+                                <div class="col-md-12 mb-5">
+                                    <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                </div>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->
                     </div><!-- End col-12 -->

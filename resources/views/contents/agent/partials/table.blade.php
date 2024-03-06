@@ -5,10 +5,10 @@
             <th scope="col">NIK</th>
             <th scope="col">NAMA AGENT</th>
             <th scope="col">PIC TICKET</th>
-            <th scope="col">TOTAL TICKET</th>
-            <th scope="col">TOTAL WAKTU KERJA</th>
-            <th scope="col">RATA-RATA RESOLVED</th>
+            <th scope="col">SUB DIVISI</th>
+            <th scope="col">DIVISI</th>
             <th scope="col">STATUS</th>
+            <th scope="col">SWITCH</th>
             <th scope="col">AKSI</th>
             </tr>
         </thead>
@@ -18,28 +18,8 @@
             <td>{{ $data->nik }}</td>
             <td>{{ $data->nama_agent }}</td>
             <td>{{ $data->pic_ticket }}</td>
-            <td>{{ $data->total_ticket }}</td>
-            @php
-                $workload = \Carbon\Carbon::parse($data->processed_time-$data->pending_time);
-                $average = \Carbon\Carbon::parse($data->avg);
-            @endphp
-            @if( $data->processed_time-$data->pending_time >= 3600)
-            <td>{{ $workload->hour }} Jam {{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
-            @elseif( $data->processed_time-$data->pending_time >= 60)
-            <td>{{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
-            @else
-            <td>{{ $workload->second }} Detik</td>
-            @endif
-
-            @if( $data->avg >= 3600)
-            <td>{{ $average->hour }} Jam {{ $average->minute }} Menit {{ $average->second }} Detik</td>
-            @elseif( $data->avg >= 60)
-            <td>{{ $average->minute }} Menit {{ $average->second }} Detik</td>
-            @elseif( $data->avg == 0)
-            <td>0 Detik</td>
-            @else
-            <td>{{ $average->second }} Detik</td>
-            @endif
+            <td>{{ $data->sub_divisi }}</td>
+            <td>{{ $data->location->nama_lokasi }}</td>
             @if($data->status == "present")
             <td><span class="badge bg-primary">HADIR</span></td>
             @else
@@ -52,6 +32,7 @@
                 <span class="slider round"></span>
             </label>
             </td>
+            <td class="text-capitalize"><a href="/agents/{{ $data->id }}/edit" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
             </tr>
             @endforeach
         </tbody>

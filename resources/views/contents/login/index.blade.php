@@ -154,15 +154,17 @@
                     <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                        <h1 class="modal-title fs-5 fw-bold text-success" id="exampleModalLabel">.:: Cari Ticket</h1>
+                        <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">.:: Cari Ticket</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form class="row g-3" action="/search-ticket" method="post">
                                 @csrf
+                                <div class="col-md-12">
                                 <div class="input-group">
                                     <input type="text" name="no_ticket" class="form-control" placeholder="Tuliskan Nomor Ticket..." aria-label="Recipient's username" aria-describedby="button-addon2">
-                                    <button class="btn btn-outline-success" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
+                                    <button class="btn btn-success" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
+                                </div>
                                 </div>
                             </form>
                         </div>

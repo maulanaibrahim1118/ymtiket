@@ -2,22 +2,43 @@
     <div class="card">
 
     <div class="filter">
-        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-        <li class="dropdown-header text-start">
-            <h6>Filter</h6>
-        </li>
-
-        <li><a class="dropdown-item" href="/dashboard/{{ encrypt('today') }}/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Hari Ini</a></li>
-        <li><a class="dropdown-item" href="/dashboard/{{ encrypt('monthly') }}/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Bulan Ini</a></li>
-        <li><a class="dropdown-item" href="/dashboard/{{ encrypt('yearly') }}/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Tahun Ini</a></li>
-        </ul>
+        <a class="icon" href="#" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bx bx-filter"></i></a>
+        <div class="modal fade" id="filterModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" id="modalContent4">
+                    <div class="modal-header">
+                        <h5 class="modal-title">.:: Filter Report Dashboard</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/dashboard/filter/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" method="GET">
+                    @csrf
+                    <div class="modal-body">
+                        <p>Pilih filter berdasarkan :</p>
+                        <div class="row">
+                        <input name="filter1" value="{{ $filterArray[0] }}" hidden>
+                        <div class="col-md-6">
+                            <select class="form-select" name="filter2" id="filter2">
+                                <option value="">Semua Periode</option>
+                                <option value="today">Hari Ini</option>
+                                <option value="monthly">Bulan Ini</option>
+                                <option value="yearly">Tahun Ini</option>
+                            </select>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary"><i class="bx bx-filter-alt me-2"></i>Terapkan</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div><!-- End Filter Modal-->
     </div>
     <div class="card-body">
-        @if($path2 == $path)
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span class="text-secondary">| All</span></h5>
+        @if($pathFilter == "Semua")
+        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard</h5>
         @else
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span class="text-secondary">| {{ $path2 }}</span></h5>
+        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span>| {{ $pathFilter }}</span></h5>
         @endif
     </div>
 
@@ -25,15 +46,7 @@
 </div>
 
 <div class="col-md-2">
-    @if($path2 == "Hari Ini")
-    <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Bulan Ini")
-    <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Tahun Ini")
-    <a href="/tickets/{{ encrypt('All') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @else
-    <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @endif
+    <a href="/tickets/{{ encrypt('all') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     <div class="card info-card secondary-card">
 
     <div class="card-body">
@@ -44,7 +57,7 @@
             <i class="bi bi-ticket-perforated"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $total }}</h6>
+            <h6>{{ $dataArray[0] }}</h6>
             <span class="text-secondary small pt-1 fw-bold">Ticket</span>
         </div>
         </div>
@@ -55,15 +68,7 @@
 </div><!-- End Secondary Card -->
 
 <div class="col-md-2">
-    @if($path2 == "Hari Ini")
-    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Bulan Ini")
-    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Tahun Ini")
-    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @else
-    <a href="/tickets/{{ encrypt('Selesai') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @endif
+    <a href="/tickets/{{ encrypt('selesai') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     <div class="card info-card primary-card">
 
     <div class="card-body">
@@ -74,7 +79,7 @@
             <i class="bi bi-ticket-perforated"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $resolved }}</h6>
+            <h6>{{ $dataArray[1] }}</h6>
             <span class="text-primary small pt-1 fw-bold">Ticket</span>
         </div>
         </div>
@@ -85,15 +90,7 @@
 </div><!-- End Primary Card -->
 
 <div class="col-md-2">
-    @if($path2 == "Hari Ini")
-    <a href="/tickets/{{ encrypt('Assign') }}-{{ encrypt('today') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Bulan Ini")
-    <a href="/tickets/{{ encrypt('Assign') }}-{{ encrypt('monthly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @elseif($path2 == "Tahun Ini")
-    <a href="/tickets/{{ encrypt('Assign') }}-{{ encrypt('yearly') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @else
-    <a href="/tickets/{{ encrypt('Assign') }}-{{ encrypt('all') }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
-    @endif
+    <a href="/tickets/{{ encrypt('assign') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     <div class="card info-card danger-card">
 
     <div class="card-body">
@@ -104,7 +101,7 @@
             <i class="bi bi-ticket-perforated"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $assigned }}</h6>
+            <h6>{{ $dataArray[2] }}</h6>
             <span class="text-danger small pt-1 fw-bold">Ticket</span>
         </div>
         </div>
@@ -127,12 +124,12 @@
         </div>
         <div class="ps-3">
             @php
-                $carbonInstance = \Carbon\Carbon::parse($workload);
+                $carbonInstance = \Carbon\Carbon::parse($dataArray[3]);
             @endphp
-            @if($workload >= 3600)
+            @if($dataArray[3] >= 3600)
             <h6>{{ $carbonInstance->hour }} Jam</h6>
             <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit | {{ $carbonInstance->second }} Detik</span>
-            @elseif($workload >= 60)
+            @elseif($dataArray[3] >= 60)
             <h6>{{ $carbonInstance->minute }} Menit</h6>
             <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->second }} Detik</span>
             @else
@@ -160,12 +157,12 @@
         </div>
         <div class="ps-3">
             @php
-                $carbonInstance = \Carbon\Carbon::parse($roundedAvg);
+                $carbonInstance = \Carbon\Carbon::parse($dataArray[4]);
             @endphp
-            @if($roundedAvg >= 3600)
+            @if($dataArray[4] >= 3600)
             <h6>{{ $carbonInstance->hour }} Jam</h6>
             <span class="text-success small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit | {{ $carbonInstance->second }} Detik</span>
-            @elseif($roundedAvg >= 60)
+            @elseif($dataArray[4] >= 60)
             <h6>{{ $carbonInstance->minute }} Menit</h6>
             <span class="text-success small pt-1 fw-bold">{{ $carbonInstance->second }} Detik</span>
             @else
@@ -183,7 +180,11 @@
 <div class="col-12">
     <div class="card info-table">
         <div class="card-body">
-            <h5 class="card-title">Ticket Belum Diproses</h5>
+            @if($pathFilter == "Semua")
+            <h5 class="card-title">Ticket Belum Di Proses</h5>
+            @else
+            <h5 class="card-title">Ticket Belum Di Proses <span>| {{ $pathFilter }}</span></h5>
+            @endif
 
             <table class="table datatable">
                 <thead class="bg-light" style="height: 45px;font-size:14px;">
@@ -198,47 +199,47 @@
                     </tr>
                 </thead>
                 <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                    @foreach($newTicket as $nt)
+                    @foreach($data1 as $data)
                     <tr>
-                    <td>{{ $nt->no_ticket }}</td>
-                    <td>{{ $nt->kendala }}</td>
-                    <td class="col-2 text-truncate" style="max-width: 50px;">{{ $nt->detail_kendala }}</td>
+                    <td>{{ $data->no_ticket }}</td>
+                    <td>{{ $data->kendala }}</td>
+                    <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
 
                     {{-- Kolom Dibuat Pada --}}
-                    @if($nt->jam_kerja == 'ya')
-                    <td>{{ date('d-M-Y H:i:s', strtotime($nt->created_at)) }} <span class="badge bg-success">JAM KERJA</span></td>
+                    @if($data->jam_kerja == 'ya')
+                    <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-success">JAM KERJA</span></td>
                     @else
-                    <td>{{ date('d-M-Y H:i:s', strtotime($nt->created_at)) }} <span class="badge bg-warning">BUKAN JAM KERJA</span></td>
+                    <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-warning">BUKAN JAM KERJA</span></td>
                     @endif
 
                     {{-- Kolom PIC --}}
-                    @if($nt->agent->nama_agent == auth()->user()->nama)
-                    <td>{{ $nt->agent->nama_agent }} <span class="badge bg-info">saya</span></td>
+                    @if($data->agent->nama_agent == auth()->user()->nama)
+                    <td>{{ $data->agent->nama_agent }} <span class="badge bg-info">saya</span></td>
                     @else
-                    <td>{{ $nt->agent->nama_agent }}</td>
+                    <td>{{ $data->agent->nama_agent }}</td>
                     @endif
 
                     {{-- Kolom Status --}}
-                    @if($nt->status == 'created')
-                    <td><span class="badge bg-secondary">{{ $nt->status }}</span></td>
-                    @elseif($nt->status == 'onprocess')
-                    <td><span class="badge bg-warning">{{ $nt->status }}</span></td>
-                    @elseif($nt->status == 'pending')
-                    <td><span class="badge bg-danger">{{ $nt->status }}</span></td>
-                    @elseif($nt->status == 'resolved')
-                    <td><span class="badge bg-primary">{{ $nt->status }}</span></td>
-                    @elseif($nt->status == 'finished')
-                    <td><span class="badge bg-success">{{ $nt->status }}</span></td>
+                    @if($data->status == 'created')
+                    <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'onprocess')
+                    <td><span class="badge bg-warning">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'pending')
+                    <td><span class="badge bg-danger">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'resolved')
+                    <td><span class="badge bg-primary">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'finished')
+                    <td><span class="badge bg-success">{{ $data->status }}</span></td>
                     @endif
 
                     {{-- Kolom Keterangan --}}
-                    @if($nt->assigned == "ya" AND $nt->status == "created" OR $nt->assigned == "ya" AND $nt->status == "pending")
+                    @if($data->assigned == "ya" AND $data->status == "created" OR $data->assigned == "ya" AND $data->status == "pending")
                     <td><span class="badge bg-primary">direct assign</span></td>
                     @else
-                        @if($nt->is_queue == "ya" AND $nt->status == "created")
+                        @if($data->is_queue == "ya" AND $data->status == "created")
                         <td><span class="badge bg-success">dalam antrian</span></td>
-                        @elseif($nt->is_queue == "tidak" AND $nt->status == "created")
-                            @if($nt->role == "service desk")
+                        @elseif($data->is_queue == "tidak" AND $data->status == "created")
+                            @if($data->role == "service desk")
                             <td><span class="badge bg-secondary">diluar antrian</span></td>
                             @else
                             <td></td>
@@ -257,7 +258,11 @@
 <div class="col-12">
     <div class="card info-table">
         <div class="card-body">
-            <h5 class="card-title">Ticket Sedang Diproses</h5>
+            @if($pathFilter == "Semua")
+            <h5 class="card-title">Ticket Sedang Di Proses</h5>
+            @else
+            <h5 class="card-title">Ticket Sedang Di Proses <span>| {{ $pathFilter }}</span></h5>
+            @endif
 
             <table class="table datatable">
                 <thead class="bg-light" style="height: 45px;font-size:14px;">
@@ -272,47 +277,47 @@
                     </tr>
                 </thead>
                 <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                    @foreach($onProcess as $op)
+                    @foreach($data2 as $data)
                     <tr>
-                    <td>{{ $op->no_ticket }}</td>
-                    <td>{{ $op->kendala }}</td>
-                    <td class="col-2 text-truncate" style="max-width: 50px;">{{ $op->detail_kendala }}</td>
+                    <td>{{ $data->no_ticket }}</td>
+                    <td>{{ $data->kendala }}</td>
+                    <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
 
                     {{-- Kolom Dibuat Pada --}}
-                    @if($op->jam_kerja == 'ya')
-                    <td>{{ date('d-M-Y H:i:s', strtotime($op->created_at)) }} <span class="badge bg-success">JAM KERJA</span></td>
+                    @if($data->jam_kerja == 'ya')
+                    <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-success">JAM KERJA</span></td>
                     @else
-                    <td>{{ date('d-M-Y H:i:s', strtotime($op->created_at)) }} <span class="badge bg-warning">BUKAN JAM KERJA</span></td>
+                    <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-warning">BUKAN JAM KERJA</span></td>
                     @endif
 
                     {{-- Kolom PIC --}}
-                    @if($op->agent->nama_agent == auth()->user()->nama)
-                    <td>{{ $op->agent->nama_agent }} <span class="badge bg-info">saya</span></td>
+                    @if($data->agent->nama_agent == auth()->user()->nama)
+                    <td>{{ $data->agent->nama_agent }} <span class="badge bg-info">saya</span></td>
                     @else
-                    <td>{{ $op->agent->nama_agent }}</td>
+                    <td>{{ $data->agent->nama_agent }}</td>
                     @endif
 
                     {{-- Kolom Status --}}
-                    @if($op->status == 'created')
-                    <td><span class="badge bg-secondary">{{ $op->status }}</span></td>
-                    @elseif($op->status == 'onprocess')
-                    <td><span class="badge bg-warning">{{ $op->status }}</span></td>
-                    @elseif($op->status == 'pending')
-                    <td><span class="badge bg-danger">{{ $op->status }}</span></td>
-                    @elseif($op->status == 'resolved')
-                    <td><span class="badge bg-primary">{{ $op->status }}</span></td>
-                    @elseif($op->status == 'finished')
-                    <td><span class="badge bg-success">{{ $op->status }}</span></td>
+                    @if($data->status == 'created')
+                    <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'onprocess')
+                    <td><span class="badge bg-warning">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'pending')
+                    <td><span class="badge bg-danger">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'resolved')
+                    <td><span class="badge bg-primary">{{ $data->status }}</span></td>
+                    @elseif($data->status == 'finished')
+                    <td><span class="badge bg-success">{{ $data->status }}</span></td>
                     @endif
 
                     {{-- Kolom Keterangan --}}
-                    @if($op->assigned == "ya" AND $op->status == "created" OR $op->assigned == "ya" AND $op->status == "pending")
+                    @if($data->assigned == "ya" AND $data->status == "created" OR $data->assigned == "ya" AND $data->status == "pending")
                     <td><span class="badge bg-primary">direct assign</span></td>
                     @else
-                        @if($op->is_queue == "ya" AND $op->status == "created")
+                        @if($data->is_queue == "ya" AND $data->status == "created")
                         <td><span class="badge bg-success">dalam antrian</span></td>
-                        @elseif($op->is_queue == "tidak" AND $op->status == "created")
-                            @if($op->role == "service desk")
+                        @elseif($data->is_queue == "tidak" AND $data->status == "created")
+                            @if($data->role == "service desk")
                             <td><span class="badge bg-secondary">diluar antrian</span></td>
                             @else
                             <td></td>
