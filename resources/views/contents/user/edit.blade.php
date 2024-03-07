@@ -137,6 +137,57 @@
                                         @enderror
                                     </div>
 
+                                    <script>
+                                        $('#location_id').change(function(){
+                                            var location_id = $(this).val();
+                                            var sub_divisi = $('#sub_divisi');
+                                            if (location_id == 10) {
+                                                sub_divisi.empty();
+                                                sub_divisi.append('<option selected disabled>Choose...</option>');
+                                                sub_divisi.append('<option value="hardware maintenance">Hardware Maintenance</option>');
+                                                sub_divisi.append('<option value="helpdesk">Helpdesk</option>');
+                                                sub_divisi.append('<option value="infrastructur networking">Infrastructur Networking</option>');
+                                                sub_divisi.append('<option value="tech support">Tech Support</option>');
+
+                                                // Aktifkan dropdown sub_divisi
+                                                sub_divisi.prop('disabled', false);
+                                            } else {
+                                                sub_divisi.empty();
+                                                sub_divisi.append('<option selected value="unknown">Tidak Ada</option>');
+                                                sub_divisi.prop('disabled', false);
+                                            }
+                                        });
+                                    </script>
+
+                                    <div class="col-md-2">
+                                        <label for="sub_divisi" class="form-label">Sub Divisi</label>
+                                        @if($user->location_id == 10)
+                                        <select class="form-select @error('sub_divisi') is-invalid @enderror" name="sub_divisi" id="sub_divisi">
+                                            <option selected disabled>Choose...</option>
+                                            @for($i=0; $i < count($subDivisiLists); $i++){
+                                                @if(old('role', $subDivisi[0]) == $subDivisiLists[$i])
+                                                <option selected value="{{ $subDivisiLists[$i] }}">{{ ucwords($subDivisiLists[$i]) }}</option>
+                                                @else
+                                                <option value="{{ $subDivisiLists[$i] }}">{{ ucwords($subDivisiLists[$i]) }}</option>
+                                                @endif
+                                            }@endfor
+                                        </select>
+                                        @else
+                                        <select class="form-select @error('sub_divisi') is-invalid @enderror" name="sub_divisi" id="sub_divisi" disabled>
+                                            @if(old('role', $subDivisi[0]) == $subDivisi[0])
+                                            <option selected value="{{ $subDivisi[0] }}">{{ $subDivisi[1] }}</option>
+                                            @endif
+                                        </select>
+                                        @endif
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('sub_divisi')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
                                     <div class="col-md-2">
                                         <label for="nama_client" class="form-label">No. Telp/Ext</label>
                                         <input type="text" name="telp" pattern="[0-9]+" class="form-control text-capitalize @error('telp') is-invalid @enderror" id="telp" value="{{ old('telp', $user->telp) }}" maxlength="15" title="Tolong di input dalam bentuk nomor." required>

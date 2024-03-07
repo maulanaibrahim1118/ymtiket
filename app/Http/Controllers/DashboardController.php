@@ -125,10 +125,11 @@ class DashboardController extends Controller
                                     DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
                                     DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
                                 )
+                                ->orderBy('sub_divisi', 'ASC')
                                 ->get();
 
-                $data2 = Ticket::where([['status','created'],['is_queue', 'tidak'],['assigned', 'tidak']])->get();
-                $data3 = Ticket::where([['status','created'],['is_queue', 'ya']])->get();
+                $data2 = Ticket::where([['ticket_for', $location],['status','created'],['is_queue', 'tidak'],['assigned', 'tidak']])->get();
+                $data3 = Ticket::where([['ticket_for', $location],['status','created'],['is_queue', 'ya']])->get();
                 $filterArray = ["", ""];
             }else{
                 // Menghitung Total Ticket Agent

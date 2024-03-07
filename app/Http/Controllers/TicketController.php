@@ -65,13 +65,22 @@ class TicketController extends Controller
             $tickets    = Ticket::where([['ticket_for', $namaLokasi],['agent_id', $agentId]])->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
         }
 
+        $hoAgents   = Agent::where([['location_id', $locationId],['sub_divisi', 'hardware maintenance'],['status', 'present']])
+                        ->orWhere([['location_id', $locationId],['pic_ticket', 'ho'],['status', 'present']])
+                        ->whereNotIn('id', [$agentId])
+                        ->get();
+        $storeAgent = Agent::where([['location_id', $locationId],['sub_divisi', 'hardware maintenance'],['status', 'present']])
+                        ->orWhere([['location_id', $locationId],['pic_ticket', 'store'],['status', 'present']])
+                        ->whereNotIn('id', [$agentId])
+                        ->get();
+
         return view('contents.ticket.index', [
             "url"           => "",
             "title"         => "Ticket",
             "path"          => "Ticket",
             "path2"         => "Ticket",
-            "hoAgents"      => Agent::where([['location_id', $locationId],['pic_ticket', 'ho'],['status', 'present']])->whereNotIn('id', [$agentId])->get(),
-            "storeAgents"   => Agent::where([['location_id', $locationId],['pic_ticket', 'store'],['status', 'present']])->whereNotIn('id', [$agentId])->get(),
+            "hoAgents"      => $hoAgents,
+            "storeAgents"   => $storeAgent,
             "tickets"       => $tickets
         ]);
     }
@@ -504,12 +513,27 @@ class TicketController extends Controller
         ]);
     }
 
-    public function queue(Request $request, $id)
+    public function queue(Request $request)
     {
-        Ticket::where('id', $id)->update([
-            'is_queue'      => "ya",
-            'updated_by'    => $request['updated_by']
+        $ticketId   = $request['ticket_id'];
+        $now        = date('d-m-Y H:i:s');
+        $isQueue    = "ya";
+
+        Ticket::where('id', $ticketId)->update([
+            'is_queue'          => $isQueue,
+            'sub_divisi_agent'  => $request['sub_divisi'],
+            'updated_by'        => $request['updated_by']
         ]);
+
+        // Saving data to progress ticket table
+        $progress_ticket                = new Progress_ticket;
+        $progress_ticket->ticket_id     = $ticketId;
+        $progress_ticket->tindakan      = "Ticket sedang dalam antrian";
+        $progress_ticket->status        = "edited";
+        $progress_ticket->process_at    = $now;
+        $progress_ticket->updated_by    = $request['updated_by'];
+        $progress_ticket->save();
+
         return back()->with('success', 'Ticket berhasil di antrikan!');
     }
 
@@ -523,13 +547,15 @@ class TicketController extends Controller
             $getAgent   = Agent::where('id', $request['agent_id'])->first();
             $agentName  = $getAgent->nama_agent;
             $agentId    = $getAgent->id;
+            $subDivisi  = $getAgent->sub_divisi;
             $now        = date('d-m-Y H:i:s');
 
             Ticket::where('id', $request['ticket_id'])->update([
-                'assigned'      => "ya",
-                'agent_id'      => $agentId,
-                'updated_by'    => $request['updated_by'],
-                'role'          => "agent"
+                'assigned'          => "ya",
+                'agent_id'          => $agentId,
+                'sub_divisi_agent'  => $subDivisi,
+                'updated_by'        => $request['updated_by'],
+                'role'              => "agent"
             ]);
 
             // Saving data to progress ticket table
@@ -792,10 +818,11 @@ class TicketController extends Controller
             $nik            = $request['nik'];
             $getAgent       = Agent::where('nik', $nik)->first();
             $agentId2       = $getAgent->id;
-            $picTicket      = $getAgent->pic_ticket;
+            $subDivisi      = $getAgent->sub_divisi;
             $agentStatus    = $getAgent->status;
+            $agentLocation  = $getAgent->location->nama_lokasi;
 
-            $countAntrian   = Ticket::where('is_queue', 'ya')->count();
+            $countAntrian   = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya']])->count();
 
             if($countAntrian == NULL){ // Jika antrian ticket sudah habis
                 return redirect($url)->with('success', 'Ticket telah selesai diproses!');
@@ -803,10 +830,17 @@ class TicketController extends Controller
                 if($agentStatus != 'present'){ // Jika Agent tidak hadir, izin, keluar kota, dll
                     return redirect($url)->with('success', 'Ticket telah selesai diproses!');
                 }else{ // Jika agent hadir di kantor
-                    if($picTicket == "ho"){
-                        $getAntrian     = Ticket::where([['is_queue', 'ya'],['ticket_area', 'ho']])->first();
+                    if($subDivisi == "helpdesk"){
+                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'helpdesk']])->first();
+                    }elseif($subDivisi == "hardware maintenance"){
+                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'hardware maintenance']])->first();
+                    }elseif($subDivisi == "infrastructur networking"){
+                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'infrastructur networking']])->first();
+                    }elseif($subDivisi == "tech support"){
+                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'tech support']])->first();
                     }else{
-                        $getAntrian     = Ticket::where('is_queue', 'ya')->whereNotIn('ticket_area', ['ho'])->first();
+                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'unknown']])->first();
+
                     }
 
                     $ticketId = $getAntrian->id;

@@ -65,7 +65,7 @@ Route::middleware(['auth', 'manage.ticket'])->group(function () {
 Route::middleware(['auth', 'agent.info'])->group(function () {
     Route::put('/tickets/{id}/process1', [TicketController::class, 'process1'])->name('ticket.process1');
     Route::put('/tickets/{id}/process2', [TicketController::class, 'process2'])->name('ticket.process2');
-    Route::put('/tickets/queue{id}', [TicketController::class, 'queue'])->name('ticket.queue');
+    Route::put('/tickets/queue', [TicketController::class, 'queue'])->name('ticket.queue');
     Route::put('/tickets/assign', [TicketController::class, 'assign'])->name('ticket.assign');
     Route::put('/tickets/assign2', [TicketController::class, 'assign2'])->name('ticket.assign2');
     Route::put('/tickets/pending{id}', [TicketController::class, 'pending'])->name('ticket.pending');

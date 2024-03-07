@@ -261,12 +261,14 @@
             <h5 class="card-title">Performa Agent <span>| {{ $pathFilter }}</span></h5>
             @endif
 
-            <table class="table datatable table-hover">
+            <table class="table datatable table-hover" id="performaAgentDatatable">
                 <thead class="bg-light" style="height: 45px;font-size:14px;">
                     <tr>
                     <th scope="col">NIK</th>
                     <th scope="col">NAMA AGENT</th>
+                    @can('isIT')
                     <th scope="col">SUB DIVISI</th>
+                    @endcan
                     <th scope="col">TOTAL TICKET</th>
                     <th scope="col">BELUM DIPROSES</th>
                     <th scope="col">SEDANG DIPROSES</th>
@@ -281,7 +283,9 @@
                     <tr>
                     <td>{{ $data->nik }}</td>
                     <td>{{ $data->nama_agent }}</td>
-                    <td></td>
+                    @can('isIT')
+                    <td>{{ $data->sub_divisi }}</td>
+                    @endcan
                     <td>{{ $data->total_ticket }}</td>
                     <td>{{ $data->ticket_unprocessed }}</td>
                     <td>{{ $data->ticket_onprocess }}</td>
@@ -337,7 +341,9 @@
                     <th scope="col">KENDALA</th>
                     <th scope="col">DETAIL KENDALA</th>
                     <th scope="col">PIC</th>
+                    @can('isIT')
                     <th scope="col">SUB DIVISI</th>
+                    @endcan
                     <th scope="col">STATUS</th>
                     </tr>
                 </thead>
@@ -353,7 +359,9 @@
                     @else
                     <td>{{ $data->agent->nama_agent }}</td>
                     @endif
-                    <td>{{ $data->sub_divisi }}</td>
+                    @can('isIT')
+                    <td>{{ $data->sub_divisi_agent }}</td>
+                    @endcan
                     @if($data->status == 'created')
                     <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
                     @elseif($data->status == 'onprocess')
@@ -391,7 +399,9 @@
                     <th scope="col">NO. TICKET</th>
                     <th scope="col">KENDALA</th>
                     <th scope="col">DETAIL KENDALA</th>
+                    @can('isIT')
                     <th scope="col">SUB DIVISI</th>
+                    @endcan
                     <th scope="col">STATUS</th>
                     </tr>
                 </thead>
@@ -402,7 +412,9 @@
                     <td>{{ $data->no_ticket }}</td>
                     <td>{{ $data->kendala }}</td>
                     <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
-                    <td>{{ $data->sub_divisi }}</td>
+                    @can('isIT')
+                    <td>{{ $data->sub_divisi_agent }}</td>
+                    @endcan
                     @if($data->status == 'created')
                     <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
                     @elseif($data->status == 'onprocess')

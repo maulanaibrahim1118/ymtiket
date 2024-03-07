@@ -4,12 +4,13 @@
             <tr>
             <th scope="col">NIK</th>
             <th scope="col">NAMA AGENT</th>
+            @can('isIT')
             <th scope="col">PIC TICKET</th>
             <th scope="col">SUB DIVISI</th>
+            @endcan
             <th scope="col">DIVISI</th>
             <th scope="col">STATUS</th>
             <th scope="col">SWITCH</th>
-            <th scope="col">AKSI</th>
             </tr>
         </thead>
         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -17,8 +18,10 @@
             <tr>
             <td>{{ $data->nik }}</td>
             <td>{{ $data->nama_agent }}</td>
+            @can('isIT')
             <td>{{ $data->pic_ticket }}</td>
             <td>{{ $data->sub_divisi }}</td>
+            @endcan
             <td>{{ $data->location->nama_lokasi }}</td>
             @if($data->status == "present")
             <td><span class="badge bg-primary">HADIR</span></td>
@@ -32,7 +35,6 @@
                 <span class="slider round"></span>
             </label>
             </td>
-            <td class="text-capitalize"><a href="/agents/{{ $data->id }}/edit" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
             </tr>
             @endforeach
         </tbody>

@@ -18,6 +18,7 @@ class CreateAgentsTable extends Migration
             $table->bigInteger('nik')->unique();
             $table->string('nama_agent', 40);
             $table->bigInteger('location_id');
+            $table->enum('sub_divisi', ['unknown', 'helpdesk', 'hardware maintenance', 'infrastructur networking', 'tech support']);
             $table->enum('pic_ticket', ['all', 'ho', 'store']);
             $table->enum('status', ['present']);
             $table->string('updated_by', 40);
@@ -28,6 +29,7 @@ class CreateAgentsTable extends Migration
             ['nik' => 23010120, 
             'nama_agent' => 'irwan muharramsyah',
             'location_id' => 10,
+            'sub_divisi' => 'tech support',
             'pic_ticket' => 'all',
             'status' => 'present',
             'updated_by' => 'irwan muharramsyah'

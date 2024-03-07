@@ -36,7 +36,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles  = ["client", "service desk", "agent store", "agent head office"];
+        $roles  = ["client", "agent all", "agent head office", "agent store", "service desk"];
 
         return view('contents.user.create', [
             "url"       => "",
@@ -64,6 +64,7 @@ class UserController extends Controller
             'password'      => 'required|min:5|max:191',
             'position_id'   => 'required',
             'location_id'   => 'required',
+            'sub_divisi'    => 'required',
             'telp'          => 'required|min:4|max:15',
             'ip_1'          => 'required',
             'ip_2'          => 'required',
@@ -86,6 +87,7 @@ class UserController extends Controller
             'password.max'          => 'Ketik maksimal 191 digit!',
             'position_id.required'  => 'Jabatan harus dipilih!',
             'location_id.required'  => 'Lokasi harus dipilih!',
+            'sub_divisi.required'   => 'Sub Divisi harus dipilih!',
             'telp.required'         => 'No. Telp/Ext harus diisi!',
             'telp.min'              => 'Ketik minimal 4 digit!',
             'telp.max'              => 'Ketik maksimal 15 digit!',
@@ -126,6 +128,8 @@ class UserController extends Controller
         }else{
             if($role == "service desk"){
                 $picTicket  = "all";
+            }elseif($role == "agent all"){
+                $picTicket  = "all";
             }elseif($role == "agent store"){
                 $picTicket  = "store";
             }else{
@@ -136,6 +140,7 @@ class UserController extends Controller
             $agent->nik         = $data['nik'];
             $agent->nama_agent  = $data['nama'];
             $agent->location_id = $data['location_id'];
+            $agent->sub_divisi  = $data['sub_divisi'];
             $agent->pic_ticket  = $picTicket;
             $agent->status      = 'present';
             $agent->updated_by  = $data['updated_by'];
@@ -166,16 +171,32 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $roles  = ["service desk", "agent store", "agent head office"];
+        $nikAgent   = $user->nik;
+        $agent      = Agent::where('nik', $nikAgent)->first();
+
+        if($agent == NULL){
+            $subDivisi = ['unknown', 'Tidak Ada'];
+        }else{
+            if($agent->sub_divisi == "unknown"){
+                $subDivisi  = [$agent->sub_divisi, 'Tidak Ada'];
+            }else{
+                $subDivisi  = [$agent->sub_divisi, $agent->sub_divisi];
+            }
+        }
+
+        $roles          = ["client", "agent all", "agent head office", "agent store", "service desk"];
+        $subDivisiLists = ["hardware maintenance", "helpdesk", "infrastructur networking", "tech support"];
 
         return view('contents.user.edit', [
-            "title"     => "Edit User",
-            "path"      => "User",
-            "path2"     => "Edit",
-            "positions" => Position::orderBy('nama_jabatan', 'ASC')->get(),
-            "locations" => Location::orderBy('nama_lokasi', 'ASC')->get(),
-            "user"      => $user,
-            "roles"     => $roles
+            "title"             => "Edit User",
+            "path"              => "User",
+            "path2"             => "Edit",
+            "positions"         => Position::orderBy('nama_jabatan', 'ASC')->get(),
+            "locations"         => Location::orderBy('nama_lokasi', 'ASC')->get(),
+            "user"              => $user,
+            "roles"             => $roles,
+            "subDivisi"         => $subDivisi,
+            "subDivisiLists"    => $subDivisiLists
         ]);
     }
 
@@ -228,6 +249,15 @@ class UserController extends Controller
             'updated_by.required'   => 'Wajib diisi!'
         ]);
 
+        // Validating data request
+        $validatedData2 = $request->validate([
+            'sub_divisi'    => 'required'
+        ],
+        // Create custom notification for the validation request
+        [
+            'sub_divisi.required'   => 'Sub Divisi harus dipilih!'
+        ]);
+
         // Updating data to user table
         User::where('id', $user->id)->update($validatedData);
 
@@ -245,6 +275,8 @@ class UserController extends Controller
         }else{
             if($role == "service desk"){
                 $picTicket  = "all";
+            }elseif($role == "agent all"){
+                $picTicket  = "all";
             }elseif($role == "agent store"){
                 $picTicket  = "store";
             }else{
@@ -254,6 +286,7 @@ class UserController extends Controller
             // Updating data to agent table
             Agent::where('nik', $nik)->update([
                 'location_id'   => $data['location_id'],
+                'sub_divisi'    => $data['sub_divisi'],
                 'pic_ticket'    => $picTicket,
                 'updated_by'    => $data['updated_by']
             ]);

@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->bigInteger('location_id');
             $table->string('telp', 15);
             $table->string('ip_address', 15);
-            $table->enum('role', ['client', 'service desk', 'agent store', 'agent head office']);
+            $table->enum('role', ['client', 'agent all', 'agent head office', 'agent store', 'service desk']);
             $table->string('updated_by', 40);
             $table->timestamps();
         });

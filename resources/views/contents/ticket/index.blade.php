@@ -166,21 +166,26 @@
 
                                                     @if($ticket->is_queue == "tidak")
                                                     {{-- Tombol Antrikan --}}
-                                                    <li>
-                                                    <form action="/tickets/queue{{ $ticket->id }}" method="post">
-                                                    @method('put')
-                                                    @csrf
-                                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                    <a href="#">
-                                                    <button type="submit" class="dropdown-item text-capitalize text-success"><i class="bi bi-list-check text-success"></i>Antrikan</button>
-                                                    </a>
-                                                    </form>
-                                                    </li>
+                                                        @if(auth()->user()->location_id == 10)
+                                                        <li><button class="dropdown-item text-capitalize text-success" id="antrikanButton" data-bs-toggle="modal" data-bs-target="#antrikanModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData1(this)"><i class="bi bi-list-check text-success"></i>Antrikan</button></li>
+                                                        @else
+                                                        <li>
+                                                        <form action="/tickets/queue{{ $ticket->id }}" method="post">
+                                                        @method('put')
+                                                        @csrf
+                                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                        <input type="text" name="sub_divisi" value="unknown" hidden>
+                                                        <a href="#">
+                                                        <button type="submit" class="dropdown-item text-capitalize text-success"><i class="bi bi-list-check text-success"></i>Antrikan</button>
+                                                        </a>
+                                                        </form>
+                                                        </li>
+                                                        @endif
                                                     @else
                                                     @endif
-                                                    
+
                                                     {{-- Tombol Assign --}}
-                                                    <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
+                                                    <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
 
                                                     {{-- ========== Jika ticket dibuat oleh service desk ========== --}}
                                                     @if($ticket->user_id == auth()->user()->id)
@@ -278,16 +283,16 @@
                                                 @elseif($ticket->status == "pending" and $ticket->assigned == "tidak")
                                                     {{-- Tombol Proses Ulang --}}
                                                     <li>
-                                                        <form action="/tickets/{{ $ticket->id }}/reProcess1" method="post">
-                                                        @method('put')
-                                                        @csrf
-                                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                        <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                                        <a href="#">
-                                                        <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Proses Ulang</button>
-                                                        </a>
-                                                        </form>
-                                                        </li>
+                                                    <form action="/tickets/{{ $ticket->id }}/reProcess1" method="post">
+                                                    @method('put')
+                                                    @csrf
+                                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                    <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                                    <a href="#">
+                                                    <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Proses Ulang</button>
+                                                    </a>
+                                                    </form>
+                                                    </li>
 
                                                 {{-- Jika status ticket onprocess --}}
                                                 @elseif($ticket->status == "onprocess" and $ticket->assigned == "tidak") {{-- Jika status onprocess dan belum ada detail ticket --}}
@@ -305,24 +310,93 @@
                                         </td>
                                         </tr>
 
-                                        {{-- Assign Modal --}}
-                                        <div class="modal fade w-100" id="assignModal" tabindex="-1">
+                                        {{-- Antrikan Modal --}}
+                                        <div class="modal fade w-100" id="antrikanModal" tabindex="-1">
                                             <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content" id="modalContent">
+                                                <div class="modal-content" id="modalContent1">
                                                 </div>
                                             </div>
                                         </div><!-- End Vertically centered Modal-->
                                         <script>
                                         // Fungsi untuk menampilkan data pada modal
-                                        function tampilkanData(ticket_id) {
+                                        function tampilkanData1(ticket_id) {
                                             // Mendapatkan elemen modalContent
-                                            var modalContent = document.getElementById("modalContent");
+                                            var modalContent1 = document.getElementById("modalContent1");
                                         
                                             // Menampilkan data pada modalContent
                                             if(ticket_id.value === "ho"){
-                                                modalContent.innerHTML  =
+                                                modalContent1.innerHTML  =
                                                 '<div class="modal-header">'+
-                                                    '<h5 class="modal-title">Pilih Nama Agent</h5>'+
+                                                    '<h5 class="modal-title">.:: Pilih Sub Divisi Agent</h5>'+
+                                                    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
+                                                '</div>'+
+                                                '<form action="/tickets/queue" method="post">'+
+                                                '@method("put")'+
+                                                '@csrf'+
+                                                '<div class="modal-body">'+
+                                                    '<div class="col-md-12">'+
+                                                        '<label for="sub_divisi" class="form-label">Sub Divisi</label>'+
+                                                        '<select class="form-select" name="sub_divisi" id="sub_divisi" required>'+
+                                                            '<option selected disabled>Choose...</option>'+
+                                                            '<option value="hardware maintenance">Hardware Maintenance</option>'+
+                                                            '<option value="helpdesk">Helpdesk</option>'+
+                                                        '</select>'+
+                                                    '</div>'+
+                                                    '<input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>'+
+                                                    '<input type="text" id="ticket_id" name="ticket_id" value="'+ticket_id.name+'" hidden>'+
+                                                '</div>'+
+                                                '<div class="modal-footer">'+
+                                                    '<button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Antrikan</button>'+
+                                                '</div>'+
+                                                '</form>';
+                                            }else{
+                                                modalContent1.innerHTML  =
+                                                '<div class="modal-header">'+
+                                                    '<h5 class="modal-title">.:: Pilih Sub Divisi Agent</h5>'+
+                                                    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
+                                                '</div>'+
+                                                '<form action="/tickets/queue" method="post">'+
+                                                '@method("put")'+
+                                                '@csrf'+
+                                                '<div class="modal-body">'+
+                                                    '<div class="col-md-12">'+
+                                                        '<label for="sub_divisi" class="form-label">Sub Divisi</label>'+
+                                                        '<select class="form-select" name="sub_divisi" id="sub_divisi" required>'+
+                                                            '<option selected disabled>Choose...</option>'+
+                                                            '<option value="hardware maintenance">Hardware Maintenance</option>'+
+                                                            '<option value="infrastructur networking">Infrastructur Networking</option>'+
+                                                            '<option value="tech support">Tech Support</option>'+
+                                                        '</select>'+
+                                                    '</div>'+
+                                                    '<input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>'+
+                                                    '<input type="text" id="ticket_id" name="ticket_id" value="'+ticket_id.name+'" hidden>'+
+                                                '</div>'+
+                                                '<div class="modal-footer">'+
+                                                    '<button type="submit" class="btn btn-primary"><i class="bx bx-share me-2"></i>Assign</button>'+
+                                                '</div>'+
+                                                '</form>';
+                                            }
+                                        }
+                                        </script>
+
+                                        {{-- Assign Modal --}}
+                                        <div class="modal fade w-100" id="assignModal" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content" id="modalContent2">
+                                                </div>
+                                            </div>
+                                        </div><!-- End Vertically centered Modal-->
+                                        <script>
+                                        // Fungsi untuk menampilkan data pada modal
+                                        function tampilkanData2(ticket_id) {
+                                            // Mendapatkan elemen modalContent
+                                            var modalContent2 = document.getElementById("modalContent2");
+                                        
+                                            // Menampilkan data pada modalContent
+                                            if(ticket_id.value === "ho"){
+                                                modalContent2.innerHTML  =
+                                                '<div class="modal-header">'+
+                                                    '<h5 class="modal-title">.:: Pilih Nama Agent</h5>'+
                                                     '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
                                                 '</div>'+
                                                 '<form action="/tickets/assign" method="post">'+
@@ -350,9 +424,9 @@
                                                 '</div>'+
                                                 '</form>';
                                             }else{
-                                                modalContent.innerHTML  =
+                                                modalContent2.innerHTML  =
                                                 '<div class="modal-header">'+
-                                                    '<h5 class="modal-title">Pilih Nama Agent</h5>'+
+                                                    '<h5 class="modal-title">.:: Pilih Nama Agent</h5>'+
                                                     '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
                                                 '</div>'+
                                                 '<form action="/tickets/assign" method="post">'+

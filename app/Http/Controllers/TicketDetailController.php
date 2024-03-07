@@ -46,9 +46,15 @@ class TicketDetailController extends Controller
 
         if($role == "service desk"){
             if($ticketArea == "ho"){
-                $agents = Agent::where([['location_id', $locationId],['pic_ticket', 'ho'],['status', 'present']])->whereNotIn('id', [$agentId])->get();
+                $agents = Agent::where([['location_id', $locationId],['sub_divisi', 'hardware maintenance'],['status', 'present']])
+                                ->orWhere([['location_id', $locationId],['pic_ticket', 'ho'],['status', 'present']])
+                                ->whereNotIn('id', [$agentId])
+                                ->get();
             }else{
-                $agents = Agent::where([['location_id', $locationId],['pic_ticket', 'store'],['status', 'present']])->whereNotIn('id', [$agentId])->get();
+                $agents = Agent::where([['location_id', $locationId],['sub_divisi', 'hardware maintenance'],['status', 'present']])
+                                ->orWhere([['location_id', $locationId],['pic_ticket', 'store'],['status', 'present']])
+                                ->whereNotIn('id', [$agentId])
+                                ->get();
             }
         }else{
             $agents = Agent::where([['location_id', $locationId],['id', $sdId]])->get();

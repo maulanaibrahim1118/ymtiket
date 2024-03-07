@@ -13,7 +13,7 @@
                                 <form class="row g-3 mb-3" action="/users" method="POST">
                                     @csrf
                                     <div class="col-lg-2">
-                                        <label for="nik" class="form-label">NIK / Site User</label>
+                                        <label for="nik" class="form-label">NIK / Site Cabang</label>
                                         <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik') }}" maxlength="8" title="Tolong di input dalam bentuk nomor." required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -24,11 +24,8 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-10">
-                                    </div>
-
                                     <div class="col-md-3">
-                                        <label for="nama" class="form-label">Nama User</label>
+                                        <label for="nama" class="form-label">Nama Lengkap</label>
                                         <input type="text" name="nama" class="form-control text-capitalize @error('nama') is-invalid @enderror" id="nama" value="{{ old('nama') }}" required>
 
                                         <!-- Showing notification error for input validation -->
@@ -105,8 +102,8 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="location_id" class="form-label">Lokasi</label>
-                                        <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location_id" value="{{ old('location_id') }}">
+                                        <label for="location_id" class="form-label">Divisi / Cabang</label>
+                                        <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location_id" value="{{ old('location_id') }}" required>
                                             <option selected disabled>Choose...</option>
                                             @foreach($locations as $location)
                                                 @if(old('location_id') == $location->id)
@@ -124,6 +121,43 @@
                                         </div>
                                         @enderror
                                     </div>
+                                    <script>
+                                        $('#location_id').change(function(){
+                                            var location_id = $(this).val();
+                                            var sub_divisi = $('#sub_divisi');
+                                            if (location_id == 10) {
+                                                sub_divisi.empty();
+                                                sub_divisi.append('<option selected disabled>Choose...</option>');
+                                                sub_divisi.append('<option value="hardware maintenance">Hardware Maintenance</option>');
+                                                sub_divisi.append('<option value="helpdesk">Helpdesk</option>');
+                                                sub_divisi.append('<option value="infrastructur networking">Infrastructur Networking</option>');
+                                                sub_divisi.append('<option value="tech support">Tech Support</option>');
+
+                                                // Aktifkan dropdown sub_divisi
+                                                sub_divisi.prop('disabled', false);
+                                            } else {
+                                                sub_divisi.empty();
+                                                sub_divisi.append('<option selected value="unknown">Tidak Ada</option>');
+                                                sub_divisi.prop('disabled', false);
+                                            }
+                                        });
+                                    </script>
+
+                                    <div class="col-md-2">
+                                        <label for="sub_divisi" class="form-label">Sub Divisi</label>
+                                        <select class="form-select @error('sub_divisi') is-invalid @enderror" name="sub_divisi" id="sub_divisi" disabled>
+                                            <option selected disabled>Choose...</option>
+                                        </select>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('sub_divisi')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-4"></div>
 
                                     <div class="col-md-2">
                                         <label for="nama_client" class="form-label">No. Telp/Ext</label>

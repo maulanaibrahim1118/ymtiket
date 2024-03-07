@@ -24,6 +24,7 @@
 
         <li class="nav-heading pt-3">MASTER DATA</li>
 
+        @can('isIT')
         <li class="nav-item">
             <a class="nav-link {{ Request::is('users*') ? '' : 'collapsed' }}" href="/users">
                 <i class="bi bi-person-check"></i>
@@ -51,17 +52,20 @@
                 <span>Location</span>
             </a>
         </li><!-- End Lokasi -->
+        @endcan
 
         <li class="nav-item">
             <a class="nav-link {{ Request::is('category*') ? '' : 'collapsed' }}" data-bs-target="#category" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-ui-radios-grid"></i><span>Category</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="category" class="nav-content collapse {{ Request::is('category*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                @can('isIT')
                 <li>
                     <a href="/category-assets" class="{{ Request::is('category-assets*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Category Asset</span>
                     </a>
                 </li>
+                @endcan
                 <li>
                     <a href="/category-tickets/{{ encrypt(auth()->user()->location_id) }}" class="{{ Request::is('category-tickets*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Category Ticket</span>

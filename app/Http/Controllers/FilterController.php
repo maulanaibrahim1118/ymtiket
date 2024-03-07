@@ -154,8 +154,8 @@ class FilterController extends Controller
                                         DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.created_at LIKE "' . $filter2 . '%") as avg')
                                     )
                                     ->get();
-                $data2 = Ticket::where([['status','created'],['is_queue', 'tidak'],['assigned', 'tidak'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->get();
-                $data3 = Ticket::where([['status','created'],['is_queue', 'ya'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->get();
+                $data2 = Ticket::where([['ticket_for', $location],['status','created'],['is_queue', 'tidak'],['assigned', 'tidak'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->get();
+                $data3 = Ticket::where([['ticket_for', $location],['status','created'],['is_queue', 'ya'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->get();
                 $filterArray = [$agent, $periode];
             }else{ // Role Agent
                 $pathFilter = "[".$pathFilter."]";
@@ -210,6 +210,7 @@ class FilterController extends Controller
         ]);
     }
 
+    // Menampilkan Data Ticket sesuai menu Dashboard yang di klik
     public function filterTicket($status = 0, $filter1 = 0, $filter2 = 0, $id = 0, $role = 0)
     {
         $status     = decrypt($status);
@@ -395,6 +396,7 @@ class FilterController extends Controller
         ]);
     }
 
+    // Menampilkan Asset Berkendala yang telah/sedang ditangani
     public function filterAsset($status = 0, $filter1 = 0, $filter2 = 0, $id = 0, $role = 0)
     {
         $status     = decrypt($status);
@@ -448,6 +450,7 @@ class FilterController extends Controller
         ]);
     }
 
+    // Menampilkan Kendala yang ditangani oleh agent
     public function filterKendala($status = 0, $filter1 = 0, $filter2 = 0, $location = 0)
     {
         $status     = decrypt($status);
@@ -481,10 +484,12 @@ class FilterController extends Controller
             $pathFilter = "Semua Periode";
         }
 
-        $data   = Ticket_detail::where([['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])
-        ->groupBy('sub_category_ticket_id')
-        ->select('sub_category_ticket_id')
-        ->get();
+        // Mendapatkan Lokasi User
+        $getLocation    = Location::where('id', $locationId)->first();
+        $location       = $getLocation->nama_lokasi;
+
+        $data   = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')
+        ->where([['tickets.ticket_for', $location],['ticket_details.agent_id', 'like', '%'.$filter1],['ticket_details.created_at', 'like', $filter2.'%']])->get();
 
         return view('contents.sub_category_ticket.filter.index', [
             "url"           => "",
