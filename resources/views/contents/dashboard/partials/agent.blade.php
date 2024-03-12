@@ -94,7 +94,7 @@
     <div class="card info-card danger-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Di Assign</h5>
+        <h5 class="card-title">Tidak Selesai</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">

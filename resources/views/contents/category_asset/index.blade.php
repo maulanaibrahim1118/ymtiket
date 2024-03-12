@@ -15,7 +15,7 @@
                                 
                                 <a href="/category-assets/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
 
-                                <table class="table datatable">
+                                <table class="table datatable table-hover">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
                                             <th scope="col">NAMA KATEGORI</th>

@@ -128,176 +128,192 @@
                                         <p class="border-bottom mt-1 mb-0"></p>
                                     </div>
                         
-                                    <form class="row g-3" action="/ticket-details/update{{ $td->id }}" method="POST">
-                                    @method('put')
-                                    @csrf
-                                    <div class="col-md-12 mb-0" style="font-size: 14px">
-                                        <table class="table table-bordered">
-                                            <thead class="fw-bold text-center">
-                                                <tr>
-                                                <td>Jenis Ticket*</td>
-                                                <td>Kategori Ticket*</td>
-                                                <td>Sub Kategori Ticket*</td>
-                                                <td class="col-md-2">Biaya</td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                <td>
-                                                <select class="form-select @error('jenis_ticket') is-invalid @enderror" name="jenis_ticket" id="jenis_ticket" value="{{ old('jenis_ticket') }}">
-                                                    <option selected disabled>Choose...</option>
-                                                    @for($i=0; $i < count($types); $i++){
-                                                        @if(old('jenis_ticket', $td->jenis_ticket) == $types[$i])
-                                                        <option selected value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
-                                                        @else
-                                                        <option value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
-                                                        @endif
-                                                    }@endfor
-                                                </select>
-        
-                                                <!-- Showing notification error for input validation -->
-                                                @error('jenis_ticket')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                                @enderror
-                                                </td>
-                                                <td>
-                                                <select class="form-select @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id">
-                                                    <option selected disabled>Choose...</option>
-                                                    @foreach($category_tickets as $ct)
-                                                        @if(old('category_ticket_id', $td->sub_category_ticket->category_ticket_id) == $ct->id)
-                                                        <option selected value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
-                                                        @else
-                                                        <option value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
-
-                                                <!-- Showing notification error for input validation -->
-                                                @error('category_ticket_id')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                                @enderror
-                                                </td>
-                                                <td>
-                                                    <select class="form-select @error('sub_category_ticket_id') is-invalid @enderror" name="sub_category_ticket_id" id="sub_category_ticket_id">
+                                    <form class="row g-3" action="/ticket-details/update{{ $td->id }}" method="POST" onsubmit="return formValidation()">
+                                        @method('put')
+                                        @csrf
+                                        <div class="col-md-12 mb-0" style="font-size: 14px">
+                                            <table class="table table-bordered">
+                                                <thead class="fw-bold text-center">
+                                                    <tr>
+                                                    <td>Jenis Ticket*</td>
+                                                    <td>Kategori Ticket*</td>
+                                                    <td>Sub Kategori Ticket*</td>
+                                                    <td class="col-md-2">Biaya</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                    <td>
+                                                    <select class="form-select @error('jenis_ticket') is-invalid @enderror" name="jenis_ticket" id="jenis_ticket" value="{{ old('jenis_ticket') }}">
                                                         <option selected disabled>Choose...</option>
-                                                        @foreach($sub_category_tickets as $sct)
-                                                            @if(old('sub_category_ticket_id', $td->sub_category_ticket_id) == $sct->id)
-                                                            <option selected value="{{ $sct->id }}">{{ ucwords($sct->nama_sub_kategori) }}</option>
+                                                        @for($i=0; $i < count($types); $i++){
+                                                            @if(old('jenis_ticket', $td->jenis_ticket) == $types[$i])
+                                                            <option selected value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
                                                             @else
-                                                            <option value="{{ $sct->id }}">{{ ucwords($sct->nama_sub_kategori) }}</option>
+                                                            <option value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
                                                             @endif
-                                                        @endforeach
+                                                        }@endfor
                                                     </select>
             
                                                     <!-- Showing notification error for input validation -->
-                                                    @error('sub_category_ticket_id')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                    @enderror
-                                                </td>
-                                                <td>
-                                                <div class="input-group">
-                                                    <span class="input-group-text" id="basic-addon1">IDR</span>
-                                                    <input type="text" name="biaya" class="form-control text-capitalize @error('biaya') is-invalid @enderror" id="biaya" placeholder="0" value="{{ old('biaya', $td->biaya) }}">
-                                                </div>
-                                                </td>
-                                                <script>
-                                                    $(document).ready(function(){
-                                                        var harga = document.getElementById("biaya");
-                                                        harga.addEventListener("keyup", function(e) {
-                                                            // tambahkan 'Rp.' pada saat form di ketik
-                                                            // gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
-                                                            harga.value = formatRupiah(this.value);
-                                                        });
-
-                                                        /* Fungsi formatRupiah */
-                                                        function formatRupiah(angka, prefix) {
-                                                            var number_string = angka.replace(/[^.\d]/g, "").toString(),
-                                                            split = number_string.split("."),
-                                                            sisa = split[0].length % 3,
-                                                            harga = split[0].substr(0, sisa),
-                                                            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-                                                            // tambahkan titik jika yang di input sudah menjadi angka ribuan
-                                                            if (ribuan) {
-                                                            separator = sisa ? "," : "";
-                                                            harga += separator + ribuan.join(",");
-                                                            }
-
-                                                            harga = split[1] != undefined ? harga + "." + split[1] : harga;
-                                                            return prefix == undefined ? harga : harga ? harga : "";
-                                                        }
-                                                    });
-                                                </script>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-bold text-center align-middle">Saran Tindakan*</td>
-                                                    <td colspan="3">
-                                                    <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3" placeholder="Sebutkan saran tindakan...">{{ old('note', $td->note) }}</textarea>
-
-                                                    <!-- Showing notification error for input validation -->
-                                                    @error('note')
+                                                    @error('jenis_ticket')
                                                     <div class="invalid-feedback">
                                                         {{ $message }}
                                                     </div>
                                                     @enderror
                                                     </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                    <td>
+                                                    <select class="form-select @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id">
+                                                        <option selected disabled>Choose...</option>
+                                                        @foreach($category_tickets as $ct)
+                                                            @if(old('category_ticket_id', $td->sub_category_ticket->category_ticket_id) == $ct->id)
+                                                            <option selected value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
+                                                            @else
+                                                            <option value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
 
-                                    <script>
-                                        $('#category_ticket_id').change(function(){
-                                            var category = $(this).val();
-                                            var url = '{{ route("getSubCategoryTicket", ":id") }}';
-                                            url = url.replace(':id', category);
-                                            $.ajax({
-                                                url: url,
-                                                type: 'get',
-                                                dataType: 'json',
-                                                success: function(response){
-                                                    var subDropdown = $('#sub_category_ticket_id');
-                                                    subDropdown.empty();
-                                                    subDropdown.append('<option selected disabled>Choose...</option>');
-                                                    $.each(response, function (key, value) {
-                                                        subDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.nama_sub_kategori + '</option>');
-                                                    });
-                                                    // Aktifkan dropdown no. asset
-                                                    subDropdown.prop('disabled', false);
-                                                },
-                                                error: function (xhr, status, error) {
-                                                    console.error(xhr.responseText);
-                                                }
+                                                    <!-- Showing notification error for input validation -->
+                                                    @error('category_ticket_id')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                    @enderror
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-select @error('sub_category_ticket_id') is-invalid @enderror" name="sub_category_ticket_id" id="sub_category_ticket_id">
+                                                            <option selected disabled>Choose...</option>
+                                                            @foreach($sub_category_tickets as $sct)
+                                                                @if(old('sub_category_ticket_id', $td->sub_category_ticket_id) == $sct->id)
+                                                                <option selected value="{{ $sct->id }}">{{ ucwords($sct->nama_sub_kategori) }}</option>
+                                                                @else
+                                                                <option value="{{ $sct->id }}">{{ ucwords($sct->nama_sub_kategori) }}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        </select>
+                
+                                                        <!-- Showing notification error for input validation -->
+                                                        @error('sub_category_ticket_id')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon1">IDR</span>
+                                                        <input type="text" name="biaya" class="form-control text-capitalize @error('biaya') is-invalid @enderror" id="biaya" placeholder="0" value="{{ old('biaya', $td->biaya) }}">
+                                                    </div>
+                                                    </td>
+                                                    <script>
+                                                        $(document).ready(function(){
+                                                            var harga = document.getElementById("biaya");
+                                                            harga.addEventListener("keyup", function(e) {
+                                                                // tambahkan 'Rp.' pada saat form di ketik
+                                                                // gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
+                                                                harga.value = formatRupiah(this.value);
+                                                            });
+
+                                                            /* Fungsi formatRupiah */
+                                                            function formatRupiah(angka, prefix) {
+                                                                var number_string = angka.replace(/[^.\d]/g, "").toString(),
+                                                                split = number_string.split("."),
+                                                                sisa = split[0].length % 3,
+                                                                harga = split[0].substr(0, sisa),
+                                                                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                                                                // tambahkan titik jika yang di input sudah menjadi angka ribuan
+                                                                if (ribuan) {
+                                                                separator = sisa ? "," : "";
+                                                                harga += separator + ribuan.join(",");
+                                                                }
+
+                                                                harga = split[1] != undefined ? harga + "." + split[1] : harga;
+                                                                return prefix == undefined ? harga : harga ? harga : "";
+                                                            }
+                                                        });
+                                                    </script>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-bold text-center align-middle">Saran Tindakan*</td>
+                                                        <td colspan="3">
+                                                        <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3" placeholder="Sebutkan saran tindakan...">{{ old('note', $td->note) }}</textarea>
+
+                                                        <!-- Showing notification error for input validation -->
+                                                        @error('note')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                        @enderror
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <script>
+                                            $('#category_ticket_id').change(function(){
+                                                var category = $(this).val();
+                                                var url = '{{ route("getSubCategoryTicket", ":id") }}';
+                                                url = url.replace(':id', category);
+                                                $.ajax({
+                                                    url: url,
+                                                    type: 'get',
+                                                    dataType: 'json',
+                                                    success: function(response){
+                                                        var subDropdown = $('#sub_category_ticket_id');
+                                                        subDropdown.empty();
+                                                        subDropdown.append('<option selected disabled>Choose...</option>');
+                                                        $.each(response, function (key, value) {
+                                                            subDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.nama_sub_kategori + '</option>');
+                                                        });
+                                                        // Aktifkan dropdown no. asset
+                                                        subDropdown.prop('disabled', false);
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        console.error(xhr.responseText);
+                                                    }
+                                                });
                                             });
-                                        });
+                                        </script>
+                                        <input name="ticket_id" id="ticket_id" value="{{ $ticket->id }}" hidden>
+                                        <input name="no_ticket" id="no_ticket" value="{{ $ticket->no_ticket }}" hidden>
+                                        <input name="agent_id" id="agent_id" value="{{ $ticket->agent_id }}" hidden>
+                                        <input name="process_at" id="process_at" value="{{ $ticket->process_at }}" hidden>
+                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                        <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
+                                        <input type="text" name="url" value="{{ encrypt($ticket->id) }}" hidden>
+                                        @if($td->status == "onprocess")
+                                        <input type="text" name="status" value="onprocess" hidden>
+                                        @elseif($td->status == "pending")
+                                        <input type="text" name="status" value="pending" hidden>
+                                        @endif
+                                        <div class="col-md-6">
+                                            (*) : Mandatory
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-primary float-end ms-1"><i class="bi bi-save me-1"></i> Simpan</button>
+                                            <button type="reset" class="btn btn-warning float-end ms-1"><i class="bi bi-trash me-1"></i> Reset</button>
+                                            <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-end"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        </div>
+                                    </form>
+                                    <script>
+                                        function formValidation(){
+                                            var kendala = document.getElementById('sub_category_ticket_id').value;
+                                            var tindakan = document.getElementById('note').value;
+    
+                                            if (kendala.length == 0) {
+                                                alert('Sub Kategori Ticket harus dipilih!');
+                                                return false;
+                                            }
+
+                                            if (tindakan.length < 10) {
+                                                alert('Ketikkan saran tindakan minimal 10 karakter!');
+                                                return false;
+                                            }
+                                        }
                                     </script>
-                                    <input name="ticket_id" id="ticket_id" value="{{ $ticket->id }}" hidden>
-                                    <input name="no_ticket" id="no_ticket" value="{{ $ticket->no_ticket }}" hidden>
-                                    <input name="agent_id" id="agent_id" value="{{ $ticket->agent_id }}" hidden>
-                                    <input name="process_at" id="process_at" value="{{ $ticket->process_at }}" hidden>
-                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                    <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
-                                    <input type="text" name="url" value="{{ encrypt($ticket->id) }}" hidden>
-                                    @if($td->status == "onprocess")
-                                    <input type="text" name="status" value="onprocess" hidden>
-                                    @elseif($td->status == "pending")
-                                    <input type="text" name="status" value="pending" hidden>
-                                    @endif
-                                    <div class="col-md-6">
-                                        (*) : Mandatory
-                                    </div>
-                                    <div class="col-md-6">
-                                        <button type="submit" class="btn btn-primary float-end ms-1"><i class="bi bi-save me-1"></i> Simpan</button>
-                                        <button type="reset" class="btn btn-warning float-end ms-1"><i class="bi bi-trash me-1"></i> Reset</button>
-                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-end"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
-                                    </div>
-                                    <form class="row g-3 mb-3" action="/tickets" method="POST">
                                 </div>
                             </div>
                         </div>

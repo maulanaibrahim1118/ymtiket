@@ -15,12 +15,12 @@
                                 
                                 <a href="/category-sub-tickets/{{ encrypt(auth()->user()->location_id) }}/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
 
-                                <table class="table datatable">
+                                <table class="table datatable table-hover">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
-                                            <th scope="col">KATEGORI</th>
                                             <th scope="col">NAMA SUB KATEGORI</th>
-                                            <th scope="col">RATA-RATA RESOLVED</th>
+                                            <th scope="col">KATEGORI</th>
+                                            <th scope="col">ASSET CHANGE</th>
                                             <th scope="col">CREATED AT</th>
                                             <th scope="col">UPDATED AT</th>
                                             <th scope="col">UPDATED BY</th>
@@ -30,20 +30,9 @@
                                     <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
                                         @foreach($sub_category_tickets as $sct)
                                         <tr>
-                                        <td>{{ $sct->category_ticket->nama_kategori }}</td>
                                         <td>{{ $sct->nama_sub_kategori }}</td>
-                                        @php
-                                            $average = \Carbon\Carbon::parse($sct->avg);
-                                        @endphp
-                                        @if( $sct->avg >= 3600)
-                                        <td>{{ $average->hour }} Jam {{ $average->minute }} Menit {{ $average->second }} Detik</td>
-                                        @elseif( $sct->avg >= 60)
-                                        <td>{{ $average->minute }} Menit {{ $average->second }} Detik</td>
-                                        @elseif( $sct->avg == 0)
-                                        <td>0 Detik</td>
-                                        @else
-                                        <td>{{ $average->second }} Detik</td>
-                                        @endif
+                                        <td>{{ $sct->category_ticket->nama_kategori }}</td>
+                                        <td>{{ $sct->asset_change }}</td>
                                         <td>{{ $sct->created_at }}</td>
                                         <td>{{ $sct->updated_at }}</td>
                                         <td>{{ $sct->updated_by }}</td>

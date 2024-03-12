@@ -15,7 +15,7 @@
                                 
                                 <a href="users/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
 
-                                <table class="table datatable">
+                                <table class="table datatable table-hover">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
                                         <th scope="col">NIK/SITE</th>
@@ -23,6 +23,8 @@
                                         <th scope="col">JABATAN</th>
                                         <th scope="col">LOKASI</th>
                                         <th scope="col">ROLE</th>
+                                        <th scope="col">TELP/EXT</th>
+                                        <th scope="col">IP ADDRESS</th>
                                         <th scope="col">AKSI</th>
                                         </tr>
                                     </thead>
@@ -34,6 +36,8 @@
                                         <td>{{ $user->position->nama_jabatan }}</td>
                                         <td>{{ $user->location->nama_lokasi }}</td>
                                         <td>{{ $user->role }}</td>
+                                        <td>{{ $user->telp }}</td>
+                                        <td>{{ $user->ip_address }}</td>
                                         <td class="text-capitalize"><a href="/users/{{ $user->id }}/edit" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
                                         </tr>
                                         @endforeach

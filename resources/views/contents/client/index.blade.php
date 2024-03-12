@@ -13,9 +13,9 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-people me-2"></i>{{ $title }}</h5>
                                 
-                                <a href="/clients/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
+                                {{-- <a href="/clients/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a> --}}
 
-                                <table class="table datatable">
+                                <table class="table datatable table-hover">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
                                         <th scope="col">NIK/SITE</th>

@@ -21,9 +21,13 @@
                 <span>Agent</span>
             </a>
         </li><!-- End Agent -->
+        @endcan
 
+        @can('manage-ticket')
         <li class="nav-heading pt-3">MASTER DATA</li>
+        @endcan
 
+        @can('isServiceDesk')
         @can('isIT')
         <li class="nav-item">
             <a class="nav-link {{ Request::is('users*') ? '' : 'collapsed' }}" href="/users">
@@ -31,21 +35,27 @@
                 <span>User</span>
             </a>
         </li><!-- End User -->
+        @endcan
+        @endcan
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link {{ Request::is('clients*') ? '' : 'collapsed' }}" href="/clients">
                 <i class="bi bi-people"></i>
                 <span>Client</span>
             </a>
-        </li><!-- End Client -->
+        </li><!-- End Client --> --}}
 
+        @can('manage-ticket')
         <li class="nav-item">
             <a class="nav-link {{ Request::is('assets*') ? '' : 'collapsed' }}" href="/assets">
                 <i class="bi bi-box2"></i>
                 <span>Asset</span>
             </a>
         </li><!-- End Asset -->
+        @endcan
 
+        @can('isServiceDesk')
+        @can('isIT')
         <li class="nav-item">
             <a class="nav-link {{ Request::is('locations*') ? '' : 'collapsed' }}" href="/locations">
                 <i class="bi bi-geo-alt"></i>
@@ -94,12 +104,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/report-clients" class="{{ Request::is('report-clients*') ? 'active' : '' }}">
+                    <a href="{{ route('404.underconstruction') }}" class="{{ Request::is('report-clients*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Client</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/report-sub-categories" class="{{ Request::is('report-sub-categories*') ? 'active' : '' }}">
+                    <a href="{{ route('404.underconstruction') }}" class="{{ Request::is('report-sub-categories*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Sub Category</span>
                     </a>
                 </li>
@@ -113,12 +123,12 @@
             </a>
             <ul id="setting" class="nav-content collapse {{ Request::is('settings*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="/settings-change-password" class="{{ Request::is('settings-change-password*') ? 'active' : '' }}">
+                    <a href="{{ route('404.underconstruction') }}" class="{{ Request::is('settings-change-password*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Profile</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/settings-mutation" class="{{ Request::is('settings-mutation*') ? 'active' : '' }}">
+                    <a href="{{ route('404.underconstruction') }}" class="{{ Request::is('settings-mutation*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Change Password</span>
                     </a>
                 </li>

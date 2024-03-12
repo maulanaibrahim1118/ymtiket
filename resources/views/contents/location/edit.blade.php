@@ -26,8 +26,8 @@
 
                                     <div class="col-md-2">
                                         <label for="wilayah" class="form-label">Wilayah</label>
-                                        <select class="form-select @error('wilayah') is-invalid @enderror" name="wilayah" id="wilayah">
-                                            <option selected disabled>Choose...</option>
+                                        <select class="form-select @error('wilayah') is-invalid @enderror" name="wilayah" id="wilayah" required>
+                                            <option selected value="" disabled>Choose...</option>
                                             @foreach($wilayahs as $wilayah)
                                                 @if(old('wilayah', $location->wilayah) == $wilayah->name)
                                                 <option selected value="{{ $wilayah->name }}">{{ ucwords($wilayah->name) }}</option>
@@ -47,8 +47,8 @@
 
                                     <div class="col-md-2">
                                         <label for="regional" class="form-label">Regional</label>
-                                        <select class="form-select @error('regional') is-invalid @enderror" name="regional" id="regional">
-                                            <option selected disabled>Choose...</option>
+                                        <select class="form-select @error('regional') is-invalid @enderror" name="regional" id="regional" required>
+                                            <option selected value="" disabled>Choose...</option>
                                             @for($i=0; $i < count($regionals); $i++){
                                                 @if(old('regional', $location->regional) == $regionals[$i])
                                                 <option selected value="{{ $regionals[$i] }}">{{ ucwords($regionals[$i]) }}</option>
@@ -68,8 +68,8 @@
 
                                     <div class="col-md-2">
                                         <label for="area" class="form-label">Area</label>
-                                        <select class="form-select @error('area') is-invalid @enderror" name="area" id="area">
-                                            <option selected disabled>Choose...</option>
+                                        <select class="form-select @error('area') is-invalid @enderror" name="area" id="area" required>
+                                            <option selected value="" disabled>Choose...</option>
                                             @for($i=0; $i < count($areas); $i++){
                                                 @if(old('area', $location->area) == $areas[$i])
                                                 <option selected value="{{ $areas[$i] }}">{{ ucwords($areas[$i]) }}</option>

@@ -47,8 +47,8 @@
 
                                     <div class="col-md-2">
                                         <label for="asset_change" class="form-label">Asset Change</label>
-                                        <select class="form-select @error('asset_change') is-invalid @enderror" name="asset_change" id="asset_change">
-                                            <option selected disabled>Choose...</option>
+                                        <select class="form-select @error('asset_change') is-invalid @enderror" name="asset_change" id="asset_change" required>
+                                            <option selected value="" disabled>Choose...</option>
                                             @for($i=0; $i < count($assetChange); $i++){
                                                 @if(old('asset_change', $sct->asset_change) == $assetChange[$i])
                                                 <option selected value="{{ $assetChange[$i] }}">{{ ucwords($assetChange[$i]) }}</option>

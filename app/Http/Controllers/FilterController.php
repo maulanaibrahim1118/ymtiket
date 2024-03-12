@@ -128,6 +128,7 @@ class FilterController extends Controller
                 $resolved   = Ticket::where([['ticket_for', $location],['status', 'resolved'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])
                     ->orWhere([['ticket_for', $location],['status', 'finished'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])
                     ->count();
+                $assigned   = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned'],['created_at', 'like', $filter2.'%']])->count();
 
                 // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
                 $workTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
@@ -140,7 +141,7 @@ class FilterController extends Controller
                 $category   = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')
                                         ->where([['tickets.ticket_for', $location],['ticket_details.agent_id', 'like', '%'.$filter1],['ticket_details.created_at', 'like', $filter2.'%']])->distinct()->count(['ticket_details.sub_category_ticket_id']);
 
-                $dataArray  = [$total, $unProcess, $onProcess, $pending, $resolved, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
+                $dataArray  = [$total, $unProcess, $onProcess, $pending, $resolved, $assigned, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
 
                 $data1 = Agent::where([['location_id', $locationId],['id', 'like', '%'.$filter1]])
                                     ->withCount('ticket_detail')
@@ -358,6 +359,11 @@ class FilterController extends Controller
                     $tickets    = Ticket::where([['ticket_for', $location],['status', 'resolved'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])
                                         ->orWhere([['ticket_for', $location],['status', 'finished'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])
                                         ->get();
+                }elseif($status == "assign"){
+                    $title      = "Ticket Tidak Selesai";
+                    $tickets    = Ticket::join('ticket_details', 'tickets.id', '=', 'ticket_details.ticket_id')
+                                        ->where([['ticket_details.agent_id', $agentId],['ticket_details.status', 'assigned'],['ticket_details.created_at', 'like', $filter2.'%']])
+                                        ->get();
                 }elseif($status == "workday"){
                     $title      = "Ticket Masuk Di Jam Kerja";
                     $tickets    = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
@@ -377,7 +383,7 @@ class FilterController extends Controller
                         ->orWhere([['agent_id', $agentId],['status', 'finished'],['created_at', 'like', $filter2.'%']])
                         ->get();
                 }else{
-                    $title      = "Ticket Telah Di Assign";
+                    $title      = "Ticket Tidak Selesai";
                     $tickets    = Ticket::join('ticket_details', 'tickets.id', '=', 'ticket_details.ticket_id')
                         ->where([['ticket_details.agent_id', $agentId],['ticket_details.status', 'assigned'],['ticket_details.created_at', 'like', $filter2.'%']])
                         ->get();

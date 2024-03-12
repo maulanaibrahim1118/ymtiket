@@ -51,8 +51,11 @@
 
     </div>
 </div>
-
+@if($filterArray[0] == "")
 <div class="col-md-3">
+@else
+<div class="col-md-2">
+@endif
     <a href="/tickets/{{ encrypt('all') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     <div class="card info-card secondary-card">
 
@@ -140,7 +143,11 @@
     </a>
 </div><!-- End Danger Card -->
 
+@if($filterArray[0] == "")
 <div class="col-md-3">
+@else
+<div class="col-md-2">
+@endif
     <a href="/tickets/{{ encrypt('selesai') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     <div class="card info-card primary-card">
 
@@ -162,6 +169,30 @@
     </a>
 </div><!-- End Primary Card -->
 
+@if($filterArray[0] != "")
+<div class="col-md-2">
+    <a href="/tickets/{{ encrypt('assign') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <div class="card info-card danger-card">
+
+    <div class="card-body">
+        <h5 class="card-title">Tidak Selesai</h5>
+
+        <div class="d-flex align-items-center">
+        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+            <i class="bi bi-ticket-perforated"></i>
+        </div>
+        <div class="ps-3">
+            <h6>{{ $dataArray[5] }}</h6>
+            <span class="text-danger small pt-1 fw-bold">Ticket</span>
+        </div>
+        </div>
+    </div>
+
+    </div>
+    </a>
+</div><!-- End Danger Card -->
+@endif
+
 <div class="col-md-3">
     <a href="/tickets/{{ encrypt('workday') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
     <div class="card info-card success-card">
@@ -174,7 +205,7 @@
             <i class="bi bi-ticket-perforated"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $dataArray[5] }}</h6>
+            <h6>{{ $dataArray[6] }}</h6>
             <span class="text-success small pt-1 fw-bold">Ticket</span>
         </div>
         </div>
@@ -196,7 +227,7 @@
             <i class="bi bi-ticket-perforated"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $dataArray[6] }}</h6>
+            <h6>{{ $dataArray[7] }}</h6>
             <span class="text-warning small pt-1 fw-bold">Ticket</span>
         </div>
         </div>
@@ -220,7 +251,7 @@
             <i class="bi bi-box2"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $dataArray[7] }}</h6>
+            <h6>{{ $dataArray[8] }}</h6>
             <span class="text-primary small pt-1 fw-bold">Asset</span>
         </div>
         </div>
@@ -242,7 +273,7 @@
             <i class="bi bi-ui-radios-grid"></i>
         </div>
         <div class="ps-3">
-            <h6>{{ $dataArray[8] }}</h6>
+            <h6>{{ $dataArray[9] }}</h6>
             <span class="text-secondary small pt-1 fw-bold">Kategori</span>
         </div>
         </div>

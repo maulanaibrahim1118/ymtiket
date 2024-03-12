@@ -175,9 +175,9 @@ class UserController extends Controller
         $agent      = Agent::where('nik', $nikAgent)->first();
 
         if($agent == NULL){
-            $subDivisi = ['unknown', 'Tidak Ada'];
+            $subDivisi = ['none', 'Tidak Ada'];
         }else{
-            if($agent->sub_divisi == "unknown"){
+            if($agent->sub_divisi == "none"){
                 $subDivisi  = [$agent->sub_divisi, 'Tidak Ada'];
             }else{
                 $subDivisi  = [$agent->sub_divisi, $agent->sub_divisi];

@@ -15,10 +15,10 @@ class CreateAgentsTable extends Migration
     {
         Schema::create('agents', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('nik')->unique();
+            $table->string('nik', 8)->unique();
             $table->string('nama_agent', 40);
             $table->bigInteger('location_id');
-            $table->enum('sub_divisi', ['unknown', 'helpdesk', 'hardware maintenance', 'infrastructur networking', 'tech support']);
+            $table->enum('sub_divisi', ['none', 'helpdesk', 'hardware maintenance', 'infrastructur networking', 'tech support']);
             $table->enum('pic_ticket', ['all', 'ho', 'store']);
             $table->enum('status', ['present']);
             $table->string('updated_by', 40);
@@ -26,13 +26,13 @@ class CreateAgentsTable extends Migration
         });
 
         DB::table('agents')->insert([
-            ['nik' => 23010120, 
-            'nama_agent' => 'irwan muharramsyah',
+            ['nik' => 10030199, 
+            'nama_agent' => 'irwan muharamsyah',
             'location_id' => 10,
             'sub_divisi' => 'tech support',
             'pic_ticket' => 'all',
             'status' => 'present',
-            'updated_by' => 'irwan muharramsyah'
+            'updated_by' => 'maulana ibrahim'
             ]
         ]);
     }

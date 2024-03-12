@@ -15,7 +15,7 @@
                                 
                                 <a href="/assets/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
 
-                                <table class="table datatable">
+                                <table class="table datatable table-hover">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                                         <tr>
                                         <th scope="col">NO. ASSET</th>
@@ -32,7 +32,7 @@
                                     <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
                                         @foreach($assets as $asset)
                                         <tr>
-                                        <td>{{ $asset->no_asset }}</td>
+                                        <td><a href="/tickets/asset{{ encrypt($asset->id) }}">{{ $asset->no_asset }}</a></td>
                                         <td>{{ $asset->category_asset->nama_kategori }}</td>
                                         <td>{{ $asset->nama_barang }}</td>
                                         <td>{{ $asset->merk }}</td>

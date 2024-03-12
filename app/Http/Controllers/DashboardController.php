@@ -100,6 +100,7 @@ class DashboardController extends Controller
                 $resolved   = Ticket::where([['ticket_for', $location],['status', 'resolved']])
                     ->orWhere([['ticket_for', $location],['status', 'finished']])
                     ->count();
+                $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned']])->count();
 
                 // Menghitung Ticket Jam Kerja dan Diluar Jam Kerja
                 $workTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya']])->whereNotIn('status', ['deleted'])->count();
@@ -112,7 +113,7 @@ class DashboardController extends Controller
                 $category   = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')
                 ->where('tickets.ticket_for', $location)->distinct()->count('ticket_details.sub_category_ticket_id');
 
-                $dataArray  = [$total, $unProcess, $onProcess, $pending, $resolved, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
+                $dataArray  = [$total, $unProcess, $onProcess, $pending, $resolved, $assigned, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
 
                 $data1 = Agent::where('location_id', $locationId)
                                 ->withCount('ticket_detail')

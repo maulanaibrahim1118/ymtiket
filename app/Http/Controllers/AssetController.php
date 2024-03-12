@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Asset;
-use App\Category_asset;
 use App\Location;
+use App\Category_asset;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AssetController extends Controller
 {
@@ -16,7 +17,8 @@ class AssetController extends Controller
      */
     public function index()
     {
-        $assets = Asset::all();
+        $locationId = Auth::user()->location_id;
+        $assets = Asset::where('location_id', $locationId)->get();
         return view('contents.asset.index', [
             "url"       => "",
             "title"     => "Asset List",

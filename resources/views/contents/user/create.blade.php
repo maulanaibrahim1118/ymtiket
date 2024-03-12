@@ -137,7 +137,7 @@
                                                 sub_divisi.prop('disabled', false);
                                             } else {
                                                 sub_divisi.empty();
-                                                sub_divisi.append('<option selected value="unknown">Tidak Ada</option>');
+                                                sub_divisi.append('<option selected value="none">Tidak Ada</option>');
                                                 sub_divisi.prop('disabled', false);
                                             }
                                         });

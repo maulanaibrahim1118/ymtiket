@@ -174,7 +174,7 @@
                                                         @method('put')
                                                         @csrf
                                                         <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                        <input type="text" name="sub_divisi" value="unknown" hidden>
+                                                        <input type="text" name="sub_divisi" value="none" hidden>
                                                         <a href="#">
                                                         <button type="submit" class="dropdown-item text-capitalize text-success"><i class="bi bi-list-check text-success"></i>Antrikan</button>
                                                         </a>
@@ -372,7 +372,7 @@
                                                     '<input type="text" id="ticket_id" name="ticket_id" value="'+ticket_id.name+'" hidden>'+
                                                 '</div>'+
                                                 '<div class="modal-footer">'+
-                                                    '<button type="submit" class="btn btn-primary"><i class="bx bx-share me-2"></i>Assign</button>'+
+                                                    '<button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Antrikan</button>'+
                                                 '</div>'+
                                                 '</form>';
                                             }

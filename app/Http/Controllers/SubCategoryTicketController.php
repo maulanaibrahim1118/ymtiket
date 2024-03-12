@@ -65,7 +65,7 @@ class SubCategoryTicketController extends Controller
     {
         // Validating data request
         $validatedData = $request->validate([
-            'nama_sub_kategori'     => 'required|min:5|max:50|unique:sub_category_tickets',
+            'nama_sub_kategori'     => 'required|min:3|max:50|unique:sub_category_tickets',
             'category_ticket_id'    => 'required',
             'asset_change'          => 'required',
             'updated_by'            => 'required'
@@ -73,7 +73,7 @@ class SubCategoryTicketController extends Controller
         // Create custom notification for the validation request
         [
             'nama_sub_kategori.required'    => 'Nama Kategori Ticket harus diisi!',
-            'nama_sub_kategori.min'         => 'Ketik minimal 5 digit!',
+            'nama_sub_kategori.min'         => 'Ketik minimal 3 digit!',
             'nama_sub_kategori.max'         => 'Ketik maksimal 50 digit!',
             'unique'                        => 'Nama Kategori Ticket sudah ada!',
             'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
@@ -83,7 +83,7 @@ class SubCategoryTicketController extends Controller
 
         // Saving data to sub_category_ticket table
         $sct                        = new Sub_category_ticket;
-        $sct->nama_sub_kategori     = ucwords($request['nama_sub_kategori']);
+        $sct->nama_sub_kategori     = strtolower($request['nama_sub_kategori']);
         $sct->category_ticket_id    = $request['category_ticket_id'];
         $sct->asset_change          = $request['asset_change'];
         $sct->updated_by            = $request['updated_by'];
@@ -152,7 +152,7 @@ class SubCategoryTicketController extends Controller
         $validatedData = $request->validate($rules,
         [
             'nama_sub_kategori.required'    => 'Nama Sub Kategori Ticket harus diisi!',
-            'nama_sub_kategori.min'         => 'Ketik minimal 5 digit!',
+            'nama_sub_kategori.min'         => 'Ketik minimal 3 digit!',
             'nama_sub_kategori.max'         => 'Ketik maksimal 50 digit!',
             'unique'                        => 'Nama Kategori Ticket sudah ada!',
             'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
@@ -161,7 +161,7 @@ class SubCategoryTicketController extends Controller
         ]);
         
         Sub_category_ticket::where('id', $category_sub_ticket->id)->update([
-            'nama_sub_kategori'     => ucwords($request['nama_sub_kategori']),
+            'nama_sub_kategori'     => strtolower($request['nama_sub_kategori']),
             'category_ticket_id'    => $request['category_ticket_id'],
             'asset_change'          => $request['asset_change'],
             'updated_by'            => $request['updated_by']

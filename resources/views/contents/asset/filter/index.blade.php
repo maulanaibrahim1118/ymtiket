@@ -27,7 +27,7 @@
                                     <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
                                         @foreach($tickets as $ticket)
                                         <tr>
-                                        <td>{{ $ticket->asset->no_asset }}</td>
+                                        <td><a href="/tickets/asset{{ encrypt($ticket->asset->id) }}">{{ $ticket->asset->no_asset }}</a></td>
                                         <td>{{ $ticket->asset->nama_barang }}</td>
                                         <td>{{ $ticket->asset->merk }}</td>
                                         <td>{{ $ticket->asset->model }}</td>

@@ -15,7 +15,7 @@ class CreateClientsTable extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('nik')->unique();
+            $table->string('nik', 8)->unique();
             $table->string('nama_client', 40);
             $table->bigInteger('position_id');
             $table->bigInteger('location_id');

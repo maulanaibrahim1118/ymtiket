@@ -9,7 +9,7 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-people me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/category-sub-tickets" method="POST">
+                                <form class="row g-3 mb-3" action="/category-sub-tickets" method="POST" onsubmit="return confirmLanjut()">
                                     @csrf
                                     <div class="col-md-3">
                                         <label for="nama_sub_kategori" class="form-label">Nama Sub Kategori Ticket</label>
@@ -25,8 +25,8 @@
 
                                     <div class="col-md-3">
                                         <label for="category_ticket_id" class="form-label">Kategori Ticket</label>
-                                        <select class="form-select @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id" value="{{ old('category_ticket_id') }}">
-                                            <option selected disabled>Choose...</option>
+                                        <select class="form-select @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id" required>
+                                            <option selected value="" disabled>Choose...</option>
                                             @foreach($category_tickets as $ct)
                                                 @if(old('category_ticket_id') == $ct->id)
                                                 <option selected value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
@@ -46,8 +46,8 @@
 
                                     <div class="col-md-2">
                                         <label for="asset_change" class="form-label">Asset Change</label>
-                                        <select class="form-select @error('asset_change') is-invalid @enderror" name="asset_change" id="asset_change">
-                                            <option selected disabled>Choose...</option>
+                                        <select class="form-select @error('asset_change') is-invalid @enderror" name="asset_change" id="asset_change" required>
+                                            <option selected value="" disabled>Choose...</option>
                                             @for($i=0; $i < count($assetChange); $i++){
                                                 @if(old('asset_change') == $assetChange[$i])
                                                 <option selected value="{{ $assetChange[$i] }}">{{ ucwords($assetChange[$i]) }}</option>
@@ -78,6 +78,22 @@
                                         <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
+                                <script>
+                                    function confirmLanjut(){
+                                        var asset_change = document.getElementById('asset_change').value;
+                                        if(asset_change === 'ya'){
+                                            var lanjut = confirm('Apakah anda yakin, Sub Category tersebut dapat merubah status Asset?');
+
+                                            if(lanjut){
+                                                return true;
+                                            }else{
+                                                return false;
+                                            }
+                                        }else{
+                                            return true;
+                                        }
+                                    }
+                                </script>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->
                     </div><!-- End col-12 -->

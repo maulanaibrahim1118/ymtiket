@@ -69,12 +69,13 @@ class CategoryTicketController extends Controller
             'updated_by.required'       => 'Wajib diisi!'
         ]);
         // Saving data to category_asset table
-        Category_ticket::create($validatedData);
+        $data = array_map('strtolower', $validatedData);
+        Category_ticket::create($data);
 
         // Redirect to the Category Asset view if create data succeded
-        $nama_kategori  = $request['nama_kategori'];
+        $nama_kategori  = ucwords($request['nama_kategori']);
         $url            = $request['url'];
-        return redirect($url)->with('success', ucwords($nama_kategori).' telah ditambahkan!');
+        return redirect($url)->with('success', $nama_kategori.' telah ditambahkan!');
     }
 
     /**
@@ -135,7 +136,8 @@ class CategoryTicketController extends Controller
             'location_id.required'      => 'Lokasi harus dipilih!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
-        Category_ticket::where('id', $category_ticket->id)->update($validatedData);
+        $data = array_map('strtolower', $validatedData);
+        Category_ticket::where('id', $category_ticket->id)->update($data);
 
         $url    = $request['url'];
         return redirect($url)->with('success', 'Data Category Ticket telah diubah!');

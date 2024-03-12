@@ -10,7 +10,7 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/tickets/update{{ $ticket->id }}" method="POST" enctype="multipart/form-data">
+                                <form class="row g-3 mb-3" action="/tickets/update{{ $ticket->id }}" method="POST" enctype="multipart/form-data" onsubmit="return formValidation()">
                                     @method('put')
                                     @csrf
                                     <div class="col-md-1">
@@ -58,7 +58,7 @@
                                     <div class="col-md-3">
                                         <label for="asset_id" class="form-label">Asset</label>
                                         <select class="form-select @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id">
-                                            <option selected disabled>Choose...</option>
+                                            <option value="" disabled>Choose...</option>
                                             @foreach($assets as $asset)
                                             @if(old('asset_id', $ticket->asset_id) == $asset->id)
                                             <option selected value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} - {{ ucwords($asset->nama_barang) }}</option>
@@ -132,7 +132,7 @@
                                     <div class="col-md-2">
                                         <label for="ticket_for" class="form-label">Diajukan Kepada</label>
                                         <select class="form-select @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for">
-                                            <option selected disabled>Choose...</option>
+                                            <option value="" disabled>Choose...</option>
                                             @for($i=0; $i < count($ticketFors); $i++){
                                                 @if(old('ticket_for', $ticket->ticket_for) == $ticketFors[$i])
                                                 <option selected value="{{ $ticketFors[$i] }}">{{ ucwords($ticketFors[$i]) }}</option>
@@ -164,7 +164,7 @@
 
                                     <div class="col-md-4">
                                         <label for="detail_kendala" class="form-label">Lampiran</label>
-                                        <input type="file" name="file" id="file" accept="image/jpeg, image/jpg, image/png, image/gif" class="form-control text-capitalize @error('file') is-invalid @enderror">
+                                        <input type="file" name="file" id="file" accept=".jpeg, .jpg, .png, .gif, .doc, .docx, .pdf, .xls, .xlsx, .csv" class="form-control text-capitalize @error('file') is-invalid @enderror">
                                         <input type="text" name="old_file" value="{{ $ticket->file }}" hidden>
 
                                         <!-- Showing notification error for input validation -->
@@ -233,6 +233,50 @@
                                         </div>
                                     </div>
                                 </div><!-- End Lampiran Modal-->
+
+                                <script>
+                                    function formValidation(){
+                                        var asset = document.getElementById('asset_id').value;
+                                        var kendala = document.getElementById('kendala').value;
+                                        var fileInput = document.getElementById('file');
+                                        var maxSizeInBytes = 1024 * 1024; // 1 MB (sesuaikan dengan batas maksimum yang diinginkan)
+                                        var detailKendala = document.getElementById('detail_kendala').value;
+
+                                        if (asset.length == 0) {
+                                            alert('Asset harus dipilih!');
+                                            return false;
+                                        }
+
+                                        if (kendala.length < 5) {
+                                            alert('Ketikkan kendala minimal 5 karakter!');
+                                            return false;
+                                        }
+                                        
+                                        if (fileInput.files.length > 0) {
+                                            var fileSizeInBytes = fileInput.files[0].size;
+                                            var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+                                            if (fileSizeInBytes > maxSizeInBytes) {
+                                            alert('Ukuran file melebihi batas maksimum. Batas: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
+                                            return false;
+                                            } 
+                                        }
+
+                                        if (detailKendala.length < 10) {
+                                            alert('Ketikkan detail kendala minimal 10 karakter!');
+                                            return false;
+                                        }
+
+                                        var ticket_for  = document.getElementById('ticket_for').value;
+                                        var lanjut      = confirm('Apakah anda yakin ticket ditujukan untuk ' + ticket_for + '?');
+
+                                        if(lanjut){
+                                            return true;
+                                        }else{
+                                            return false;
+                                        }
+                                    }
+                                </script>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->
                     </div><!-- End col-12 -->

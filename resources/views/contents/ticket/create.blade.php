@@ -10,13 +10,13 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/tickets/store" method="POST" enctype="multipart/form-data">
+                                <form class="row g-3 mb-3" action="/tickets/store" method="POST" enctype="multipart/form-data" onsubmit="return formValidation()">
                                     @csrf
 
                                     <div class="col-md-3">
                                         <label for="client_id" class="form-label">Client</label>
-                                        <select class="form-select @error('client_id') is-invalid @enderror" name="client_id" id="client_id">
-                                            <option selected disabled>Choose...</option>
+                                        <select class="form-select @error('client_id') is-invalid @enderror" name="client_id" id="client_id" required>
+                                            <option selected value="" disabled>Choose...</option>
                                             @foreach($clients as $client)
                                                 @if(old('client_id') == $client->id)
                                                 <option selected value="{{ $client->id }}">{{ ucwords($client->nama_client) }}</option>
@@ -46,7 +46,7 @@
                                     <div class="col-md-3">
                                         <label for="asset_id" class="form-label">Asset</label>
                                         <select class="form-select @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id" disabled>
-                                            <option selected disabled>Choose...</option>
+                                            <option selected value="" disabled>Choose...</option>
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
@@ -93,7 +93,7 @@
                                                             dataType: 'json',
                                                             success: function(response){
                                                                 assetDropdown.empty();
-                                                                assetDropdown.append('<option selected disabled>Choose...</option>');
+                                                                assetDropdown.append('<option selected value="" disabled>Choose...</option>');
                                                                 $.each(response, function (key, value) {
                                                                     assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + ' - ' + value.nama_barang + '</option>');
                                                                 });
@@ -112,8 +112,8 @@
                                     
                                     <div class="col-md-3">
                                         <label for="ticket_for" class="form-label">Diajukan Kepada</label>
-                                        <select class="form-select @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for">
-                                            <option selected disabled>Choose...</option>
+                                        <select class="form-select @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for" required>
+                                            <option selected value="" disabled>Choose...</option>
                                             @for($i=0; $i < count($ticketFors); $i++){
                                                 @if(old('ticket_for') == $ticketFors[$i])
                                                 <option selected value="{{ $ticketFors[$i] }}">{{ ucwords($ticketFors[$i]) }}</option>
@@ -145,7 +145,7 @@
 
                                     <div class="col-md-3">
                                         <label for="detail_kendala" class="form-label">Lampiran</label>
-                                        <input type="file" name="file" id="file" accept="image/jpeg, image/jpg, image/png, image/gif, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}">
+                                        <input type="file" name="file" id="file" accept=".jpeg, .jpg, .png, .gif, .doc, .docx, .pdf, .xls, .xlsx, .csv" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}" required>
 
                                         <!-- Showing notification error for input validation -->
                                         @error('file')
@@ -157,7 +157,7 @@
 
                                     <div class="col-md-12">
                                         <label for="detail_kendala" class="form-label">Detail Kendala</label>
-                                        <textarea name="detail_kendala" class="form-control @error('detail_kendala') is-invalid @enderror" id="detail_kendala" rows="3">{{ old('detail_kendala') }}</textarea>
+                                        <textarea name="detail_kendala" class="form-control @error('detail_kendala') is-invalid @enderror" id="detail_kendala" rows="3" required>{{ old('detail_kendala') }}</textarea>
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('detail_kendala')
@@ -181,6 +181,49 @@
                                         <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
+                                <script>
+                                    function formValidation(){
+                                        var asset = document.getElementById('asset_id').value;
+                                        var kendala = document.getElementById('kendala').value;
+                                        var fileInput = document.getElementById('file');
+                                        var maxSizeInBytes = 1024 * 1024; // 1 MB (sesuaikan dengan batas maksimum yang diinginkan)
+                                        var detailKendala = document.getElementById('detail_kendala').value;
+
+                                        if (asset.length == 0) {
+                                            alert('Asset harus dipilih!');
+                                            return false;
+                                        }
+
+                                        if (kendala.length < 5) {
+                                            alert('Ketikkan kendala minimal 5 karakter!');
+                                            return false;
+                                        }
+                                        
+                                        if (fileInput.files.length > 0) {
+                                            var fileSizeInBytes = fileInput.files[0].size;
+                                            var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+                                            if (fileSizeInBytes > maxSizeInBytes) {
+                                            alert('Ukuran file melebihi batas maksimum. Batas: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
+                                            return false;
+                                            } 
+                                        }
+
+                                        if (detailKendala.length < 10) {
+                                            alert('Ketikkan detail kendala minimal 10 karakter!');
+                                            return false;
+                                        }
+
+                                        var ticket_for  = document.getElementById('ticket_for').value;
+                                        var lanjut      = confirm('Apakah anda yakin ticket ditujukan untuk ' + ticket_for + '?');
+
+                                        if(lanjut){
+                                            return true;
+                                        }else{
+                                            return false;
+                                        }
+                                    }
+                                </script>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->
                     </div><!-- End col-12 -->

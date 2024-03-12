@@ -92,11 +92,12 @@ class TicketController extends Controller
         $noAsset    = $getAsset->no_asset;
         $tickets    = Ticket::where('asset_id', $assetId)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
 
-        return view('contents.ticket.index', [
+        return view('contents.ticket.filter.index', [
             "url"           => $noAsset,
             "title"         => "Ticket",
             "path"          => "Ticket",
             "path2"         => "Asset: ". $noAsset,
+            "pathFilter"    => "Asset: ". $noAsset,
             "hoAgents"      => Agent::all(),
             "storeAgents"   => Agent::all(),
             "tickets"       => $tickets
@@ -116,9 +117,7 @@ class TicketController extends Controller
         $locationId     = $getUser['location_id'];
 
         $totalTicket    = Ticket::where('user_id', $id2)->count();
-        $ticketClosed   = Ticket::where([['user_id', $id2],['status', 'finished']])->count();
-        $ticketDeleted  = Ticket::where([['user_id', $id2],['status', 'deleted']])->count();
-        $ticketUnclosed = $totalTicket-$ticketClosed-$ticketDeleted;
+        $ticketUnclosed = Ticket::where([['user_id', $id2],['status', 'resolved']])->count();
 
         $ticketFors  = ["information technology", "inventory control", "project me", "project sipil"];
 
@@ -133,7 +132,7 @@ class TicketController extends Controller
                     "clients"       => Client::where('location_id', $locationId)->orderBy('nama_client', 'ASC')->get()
                 ]);
             }else{ // Jika masih ada ticket yang belum di close
-                return back()->with('createError', 'Ticket sebelumnya belum selesai / belum diclose!');
+                return back()->with('createError', 'Tolong ticket resolved nya di close terlebih dahulu!');
             }
         }elseif($role2 == "service desk"){
             return view('contents.ticket.create', [
@@ -822,27 +821,24 @@ class TicketController extends Controller
             $agentStatus    = $getAgent->status;
             $agentLocation  = $getAgent->location->nama_lokasi;
 
-            $countAntrian   = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya']])->count();
-
-            if($countAntrian == NULL){ // Jika antrian ticket sudah habis
+            if($agentStatus != 'present'){ // Jika Agent tidak hadir, izin, keluar kota, dll
                 return redirect($url)->with('success', 'Ticket telah selesai diproses!');
-            }else {
-                if($agentStatus != 'present'){ // Jika Agent tidak hadir, izin, keluar kota, dll
+            }else{ // Jika agent hadir di kantor
+                if($subDivisi == "helpdesk"){
+                    $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'helpdesk']])->first();
+                }elseif($subDivisi == "hardware maintenance"){
+                    $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'hardware maintenance']])->first();
+                }elseif($subDivisi == "infrastructur networking"){
+                    $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'infrastructur networking']])->first();
+                }elseif($subDivisi == "tech support"){
+                    $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'tech support']])->first();
+                }else{
+                    $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'none']])->first();
+                }
+
+                if($getAntrian == NULL){ // Jika antrian ticket sudah habis
                     return redirect($url)->with('success', 'Ticket telah selesai diproses!');
-                }else{ // Jika agent hadir di kantor
-                    if($subDivisi == "helpdesk"){
-                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'helpdesk']])->first();
-                    }elseif($subDivisi == "hardware maintenance"){
-                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'hardware maintenance']])->first();
-                    }elseif($subDivisi == "infrastructur networking"){
-                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'infrastructur networking']])->first();
-                    }elseif($subDivisi == "tech support"){
-                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'tech support']])->first();
-                    }else{
-                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'unknown']])->first();
-
-                    }
-
+                }else {
                     $ticketId = $getAntrian->id;
 
                     Ticket::where('id', $ticketId)->update([

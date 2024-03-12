@@ -10,6 +10,7 @@ use App\Http\Controllers\TicketDetailController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\CategoryTicketController;
 use App\Http\Controllers\SubCategoryTicketController;
+use App\Http\Controllers\ReportAgentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,10 +113,10 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::get('/agents/refresh/{id}', 'AgentController@agentsRefresh');
 });
 
-// Route Client
-Route::middleware(['auth', 'service.desk'])->group(function () {
-    Route::resource('/clients', ClientController::class);
-});
+// // Route Client
+// Route::middleware(['auth', 'service.desk'])->group(function () {
+//     Route::resource('/clients', ClientController::class);
+// });
 
 // Route User
 Route::middleware(['auth', 'service.desk'])->group(function () {
@@ -128,7 +129,7 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
 });
 
 // Route Asset
-Route::middleware(['auth', 'service.desk'])->group(function () {
+Route::middleware(['auth', 'manage.ticket'])->group(function () {
     Route::resource('/assets', AssetController::class);
 });
 
@@ -155,5 +156,11 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::put('/category-sub-tickets/{category_sub_ticket}', [SubCategoryTicketController::class, 'update'])->name('sct.update');
 });
 
+// Route Report
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::get('/report-agents', [ReportAgentController::class, 'index'])->name('report.agent');
+});
+
 Route::view('/error-403-authenticated', 'contents.error.403-authenticated')->name('403.authenticated');
 Route::view('/error-403-unauthorized', 'contents.error.403-unauthorized')->name('403.unauthorized');
+Route::view('/error-404-underconstruction', 'contents.error.404-underconstruction')->name('404.underconstruction');

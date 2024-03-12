@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('nik')->unique();
+            $table->string('nik', 8)->unique();
             $table->string('nama', 40);
             $table->string('password');
             $table->bigInteger('position_id');
@@ -28,15 +28,15 @@ class CreateUsersTable extends Migration
         });
 
         DB::table('users')->insert([
-            ['nik' => 23010120, 
-            'nama' => 'irwan muharramsyah', 
+            ['nik' => 10030199, 
+            'nama' => 'irwan muharamsyah', 
             'password' => Hash::make('password'),
             'position_id' => 9,
             'location_id' => 10,
-            'telp' => '083820326382',
-            'ip_address' => '172.17.7.1',
+            'telp' => '0',
+            'ip_address' => '0.0.0.0',
             'role' => 'service desk',
-            'updated_by' => 'irwan muharramsyah'
+            'updated_by' => 'maulana ibrahim'
             ]
         ]);
     }

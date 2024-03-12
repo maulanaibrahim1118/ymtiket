@@ -209,9 +209,17 @@
                                                 @if($countDetail == 0) 
                                                 <tr>
                                                     @if($ticket->status == "created")
-                                                    <td colspan="7" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
+                                                        @if(auth()->user()->role == "client")
+                                                        <td colspan="7" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
+                                                        @else
+                                                        <td colspan="9" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
+                                                        @endif
                                                     @else
-                                                    <td colspan="7" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
+                                                        @if(auth()->user()->role == "client")
+                                                        <td colspan="7" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
+                                                        @else
+                                                        <td colspan="9" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
+                                                        @endif
                                                     @endif
                                                 </tr>
                                                 @else
