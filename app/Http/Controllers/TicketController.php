@@ -257,8 +257,8 @@ class TicketController extends Controller
 
         // Saving data to ticket table
         $ticket                 = new Ticket;
-        $ticket->kendala        = $data['kendala'];
-        $ticket->detail_kendala = $data['detail_kendala'];
+        $ticket->kendala        = strtolower($data['kendala']);
+        $ticket->detail_kendala = strtolower($data['detail_kendala']);
         $ticket->asset_id       = $data['asset_id'];
         $ticket->user_id        = $data['user_id'];
         $ticket->client_id      = $data['client_id'];
@@ -413,8 +413,8 @@ class TicketController extends Controller
             'location_id'       => $locationId,
             'asset_id'          => $request['asset_id'],
             'ticket_for'        => $request['ticket_for'],
-            'kendala'           => $request['kendala'],
-            'detail_kendala'    => $request['detail_kendala'],
+            'kendala'           => strtolower($request['kendala']),
+            'detail_kendala'    => strtolower($request['detail_kendala']),
             'file'              => $imageName,
             'ticket_area'       => $ticketArea,
             'updated_by'        => $request['client_id']
@@ -585,6 +585,39 @@ class TicketController extends Controller
             $agentName2 = $getAgent->nama_agent;
             $agentId2   = $getAgent->id;
             $now        = date('d-m-Y H:i:s');
+
+            // Cek status ticket
+            $ticket = Ticket::where('id', $ticketId)->first();
+            $statusTicket = $ticket->status;
+
+            if($statusTicket == "pending"){
+                // Mencari tanggal/waktu pending untuk menghitung total waktu pending
+                $getTicketDetail    = Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId1]])->first();
+                $getPending1        = $getTicketDetail->pending_time;
+                $now                = date('d-m-Y H:i:s');
+                $reProcess_at       = Carbon::parse($now);
+                $pending_at1        = Carbon::parse($getTicketDetail->pending_at);
+                $pending_at2        = '-';
+                $status             = "onprocess";
+
+                // Mencari lama nya waktu ticket di pending
+                $getPending2    = $pending_at1->diffInSeconds($reProcess_at);
+                $pending_time   = $getPending1+$getPending2;
+                
+                // Updating data to ticket table
+                Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId1],['status', 'pending']])->update([
+                    'pending_at'    => $pending_at2,
+                    'pending_time'  => $pending_time,
+                    'status'        => $status
+                ]);
+
+                // Updating data to ticket table
+                Ticket::where('id', $ticketId)->update([
+                    'pending_at'    => $pending_at2,
+                    'pending_time'  => $pending_time,
+                    'status'        => $status
+                ]);
+            }
 
             // Updating data to ticket table
             Ticket::where('id', $ticketId)->update([
@@ -762,6 +795,40 @@ class TicketController extends Controller
         $role           = $request['role'];
         $now            = date('d-m-Y H:i:s');
 
+        // Cek status ticket
+        // Hal ini dilakukan agar menghindari halaman tidak update
+        $ticket = Ticket::where('id', $id)->first();
+        $statusTicket = $ticket->status;
+
+        if($statusTicket == "pending"){
+            // Mencari tanggal/waktu pending untuk menghitung total waktu pending
+            $getTicketDetail    = Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->first();
+            $getPending1        = $getTicketDetail->pending_time;
+            $now                = date('d-m-Y H:i:s');
+            $reProcess_at       = Carbon::parse($now);
+            $pending_at1        = Carbon::parse($getTicketDetail->pending_at);
+            $pending_at2        = '-';
+            $status             = "onprocess";
+
+            // Mencari lama nya waktu ticket di pending
+            $getPending2    = $pending_at1->diffInSeconds($reProcess_at);
+            $pending_time   = $getPending1+$getPending2;
+            
+            // Updating data to ticket table
+            Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId],['status', 'pending']])->update([
+                'pending_at'    => $pending_at2,
+                'pending_time'  => $pending_time,
+                'status'        => $status
+            ]);
+
+            // Updating data to ticket table
+            Ticket::where('id', $id)->update([
+                'pending_at'    => $pending_at2,
+                'pending_time'  => $pending_time,
+                'status'        => $status
+            ]);
+        }
+
         // Mencari lamanya ticket di proses
         $getTicket      = Ticket::where('id', $id)->first();
         $processAt1     = Carbon::parse($getTicket->process_at);
@@ -769,7 +836,8 @@ class TicketController extends Controller
         $processedTime1 = $processAt1->diffInSeconds($now);
 
         // Mencari lamanya ticket di proses berdasarkan agent/service desk
-        $getDetail      = Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->first();
+        $getDetail      = Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->latest()->first();
+        $detail_id      = $getDetail->id;
         $processAt2     = Carbon::parse($getDetail->process_at);
         $now            = Carbon::parse($now);
         $pendingTime    = $getDetail->pending_time;
@@ -796,7 +864,7 @@ class TicketController extends Controller
             'updated_by'        => $updatedBy
         ]);
 
-        Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->update([
+        Ticket_detail::where('id', $detail_id)->update([
             'status'            => "resolved",
             'processed_time'    => $processedTime3,
             'updated_by'        => $updatedBy

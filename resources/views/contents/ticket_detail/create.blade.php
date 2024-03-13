@@ -70,7 +70,7 @@
                                         <label for="kendala" class="form-label fw-bold">Kendala</label>
                                     </div>
                                     <div class="col-md-4 m-0">
-                                        <label for="kendala" class="form-label">: {{ ucwords($ticket->kendala) }}</label>
+                                        <label for="kendala" class="form-label">: {{ ucfirst($ticket->kendala) }}</label>
                                     </div>
                                     <div class="col-md-2 m-0">
                                         <label for="status" class="form-label fw-bold">Status Ticket</label>
@@ -287,6 +287,25 @@
                                         </div>
                                     </form>
                                     <script>
+                                        // // Mencegah user untuk mengakses halaman lain ketika berada di form ini
+                                        // window.addEventListener('popstate', function (event) {
+                                        //     // Logika atau pesan konfirmasi di sini
+                                        //     var confirmationMessage = 'Apakah Anda yakin ingin meninggalkan halaman?';
+
+                                        //     // Mendukung standar terbaru dan umum
+                                        //     if (typeof event === 'undefined') {
+                                        //         event = window.event;
+                                        //     }
+
+                                        //     // Untuk browser modern
+                                        //     if (event) {
+                                        //         event.returnValue = confirmationMessage;
+                                        //     }
+
+                                        //     // Untuk browser lama (Internet Explorer)
+                                        //     return confirmationMessage;
+                                        // });
+
                                         function formValidation(){
                                             var kendala = document.getElementById('sub_category_ticket_id').value;
                                             var tindakan = document.getElementById('note').value;

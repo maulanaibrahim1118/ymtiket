@@ -81,17 +81,18 @@ class SubCategoryTicketController extends Controller
             'updated_by.required'           => 'Wajib diisi!'
         ]);
 
+        $nama_sub_kategori = strtolower($request['nama_sub_kategori']);
+
         // Saving data to sub_category_ticket table
         $sct                        = new Sub_category_ticket;
-        $sct->nama_sub_kategori     = strtolower($request['nama_sub_kategori']);
+        $sct->nama_sub_kategori     = ucwords($nama_sub_kategori);
         $sct->category_ticket_id    = $request['category_ticket_id'];
         $sct->asset_change          = $request['asset_change'];
         $sct->updated_by            = $request['updated_by'];
         $sct->save();
 
         // Redirect to the Category Asset view if create data succeded
-        $nama_sub_kategori  = $request['nama_sub_kategori'];
-        $url                = $request['url'];
+        $url = $request['url'];
         return redirect($url)->with('success', ucwords($nama_sub_kategori).' telah ditambahkan!');
     }
 
@@ -160,8 +161,10 @@ class SubCategoryTicketController extends Controller
             'updated_by.required'           => 'Wajib diisi!'
         ]);
         
+        $nama_sub_kategori = strtolower($request['nama_sub_kategori']);
+
         Sub_category_ticket::where('id', $category_sub_ticket->id)->update([
-            'nama_sub_kategori'     => strtolower($request['nama_sub_kategori']),
+            'nama_sub_kategori'     => ucwords($request['nama_sub_kategori']),
             'category_ticket_id'    => $request['category_ticket_id'],
             'asset_change'          => $request['asset_change'],
             'updated_by'            => $request['updated_by']

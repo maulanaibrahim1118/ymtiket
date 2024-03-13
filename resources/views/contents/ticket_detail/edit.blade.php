@@ -128,8 +128,12 @@
                                         <p class="border-bottom mt-1 mb-0"></p>
                                     </div>
                         
+                                    @if($title == "Tangani Ticket")
+                                    <form class="row g-3" action="/ticket-details/process" method="POST" onsubmit="return formValidation()">
+                                    @else
                                     <form class="row g-3" action="/ticket-details/update{{ $td->id }}" method="POST" onsubmit="return formValidation()">
                                         @method('put')
+                                    @endif
                                         @csrf
                                         <div class="col-md-12 mb-0" style="font-size: 14px">
                                             <table class="table table-bordered">

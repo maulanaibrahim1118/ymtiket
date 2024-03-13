@@ -77,7 +77,7 @@
                                         <label for="kendala" class="form-label fw-bold">Kendala</label>
                                     </div>
                                     <div class="col-md-4 m-0">
-                                        <label for="kendala" class="form-label">: {{ ucwords($ticket->kendala) }}</label>
+                                        <label for="kendala" class="form-label">: {{ ucfirst($ticket->kendala) }}</label>
                                     </div>
                                     <div class="col-md-2 m-0">
                                         <label for="status" class="form-label fw-bold">Status Ticket</label>

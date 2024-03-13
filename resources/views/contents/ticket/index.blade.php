@@ -153,7 +153,7 @@
                                                 @if($ticket->status == "created" AND $ticket->agent->nik == auth()->user()->nik)
                                                     {{-- Tombol Tangani --}}
                                                     <li>
-                                                    <form action="/tickets/{{ encrypt($ticket->id) }}/process1" method="post">
+                                                    <form action="/tickets/{{ encrypt($ticket->id) }}/process1" method="post" onsubmit="return reloadAction()">
                                                     @method('put')
                                                     @csrf
                                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
@@ -467,4 +467,10 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+    <script>
+        function reloadAction(){
+            window.location.reload();
+            return true;
+        }
+    </script>
 @endsection

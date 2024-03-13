@@ -153,6 +153,7 @@ class TicketDetailController extends Controller
         $ticket_detail->pending_at              = "-";
         $ticket_detail->biaya                   = $biaya;
         $ticket_detail->note                    = $request['note'];
+        $ticket_detail->status                  = "onprocess";
         $ticket_detail->updated_by              = $updatedBy;
         $ticket_detail->save();
 
@@ -167,7 +168,7 @@ class TicketDetailController extends Controller
 
         // Updating data to ticket table
         Ticket::where('id', $request['ticket_id'])->update([
-            'status'    => $request['status']
+            'status'    => "onprocess"
         ]);
 
         // Redirect to the Category Asset view if create data succeded
@@ -197,7 +198,7 @@ class TicketDetailController extends Controller
         $id             = decrypt($id);
         $ticket         = Ticket::where('id', $id)->first();
         $agentId        = $ticket->agent_id;
-        $ticket_detail  = Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->first();
+        $ticket_detail  = Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->latest()->first();
         $subCategoryId  = $ticket_detail->sub_category_ticket_id;
         $subCategory    = Sub_category_ticket::where('id', $subCategoryId)->first();
         $categoryId     = $subCategory->category_ticket_id;
@@ -226,7 +227,6 @@ class TicketDetailController extends Controller
     {
         $ticketId       = $request['ticket_id'];
         $agentId        = $request['agent_id'];
-        $countDetail    = Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->count();
         $updatedBy      = $request['updated_by'];
 
         // Validating data request
@@ -253,54 +253,17 @@ class TicketDetailController extends Controller
             $biaya = str_replace(',','',$request['biaya']);
         }
         
-        if($countDetail == NULL) {
-            // Updating data to ticket detail table
-            Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->update([
-                'jenis_ticket'              => $request['jenis_ticket'],
-                'sub_category_ticket_id'    => $request['sub_category_ticket_id'],
-                'biaya'                     => $biaya,
-                'process_at'                => $request['process_at'],
-                'note'                      => $request['note'],
-                'status'                    => "onprocess",
-            ]);
-            // Saving data to ticket_detail table
-            $ticket_detail                          = new Ticket_detail;
-            $ticket_detail->ticket_id               = $ticketId;
-            $ticket_detail->jenis_ticket            = $request['jenis_ticket'];
-            $ticket_detail->sub_category_ticket_id  = $request['sub_category_ticket_id'];
-            $ticket_detail->agent_id                = $request['agent_id'];
-            $ticket_detail->process_at              = $request['process_at'];
-            $ticket_detail->pending_at              = "-";
-            $ticket_detail->biaya                   = $biaya;
-            $ticket_detail->note                    = $request['note'];
-            $ticket_detail->updated_by              = $request['updated_by'];
-            $ticket_detail->save();
+        // Updating data to ticket detail table
+        Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->update([
+            'jenis_ticket'              => $request['jenis_ticket'],
+            'sub_category_ticket_id'    => $request['sub_category_ticket_id'],
+            'biaya'                     => $biaya,
+            'note'                      => $request['note'],
+        ]);
 
-            // Saving data to progress ticket table
-            $progress_ticket                = new Progress_ticket;
-            $progress_ticket->ticket_id     = $ticketId;
-            $progress_ticket->tindakan      = "Ticket di proses oleh ".ucwords($updatedBy);
-            $progress_ticket->process_at    = $request['process_at'];
-            $progress_ticket->status        = "onprocess";
-            $progress_ticket->updated_by    = $request['updated_by'];
-            $progress_ticket->save();
-
-            // Redirect to the Category Asset view if create data succeded
-            $no_ticket = $request['no_ticket'];
-            return redirect('/ticket-details'.'/'.$request['url'])->with('success', $no_ticket.' sedang diproses!');
-        }else{
-            // Updating data to ticket detail table
-            Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->update([
-                'jenis_ticket'              => $request['jenis_ticket'],
-                'sub_category_ticket_id'    => $request['sub_category_ticket_id'],
-                'biaya'                     => $biaya,
-                'note'                      => $request['note'],
-            ]);
-
-            // Redirect to the Category Asset view if create data succeded
-            $no_ticket = $request['no_ticket'];
-            return redirect('/ticket-details'.'/'.$request['url'])->with('success', 'Detail tindakan ticket '.$no_ticket.' telah diedit!');
-        }
+        // Redirect to the Category Asset view if create data succeded
+        $no_ticket = $request['no_ticket'];
+        return redirect('/ticket-details'.'/'.$request['url'])->with('success', 'Detail tindakan ticket '.$no_ticket.' telah diedit!');
     }
 
     /**
