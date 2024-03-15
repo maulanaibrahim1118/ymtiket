@@ -55,9 +55,4 @@ class User extends Authenticatable implements Authorizable
     {
         return $this->hasOne('App\Comment');
     }
-
-    public function ticket_approval()
-    {
-        return $this->hasOne('App\Ticket_approval');
-    }
 }

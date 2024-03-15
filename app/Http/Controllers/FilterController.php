@@ -268,56 +268,56 @@ class FilterController extends Controller
             if($positionId == "2"){ // Jika jabatan Chief
                 if($status == "all"){
                     $title      = "Total Ticket";
-                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
+                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
                 }elseif($status == "unprocess"){
                     $title      = "Ticket Belum Di Proses";
-                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'created'],['created_at', 'like', $filter2.'%']])->count();
+                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'created'],['created_at', 'like', $filter2.'%']])->get();
                 }elseif($status == "onprocess"){
                     $title      = "Ticket Sedang Di Proses";
-                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->count();
+                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->get();
                 }elseif($status == "pending"){
                     $title      = "Ticket Sedang Di Pending";
-                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->count();
+                    $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->get();
                 }else{
                     $title      = "Ticket Sudah Selesai";
                     $tickets    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
-                        ->orWhere([['ticket_area', 'like', $ticketChief.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
+                        ->orWhere([['ticket_area', 'like', $ticketChief.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->get();
                 }
             }elseif($positionId == "6"){ // Jika jabatan Koordinator Wilayah
                 if($status == "all"){
                     $title      = "Total Ticket";
-                    $tickets    = Ticket::where([['ticket_area', $ticketKorwil],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
+                    $tickets    = Ticket::where([['ticket_area', $ticketKorwil],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
                 }elseif($status == "unprocess"){
                     $title      = "Ticket Belum Di Proses";
-                    $tickets    = $ticket     = Ticket::where([['ticket_area', $ticketKorwil],['status', 'created'],['created_at', 'like', $filter2.'%']])->count();
+                    $tickets    = $ticket     = Ticket::where([['ticket_area', $ticketKorwil],['status', 'created'],['created_at', 'like', $filter2.'%']])->get();
                 }elseif($status == "onprocess"){
                     $title      = "Ticket Sedang Di Proses";
-                    $ticket     = Ticket::where([['ticket_area', $ticketKorwil],['status', $status],['created_at', 'like', $filter2.'%']])->count();
+                    $ticket     = Ticket::where([['ticket_area', $ticketKorwil],['status', $status],['created_at', 'like', $filter2.'%']])->get();
                 }elseif($status == "pending"){
                     $title      = "Ticket Sedang Di Pending";
-                    $tickets    = Ticket::where([['ticket_area', $ticketKorwil],['status', $status],['created_at', 'like', $filter2.'%']])->count();
+                    $tickets    = Ticket::where([['ticket_area', $ticketKorwil],['status', $status],['created_at', 'like', $filter2.'%']])->get();
                 }else{
                     $title      = "Ticket Sudah Selesai";
                     $tickets    = Ticket::where([['ticket_area', $ticketKorwil],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
-                                        ->orWhere([['ticket_area', $ticketKorwil],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
+                                        ->orWhere([['ticket_area', $ticketKorwil],['status', 'finished'],['created_at', 'like', $filter2.'%']])->get();
                 }
             }elseif($positionId == "7"){ // Jika jabatan Manager
                 if($status == "all"){
                     $title      = "Total Ticket";
-                    $tickets    = Ticket::where([['ticket_area', 'like', $area.'%'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
+                    $tickets    = Ticket::where([['ticket_area', 'like', $area.'%'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
                 }elseif($status == "unprocess"){
                     $title      = "Ticket Belum Di Proses";
-                    $tickets    = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'created'],['created_at', 'like', $filter2.'%']])->count();
+                    $tickets    = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'created'],['created_at', 'like', $filter2.'%']])->get();
                 }elseif($status == "onprocess"){
                     $title      = "Ticket Sedang Di Proses";
-                    $tickets    = Ticket::where([['ticket_area', 'like', $area.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->count();
+                    $tickets    = Ticket::where([['ticket_area', 'like', $area.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->get();
                 }elseif($status == "pending"){
                     $title      = "Ticket Sedang Di Pending";
-                    $tickets    = Ticket::where([['ticket_area', 'like', $area.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->count();
+                    $tickets    = Ticket::where([['ticket_area', 'like', $area.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->get();
                 }else{
                     $title      = "Ticket Sudah Selesai";
                     $tickets    = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
-                        ->orWhere([['ticket_area', 'like', $area.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
+                        ->orWhere([['ticket_area', 'like', $area.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->get();
                 }
             }else{ // Jika jabatan selain Korwil, Chief dan Manager
                 if($status == "all"){

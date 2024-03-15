@@ -16,9 +16,9 @@ class CreateTicketApprovalsTable extends Migration
         Schema::create('ticket_approvals', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('ticket_id');
-            $table->bigInteger('user_id');
-            $table->enum('status', ['pending', 'approved', 'rejected']);
-            $table->string('reason');
+            $table->enum('status', ['null', 'approved', 'rejected']);
+            $table->string('approved_by')->nullable();
+            $table->string('reason')->nullable();
             $table->string('updated_by', 40);
             $table->timestamps();
         });

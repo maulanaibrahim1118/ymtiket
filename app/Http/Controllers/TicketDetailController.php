@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Ticket;
 use App\Ticket_detail;
+use App\Ticket_approval;
 use App\Comment;
 use App\Agent;
 use App\User;
@@ -60,6 +61,12 @@ class TicketDetailController extends Controller
             $agents = Agent::where([['location_id', $locationId],['id', $sdId]])->get();
         }
 
+        $ticketApproval = Ticket_approval::where('ticket_id', $id)->first();
+        if($ticketApproval == NULL)
+        {
+            $ticketApproval = Ticket_approval::latest()->first();
+        }
+
         return view('contents.ticket_detail.index', [
             "title"             => "Ticket Detail",
             "path"              => "Ticket",
@@ -69,6 +76,7 @@ class TicketDetailController extends Controller
             "checkComment"      => Comment::where('ticket_id', $id)->count(),
             "progress_tickets"  => Progress_ticket::where('ticket_id', $id)->orderBy('created_at', 'DESC')->get(),
             "ticket_details"    => Ticket_detail::where('ticket_id', $id)->get(),
+            "ticket_approval"   => $ticketApproval,
             "countDetail"       => Ticket_detail::where('ticket_id', $id)->count(),
             "agents"            => $agents,
             "ext"               => $ext
@@ -117,6 +125,17 @@ class TicketDetailController extends Controller
      */
     public function store(Request $request)
     {
+        /** 
+         * Cek status ticket (jika onprocess atau pending)
+         * Menghindari perubahan setelah agent memproses ticket lalu klik kembali (ke form tangani) di browser
+         */
+        $ticket = Ticket::where('id', $request['ticket_id'])->first();
+        $statusTicket = $ticket->status;
+        $countDetail = Ticket_detail::where([['ticket_id', $request['ticket_id']],['agent_id', $request['agent_id']],['status', 'onprocess']])->count();
+        if($statusTicket == "pending" || $countDetail == 1){
+            return redirect('/ticket-details'.'/'.$request['url'])->with('error', 'Ticket sudah anda tangani sebelumnya!');
+        }
+
         // Validating data request
         $validatedData = $request->validate([
             'jenis_ticket'              => 'required',
@@ -157,22 +176,40 @@ class TicketDetailController extends Controller
         $ticket_detail->updated_by              = $updatedBy;
         $ticket_detail->save();
 
-        // Saving data to progress ticket table
-        $progress_ticket                = new Progress_ticket;
-        $progress_ticket->ticket_id     = $request['ticket_id'];
-        $progress_ticket->tindakan      = "Ticket di proses oleh ".ucwords($updatedBy);
-        $progress_ticket->process_at    = $request['process_at'];
-        $progress_ticket->status        = "onprocess";
-        $progress_ticket->updated_by    = $request['updated_by'];
-        $progress_ticket->save();
+        // Jika penanganan memerlukan biaya
+        if($biaya != 0){
+            $now = date('d-m-Y H:i:s');
 
-        // Updating data to ticket table
-        Ticket::where('id', $request['ticket_id'])->update([
-            'status'    => "onprocess"
-        ]);
+            // Updating data to ticket table
+            Ticket::where('id', $request['ticket_id'])->update([
+                'status' => "pending",
+                'need_approval' => "ya",
+                'pending_at' => $now
+            ]);
+
+            Ticket_detail::where([['ticket_id', $request['ticket_id']],['agent_id', $request['agent_id']]])->update([
+                'status' => "pending",
+            ]);
+
+            // Saving data to progress ticket table
+            $progress_ticket                = new Progress_ticket;
+            $progress_ticket->ticket_id     = $request['ticket_id'];
+            $progress_ticket->tindakan      = "Ticket di pending oleh sistem (Alasan: memerlukan persetujuan biaya)";
+            $progress_ticket->process_at    = $now;
+            $progress_ticket->status        = "pending";
+            $progress_ticket->updated_by    = "Sistem";
+            $progress_ticket->save();
+
+            $agent = Agent::where('id', $request['agent_id'])->first();
+            // Saving data to ticket approval table
+            $ticket_approval                = new Ticket_approval;
+            $ticket_approval->ticket_id     = $request['ticket_id'];
+            $ticket_approval->status        = "null";
+            $ticket_approval->updated_by    = $agent->nama_agent;
+            $ticket_approval->save();
+        }
 
         // Redirect to the Category Asset view if create data succeded
-        $no_ticket = $request['no_ticket'];
         return redirect('/ticket-details'.'/'.$request['url'])->with('success', 'Data telah disimpan!');
     }
 
@@ -253,13 +290,51 @@ class TicketDetailController extends Controller
             $biaya = str_replace(',','',$request['biaya']);
         }
         
+        $getDetail = Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->latest()->first();
+        $detail_id = $getDetail->id;
+
         // Updating data to ticket detail table
-        Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->update([
+        Ticket_detail::where('id', $detail_id)->update([
             'jenis_ticket'              => $request['jenis_ticket'],
             'sub_category_ticket_id'    => $request['sub_category_ticket_id'],
             'biaya'                     => $biaya,
             'note'                      => $request['note'],
         ]);
+
+        $ticket = Ticket::where('id', $ticketId)->first();
+        $approved = $ticket->approved;
+
+        if($biaya != 0 AND $approved == "null"){
+            $now = date('d-m-Y H:i:s');
+
+            // Updating data to ticket table
+            Ticket::where('id', $ticketId)->update([
+                'status' => "pending",
+                'need_approval' => "ya",
+                'pending_at' => $now
+            ]);
+
+            Ticket_detail::where('id', $detail_id)->update([
+                'status' => "pending",
+            ]);
+
+            // Saving data to progress ticket table
+            $progress_ticket                = new Progress_ticket;
+            $progress_ticket->ticket_id     = $ticketId;
+            $progress_ticket->tindakan      = "Ticket di pending oleh sistem (Alasan: Memerlukan persetujuan biaya)";
+            $progress_ticket->process_at    = $now;
+            $progress_ticket->status        = "pending";
+            $progress_ticket->updated_by    = "Sistem";
+            $progress_ticket->save();
+
+            $agent = Agent::where('id', $agentId)->first();
+            // Saving data to ticket approval table
+            $ticket_approval                = new Ticket_approval;
+            $ticket_approval->ticket_id     = $ticketId;
+            $ticket_approval->status        = "null";
+            $ticket_approval->updated_by    = $agent->nama_agent;
+            $ticket_approval->save();
+        }
 
         // Redirect to the Category Asset view if create data succeded
         $no_ticket = $request['no_ticket'];

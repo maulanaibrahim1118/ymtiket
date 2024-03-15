@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>.:: GCITOP | {{ $title }}</title>
+    <title>.:: eTicket | {{ $title }}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -147,15 +147,17 @@
                                                     <td>Sub Kategori Ticket</td>
                                                     <td>Biaya</td>
                                                     <td>PIC Agent</td>
+                                                    <td>Status</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-capitalize">
-                                                    @if($countDetail == 0) 
+                                                    {{-- Jika belum di proses --}}
+                                                    @if($countDetail == 0)
                                                     <tr>
                                                         @if($ticket->status == "created")
-                                                        <td colspan="5" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
+                                                        <td colspan="6" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
                                                         @else
-                                                        <td colspan="5" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
+                                                        <td colspan="6" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
                                                         @endif
                                                     </tr>
                                                     @else
@@ -166,6 +168,16 @@
                                                     <td>{{ $td->sub_category_ticket->nama_sub_kategori }}</td>
                                                     <td>IDR. {{ number_format($td->biaya,2,'.',',') }}</td>
                                                     <td>{{ $td->agent->nama_agent }}</td>
+                                                    {{-- Status --}}
+                                                    @if($td->status == 'onprocess')
+                                                    <td><span class="badge bg-warning">{{ $td->status }}</span></td>
+                                                    @elseif($td->status == 'pending')
+                                                    <td><span class="badge bg-danger">{{ $td->status }}</span></td>
+                                                    @elseif($td->status == 'resolved')
+                                                    <td><span class="badge bg-primary">{{ $td->status }}</span></td>
+                                                    @elseif($td->status == 'assigned')
+                                                    <td><span class="badge bg-danger">not resolved</span></td>
+                                                    @endif
                                                     </tr>
                                                     @endforeach
                                                     @endif

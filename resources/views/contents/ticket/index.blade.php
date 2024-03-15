@@ -51,9 +51,7 @@
                                         <th scope="col">PIC</th>
                                         @endcan
                                         <th scope="col">STATUS</th>
-                                        @can('isServiceDesk')
                                         <th scope="col">KETERANGAN</th>
-                                        @endcan
                                         <th scope="col">AKSI</th>
                                         </tr>
                                     </thead>
@@ -101,7 +99,9 @@
 
                                         @can('isServiceDesk')
                                         {{-- Kolom Keterangan --}}
-                                        @if($ticket->assigned == "ya" AND $ticket->status == "created" OR $ticket->assigned == "ya" AND $ticket->status == "pending")
+                                        @if($ticket->need_approval == "ya" AND $ticket->approved == NULL)
+                                        <td><span class="badge bg-secondary">menunggu approval</span></td>
+                                        @elseif($ticket->assigned == "ya" AND $ticket->status == "created" OR $ticket->assigned == "ya" AND $ticket->status == "pending")
                                         <td><span class="badge bg-primary">direct assign</span></td>
                                         @else
                                             @if($ticket->is_queue == "ya" AND $ticket->status == "created")
@@ -115,6 +115,24 @@
                                             @else
                                             <td></td>
                                             @endif
+                                        @endif
+                                        @endcan
+
+                                        @can('isAgent')
+                                        {{-- Kolom Keterangan --}}
+                                        @if($ticket->need_approval == "ya" AND $ticket->approved == NULL)
+                                        <td><span class="badge bg-secondary">menunggu approval</span></td>
+                                        @else
+                                        <td></td>
+                                        @endif
+                                        @endcan
+
+                                        @can('isClient')
+                                        {{-- Kolom Keterangan --}}
+                                        @if($ticket->need_approval == "ya" AND $ticket->approved == NULL)
+                                        <td><span class="badge bg-secondary">menunggu approval</span></td>
+                                        @else
+                                        <td></td>
                                         @endif
                                         @endcan
 
@@ -204,37 +222,87 @@
 
                                                 {{-- Jika status ticket pending --}}
                                                 @elseif($ticket->status == "pending") {{-- Jika status pending --}}
-                                                    @if($ticket->agent->nik == auth()->user()->nik AND $ticket->assigned == "tidak")
-                                                        {{-- Tombol Proses Ulang --}}
-                                                        <li>
-                                                        <form action="/tickets/{{ $ticket->id }}/reProcess1" method="post">
-                                                        @method('put')
-                                                        @csrf
-                                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                        <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                                        <a href="#">
-                                                        <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Proses Ulang</button>
-                                                        </a>
-                                                        </form>
-                                                        </li>
-
-                                                    {{-- Jika status ticket pending assign --}}
-                                                    @elseif($ticket->agent->nik == auth()->user()->nik AND $ticket->assigned == "ya")
-                                                        {{-- Tombol Tangani --}}
-                                                        <li>
-                                                        <form action="/tickets/{{ encrypt($ticket->id) }}/process2" method="post">
-                                                        @method('put')
-                                                        @csrf
-                                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                        <a href="#">
-                                                        <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Tangani</button>
-                                                        </a>
-                                                        </form>
-                                                        </li>
-
+                                                    @if($ticket->need_approval == "ya")
+                                                        @if($ticket->approved == NULL || $ticket->approved == "rejected")
+                                                            {{-- Tombol Detail --}}
+                                                            <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{  encrypt($ticket->id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                                                        @else
+                                                            @if($ticket->updated_by != auth()->user()->nama)
+                                                                {{-- Jika ticket di assign dan sudah pernah di tangani oleh service desk --}}
+                                                                @if($ticket->assigned == "ya")
+                                                                    {{-- Tombol Tangani --}}
+                                                                    <li>
+                                                                    <form action="/tickets/{{ encrypt($ticket->id) }}/process2" method="post">
+                                                                    @method('put')
+                                                                    @csrf
+                                                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                                    <a href="#">
+                                                                    <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Tangani</button>
+                                                                    </a>
+                                                                    </form>
+                                                                    </li>
+                                                                @else
+                                                                    {{-- Tombol Tangani --}}
+                                                                    <li>
+                                                                    <form action="/tickets/{{ encrypt($ticket->id) }}/process3" method="post">
+                                                                    @method('put')
+                                                                    @csrf
+                                                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                                    <input type="text" name="url" value="/ticket-details/{{ encrypt($ticket->id) }}" hidden>
+                                                                    <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
+                                                                    <a href="#">
+                                                                    <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Tangani</button>
+                                                                    </a>
+                                                                    </form>
+                                                                    </li>
+                                                                @endif
+                                                            @else
+                                                                {{-- Tombol Proses Ulang / Jika di pending oleh agent sendiri --}}
+                                                                <li>
+                                                                <form action="/tickets/{{ $ticket->id }}/reProcess1" method="post">
+                                                                @method('put')
+                                                                @csrf
+                                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                                <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                                                <a href="#">
+                                                                <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Proses Ulang</button>
+                                                                </a>
+                                                                </form>
+                                                                </li>
+                                                            @endif
+                                                        @endif
                                                     @else
-                                                        {{-- Tombol Detail --}}
-                                                        <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{  encrypt($ticket->id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                                                        @if($ticket->agent->nik == auth()->user()->nik AND $ticket->assigned == "tidak")
+                                                            {{-- Tombol Proses Ulang --}}
+                                                            <li>
+                                                            <form action="/tickets/{{ $ticket->id }}/reProcess1" method="post">
+                                                            @method('put')
+                                                            @csrf
+                                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                            <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                                            <a href="#">
+                                                            <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Proses Ulang</button>
+                                                            </a>
+                                                            </form>
+                                                            </li>
+
+                                                        {{-- Jika status ticket pending assign --}}
+                                                        @elseif($ticket->agent->nik == auth()->user()->nik AND $ticket->assigned == "ya")
+                                                            {{-- Tombol Tangani --}}
+                                                            <li>
+                                                            <form action="/tickets/{{ encrypt($ticket->id) }}/process2" method="post">
+                                                            @method('put')
+                                                            @csrf
+                                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                            <a href="#">
+                                                            <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Tangani</button>
+                                                            </a>
+                                                            </form>
+                                                            </li>
+                                                        @else
+                                                            {{-- Tombol Detail --}}
+                                                            <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{  encrypt($ticket->id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                                                        @endif
                                                     @endif
 
                                                 {{-- Jika status ticket onprocess --}}
@@ -265,34 +333,87 @@
                                                     </form>
                                                     </li>
 
-                                                {{-- Jika ticket di assign dan sudah pernah di tangani oleh service desk --}}
-                                                @elseif($ticket->status == "pending" and $ticket->assigned == "ya")
-                                                    {{-- Tombol Tangani --}}
-                                                    <li>
-                                                    <form action="/tickets/{{ encrypt($ticket->id) }}/process2" method="post">
-                                                    @method('put')
-                                                    @csrf
-                                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                    <a href="#">
-                                                    <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Tangani</button>
-                                                    </a>
-                                                    </form>
-                                                    </li>
+                                                @elseif($ticket->status == "pending") {{-- Jika status pending --}}
+                                                    @if($ticket->need_approval == "ya")
+                                                        @if($ticket->approved == NULL || $ticket->approved == "rejected")
+                                                            {{-- Tombol Detail --}}
+                                                            <li><a class="dropdown-item text-capitalize" href="/ticket-details/{{  encrypt($ticket->id) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                                                        @else
+                                                            @if($ticket->updated_by != auth()->user()->nama)
+                                                                {{-- Jika ticket di assign dan sudah pernah di tangani oleh service desk --}}
+                                                                @if($ticket->assigned == "ya")
+                                                                    {{-- Tombol Tangani --}}
+                                                                    <li>
+                                                                    <form action="/tickets/{{ encrypt($ticket->id) }}/process2" method="post">
+                                                                    @method('put')
+                                                                    @csrf
+                                                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                                    <a href="#">
+                                                                    <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Tangani</button>
+                                                                    </a>
+                                                                    </form>
+                                                                    </li>
+                                                                @else
+                                                                    {{-- Tombol Tangani --}}
+                                                                    <li>
+                                                                    <form action="/tickets/{{ encrypt($ticket->id) }}/process3" method="post">
+                                                                    @method('put')
+                                                                    @csrf
+                                                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                                    <input type="text" name="url" value="/ticket-details/{{ encrypt($ticket->id) }}" hidden>
+                                                                    <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
+                                                                    <a href="#">
+                                                                    <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Tangani</button>
+                                                                    </a>
+                                                                    </form>
+                                                                    </li>
+                                                                @endif
+                                                            @else
+                                                                {{-- Tombol Proses Ulang / Jika di pending oleh agent sendiri --}}
+                                                                <li>
+                                                                <form action="/tickets/{{ $ticket->id }}/reProcess1" method="post">
+                                                                @method('put')
+                                                                @csrf
+                                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                                <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                                                <a href="#">
+                                                                <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Proses Ulang</button>
+                                                                </a>
+                                                                </form>
+                                                                </li>
+                                                            @endif
+                                                        @endif
+                                                    @else
+                                                        {{-- Jika ticket di assign dan sudah pernah di tangani oleh service desk --}}
+                                                        @if($ticket->assigned == "ya")
+                                                            {{-- Tombol Tangani --}}
+                                                            <li>
+                                                            <form action="/tickets/{{ encrypt($ticket->id) }}/process2" method="post">
+                                                            @method('put')
+                                                            @csrf
+                                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                            <a href="#">
+                                                            <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Tangani</button>
+                                                            </a>
+                                                            </form>
+                                                            </li>
 
-                                                {{-- Jika ticket di pending oleh agent sendiri --}}
-                                                @elseif($ticket->status == "pending" and $ticket->assigned == "tidak")
-                                                    {{-- Tombol Proses Ulang --}}
-                                                    <li>
-                                                    <form action="/tickets/{{ $ticket->id }}/reProcess1" method="post">
-                                                    @method('put')
-                                                    @csrf
-                                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                    <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                                    <a href="#">
-                                                    <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Proses Ulang</button>
-                                                    </a>
-                                                    </form>
-                                                    </li>
+                                                        {{-- Jika ticket di pending oleh agent sendiri --}}
+                                                        @elseif($ticket->assigned == "tidak")
+                                                            {{-- Tombol Proses Ulang --}}
+                                                            <li>
+                                                            <form action="/tickets/{{ $ticket->id }}/reProcess1" method="post">
+                                                            @method('put')
+                                                            @csrf
+                                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                            <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                                            <a href="#">
+                                                            <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-box-arrow-in-down-right text-primary"></i>Proses Ulang</button>
+                                                            </a>
+                                                            </form>
+                                                            </li>
+                                                        @endif
+                                                    @endif
 
                                                 {{-- Jika status ticket onprocess --}}
                                                 @elseif($ticket->status == "onprocess" and $ticket->assigned == "tidak") {{-- Jika status onprocess dan belum ada detail ticket --}}

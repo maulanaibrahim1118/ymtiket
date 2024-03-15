@@ -189,6 +189,7 @@
                                     </div>
                         
                                     <div class="col-md-12" style="font-size: 14px">
+                                        <p class="mb-2">Detail penanganan Ticket :</p>
                                         <table class="table table-bordered text-center">
                                             <thead class="fw-bold bg-light">
                                                 <tr>
@@ -238,7 +239,7 @@
                                                 @elseif($td->status == 'resolved')
                                                 <td><span class="badge bg-primary">{{ $td->status }}</span></td>
                                                 @elseif($td->status == 'assigned')
-                                                <td><span class="badge bg-danger">{{ $td->status }}</span></td>
+                                                <td><span class="badge bg-danger">not resolved</span></td>
                                                 @endif
 
                                                 @can('agent-info')
@@ -279,7 +280,77 @@
                                                 @endif
                                             </tbody>
                                         </table>
+                                        @if($ticket->need_approval == "ya")
+                                            @if(auth()->user()->position_id == 6)
+                                                @if($ticket_approval->status == "null")
+                                                @else
+                                                    <div class="col-md-12 mb-2">
+                                                    <p class="mb-2">Detail persetujuan Ticket :</p>
+                                                    <table class="table table-sm table-bordered text-center mb-0">
+                                                        <thead>
+                                                            <tr>
+                                                                <td class="col-md-2 fw-bold bg-light">Status Approval</td>
+                                                                <td class="col-md-2 fw-bold bg-light">Tanggal / Waktu</td>
+                                                                <td class="col-md-2 fw-bold bg-light">Atasan Terkait</td>
+                                                                <td class="col-md-7 fw-bold bg-light">Alasan</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                @if($ticket_approval->status == "null")
+                                                                    <td class="col-md-2"><span class="badge bg-secondary">Belum Disetujui</span></td>
+                                                                    <td class="col-md-2"></td>
+                                                                @else
+                                                                    @if($ticket_approval->status == "approved")
+                                                                        <td class="col-md-2"><span class="badge bg-success">Disetujui</td>
+                                                                    @else
+                                                                        <td class="col-md-2"><span class="badge bg-danger">Tidak Disetujui</td>
+                                                                    @endif
+                                                                    <td class="col-md-2">{{ date('d-M-Y', strtotime($ticket_approval->updated_at)) }} / <span class="text-secondary">{{ date('H:i', strtotime($ticket_approval->updated_at)) }}</span></td>
+                                                                @endif
+                                                                <td class="col-md-2">{{ ucwords($ticket_approval->approved_by) }}</td>
+                                                                <td class="col-md-7">{{ ucfirst($ticket_approval->reason) }}</td>
+                                                            </tr>
+                                                    </table>
+                                                    </div>
+                                                @endif
+                                            @else
+                                                <div class="col-md-12 mb-2">
+                                                <p class="mb-2">Detail persetujuan Ticket :</p>
+                                                <table class="table table-sm table-bordered text-center mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <td class="col-md-2 fw-bold bg-light">Status Approval</td>
+                                                            <td class="col-md-2 fw-bold bg-light">Tanggal / Waktu</td>
+                                                            <td class="col-md-2 fw-bold bg-light">Atasan Terkait</td>
+                                                            <td class="col-md-7 fw-bold bg-light">Alasan</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            @if($ticket_approval->status == "null")
+                                                                <td class="col-md-2"><span class="badge bg-secondary">Belum Disetujui</span></td>
+                                                                <td class="col-md-2"></td>
+                                                            @else
+                                                                @if($ticket_approval->status == "approved")
+                                                                    <td class="col-md-2"><span class="badge bg-success">{{ ucwords($ticket_approval->status) }}</td>
+                                                                @else
+                                                                    <td class="col-md-2"><span class="badge bg-danger">{{ ucwords($ticket_approval->status) }}</td>
+                                                                @endif
+                                                                <td class="col-md-2">{{ date('d-M-Y', strtotime($ticket_approval->updated_at)) }} / <span class="text-secondary">{{ date('H:i', strtotime($ticket_approval->updated_at)) }}</span></td>
+                                                            @endif
+                                                            <td class="col-md-2">{{ ucwords($ticket_approval->approved_by) }}</td>
+                                                            <td class="col-md-7">{{ ucfirst($ticket_approval->reason) }}</td>
+                                                        </tr>
+                                                </table>
+                                                </div>
+                                            @endif
+                                        @endif
                                     </div>
+                                    <div class="col-md-12">
+                                        <p class="border-bottom mt-1 mb-0"></p>
+                                    </div>
+
 
                                     {{-- Action Modal --}}
                                     <div class="modal fade" id="actionModal" tabindex="-1">
@@ -316,35 +387,73 @@
                                     }
                                     </script>
 
-                                    <div class="col-md-12">
-                                        @can('isClient') {{-- Jika role sebagai Client --}}
-                                            @if($ticket->status == "resolved") {{-- Jika status resolved, muncul tombol close/selesai --}}
-                                                {{-- Tombol Close --}}
-                                                <button type="button" class="btn btn-sm btn-success float-end ms-1" id="closedButton" data-bs-toggle="modal" data-bs-target="#closedModal"><i class="bi bi-check-circle me-1"></i> Close</button>
-                                                </form>
-                                                <div class="modal fade" id="closedModal" tabindex="-1">
+                                    <div class="col-md-6">
+                                        {{-- Tombol Kembali --}}
+                                        <a href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}"><button type="button" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                    @can('isClient') {{-- Jika role sebagai Client --}}
+                                        @if($ticket->status == "resolved") {{-- Jika status resolved, muncul tombol close/selesai --}}
+                                            {{-- Tombol Close --}}
+                                            <button type="button" class="btn btn-sm btn-success float-end ms-1" id="closedButton" data-bs-toggle="modal" data-bs-target="#closedModal"><i class="bi bi-check-circle me-1"></i> Close</button>
+                                            <div class="modal fade" id="closedModal" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content" id="modalContent4">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Status Closed Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="/tickets/finished{{ $ticket->id }}" method="post">
+                                                        @method("put")
+                                                        @csrf
+                                                        <div class="modal-body">
+                                                            <div class="col-md-6 mb-2">
+                                                                <select class="form-select" name="closedStatus" id="closedStatus" value="{{ old('closedStatus') }}">
+                                                                    <option selected disabled>Choose...</option>
+                                                                    <option value="selesai">Selesai</option>
+                                                                    <option value="belum selesai">Belum Selesai</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <textarea name="alasanClosed" class="form-control" id="alasanClosed" rows="3" placeholder="Tuliskan keterangan tambahan (opsional)">{{ old('alasanClosed') }}</textarea>
+                                                            </div>
+                                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                            <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Kirim</button>
+                                                        </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div><!-- End Close Modal-->
+                                        @else {{-- Jika status bukan resolved, tidak akan muncul tombol apapun --}}
+                                        @endif
+
+                                        @can('isKorwil')
+                                            @if($ticket_approval->status == "null")
+                                                {{-- Tombol Rejected --}}
+                                                <button type="button" class="btn btn-sm btn-danger float-end ms-1" id="rejectedButton" data-bs-toggle="modal" data-bs-target="#rejectedModal"><i class="bi bi-x-circle me-1"></i> Tidak Setuju</button>
+                                                <div class="modal fade" id="rejectedModal" tabindex="-1">
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content" id="modalContent4">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title">Status Closed Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                                                                <h5 class="modal-title">Alasan Tidak Menyetujui Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
-                                                            <form action="/tickets/finished{{ $ticket->id }}" method="post">
+                                                            <form action="/ticket-approval" method="post">
                                                             @method("put")
                                                             @csrf
                                                             <div class="modal-body">
-                                                                <div class="col-md-6 mb-2">
-                                                                    <select class="form-select" name="closedStatus" id="closedStatus" value="{{ old('closedStatus') }}">
-                                                                        <option selected disabled>Choose...</option>
-                                                                        <option value="selesai">Selesai</option>
-                                                                        <option value="belum selesai">Belum Selesai</option>
-                                                                    </select>
-                                                                </div>
                                                                 <div class="col-md-12">
-                                                                    <textarea name="alasanClosed" class="form-control" id="alasanClosed" rows="3" placeholder="Tuliskan keterangan tambahan (opsional)">{{ old('alasanClosed') }}</textarea>
+                                                                    <textarea name="reason" class="form-control" id="reason" rows="3" placeholder="Tuliskan alasan anda tidak menyetujui..." required>{{ old('reason') }}</textarea>
                                                                 </div>
                                                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                                <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
+                                                                <input type="text" name="status" value="rejected" hidden>
+                                                                <input type="text" name="id" value="{{ $ticket_approval->id }}" hidden>
+                                                                <input type="text" name="ticket_id" value="{{ $ticket->id }}" hidden>
+                                                                <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Kirim</button>
@@ -352,54 +461,73 @@
                                                             </form>
                                                         </div>
                                                     </div>
-                                                </div><!-- End Pending Modal-->
-                                            @else {{-- Jika status bukan resolved, tidak akan muncul tombol apapun --}}
-                                            @endif
-                                        @endcan
+                                                </div><!-- End Rejected Modal-->
 
-                                        @can('agent-info'){{-- Jika role sebagai Agent/Service Desk --}}
-                                            @if($ticket->status == "onprocess" AND $ticket->agent->nik == auth()->user()->nik)
-                                                {{-- Tombol Selesai --}}
-                                                <form action="/tickets/resolved{{ $ticket->id }}" method="POST">
+                                                {{-- Tombol Approved --}}
+                                                <form action="/ticket-approval" method="POST">
                                                 @method('put')
                                                 @csrf
                                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                <input type="text" name="status" value="approved" hidden>
+                                                <input type="text" name="reason" value="" hidden>
+                                                <input type="text" name="id" value="{{ $ticket_approval->id }}" hidden>
+                                                <input type="text" name="ticket_id" value="{{ $ticket->id }}" hidden>
                                                 <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
-                                                <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                                <input type="text" name="role" value="{{ auth()->user()->role }}" hidden>
-                                                <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
-                                                <button type="submit" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-check-circle me-1"></i> Selesai</button>
+
+                                                <button type="submit" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-check-circle me-1"></i> Setuju</button>
                                                 </form>
 
-                                                {{-- Tombol Pending --}}
-                                                <button type="button" class="btn btn-sm btn-danger float-end ms-1" id="pendingButton" data-bs-toggle="modal" data-bs-target="#pendingModal"><i class="bi bi-stop-circle me-1"></i> Pending</button>
-                                                </form>
-                                                <div class="modal fade" id="pendingModal" tabindex="-1">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content" id="modalContent3">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Alasan Pending Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <form action="/tickets/pending{{ $ticket->id }}" method="post">
-                                                            @method("put")
-                                                            @csrf
-                                                            <div class="modal-body">
-                                                                <div class="col-md-12">
-                                                                    <textarea name="alasanPending" class="form-control @error('alasanPending') is-invalid @enderror" id="alasanPending" rows="3" placeholder="Sebutkan alasan pending...">{{ old('alasanPending') }}</textarea>
-                                                                </div>
-                                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                                <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                                                <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="submit" class="btn btn-danger"><i class="bi bi-stop-circle me-2"></i>Pending</button>
-                                                            </div>
-                                                            </form>
+                                                <p class="float-end me-2 fw-bold">Approval Biaya Penanganan Ticket :</p>
+                                            @else
+                                            @endif
+                                        @endcan
+                                    @endcan
+
+                                    @can('agent-info'){{-- Jika role sebagai Agent/Service Desk --}}
+                                        @if($ticket->status == "onprocess" AND $ticket->agent->nik == auth()->user()->nik)
+                                            {{-- Tombol Selesai --}}
+                                            <form action="/tickets/resolved{{ $ticket->id }}" method="POST">
+                                            @method('put')
+                                            @csrf
+                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                            <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
+                                            <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                            <input type="text" name="role" value="{{ auth()->user()->role }}" hidden>
+                                            <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
+                                            <button type="submit" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-check-circle me-1"></i> Selesai</button>
+                                            </form>
+
+                                            {{-- Tombol Pending --}}
+                                            <button type="button" class="btn btn-sm btn-danger float-end ms-1" id="pendingButton" data-bs-toggle="modal" data-bs-target="#pendingModal"><i class="bi bi-stop-circle me-1"></i> Pending</button>
+                                            </form>
+                                            <div class="modal fade" id="pendingModal" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content" id="modalContent3">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Alasan Pending Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
+                                                        <form action="/tickets/pending{{ $ticket->id }}" method="post">
+                                                        @method("put")
+                                                        @csrf
+                                                        <div class="modal-body">
+                                                            <div class="col-md-12">
+                                                                <textarea name="alasanPending" class="form-control @error('alasanPending') is-invalid @enderror" id="alasanPending" rows="3" placeholder="Sebutkan alasan pending...">{{ old('alasanPending') }}</textarea>
+                                                            </div>
+                                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                            <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                                            <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-danger"><i class="bi bi-stop-circle me-2"></i>Pending</button>
+                                                        </div>
+                                                        </form>
                                                     </div>
-                                                </div><!-- End Pending Modal-->
+                                                </div>
+                                            </div><!-- End Pending Modal-->
 
+                                            @if($ticket->need_approval == "ya")
+                                            @else
                                                 {{-- Tombol Edit --}}
                                                 <a href="/ticket-details/{{ encrypt($ticket->id) }}/edit"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-pencil-square me-1"></i> Edit</button></a>
 
@@ -441,11 +569,10 @@
                                                         </div>
                                                     </div>
                                                 </div><!-- End Assign Modal-->
-                                            @else
                                             @endif
+                                        @else
                                         @endif
-                                        {{-- Tombol Kembali --}}
-                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-sm btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                    @endcan
                                     </div>
                                 </div>
                             </div>

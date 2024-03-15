@@ -117,7 +117,7 @@ class TicketController extends Controller
         $locationId     = $getUser['location_id'];
 
         $totalTicket    = Ticket::where('user_id', $id2)->count();
-        $ticketUnclosed = Ticket::where([['user_id', $id2],['status', 'resolved']])->count();
+        $ticketUnclosed = Ticket::where([['location_id', $locationId],['status', 'resolved']])->count();
 
         $ticketFors  = ["information technology", "inventory control", "project me", "project sipil"];
 
@@ -172,6 +172,18 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
+        $url = $request['url'];
+
+        /**
+         * Cek kendala, asset dan waktu ticket
+         * Untuk menghindari looping create atau ticket yang sama dalam satu hari
+         */
+        $now = date('Y-m-d');
+        $countTicket = Ticket::where([['kendala', $request['kendala']],['asset_id', $request['asset_id']],['created_at', 'like', $now.'%']])->count();
+        if($countTicket == 1){
+            return redirect($url)->with('error', 'Ticket ini sudah dibuat sebelumnya!');
+        }
+
         // Validating data request
         $validatedData = $request->validate([
             'client_id'         => 'required',
@@ -291,7 +303,6 @@ class TicketController extends Controller
         $progress_ticket->save();
 
         // Redirect to the employee view if create data succeded
-        $url = $data['url'];
         return redirect($url)->with('success', 'Ticket berhasil dibuat!');
     }
 
@@ -319,30 +330,34 @@ class TicketController extends Controller
         $getUser        = User::where('id', $id2)->first();
         $locationId     = $getUser['location_id'];
 
-        $ticketFors     = ["information technology", "inventory control", "project me", "project sipil"];
+        if($ticket->status == "created"){
+            $ticketFors     = ["information technology", "inventory control", "project me", "project sipil"];
 
-        if($role2 == "client"){
-            return view('contents.ticket.edit', [
-                "url"           => '/tickets'.'/'.$id.'-'.$role,
-                "title"         => "Edit Ticket",
-                "path"          => "Ticket",
-                "path2"         => "Edit",
-                "ticket"        => $ticket,
-                "ticketFors"    => $ticketFors,
-                "assets"        => Asset::where('location_id', $ticket->location_id)->get(),
-                "clients"       => Client::where('location_id', $locationId)->orderBy('nama_client', 'ASC')->get()
-            ]);
-        }elseif($role2 == "service desk"){
-            return view('contents.ticket.edit', [
-                "url"           => '/tickets'.'/'.$id.'-'.$role,
-                "title"         => "Edit Ticket",
-                "path"          => "Ticket",
-                "path2"         => "Edit",
-                "ticket"        => $ticket,
-                "ticketFors"    => $ticketFors,
-                "assets"        => Asset::where('location_id', $ticket->location_id)->get(),
-                "clients"       => Client::orderBy('nama_client', 'ASC')->get()
-            ]);
+            if($role2 == "client"){
+                return view('contents.ticket.edit', [
+                    "url"           => '/tickets'.'/'.$id.'-'.$role,
+                    "title"         => "Edit Ticket",
+                    "path"          => "Ticket",
+                    "path2"         => "Edit",
+                    "ticket"        => $ticket,
+                    "ticketFors"    => $ticketFors,
+                    "assets"        => Asset::where('location_id', $ticket->location_id)->get(),
+                    "clients"       => Client::where('location_id', $locationId)->orderBy('nama_client', 'ASC')->get()
+                ]);
+            }elseif($role2 == "service desk"){
+                return view('contents.ticket.edit', [
+                    "url"           => '/tickets'.'/'.$id.'-'.$role,
+                    "title"         => "Edit Ticket",
+                    "path"          => "Ticket",
+                    "path2"         => "Edit",
+                    "ticket"        => $ticket,
+                    "ticketFors"    => $ticketFors,
+                    "assets"        => Asset::where('location_id', $ticket->location_id)->get(),
+                    "clients"       => Client::orderBy('nama_client', 'ASC')->get()
+                ]);
+            }
+        }else{
+            return back()->with('error', 'Ticket sedang diproses oleh Agent!');
         }
     }
 
@@ -463,6 +478,15 @@ class TicketController extends Controller
             'updated_by'    => $request['updated_by']
         ]);
 
+        // Saving data to progress ticket table
+        $progress_ticket                = new Progress_ticket;
+        $progress_ticket->ticket_id     = $id2;
+        $progress_ticket->tindakan      = "Ticket di proses oleh ".ucwords($request['updated_by']);
+        $progress_ticket->process_at    = $now;
+        $progress_ticket->status        = "onprocess";
+        $progress_ticket->updated_by    = $request['updated_by'];
+        $progress_ticket->save();
+
         // Menampilkan halaman proses ticket
         return redirect('/ticket-details'.'/'.$id.'/create');
     }
@@ -495,11 +519,15 @@ class TicketController extends Controller
             'updated_by'    => $request['updated_by']
         ]);
 
-        Agent::where('nik', $nikAgent)->update([
-            'status'        => "working",
-            'updated_by'    => $request['updated_by']
-        ]);
-
+        // Saving data to progress ticket table
+        $progress_ticket                = new Progress_ticket;
+        $progress_ticket->ticket_id     = $id2;
+        $progress_ticket->tindakan      = "Ticket di proses oleh ".ucwords($request['updated_by']);
+        $progress_ticket->process_at    = $now;
+        $progress_ticket->status        = "onprocess";
+        $progress_ticket->updated_by    = $request['updated_by'];
+        $progress_ticket->save();
+        
         return view('contents.ticket_detail.edit', [
             "title"                 => "Tangani Ticket",
             "path"                  => "Ticket",
@@ -510,6 +538,47 @@ class TicketController extends Controller
             "td"                    => Ticket_detail::where('ticket_id', $id2)->latest()->first(),
             "types"                 => $types
         ]);
+    }
+
+    // Proses ticket yang sudah pernah di proses sebelumnya oleh service desk/agent lain
+    public function process3(Request $request, $id = 0){
+        $id2 = decrypt($id);
+        $status = "onprocess";
+        $now = date('d-m-Y H:i:s');
+        $agentId = $request['agent_id'];
+
+        // Menghitung pending time ticket
+        $ticket = Ticket::where('id', $id2)->first();
+        $now = Carbon::parse($now);
+        $pendingAt = Carbon::parse($ticket->pending_at);
+        $pending_time = $pendingAt->diffInSeconds($now);
+
+        // Updating data to ticket table
+        Ticket::where('id', $id2)->update([
+            'status'        => $status,
+            'pending_at'    => "-",
+            'pending_time'  => $pending_time,
+            'updated_by'    => $request['updated_by']
+        ]);
+
+        $getDetail = Ticket_detail::where([['ticket_id', $id2],['agent_id', $agentId]])->latest()->first();
+        $detail_id = $getDetail->id;
+
+        Ticket_detail::where('id', $detail_id)->update([
+            'process_at'  => $now,
+            'status' => $status
+        ]);
+
+        // Saving data to progress ticket table
+        $progress_ticket                = new Progress_ticket;
+        $progress_ticket->ticket_id     = $id2;
+        $progress_ticket->tindakan      = "Ticket di proses kembali oleh ".ucwords($request['updated_by']);
+        $progress_ticket->process_at    = $now;
+        $progress_ticket->status        = "onprocess";
+        $progress_ticket->updated_by    = $request['updated_by'];
+        $progress_ticket->save();
+        
+        return redirect($request['url']);
     }
 
     public function queue(Request $request)
@@ -795,40 +864,6 @@ class TicketController extends Controller
         $role           = $request['role'];
         $now            = date('d-m-Y H:i:s');
 
-        // Cek status ticket
-        // Hal ini dilakukan agar menghindari halaman tidak update
-        $ticket = Ticket::where('id', $id)->first();
-        $statusTicket = $ticket->status;
-
-        if($statusTicket == "pending"){
-            // Mencari tanggal/waktu pending untuk menghitung total waktu pending
-            $getTicketDetail    = Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId]])->first();
-            $getPending1        = $getTicketDetail->pending_time;
-            $now                = date('d-m-Y H:i:s');
-            $reProcess_at       = Carbon::parse($now);
-            $pending_at1        = Carbon::parse($getTicketDetail->pending_at);
-            $pending_at2        = '-';
-            $status             = "onprocess";
-
-            // Mencari lama nya waktu ticket di pending
-            $getPending2    = $pending_at1->diffInSeconds($reProcess_at);
-            $pending_time   = $getPending1+$getPending2;
-            
-            // Updating data to ticket table
-            Ticket_detail::where([['ticket_id', $id],['agent_id', $agentId],['status', 'pending']])->update([
-                'pending_at'    => $pending_at2,
-                'pending_time'  => $pending_time,
-                'status'        => $status
-            ]);
-
-            // Updating data to ticket table
-            Ticket::where('id', $id)->update([
-                'pending_at'    => $pending_at2,
-                'pending_time'  => $pending_time,
-                'status'        => $status
-            ]);
-        }
-
         // Mencari lamanya ticket di proses
         $getTicket      = Ticket::where('id', $id)->first();
         $processAt1     = Carbon::parse($getTicket->process_at);
@@ -1074,19 +1109,25 @@ class TicketController extends Controller
 
     public function delete(Request $request, $id)
     {
-        Ticket::where('id', $id)->update(['status' => 'deleted']);
-        $now        = date('d-m-Y H:i:s');
-        $updatedBy  = $request['updated_by'];
+        $ticket = Ticket::where('id', $id)->first();
+        $statusTicket = $ticket->status;
+        if($statusTicket == "created"){
+            Ticket::where('id', $id)->update(['status' => 'deleted']);
+            $now        = date('d-m-Y H:i:s');
+            $updatedBy  = $request['updated_by'];
 
-        // Saving data to progress ticket table
-        $progress_ticket                = new Progress_ticket;
-        $progress_ticket->ticket_id     = $id;
-        $progress_ticket->tindakan      = "Ticket di edit oleh ".ucwords($updatedBy);
-        $progress_ticket->process_at    = $now;
-        $progress_ticket->status        = "deleted";
-        $progress_ticket->updated_by    = $updatedBy;
-        $progress_ticket->save();
+            // Saving data to progress ticket table
+            $progress_ticket                = new Progress_ticket;
+            $progress_ticket->ticket_id     = $id;
+            $progress_ticket->tindakan      = "Ticket di hapus oleh ".ucwords($updatedBy);
+            $progress_ticket->process_at    = $now;
+            $progress_ticket->status        = "deleted";
+            $progress_ticket->updated_by    = $updatedBy;
+            $progress_ticket->save();
 
-        return back()->with('success', 'Ticket berhasil dihapus!');
+            return back()->with('success', 'Ticket berhasil dihapus!');
+        }else{
+            return back()->with('error', 'Ticket sedang diproses oleh Agent!');
+        }
     }
 }

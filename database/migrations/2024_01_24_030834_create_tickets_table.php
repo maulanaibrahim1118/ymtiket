@@ -35,6 +35,7 @@ class CreateTicketsTable extends Migration
             $table->enum('is_queue', ['ya', 'tidak']);
             $table->enum('assigned', ['ya', 'tidak']);
             $table->enum('need_approval', ['ya', 'tidak']);
+            $table->string('approved')->nullable();
             $table->enum('jam_kerja', ['ya', 'tidak']);
             $table->string('ticket_for', 50);
             $table->string('ticket_area', 20);

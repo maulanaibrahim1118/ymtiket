@@ -282,30 +282,15 @@
                                             (*) : Mandatory
                                         </div>
                                         <div class="col-md-6">
+                                            @if($ticket->status == "onprocess")
                                             <button type="submit" class="btn btn-primary float-end ms-1"><i class="bi bi-save me-1"></i> Simpan</button>
                                             <button type="reset" class="btn btn-warning float-end ms-1"><i class="bi bi-trash me-1"></i> Reset</button>
+                                            @else
+                                            <p class="text-end"><span class="badge bg-danger">Ticket sedang menunggu persetujuan biaya.</span></p>
+                                            @endif
                                         </div>
                                     </form>
                                     <script>
-                                        // // Mencegah user untuk mengakses halaman lain ketika berada di form ini
-                                        // window.addEventListener('popstate', function (event) {
-                                        //     // Logika atau pesan konfirmasi di sini
-                                        //     var confirmationMessage = 'Apakah Anda yakin ingin meninggalkan halaman?';
-
-                                        //     // Mendukung standar terbaru dan umum
-                                        //     if (typeof event === 'undefined') {
-                                        //         event = window.event;
-                                        //     }
-
-                                        //     // Untuk browser modern
-                                        //     if (event) {
-                                        //         event.returnValue = confirmationMessage;
-                                        //     }
-
-                                        //     // Untuk browser lama (Internet Explorer)
-                                        //     return confirmationMessage;
-                                        // });
-
                                         function formValidation(){
                                             var kendala = document.getElementById('sub_category_ticket_id').value;
                                             var tindakan = document.getElementById('note').value;
@@ -319,6 +304,7 @@
                                                 alert('Ketikkan saran tindakan minimal 10 karakter!');
                                                 return false;
                                             }
+                                            return true;
                                         }
                                     </script>
                                 </div>

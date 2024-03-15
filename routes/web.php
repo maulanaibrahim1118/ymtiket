@@ -1,16 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\SearchTicketController;
-use App\Http\Controllers\FilterController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\TicketController;
-use App\Http\Controllers\TicketDetailController;
 use App\Http\Controllers\AgentController;
-use App\Http\Controllers\CategoryTicketController;
-use App\Http\Controllers\SubCategoryTicketController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\FilterController;
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportAgentController;
+use App\Http\Controllers\SearchTicketController;
+use App\Http\Controllers\TicketDetailController;
+use App\Http\Controllers\CategoryTicketController;
+use App\Http\Controllers\TicketApprovalController;
+use App\Http\Controllers\SubCategoryTicketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +67,7 @@ Route::middleware(['auth', 'manage.ticket'])->group(function () {
 Route::middleware(['auth', 'agent.info'])->group(function () {
     Route::put('/tickets/{id}/process1', [TicketController::class, 'process1'])->name('ticket.process1');
     Route::put('/tickets/{id}/process2', [TicketController::class, 'process2'])->name('ticket.process2');
+    Route::put('/tickets/{id}/process3', [TicketController::class, 'process3'])->name('ticket.process3');
     Route::put('/tickets/queue', [TicketController::class, 'queue'])->name('ticket.queue');
     Route::put('/tickets/assign', [TicketController::class, 'assign'])->name('ticket.assign');
     Route::put('/tickets/assign2', [TicketController::class, 'assign2'])->name('ticket.assign2');
@@ -103,6 +105,10 @@ Route::get('/ticket-details/{id}/create1', [TicketDetailController::class, 'getS
 // Route Ticket Comment
 Route::resource('/ticket-comments', TicketCommentController::class)
     ->middleware('auth');
+
+// Route Ticket Approval
+Route::put('/ticket-approval', [TicketApprovalController::class, 'update'])
+    ->middleware('auth')->name('ticket-approval.store');
 
 // Route Agent
 Route::middleware(['auth', 'service.desk'])->group(function () {

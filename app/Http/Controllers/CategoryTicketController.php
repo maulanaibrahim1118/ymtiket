@@ -55,14 +55,14 @@ class CategoryTicketController extends Controller
     {
         // Validating data request
         $validatedData = $request->validate([
-            'nama_kategori' => 'required|min:5|max:50|unique:category_tickets',
+            'nama_kategori' => 'required|min:3|max:50|unique:category_tickets',
             'location_id'   => 'required',
             'updated_by'    => 'required'
         ],
         // Create custom notification for the validation request
         [
             'nama_kategori.required'    => 'Nama Kategori Ticket harus diisi!',
-            'nama_kategori.min'         => 'Ketik minimal 5 digit!',
+            'nama_kategori.min'         => 'Ketik minimal 3 digit!',
             'nama_kategori.max'         => 'Ketik maksimal 50 digit!',
             'unique'                    => 'Nama Kategori Ticket sudah ada!',
             'location_id.required'      => 'Lokasi harus dipilih!',
@@ -123,14 +123,14 @@ class CategoryTicketController extends Controller
         ];
 
         if($request->nama_kategori != $category_ticket->nama_kategori){
-            $rules['nama_kategori'] = 'required|min:5|max:50|unique:category_tickets';
+            $rules['nama_kategori'] = 'required|min:3|max:50|unique:category_tickets';
         }
 
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
             'nama_kategori.required'    => 'Nama Kategori Ticket harus diisi!',
-            'nama_kategori.min'         => 'Ketik minimal 5 digit!',
+            'nama_kategori.min'         => 'Ketik minimal 3 digit!',
             'nama_kategori.max'         => 'Ketik maksimal 50 digit!',
             'unique'                    => 'Nama Kategori Ticket sudah ada!',
             'location_id.required'      => 'Lokasi harus dipilih!',
