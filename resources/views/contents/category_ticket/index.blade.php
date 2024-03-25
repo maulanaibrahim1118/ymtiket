@@ -13,32 +13,34 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ui-radios-grid me-2"></i>{{ $title }}</h5>
                                 
-                                <a href="/category-tickets/{{ encrypt(auth()->user()->location_id) }}/create"><button type="button" class="btn btn-primary position-relative float-start me-2" style="margin-top: 6px"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
+                                <a href="/category-tickets/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
 
-                                <table class="table datatable table-hover">
-                                    <thead class="bg-light" style="height: 45px;font-size:14px;">
-                                        <tr>
-                                            <th scope="col">NAMA KATEGORI</th>
-                                            <th scope="col">LOKASI</th>
-                                            <th scope="col">CREATED AT</th>
-                                            <th scope="col">UPDATED AT</th>
-                                            <th scope="col">UPDATED BY</th>
-                                            <th scope="col">AKSI</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                                        @foreach($category_tickets as $ct)
-                                        <tr>
-                                        <td>{{ $ct->nama_kategori }}</td>
-                                        <td>{{ $ct->location->nama_lokasi }}</td>
-                                        <td>{{ $ct->created_at }}</td>
-                                        <td>{{ $ct->updated_at }}</td>
-                                        <td>{{ $ct->updated_by }}</td>
-                                        <td class="text-capitalize"><a href="/category-tickets/{{ encrypt(auth()->user()->location_id) }}/edit{{ $ct->id }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="table datatable table-hover">
+                                        <thead class="bg-light" style="height: 45px;font-size:14px;">
+                                            <tr>
+                                                <th scope="col">NAMA KATEGORI</th>
+                                                <th scope="col">LOKASI</th>
+                                                <th scope="col">CREATED AT</th>
+                                                <th scope="col">UPDATED AT</th>
+                                                <th scope="col">UPDATED BY</th>
+                                                <th scope="col">AKSI</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
+                                            @foreach($category_tickets as $ct)
+                                            <tr>
+                                            <td>{{ $ct->nama_kategori }}</td>
+                                            <td>{{ $ct->location->nama_lokasi }}</td>
+                                            <td>{{ $ct->created_at }}</td>
+                                            <td>{{ $ct->updated_at }}</td>
+                                            <td>{{ $ct->updated_by }}</td>
+                                            <td class="text-capitalize"><a href="{{ route('ct.edit', ['id' => encrypt($ct->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->
                     </div><!-- End col-12 -->

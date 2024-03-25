@@ -10,25 +10,29 @@
                         <h5 class="modal-title">.:: Filter Report Dashboard</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="/dashboard/filter/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" method="GET">
+                    <form action="/dashboard/filter" method="POST">
                     @csrf
                     <div class="modal-body">
                         <p>Pilih filter berdasarkan :</p>
                         <div class="row">
                         <div class="col-md-6 mb-3">
                             <select class="form-select" name="filter1" id="filter1">
-                                <option value="">Semua Agent</option>
+                                <option selected value="" disabled>Semua Agent</option>
                                 @foreach($agents as $agent)
-                                    <option value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
+                                    @if(old('filter1', $filterArray[0]) == $agent->id)
+                                        <option selected value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
+                                    @else
+                                        <option value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-6">
                             <select class="form-select" name="filter2" id="filter2">
-                                <option value="">Semua Periode</option>
-                                <option value="today">Hari Ini</option>
-                                <option value="monthly">Bulan Ini</option>
-                                <option value="yearly">Tahun Ini</option>
+                                <option value="" @if($filterArray[1] == "") selected @endif>Semua Periode</option>
+                                <option value="today" @if($filterArray[1] == "today") selected @endif>Hari Ini</option>
+                                <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>Bulan Ini</option>
+                                <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>Tahun Ini</option>
                             </select>
                         </div>
                         </div>
@@ -56,7 +60,7 @@
 @else
 <div class="col-md-2">
 @endif
-    <a href="/tickets/{{ encrypt('all') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+<a href="{{ route('ticket.dashboard', ['status' => 'all', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card secondary-card">
 
     <div class="card-body">
@@ -78,7 +82,7 @@
 </div><!-- End Secondary Card -->
 
 <div class="col-md-2">
-    <a href="/tickets/{{ encrypt('unprocess') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="{{ route('ticket.dashboard', ['status' => 'unprocess', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card secondary-card">
 
     <div class="card-body">
@@ -100,7 +104,7 @@
 </div><!-- End Secondary Card -->
 
 <div class="col-md-2">
-    <a href="/tickets/{{ encrypt('onprocess') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="{{ route('ticket.dashboard', ['status' => 'onprocess', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card warning-card">
 
     <div class="card-body">
@@ -122,7 +126,7 @@
 </div><!-- End Warning Card -->
 
 <div class="col-md-2">
-    <a href="/tickets/{{ encrypt('pending') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="{{ route('ticket.dashboard', ['status' => 'pending', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card danger-card">
 
     <div class="card-body">
@@ -148,7 +152,7 @@
 @else
 <div class="col-md-2">
 @endif
-    <a href="/tickets/{{ encrypt('selesai') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="{{ route('ticket.dashboard', ['status' => 'selesai', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card primary-card">
 
     <div class="card-body">
@@ -171,7 +175,7 @@
 
 @if($filterArray[0] != "")
 <div class="col-md-2">
-    <a href="/tickets/{{ encrypt('assign') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="{{ route('ticket.dashboard', ['status' => 'assign', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card danger-card">
 
     <div class="card-body">
@@ -194,7 +198,7 @@
 @endif
 
 <div class="col-md-3">
-    <a href="/tickets/{{ encrypt('workday') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="{{ route('ticket.dashboard', ['status' => 'workday', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card success-card">
 
     <div class="card-body">
@@ -216,7 +220,7 @@
 </div><!-- End Secondary Card -->
 
 <div class="col-md-3">
-    <a href="/tickets/{{ encrypt('offday') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="{{ route('ticket.dashboard', ['status' => 'offday', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card warning-card">
 
     <div class="card-body">
@@ -240,7 +244,7 @@
 
 
 <div class="col-md-3">
-    <a href="/assets/{{ encrypt('berkendala') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+    <a href="{{ route('asset.dashboard', ['status' => 'berkendala', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card primary-card">
 
     <div class="card-body">
@@ -262,7 +266,7 @@
 </div><!-- End Primary Card -->
 
 <div class="col-md-3">
-    <a href="/category-sub-tickets/{{ encrypt('kategori') }}-{{ encrypt($filterArray[0]) }}-{{ encrypt($filterArray[1]) }}-{{encrypt(auth()->user()->location_id) }}">
+    <a href="{{ route('kendala.dashboard', ['status' => 'kategori', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card secondary-card">
 
     <div class="card-body">
@@ -292,65 +296,67 @@
             <h5 class="card-title">Performa Agent <span>| {{ $pathFilter }}</span></h5>
             @endif
 
-            <table class="table datatable table-hover" id="performaAgentDatatable">
-                <thead class="bg-light" style="height: 45px;font-size:14px;">
-                    <tr>
-                    <th scope="col">NIK</th>
-                    <th scope="col">NAMA AGENT</th>
-                    @can('isIT')
-                    <th scope="col">SUB DIVISI</th>
-                    @endcan
-                    <th scope="col">TOTAL TICKET</th>
-                    <th scope="col">BELUM DIPROSES</th>
-                    <th scope="col">SEDANG DIPROSES</th>
-                    <th scope="col">SELESAI</th>
-                    <th scope="col">WORKLOAD</th>
-                    <th scope="col">RATA-RATA</th>
-                    <th scope="col">STATUS</th>
-                    </tr>
-                </thead>
-                <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                    @foreach($data1 as $data)
-                    <tr>
-                    <td>{{ $data->nik }}</td>
-                    <td>{{ $data->nama_agent }}</td>
-                    @can('isIT')
-                    <td>{{ $data->sub_divisi }}</td>
-                    @endcan
-                    <td>{{ $data->total_ticket }}</td>
-                    <td>{{ $data->ticket_unprocessed }}</td>
-                    <td>{{ $data->ticket_onprocess }}</td>
-                    <td>{{ $data->ticket_finish }}</td>
-                    @php
-                        $workload = \Carbon\Carbon::parse($data->processed_time-$data->pending_time);
-                        $average = \Carbon\Carbon::parse($data->avg);
-                    @endphp
-                    @if( $data->processed_time-$data->pending_time >= 3600)
-                    <td>{{ $workload->hour }} Jam {{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
-                    @elseif( $data->processed_time-$data->pending_time >= 60)
-                    <td>{{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
-                    @else
-                    <td>{{ $workload->second }} Detik</td>
-                    @endif
+            <div class="table-responsive">
+                <table class="table datatable table-hover" id="performaAgentDatatable">
+                    <thead class="bg-light" style="height: 45px;font-size:14px;">
+                        <tr>
+                        <th scope="col">NIK</th>
+                        <th scope="col">NAMA AGENT</th>
+                        @can('isIT')
+                        <th scope="col">SUB DIVISI</th>
+                        @endcan
+                        <th scope="col">TOTAL TICKET</th>
+                        <th scope="col">BELUM DIPROSES</th>
+                        <th scope="col">SEDANG DIPROSES</th>
+                        <th scope="col">SELESAI</th>
+                        <th scope="col">WORKLOAD</th>
+                        <th scope="col">RATA-RATA</th>
+                        <th scope="col">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
+                        @foreach($data1 as $data)
+                        <tr>
+                        <td>{{ $data->nik }}</td>
+                        <td>{{ $data->nama_agent }}</td>
+                        @can('isIT')
+                        <td>{{ $data->sub_divisi }}</td>
+                        @endcan
+                        <td>{{ $data->total_ticket }}</td>
+                        <td>{{ $data->ticket_unprocessed }}</td>
+                        <td>{{ $data->ticket_onprocess }}</td>
+                        <td>{{ $data->ticket_finish }}</td>
+                        @php
+                            $workload = \Carbon\Carbon::parse($data->processed_time-$data->pending_time);
+                            $average = \Carbon\Carbon::parse($data->avg);
+                        @endphp
+                        @if( $data->processed_time-$data->pending_time >= 3600)
+                        <td>{{ $workload->hour }} Jam {{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
+                        @elseif( $data->processed_time-$data->pending_time >= 60)
+                        <td>{{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
+                        @else
+                        <td>{{ $workload->second }} Detik</td>
+                        @endif
 
-                    @if( $data->avg >= 3600)
-                    <td>{{ $average->hour }} Jam {{ $average->minute }} Menit {{ $average->second }} Detik</td>
-                    @elseif( $data->avg >= 60)
-                    <td>{{ $average->minute }} Menit {{ $average->second }} Detik</td>
-                    @elseif( $data->avg == 0)
-                    <td>0 Detik</td>
-                    @else
-                    <td>{{ $average->second }} Detik</td>
-                    @endif
-                    @if($data->status == "present")
-                    <td><span class="badge bg-primary">HADIR</span></td>
-                    @else
-                    <td><span class="badge bg-secondary">TIDAK HADIR</span></td>
-                    @endif
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                        @if( $data->avg >= 3600)
+                        <td>{{ $average->hour }} Jam {{ $average->minute }} Menit {{ $average->second }} Detik</td>
+                        @elseif( $data->avg >= 60)
+                        <td>{{ $average->minute }} Menit {{ $average->second }} Detik</td>
+                        @elseif( $data->avg == 0)
+                        <td>0 Detik</td>
+                        @else
+                        <td>{{ $average->second }} Detik</td>
+                        @endif
+                        @if($data->status == "present")
+                        <td><span class="badge bg-primary">HADIR</span></td>
+                        @else
+                        <td><span class="badge bg-secondary">TIDAK HADIR</span></td>
+                        @endif
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div><!-- End Info Table -->
@@ -364,52 +370,54 @@
             <h5 class="card-title">Ticket Belum Ada Tindakan <span>| {{ $pathFilter }}</span></h5>
             @endif
 
-            <table class="table datatable table-hover">
-                <thead class="bg-light" style="height: 45px;font-size:14px;">
-                    <tr>
-                    <th scope="col">DIBUAT PADA</th>
-                    <th scope="col">NO. TICKET</th>
-                    <th scope="col">KENDALA</th>
-                    <th scope="col">DETAIL KENDALA</th>
-                    <th scope="col">PIC</th>
-                    @can('isIT')
-                    <th scope="col">SUB DIVISI</th>
-                    @endcan
-                    <th scope="col">STATUS</th>
-                    </tr>
-                </thead>
-                <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                    @foreach($data2 as $data)
-                    <tr>
-                    <td>{{ $data->created_at }}</td>
-                    <td>{{ $data->no_ticket }}</td>
-                    <td>{{ $data->kendala }}</td>
-                    <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
-                    @if($data->agent->nama_agent == auth()->user()->nama)
-                    <td><span class="badge bg-info">saya</span></td>
-                    @else
-                    <td>{{ $data->agent->nama_agent }}</td>
-                    @endif
-                    @can('isIT')
-                    <td>{{ $data->sub_divisi_agent }}</td>
-                    @endcan
-                    @if($data->status == 'created')
-                    <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
-                    @elseif($data->status == 'onprocess')
-                    <td><span class="badge bg-warning">{{ $data->status }}</span></td>
-                    @elseif($data->status == 'pending')
-                    <td><span class="badge bg-danger">{{ $data->status }}</span></td>
-                    @elseif($data->status == 'resolved')
-                    <td><span class="badge bg-primary">{{ $data->status }}</span></td>
-                    @elseif($data->status == 'finished')
-                    <td><span class="badge bg-success">{{ $data->status }}</span></td>
-                    @else
-                    <td><span class="badge bg-danger">{{ $data->status }}</span></td>
-                    @endif
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table datatable table-hover">
+                    <thead class="bg-light" style="height: 45px;font-size:14px;">
+                        <tr>
+                        <th scope="col">DIBUAT PADA</th>
+                        <th scope="col">NO. TICKET</th>
+                        <th scope="col">KENDALA</th>
+                        <th scope="col">DETAIL KENDALA</th>
+                        <th scope="col">PIC</th>
+                        @can('isIT')
+                        <th scope="col">SUB DIVISI</th>
+                        @endcan
+                        <th scope="col">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
+                        @foreach($data2 as $data)
+                        <tr>
+                        <td>{{ $data->created_at }}</td>
+                        <td>{{ $data->no_ticket }}</td>
+                        <td>{{ $data->kendala }}</td>
+                        <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
+                        @if($data->agent->nama_agent == auth()->user()->nama)
+                        <td><span class="badge bg-info">saya</span></td>
+                        @else
+                        <td>{{ $data->agent->nama_agent }}</td>
+                        @endif
+                        @can('isIT')
+                        <td>{{ $data->sub_divisi_agent }}</td>
+                        @endcan
+                        @if($data->status == 'created')
+                        <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
+                        @elseif($data->status == 'onprocess')
+                        <td><span class="badge bg-warning">{{ $data->status }}</span></td>
+                        @elseif($data->status == 'pending')
+                        <td><span class="badge bg-danger">{{ $data->status }}</span></td>
+                        @elseif($data->status == 'resolved')
+                        <td><span class="badge bg-primary">{{ $data->status }}</span></td>
+                        @elseif($data->status == 'finished')
+                        <td><span class="badge bg-success">{{ $data->status }}</span></td>
+                        @else
+                        <td><span class="badge bg-danger">{{ $data->status }}</span></td>
+                        @endif
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div><!-- End Info Table -->
@@ -423,46 +431,48 @@
             <h5 class="card-title">Ticket Dalam Antrian <span>| {{ $pathFilter }}</span></h5>
             @endif
 
-            <table class="table datatable table-hover">
-                <thead class="bg-light" style="height: 45px;font-size:14px;">
-                    <tr>
-                    <th scope="col">DIBUAT PADA</th>
-                    <th scope="col">NO. TICKET</th>
-                    <th scope="col">KENDALA</th>
-                    <th scope="col">DETAIL KENDALA</th>
-                    @can('isIT')
-                    <th scope="col">SUB DIVISI</th>
-                    @endcan
-                    <th scope="col">STATUS</th>
-                    </tr>
-                </thead>
-                <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                    @foreach($data3 as $data)
-                    <tr>
-                    <td>{{ $data->created_at }}</td>
-                    <td>{{ $data->no_ticket }}</td>
-                    <td>{{ $data->kendala }}</td>
-                    <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
-                    @can('isIT')
-                    <td>{{ $data->sub_divisi_agent }}</td>
-                    @endcan
-                    @if($data->status == 'created')
-                    <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
-                    @elseif($data->status == 'onprocess')
-                    <td><span class="badge bg-warning">{{ $data->status }}</span></td>
-                    @elseif($data->status == 'pending')
-                    <td><span class="badge bg-danger">{{ $data->status }}</span></td>
-                    @elseif($data->status == 'resolved')
-                    <td><span class="badge bg-primary">{{ $data->status }}</span></td>
-                    @elseif($data->status == 'finished')
-                    <td><span class="badge bg-success">{{ $data->status }}</span></td>
-                    @else
-                    <td><span class="badge bg-danger">{{ $data->status }}</span></td>
-                    @endif
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table datatable table-hover">
+                    <thead class="bg-light" style="height: 45px;font-size:14px;">
+                        <tr>
+                        <th scope="col">DIBUAT PADA</th>
+                        <th scope="col">NO. TICKET</th>
+                        <th scope="col">KENDALA</th>
+                        <th scope="col">DETAIL KENDALA</th>
+                        @can('isIT')
+                        <th scope="col">SUB DIVISI</th>
+                        @endcan
+                        <th scope="col">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
+                        @foreach($data3 as $data)
+                        <tr>
+                        <td>{{ $data->created_at }}</td>
+                        <td>{{ $data->no_ticket }}</td>
+                        <td>{{ $data->kendala }}</td>
+                        <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
+                        @can('isIT')
+                        <td>{{ $data->sub_divisi_agent }}</td>
+                        @endcan
+                        @if($data->status == 'created')
+                        <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
+                        @elseif($data->status == 'onprocess')
+                        <td><span class="badge bg-warning">{{ $data->status }}</span></td>
+                        @elseif($data->status == 'pending')
+                        <td><span class="badge bg-danger">{{ $data->status }}</span></td>
+                        @elseif($data->status == 'resolved')
+                        <td><span class="badge bg-primary">{{ $data->status }}</span></td>
+                        @elseif($data->status == 'finished')
+                        <td><span class="badge bg-success">{{ $data->status }}</span></td>
+                        @else
+                        <td><span class="badge bg-danger">{{ $data->status }}</span></td>
+                        @endif
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div><!-- End Info Table -->

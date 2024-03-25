@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Agent;
+use App\Location;
+use App\Ticket_detail;
+use App\Category_ticket;
+use App\Sub_category_ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Sub_category_ticket;
-use App\Category_ticket;
+use Illuminate\Support\Facades\Auth;
 
 class SubCategoryTicketController extends Controller
 {
@@ -14,23 +18,22 @@ class SubCategoryTicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index()
     {
-        $locationId = decrypt($id);
-        $data   = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
+        // Get ID Lokasi User
+        $locationId = Auth::user()->location_id;
+        
+        // Get data Sub Category Ticket sesuai lokasi user yang ada pada tabel category ticket
+        $subCategoryTicket = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
             ->where('category_tickets.location_id', $locationId)
-            ->select(
-                'sub_category_tickets.*',
-                DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.sub_category_ticket_id = sub_category_tickets.id) as avg')
-            )
+            ->select('sub_category_tickets.*')
             ->get();
             
         return view('contents.sub_category_ticket.index', [
-            "url"                   => "",
             "title"                 => "Sub Category Ticket List",
             "path"                  => "Sub Category Ticket",
             "path2"                 => "Sub Category Ticket",
-            "sub_category_tickets"  => $data
+            "sub_category_tickets"  => $subCategoryTicket
         ]);
     }
 
@@ -39,18 +42,21 @@ class SubCategoryTicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id)
+    public function create()
     {
-        $locationId     = decrypt($id);
-        $data           = Category_ticket::where('location_id', $locationId)->get();
-        $assetChange    = ["ya", "tidak"];
+        // Get ID Lokasi User
+        $locationId = Auth::user()->location_id;
+        
+        // Get data untuk Select Option
+        $categoryTickets    = Category_ticket::where('location_id', $locationId)->get();
+        $assetChange        = ["ya", "tidak"];
 
         return view('contents.sub_category_ticket.create', [
             "url"               => "",
             "title"             => "Create Sub Category Ticket",
             "path"              => "Sub Category Ticket",
             "path2"             => "Tambah",
-            "category_tickets"  => $data,
+            "category_tickets"  => $categoryTickets,
             "assetChange"       => $assetChange
         ]);
     }
@@ -70,6 +76,7 @@ class SubCategoryTicketController extends Controller
             'asset_change'          => 'required',
             'updated_by'            => 'required'
         ],
+
         // Create custom notification for the validation request
         [
             'nama_sub_kategori.required'    => 'Nama Kategori Ticket harus diisi!',
@@ -81,6 +88,7 @@ class SubCategoryTicketController extends Controller
             'updated_by.required'           => 'Wajib diisi!'
         ]);
 
+        // Mengganti inputan nama sub kategori ke huruf kecil semua
         $nama_sub_kategori = strtolower($request['nama_sub_kategori']);
 
         // Saving data to sub_category_ticket table
@@ -91,9 +99,8 @@ class SubCategoryTicketController extends Controller
         $sct->updated_by            = $request['updated_by'];
         $sct->save();
 
-        // Redirect to the Category Asset view if create data succeded
-        $url = $request['url'];
-        return redirect($url)->with('success', ucwords($nama_sub_kategori).' telah ditambahkan!');
+        // Redirect ke halaman Sub Category Ticket List beserta notifikasi sukses
+        return redirect('/category-sub-tickets')->with('success', ucwords($nama_sub_kategori).' telah ditambahkan!');
     }
 
     /**
@@ -113,18 +120,27 @@ class SubCategoryTicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit( $id = 0, Sub_category_ticket $category_sub_ticket)
+    public function edit(Request $request)
     {
-        $locationId     = decrypt($id);
-        $data           = Category_ticket::where('location_id', $locationId)->get();
-        $assetChange    = ["ya", "tidak"];
+        // Get ID Lokasi User
+        $locationId = Auth::user()->location_id;
+
+        // Get id Sub Category Ticket dari request parameter
+        $id = decrypt($request['id']);
+
+        // Get data Sub Category Ticket berdasarkan id Sub Category Ticket
+        $subCategoryTicket = Sub_category_ticket::where('id', $id)->first();
+
+        // Get data untuk select option
+        $categoryTickets    = Category_ticket::where('location_id', $locationId)->get();
+        $assetChange        = ["ya", "tidak"];
 
         return view('contents.sub_category_ticket.edit', [
             "title"             => "Edit Sub Category Ticket",
             "path"              => "Sub Category Ticket",
             "path2"             => "Edit",
-            "sct"               => $category_sub_ticket,
-            "category_tickets"  => $data,
+            "sct"               => $subCategoryTicket,
+            "category_tickets"  => $categoryTickets,
             "assetChange"       => $assetChange
         ]);
     }
@@ -136,8 +152,14 @@ class SubCategoryTicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sub_category_ticket $category_sub_ticket)
+    public function update(Request $request)
     {
+        // Get id Sub Category Ticket dari request parameter
+        $id = decrypt($request['id']);
+
+        // Get data Sub Category Ticket berdasarkan id Sub Category Ticket
+        $subCategoryTicket = Sub_category_ticket::where('id', $id)->first();
+
         // Validating data request
         $rules = [
             'category_ticket_id'    => 'required',
@@ -145,8 +167,8 @@ class SubCategoryTicketController extends Controller
             'updated_by'            => 'required'
         ];
 
-        if($request->nama_sub_kategori != $category_sub_ticket->nama_sub_kategori){
-            $rules['nama_sub_kategori'] = 'required|min:5|max:50|unique:sub_category_tickets';
+        if($request->nama_sub_kategori != $subCategoryTicket->nama_sub_kategori){
+            $rules['nama_sub_kategori'] = 'required|min:3|max:50|unique:sub_category_tickets';
         }
 
         // Create custom notification for the validation request
@@ -161,17 +183,19 @@ class SubCategoryTicketController extends Controller
             'updated_by.required'           => 'Wajib diisi!'
         ]);
         
-        $nama_sub_kategori = strtolower($request['nama_sub_kategori']);
+        // Mengganti inputan nama sub kategori ke huruf kecil semua
+        $namaSubKategori = strtolower($request['nama_sub_kategori']);
 
-        Sub_category_ticket::where('id', $category_sub_ticket->id)->update([
-            'nama_sub_kategori'     => ucwords($request['nama_sub_kategori']),
+        // Updating data Sub Category Ticket sesuai request
+        Sub_category_ticket::where('id', $id)->update([
+            'nama_sub_kategori'     => ucwords($namaSubKategori),
             'category_ticket_id'    => $request['category_ticket_id'],
             'asset_change'          => $request['asset_change'],
             'updated_by'            => $request['updated_by']
         ]);
 
-        $url    = $request['url'];
-        return redirect($url)->with('success', 'Data Sub Category Ticket telah diubah!');
+        // Redirect ke halaman Sub Category Ticket List beserta notifikasi sukses
+        return redirect('/category-sub-tickets')->with('success', 'Data Sub Category Ticket telah diubah!');
     }
 
     /**
@@ -183,5 +207,62 @@ class SubCategoryTicketController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    // Menampilkan Kendala yang ditangani oleh agent (Sub Category Ticket = Kendala)
+    public function kendalaDashboard(Request $request)
+    {
+        // Get ID Lokasi User
+        $locationId = Auth::user()->location_id;
+
+        $status     = $request->input('status');
+        $agent      = $request->input('filter1');
+        $periode    = $request->input('filter2');
+        
+        $title      = "Kategori Kendala";
+
+        // Menentukan Filter by Agent
+        if($agent == NULL){
+            $filter1        = "";
+            $namaAgent      = "Semua Agent";
+        }else{
+            $filter1        = $agent;
+            $agentFilter    = Agent::where('id', $filter1)->first();
+            $namaAgent      = ucwords($agentFilter->nama_agent);
+        }
+
+        // Menentukan Filter by Periode
+        if($periode == "today"){
+            $filter2    = date('Y-m-d');
+            $pathFilter = date('d F Y');
+        }elseif($periode == "monthly"){
+            $filter2    = date('Y-m');
+            $pathFilter = date('F Y');
+        }elseif($periode == "yearly"){
+            $filter2    = date('Y');
+            $pathFilter = date('Y');
+        }else{
+            $filter2    = "";
+            $pathFilter = "Semua Periode";
+        }
+
+        // Mendapatkan Lokasi User
+        $getLocation    = Location::where('id', $locationId)->first();
+        $location       = $getLocation->nama_lokasi;
+
+        // Mencari Kendala berdasarkan lokasi user pada detail ticket
+        $data = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')
+            ->where([['tickets.ticket_for', $location],['ticket_details.agent_id', 'like', '%'.$filter1],['ticket_details.created_at', 'like', $filter2.'%']])
+            ->select('ticket_details.sub_category_ticket_id')
+            ->groupBy('ticket_details.sub_category_ticket_id')
+            ->get();
+
+        return view('contents.sub_category_ticket.filter.index', [
+            "title"         => $title,
+            "path"          => "Sub Category Ticket",
+            "path2"         => $title,
+            "pathFilter"    => "[".$namaAgent."] - [".$pathFilter."]",
+            "data"          => $data
+        ]);
     }
 }

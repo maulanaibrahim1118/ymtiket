@@ -7,7 +7,7 @@
                     <div class="col-12">
                         <div class="card info-card">
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-people me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ui-radios-grid me-2"></i>{{ $title }}</h5>
                                 
                                 <form class="row g-3 mb-3" action="/category-sub-tickets" method="POST" onsubmit="return confirmLanjut()">
                                     @csrf

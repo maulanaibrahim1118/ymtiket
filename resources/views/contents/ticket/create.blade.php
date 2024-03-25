@@ -169,7 +169,6 @@
 
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
-                                    <input type="text" name="url" value="{{ $url }}" hidden>
 
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-2 mb-0"></p>

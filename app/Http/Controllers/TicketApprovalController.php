@@ -13,29 +13,33 @@ class TicketApprovalController extends Controller
 {
     public function update(Request $request)
     {
-        $id = $request['id'];
-        $approved = $request['status'];
-        $ticketId = $request['ticket_id'];
-        $agentId = $request['agent_id'];
-        $reason = $request['reason'];
-        $updatedBy = $request['updated_by'];
+        // Get input request
+        $approved   = $request['status'];
+        $reason     = $request['reason'];
+        $ticketId   = $request['ticket_id'];
+        $updatedBy  = $request['updated_by'];
+
+        // Get waktu saat ini
         $now = date('d-m-Y H:i:s');
         
-        Ticket_approval::where('id', $id)->update([
-            'status' => $approved,
-            'reason' => $reason,
-            'approved_by' => $updatedBy,
-            'updated_by' => $updatedBy
+        // Updating data Ticket Approval sesuai input request
+        Ticket_approval::where('ticket_id', $ticketId)->update([
+            'status'        => $approved,
+            'reason'        => $reason,
+            'approved_by'   => $updatedBy,
+            'updated_by'    => $updatedBy
         ]);
 
+        // Updating status approval pada tabel ticket
         Ticket::where('id', $ticketId)->update([
-            'approved' => $approved,
-            'updated_by' => $updatedBy
+            'approved'      => $approved,
+            'updated_by'    => $updatedBy
         ]);
 
+        // Jika biaya ticket tidak disetujui
         if($approved == "rejected"){
+            $statusTicket   = "finished";
             $statusApproval = "tidak disetujui";
-            $statusTicket = "finished";
 
             // Mencari lamanya ticket di pending
             $getTicket      = Ticket::where('id', $ticketId)->first();
@@ -45,22 +49,12 @@ class TicketApprovalController extends Controller
             $pendingTime    = $pendingAt->diffInSeconds($now);
             $processedTime  = $processAt->diffInSeconds($now);
 
-            // Mencari ticket detail id
-            $getDetail = Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->latest()->first();
-            $detail_id = $getDetail->id;
-
+            // Update status ticket, waktu pending dan waktu proses pada tabel ticket
             Ticket::where('id', $ticketId)->update([
-                'status' => $statusTicket,
-                'pending_time' => $pendingTime,
-                'processed_time' => $processedTime,
-                'updated_by' => $updatedBy
-            ]);
-
-            Ticket_detail::where('id', $detail_id)->update([
-                'status' => "resolved",
-                'pending_time' => 0,
-                'processed_time' => 0,
-                'updated_by' => $updatedBy
+                'status'            => $statusTicket,
+                'pending_time'      => $pendingTime,
+                'processed_time'    => $processedTime,
+                'updated_by'        => $updatedBy
             ]);
 
             // Saving data to progress ticket table
@@ -81,8 +75,8 @@ class TicketApprovalController extends Controller
             $progress_ticket->updated_by    = $updatedBy;
             $progress_ticket->save();
         }else{
-            $statusApproval = "disetujui";
             $statusTicket = "pending";
+            $statusApproval = "disetujui";
 
             // Saving data to progress ticket table
             $progress_ticket                = new Progress_ticket;
@@ -94,6 +88,7 @@ class TicketApprovalController extends Controller
             $progress_ticket->save();
         }
 
+        // Redirect kembali ke halaman detail ticket beserta notifikasi sukses
         return back()->with('success', 'Ticket '.$statusApproval);
     }
 }

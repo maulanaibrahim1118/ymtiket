@@ -7,53 +7,55 @@
                     <div class="col-12">
                         <div class="card info-card">
                             <div class="filter">
-                                <a class="icon" href="/agents/{{ encrypt(auth()->user()->location_id) }}"><i class="bx bx-revision"></i></a>
+                                <a class="icon" href="/agents"><i class="bx bx-revision"></i></a>
                             </div> <!-- End Filter -->
 
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-person-workspace me-2"></i>{{ $title }}</h5>
                                 
                                 <div id="table-container">
-                                    <table class="table datatable table-hover">
-                                        <thead class="bg-light" style="height: 45px;font-size:14px;">
-                                            <tr>
-                                            <th scope="col">NIK</th>
-                                            <th scope="col">NAMA AGENT</th>
-                                            @can('isIT')
-                                            <th scope="col">PIC TICKET</th>
-                                            <th scope="col">SUB DIVISI</th>
-                                            @endcan
-                                            <th scope="col">DIVISI</th>
-                                            <th scope="col">STATUS</th>
-                                            <th scope="col">SWITCH</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                                            @foreach($data as $data)
-                                            <tr>
-                                            <td>{{ $data->nik }}</td>
-                                            <td>{{ $data->nama_agent }}</td>
-                                            @can('isIT')
-                                            <td>{{ $data->pic_ticket }}</td>
-                                            <td>{{ $data->sub_divisi }}</td>
-                                            @endcan
-                                            <td>{{ $data->location->nama_lokasi }}</td>
-                                            @if($data->status == "present")
-                                            <td><span class="badge bg-primary">HADIR</span></td>
-                                            @else
-                                            <td><span class="badge bg-secondary">TIDAK HADIR</span></td>
-                                            @endif
-                                            <td>
-                                            <label class="form-check form-switch">
-                                                <input type="checkbox" class="form-check-input" data-id="{{ $data->id }}" {{ $data->status ? 'checked' : '' }}>
-                                                <input type="text" id="location_id" value="{{ $data->location_id }}" hidden>
-                                                <span class="slider round"></span>
-                                            </label>
-                                            </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table datatable table-hover">
+                                            <thead class="bg-light" style="height: 45px;font-size:14px;">
+                                                <tr>
+                                                <th scope="col">NIK</th>
+                                                <th scope="col">NAMA AGENT</th>
+                                                @can('isIT')
+                                                <th scope="col">PIC TICKET</th>
+                                                <th scope="col">SUB DIVISI</th>
+                                                @endcan
+                                                <th scope="col">DIVISI</th>
+                                                <th scope="col">STATUS</th>
+                                                <th scope="col">SWITCH</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
+                                                @foreach($data as $data)
+                                                <tr>
+                                                <td>{{ $data->nik }}</td>
+                                                <td>{{ $data->nama_agent }}</td>
+                                                @can('isIT')
+                                                <td>{{ $data->pic_ticket }}</td>
+                                                <td>{{ $data->sub_divisi }}</td>
+                                                @endcan
+                                                <td>{{ $data->location->nama_lokasi }}</td>
+                                                @if($data->status == "present")
+                                                <td><span class="badge bg-primary">HADIR</span></td>
+                                                @else
+                                                <td><span class="badge bg-secondary">TIDAK HADIR</span></td>
+                                                @endif
+                                                <td>
+                                                <label class="form-check form-switch">
+                                                    <input type="checkbox" class="form-check-input" data-id="{{ $data->id }}" {{ $data->status ? 'checked' : '' }}>
+                                                    <input type="text" id="location_id" value="{{ $data->location_id }}" hidden>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
 
                                 <script>
@@ -63,7 +65,7 @@
                                             var status = $(this).prop('checked') ? 1 : 0;
                                 
                                             $.ajax({
-                                                url: '/agents-update' + id,
+                                                url: '/agents/update/' + id,
                                                 method: 'POST',
                                                 data: {
                                                     _token: '{{ csrf_token() }}',

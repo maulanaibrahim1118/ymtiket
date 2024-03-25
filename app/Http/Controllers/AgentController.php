@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\DB;
 use App\Agent;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 class AgentController extends Controller
 {
@@ -14,11 +15,13 @@ class AgentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($location = 0)
+    public function index()
     {
-        $location_id    = decrypt($location);
+        // Get ID Lokasi User
+        $locationId = Auth::user()->location_id;
 
-        $data = Agent::where('location_id', $location_id)
+        // Get data Agent yang ditampilkan
+        $data = Agent::where('location_id', $locationId)
             ->withCount('ticket_detail')
             ->select(
                 'agents.*', 
@@ -27,27 +30,14 @@ class AgentController extends Controller
                 DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
             )
             ->get();
+
         return view('contents.agent.index', [
-            "url"       => "",
-            "title"     => "Agent Panel",
-            "path"      => "Agent",
-            "path2"     => "Agent",
-            "data"      => $data
+            "url"   => "",
+            "title" => "Agent Panel",
+            "path"  => "Agent",
+            "path2" => "Agent",
+            "data"  => $data
         ]);
-    }
-
-    public function agentsRefresh($id)
-    {
-        $data   = Agent::where('location_id', $id)
-            ->withCount('ticket_detail')
-            ->select(
-                'agents.*', 
-                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),
-                DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
-                DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
-            )
-            ->get();
-        return view('contents.agent.partials.table', compact('data'));
     }
 
     /**
@@ -118,5 +108,24 @@ class AgentController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function agentsRefresh()
+    {
+        // Get ID Lokasi User
+        $locationId = Auth::user()->location_id;
+
+        // Get data Agent yang ditampilkan
+        $data = Agent::where('location_id', $locationId)
+            ->withCount('ticket_detail')
+            ->select(
+                'agents.*', 
+                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),
+                DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
+                DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
+            )
+            ->get();
+            
+        return view('contents.agent.partials.table', compact('data'));
     }
 }

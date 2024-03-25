@@ -35,6 +35,9 @@ class TicketCommentController extends Controller
      */
     public function store(Request $request)
     {
+        // Get ID Ticket
+        $ticketId = $request['ticket_id'];
+
         // Validating data request
         $validatedData = $request->validate([
             'user_id'       => 'required',
@@ -42,16 +45,17 @@ class TicketCommentController extends Controller
             'komentar'      => 'required',
             'updated_by'    => 'required'
         ],
+
         // Create custom notification for the validation request
         [
             'komentar.required' => 'Anda belum mengetikkan apapun!',
         ]);
-        // Saving data to locations table
+
+        // Simpan data Comment sesuai request yang telah di validasi
         Comment::create($validatedData);
 
-        // Redirect to the employee view if create data succeded
-        $ticketId = encrypt($request['ticket_id']);
-        return redirect('/ticket-details'.'/'.$ticketId)->with('commentSuccess', 'Komentar telah dikirim!');
+        // Redirect ke halaman ticket detail beserta notifikasi sukses
+        return redirect()->route('ticket-detail.index', ['ticket_id' => encrypt($ticketId)])->with('commentSuccess', 'Komentar telah dikirim!');
     }
 
     /**

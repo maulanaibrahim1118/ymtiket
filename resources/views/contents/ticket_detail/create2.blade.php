@@ -6,13 +6,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card info-card mb-4">
-                            @if(session()->has('error'))
-                            <script>
-                                swal("Gagal!", "{{ session('error') }}", "warning", {
-                                    timer: 3000
-                                });
-                            </script>
-                            @endif
+
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
@@ -77,7 +71,7 @@
                                         <label for="kendala" class="form-label fw-bold">Kendala</label>
                                     </div>
                                     <div class="col-md-4 m-0">
-                                        <label for="kendala" class="form-label">: {{ ucfirst($ticket->kendala) }}</label>
+                                        <label for="kendala" class="form-label">: {{ ucwords($ticket->kendala) }}</label>
                                     </div>
                                     <div class="col-md-2 m-0">
                                         <label for="status" class="form-label fw-bold">Status Ticket</label>
@@ -130,18 +124,16 @@
                                         <label for="tanggal" class="form-label">: {{ ucfirst($ticket->detail_kendala) }}</label>
                                     </div>
 
-                                    <div class="col-md-9">
+                                    <div class="col-md-12">
                                         {{-- Tombol Lampiran --}}
-                                        @if($ext == "xlsx")
-                                        <a href="{{ asset('uploads/' . $ticket->file) }}"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark me-1"></i> Lampiran</button></a>
-                                        @else
-                                        <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark me-1"></i> Lampiran</button>
-                                        @endif
-
-                                        {{-- Lampiran Modal --}}
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark-image me-1"></i> Lampiran</button>
                                         <div class="modal fade" id="lampiranModal" tabindex="-1">
+                                            @if($ticket->file == NULL)
+                                            <div class="modal-dialog modal-dialog-centered">
+                                            @else
                                             <div class="modal-dialog modal-xl modal-dialog-centered">
-                                                <div class="modal-content" id="modalContent1">
+                                            @endif
+                                                <div class="modal-content" id="modalContent">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">Lampiran Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -159,37 +151,12 @@
                                         </div><!-- End Lampiran Modal-->
                                     </div>
 
-                                    <div class="col-md-3 mb-0">
-                                        <table class="table table-sm table-bordered text-center mb-0">
-                                            <thead>
-                                                <tr>
-                                                    @php
-                                                        $carbonInstance = \Carbon\Carbon::parse($ticket->pending_time);
-                                                    @endphp
-                                                    @if($ticket->pending_time >= 3600)
-                                                    <td class="col-md-1 fw-bold bg-light">Ticket Pending </td>
-                                                    <td class="col-md-2">{{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
-                                                    @elseif($ticket->pending_time >= 60)
-                                                    <td class="col-md-1 fw-bold bg-light">Ticket Pending </td>
-                                                    <td class="col-md-2">{{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
-                                                    @elseif($ticket->pending_time == 0)
-                                                    <td class="col-md-1 fw-bold bg-light">Ticket Pending </td>
-                                                    <td class="col-md-2">0 detik</td>
-                                                    @else
-                                                    <td class="col-md-1 fw-bold bg-light">Ticket Pending </td>
-                                                    <td class="col-md-2">{{ $carbonInstance->second }} detik</td>
-                                                    @endif
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
-
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-1 mb-0"></p>
                                     </div>
-                        
+
                                     <div class="col-md-12" style="font-size: 14px">
-                                        <p class="mb-2">Detail penanganan Ticket :</p>
+                                        <p class="mb-2">Detail penanganan Ticket Sebelumnya:</p>
                                         <div class="table-responsive">
                                             <table class="table table-bordered text-center">
                                                 <thead class="fw-bold bg-light">
@@ -315,11 +282,6 @@
                                         @endif
                                     </div>
 
-                                    <div class="col-md-12">
-                                        <p class="border-bottom mt-1 mb-0"></p>
-                                    </div>
-
-
                                     {{-- Saran Tindakan Modal --}}
                                     <div class="modal fade" id="actionModal" tabindex="-1">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -354,257 +316,203 @@
                                         '</form>';
                                     }
                                     </script>
-
-                                    <div class="col-md-6">
-                                        {{-- Tombol Kembali --}}
-                                        <a href="/tickets"><button type="button" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                    @can('isClient') {{-- Jika role sebagai Client --}}
-                                        @if($ticket->status == "resolved") {{-- Jika status resolved, muncul tombol close/selesai --}}
-                                            {{-- Tombol Close --}}
-                                            <button type="button" class="btn btn-sm btn-success float-end ms-1" id="closedButton" data-bs-toggle="modal" data-bs-target="#closedModal"><i class="bi bi-check-circle me-1"></i> Close</button>
-                                            <div class="modal fade" id="closedModal" tabindex="-1">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content" id="modalContent4">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Status Closed Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <form action="{{ route('ticket.finished', ['id' => encrypt($ticket->id)]) }}" method="post">
-                                                        @method("put")
-                                                        @csrf
-                                                        <div class="modal-body">
-                                                            <div class="col-md-6 mb-2">
-                                                                <select class="form-select" name="closedStatus" id="closedStatus" value="{{ old('closedStatus') }}">
-                                                                    <option selected disabled>Choose...</option>
-                                                                    <option value="selesai">Selesai</option>
-                                                                    <option value="belum selesai">Belum Selesai</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-md-12">
-                                                                <textarea name="alasanClosed" class="form-control" id="alasanClosed" rows="3" placeholder="Tuliskan keterangan tambahan (opsional)">{{ old('alasanClosed') }}</textarea>
-                                                            </div>
-                                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                            <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Kirim</button>
-                                                        </div>
-                                                        </form>
+                        
+                                    <form class="row" action="/ticket-details/process" method="POST" onsubmit="return formValidation()">
+                                        @csrf
+                                        <div class="col-md-12 mb-0" style="font-size: 14px">
+                                            <p class="mb-2">Detail penanganan Ticket Anda :</p>
+                                            <table class="table table-bordered">
+                                                <thead class="fw-bold text-center">
+                                                    <tr>
+                                                    <td>Jenis Ticket*</td>
+                                                    <td>Kategori Ticket*</td>
+                                                    <td>Sub Kategori Ticket*</td>
+                                                    <td class="col-md-2">Biaya</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                    <td>
+                                                    <select class="form-select @error('jenis_ticket') is-invalid @enderror" name="jenis_ticket" id="jenis_ticket" value="{{ old('jenis_ticket') }}">
+                                                        <option selected disabled>Choose...</option>
+                                                        @for($i=0; $i < count($types); $i++){
+                                                            @if(old('jenis_ticket', $td->jenis_ticket) == $types[$i])
+                                                            <option selected value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
+                                                            @else
+                                                            <option value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
+                                                            @endif
+                                                        }@endfor
+                                                    </select>
+            
+                                                    <!-- Showing notification error for input validation -->
+                                                    @error('jenis_ticket')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
                                                     </div>
-                                                </div>
-                                            </div><!-- End Close Modal-->
-                                        @else {{-- Jika status bukan resolved, tidak akan muncul tombol apapun --}}
+                                                    @enderror
+                                                    </td>
+                                                    <td>
+                                                    <select class="form-select @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id">
+                                                        <option selected disabled>Choose...</option>
+                                                        @foreach($category_tickets as $ct)
+                                                            @if(old('category_ticket_id', $td->sub_category_ticket->category_ticket_id) == $ct->id)
+                                                            <option selected value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
+                                                            @else
+                                                            <option value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+
+                                                    <!-- Showing notification error for input validation -->
+                                                    @error('category_ticket_id')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                    @enderror
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-select @error('sub_category_ticket_id') is-invalid @enderror" name="sub_category_ticket_id" id="sub_category_ticket_id">
+                                                            <option selected disabled>Choose...</option>
+                                                            @foreach($sub_category_tickets as $sct)
+                                                                @if(old('sub_category_ticket_id', $td->sub_category_ticket_id) == $sct->id)
+                                                                <option selected value="{{ $sct->id }}">{{ ucwords($sct->nama_sub_kategori) }}</option>
+                                                                @else
+                                                                <option value="{{ $sct->id }}">{{ ucwords($sct->nama_sub_kategori) }}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        </select>
+                
+                                                        <!-- Showing notification error for input validation -->
+                                                        @error('sub_category_ticket_id')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="basic-addon1">IDR</span>
+                                                        <input type="text" name="biaya" class="form-control text-capitalize @error('biaya') is-invalid @enderror" id="biaya" placeholder="0" value="{{ old('biaya', $td->biaya) }}">
+                                                    </div>
+                                                    </td>
+                                                    <script>
+                                                        $(document).ready(function(){
+                                                            var harga = document.getElementById("biaya");
+                                                            harga.addEventListener("keyup", function(e) {
+                                                                // tambahkan 'Rp.' pada saat form di ketik
+                                                                // gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
+                                                                harga.value = formatRupiah(this.value);
+                                                            });
+
+                                                            /* Fungsi formatRupiah */
+                                                            function formatRupiah(angka, prefix) {
+                                                                var number_string = angka.replace(/[^.\d]/g, "").toString(),
+                                                                split = number_string.split("."),
+                                                                sisa = split[0].length % 3,
+                                                                harga = split[0].substr(0, sisa),
+                                                                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                                                                // tambahkan titik jika yang di input sudah menjadi angka ribuan
+                                                                if (ribuan) {
+                                                                separator = sisa ? "," : "";
+                                                                harga += separator + ribuan.join(",");
+                                                                }
+
+                                                                harga = split[1] != undefined ? harga + "." + split[1] : harga;
+                                                                return prefix == undefined ? harga : harga ? harga : "";
+                                                            }
+                                                        });
+                                                    </script>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-bold text-center align-middle">Saran Tindakan*</td>
+                                                        <td colspan="3">
+                                                        <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3" placeholder="Sebutkan saran tindakan...">{{ old('note') }}</textarea>
+
+                                                        <!-- Showing notification error for input validation -->
+                                                        @error('note')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                        @enderror
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <script>
+                                            $('#category_ticket_id').change(function(){
+                                                var category = $(this).val();
+                                                var url = '{{ route("getSubCategoryTicket", ":id") }}';
+                                                url = url.replace(':id', category);
+                                                $.ajax({
+                                                    url: url,
+                                                    type: 'get',
+                                                    dataType: 'json',
+                                                    success: function(response){
+                                                        var subDropdown = $('#sub_category_ticket_id');
+                                                        subDropdown.empty();
+                                                        subDropdown.append('<option selected disabled>Choose...</option>');
+                                                        $.each(response, function (key, value) {
+                                                            subDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.nama_sub_kategori + '</option>');
+                                                        });
+                                                        // Aktifkan dropdown no. asset
+                                                        subDropdown.prop('disabled', false);
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        console.error(xhr.responseText);
+                                                    }
+                                                });
+                                            });
+                                        </script>
+                                        <input name="ticket_id" id="ticket_id" value="{{ $ticket->id }}" hidden>
+                                        <input name="no_ticket" id="no_ticket" value="{{ $ticket->no_ticket }}" hidden>
+                                        <input name="agent_id" id="agent_id" value="{{ $ticket->agent_id }}" hidden>
+                                        <input name="process_at" id="process_at" value="{{ $ticket->process_at }}" hidden>
+                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                        <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
+                                        <input type="text" name="url" value="{{ encrypt($ticket->id) }}" hidden>
+                                        @if($td->status == "onprocess")
+                                        <input type="text" name="status" value="onprocess" hidden>
+                                        @elseif($td->status == "pending")
+                                        <input type="text" name="status" value="pending" hidden>
                                         @endif
 
-                                        @can('isKorwil')
-                                            @if($ticket->need_approval == "ya" AND $ticket->approved == NULL)
-                                                {{-- Tombol Rejected --}}
-                                                <button type="button" class="btn btn-sm btn-danger float-end ms-1" id="rejectedButton" data-bs-toggle="modal" data-bs-target="#rejectedModal"><i class="bi bi-x-circle me-1"></i> Tidak Setuju</button>
-                                                <div class="modal fade" id="rejectedModal" tabindex="-1">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content" id="modalContent4">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Alasan Tidak Menyetujui Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <form action="/ticket-approval" method="post">
-                                                            @method("put")
-                                                            @csrf
-                                                            <div class="modal-body">
-                                                                <div class="col-md-12">
-                                                                    <textarea name="reason" class="form-control" id="reason" rows="3" placeholder="Tuliskan alasan anda tidak menyetujui..." required>{{ old('reason') }}</textarea>
-                                                                </div>
-                                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                                <input type="text" name="status" value="rejected" hidden>
-                                                                <input type="text" name="ticket_id" value="{{ $ticket->id }}" hidden>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Kirim</button>
-                                                            </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div><!-- End Rejected Modal-->
+                                        <div class="col-md-12">
+                                            <p class="border-bottom mt-1 mb-3"></p>
+                                        </div>
 
-                                                {{-- Tombol Approved --}}
-                                                <form action="/ticket-approval" method="POST">
-                                                @method('put')
-                                                @csrf
-                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                <input type="text" name="status" value="approved" hidden>
-                                                <input type="text" name="reason" value="" hidden>
-                                                <input type="text" name="ticket_id" value="{{ $ticket->id }}" hidden>
+                                        <div class="col-md-6">
+                                            (*) : Mandatory
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-primary float-end ms-1"><i class="bi bi-save me-1"></i> Simpan</button>
+                                            <button type="reset" class="btn btn-warning float-end ms-1"><i class="bi bi-trash me-1"></i> Reset</button>
+                                        </div>
+                                    </form>
+                                    <script>
+                                        function formValidation(){
+                                            var kendala = document.getElementById('sub_category_ticket_id').value;
+                                            var tindakan = document.getElementById('note').value;
+    
+                                            if (kendala.length == 0) {
+                                                alert('Sub Kategori Ticket harus dipilih!');
+                                                return false;
+                                            }
 
-                                                <button type="submit" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-check-circle me-1"></i> Setuju</button>
-                                                </form>
-
-                                                <p class="float-end me-2 fw-bold">Approval Biaya Penanganan Ticket :</p>
-                                            @else
-                                            @endif
-                                        @endcan
-                                    @endcan
-
-                                    @can('agent-info'){{-- Jika role sebagai Agent/Service Desk --}}
-                                        @if($ticket->status == "onprocess" AND $ticket->agent->nik == auth()->user()->nik)
-                                            {{-- Tombol Selesai --}}
-                                            <form action="{{ route('ticket.resolved', ['id' => encrypt($ticket->id)]) }}" method="POST">
-                                            @method('put')
-                                            @csrf
-                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                            <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
-                                            <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                            <input type="text" name="role" value="{{ auth()->user()->role }}" hidden>
-                                            <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
-                                            <button type="submit" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-check-circle me-1"></i> Selesai</button>
-                                            </form>
-
-                                            {{-- Tombol Pending --}}
-                                            <button type="button" class="btn btn-sm btn-danger float-end ms-1" id="pendingButton" data-bs-toggle="modal" data-bs-target="#pendingModal"><i class="bi bi-stop-circle me-1"></i> Pending</button>
-                                            </form>
-                                            <div class="modal fade" id="pendingModal" tabindex="-1">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content" id="modalContent3">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Alasan Pending Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <form action="{{ route('ticket.pending', ['id' => encrypt($ticket->id)]) }}" method="post">
-                                                        @method("put")
-                                                        @csrf
-                                                        <div class="modal-body">
-                                                            <div class="col-md-12">
-                                                                <textarea name="alasanPending" class="form-control @error('alasanPending') is-invalid @enderror" id="alasanPending" rows="3" placeholder="Sebutkan alasan pending...">{{ old('alasanPending') }}</textarea>
-                                                            </div>
-                                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                            <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                                            <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="submit" class="btn btn-danger"><i class="bi bi-stop-circle me-2"></i>Pending</button>
-                                                        </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div><!-- End Pending Modal-->
-
-                                            {{-- Tombol Edit --}}
-                                            <a href="{{ route('ticket-detail.edit', ['id' => encrypt($ticket->id)]) }}"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-pencil-square me-1"></i> Edit</button></a>
-
-                                            {{-- Tombol Assign --}}
-                                            <button type="button" class="btn btn-sm btn-outline-dark float-end ms-1" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal"><i class="bx bx-share me-1"></i> Assign</button>
-                                            <div class="modal fade" id="assignModal" tabindex="-1">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content" id="modalContent4">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Pilih Nama Agent</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <form action="/tickets/assign2" method="post">
-                                                        @method("put")
-                                                        @csrf
-                                                        <div class="modal-body">
-                                                            <div class="col-md-12">
-                                                                <label for="agent_id" class="form-label">Nama Agent</label>
-                                                                <select class="form-select" name="agent_id" id="agent_id" required>
-                                                                    <option selected disabled>Choose...</option>
-                                                                    @foreach($agents as $agent)
-                                                                        @if(old("agent_id") == $agent->id)
-                                                                        <option selected value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
-                                                                        @else
-                                                                        <option value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
-                                                                        @endif
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                            <input type="text" id="ticket_id" name="ticket_id" value="{{ $ticket->id }}" hidden>
-                                                            <input type="text" id="agent_id1" name="agent_id1" value="{{ $ticket->agent_id }}" hidden>
-                                                            <input type="text" id="url" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" hidden>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="submit" class="btn btn-primary"><i class="bx bx-share me-2"></i>Assign</button>
-                                                        </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div><!-- End Assign Modal-->
-                                        @else
-                                        @endif
-                                    @endcan
-                                    </div>
+                                            if (tindakan.length < 10) {
+                                                alert('Ketikkan saran tindakan minimal 10 karakter!');
+                                                return false;
+                                            }
+                                        }
+                                    </script>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-6">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card info-card">
-                            <div class="card-body pb-2">
-                                <h5 class="card-title">Komentar</h5>
-                                <div class="col-md-12">
-                                    <form action="/ticket-comments" method="POST">
-                                        @csrf
-                                        <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
-                                        <input type="text" name="ticket_id" value="{{ $ticket->id }}" hidden>
-                                        <textarea name="komentar" class="form-control h-50" id="komentar" rows="4" placeholder="Tulis komentar anda..." required></textarea>
-                                        <!-- Showing notification error for input validation -->
-                                        @error('komentar')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                        <a href="#"><button type="submit" class="btn btn-sm btn-primary float-end mt-2 ms-1"><i class="bi bi-send me-1"></i> Kirim</button></a>
-                                    </form>
-                                    @if(session()->has('commentSuccess'))
-                                    <script>
-                                        swal("Terkirim!", "{{ session('commentSuccess') }}", "success", {
-                                            timer: 3000
-                                        });
-                                    </script>
-                                    @endif
-                                </div>
-                            </div><!-- End Card Body -->
-                        </div><!-- End Info Card -->
-                    </div><!-- End col-12 -->
-                </div> <!-- End row -->
-            </div> <!-- End col-lg-6 -->
-
-            <!-- Right side columns -->
-            <div class="col-lg-6 flex-nowrap">
-
-                <!-- Recent Activity -->
-                <div class="card py-4 h-100" style="max-height: 232px; overflow: hidden;">
-                    <div class="card-body overflow-auto">
-                        <div class="activity">
-                            @if($checkComment == 0)
-                            <p class="text-center">Belum ada komentar.</p>
-                            @else
-                            @foreach($comments as $comment)
-                            <div class="activity-item d-flex">
-                                <div class="activite-label pe-3">{{ date('d-M-Y H:i', strtotime($comment->created_at)) }}</div>
-                                <i class='bi bi-circle-fill activity-badge text-secondary align-self-start'></i>
-                                <div class="activity-content">
-                                    @if(auth()->user()->nama == $comment->user->nama)
-                                    <a href="#" class="fw-bold text-dark pe-1">{{ ucwords($comment->user->nama) }}</a><span class="badge bg-info text-capitalize">saya</span></td> : {{ $comment->komentar }}
-                                    @else
-                                    <a href="#" class="fw-bold text-dark">{{ ucwords($comment->user->nama) }}</a></td> : {{ $comment->komentar }}
-                                    @endif
-                                </div>
-                            </div><!-- End activity item-->
-                            @endforeach
-                            @endif
-                        </div>
-                    </div>
-                </div><!-- End Recent Activity -->
-            </div><!-- End col-lg-6 -->
         </div> <!-- End row -->
     </section>
 @endsection

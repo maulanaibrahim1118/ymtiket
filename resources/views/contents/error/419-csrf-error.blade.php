@@ -47,6 +47,25 @@
             document.getElementById("status").style.display = "none";
             document.getElementById("content").style.display = "block";
         }
+
+        // Menampilkan dan menyembunyikan Password
+        function myFunction() {
+            var x = document.getElementById("password");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+
+        // Menampilkan informasi pendaftaran akun
+        function register() {
+            swal({
+                title: "Mohon Maaf",
+                text: "Silakan hubungi Staff IT untuk Daftar Akun!",
+                icon: "info",
+            });
+        }
     </script>
 </head>
 <body onload="preloader()">
@@ -63,9 +82,9 @@
             <div class="container">
 
             <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
-                <h1>403</h1>
-                <h2>Maaf, anda tidak diizinkan mengakses halaman tersebut.</h2>
-                <a class="btn" href="/dashboard/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Kembali ke Dashboard</a>
+                <h1>419</h1>
+                <h2>Maaf, CSRF token Anda telah kadaluwarsa. Silakan kembali ke halaman sebelumnya dan coba lagi.</h2>
+                <a class="btn" href="javascript:history.back()">Kembali</a>
                 <div class="credits">
                 </div>
             </section>

@@ -10,7 +10,7 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-person-check me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/users/{{ $user->id }}" method="POST">
+                                <form class="row g-3 mb-3" action="{{ route('user.update', ['id' => encrypt($user->id)]) }}" method="POST">
                                     @method('put')
                                     @csrf
                                     <div class="col-md-2">

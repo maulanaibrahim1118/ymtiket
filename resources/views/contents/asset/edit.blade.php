@@ -7,9 +7,9 @@
                     <div class="col-12">
                         <div class="card info-card">
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-people me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-gem me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/assets/{{ $asset->id }}" method="POST">
+                                <form class="row g-3 mb-3" action="{{ route('asset.update', ['id' => encrypt($asset->id)]) }}" method="POST">
                                     @method('put')
                                     @csrf
                                     <div class="col-md-2">
@@ -77,7 +77,7 @@
                                         <select class="form-select @error('category_asset_id') is-invalid @enderror" name="category_asset_id" id="category_asset_id" required>
                                             <option value="" disabled>Choose...</option>
                                             @foreach($category_assets as $ca)
-                                                @if(old('category_asset_id', $asset->category_asset_id) == $ca->id)
+                                                @if(old('category_asset_id', $asset->id) == $ca->id)
                                                 <option selected value="{{ $ca->id }}">{{ ucwords($ca->nama_kategori) }}</option>
                                                 @else
                                                 <option value="{{ $ca->id }}">{{ ucwords($ca->nama_kategori) }}</option>

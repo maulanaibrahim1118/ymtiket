@@ -7,9 +7,9 @@
                     <div class="col-12">
                         <div class="card info-card">
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-people me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ui-radios-grid me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/category-tickets/{{ $ct->id }}" method="POST">
+                                <form class="row g-3 mb-3" action="{{ route('ct.update', ['id' => encrypt($ct->id)]) }}" method="POST">
                                     @method('put')
                                     @csrf
                                     <div class="col-md-3">

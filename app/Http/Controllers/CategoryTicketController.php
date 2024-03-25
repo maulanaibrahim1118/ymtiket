@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Category_ticket;
 use App\Location;
+use App\Category_ticket;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryTicketController extends Controller
 {
@@ -13,17 +14,19 @@ class CategoryTicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index()
     {
-        $location_id    = decrypt($id);
-        $data           = Category_ticket::where('location_id', $location_id)->get();
+        // Get lokasi User
+        $location_id = Auth::user()->location_id;
+
+        // Get data Category Ticket berdasarkan Lokasi User
+        $category_tickets = Category_ticket::where('location_id', $location_id)->get();
 
         return view('contents.category_ticket.index', [
-            "url"               => "",
             "title"             => "Category Ticket List",
             "path"              => "Category Ticket",
             "path2"             => "Category Ticket",
-            "category_tickets"  => $data
+            "category_tickets"  => $category_tickets
         ]);
     }
 
@@ -32,16 +35,12 @@ class CategoryTicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id)
+    public function create()
     {
-        $locations  = Location::where('id', 10)->orWhere('id', 12)->orWhere('id', 83)->orWhere('id', 84)->get();
-
         return view('contents.category_ticket.create', [
-            "url"               => "",
             "title"             => "Create Category Ticket",
             "path"              => "Category Ticket",
-            "path2"             => "Tambah",
-            "locations"         => $locations
+            "path2"             => "Tambah"
         ]);
     }
 
@@ -59,6 +58,7 @@ class CategoryTicketController extends Controller
             'location_id'   => 'required',
             'updated_by'    => 'required'
         ],
+        
         // Create custom notification for the validation request
         [
             'nama_kategori.required'    => 'Nama Kategori Ticket harus diisi!',
@@ -68,14 +68,16 @@ class CategoryTicketController extends Controller
             'location_id.required'      => 'Lokasi harus dipilih!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
-        // Saving data to category_asset table
+
+        // Simpan data Category Ticket sesuai request yang telah di validasi
         $data = array_map('strtolower', $validatedData);
         Category_ticket::create($data);
 
-        // Redirect to the Category Asset view if create data succeded
+        // Get Nama Kategori Ticket untuk ditampilkan di notifikasi sukses
         $nama_kategori  = ucwords($request['nama_kategori']);
-        $url            = $request['url'];
-        return redirect($url)->with('success', $nama_kategori.' telah ditambahkan!');
+
+        // Redirect ke halaman Category Ticket List beserta notifikasi sukses
+        return redirect('/category-tickets')->with('success', $nama_kategori.' telah ditambahkan!');
     }
 
     /**
@@ -95,16 +97,19 @@ class CategoryTicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id = 0, Category_ticket $category_ticket)
+    public function edit(Request $request)
     {
-        $locations  = Location::where('id', 10)->orWhere('id', 12)->orWhere('id', 83)->orWhere('id', 84)->get();
+        // Get id Category Ticket dari request parameter
+        $id = decrypt($request['id']);
+
+        // Get data Category Ticket berdasarkan id Category Ticket
+        $category_ticket = Category_ticket::where('id', $id)->first();
 
         return view('contents.category_ticket.edit', [
             "title"     => "Edit Category Ticket",
             "path"      => "Category Ticket",
             "path2"     => "Edit",
-            "ct"        => $category_ticket,
-            "locations" => $locations
+            "ct"        => $category_ticket
         ]);
     }
 
@@ -115,8 +120,15 @@ class CategoryTicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category_ticket $category_ticket)
+    public function update(Request $request)
     {
+        // Get id Category Ticket dari request parameter
+        $id = decrypt($request['id']);
+        
+        // Get data Category Ticket berdasarkan id Category Ticket
+        $category_ticket = Category_ticket::where('id', $id)->first();
+        
+        // Validating data request
         $rules = [
             'location_id'   => 'required',
             'updated_by'    => 'required'
@@ -136,11 +148,13 @@ class CategoryTicketController extends Controller
             'location_id.required'      => 'Lokasi harus dipilih!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
-        $data = array_map('strtolower', $validatedData);
-        Category_ticket::where('id', $category_ticket->id)->update($data);
 
-        $url    = $request['url'];
-        return redirect($url)->with('success', 'Data Category Ticket telah diubah!');
+        // Updating data Category Ticket sesuai request yang telah di validasi
+        $data = array_map('strtolower', $validatedData);
+        Category_ticket::where('id', $id)->update($data);
+
+        // Redirect ke halaman Category Ticket List beserta notifikasi sukses
+        return redirect('/category-tickets')->with('success', 'Data Category Ticket telah diubah!');
     }
 
     /**

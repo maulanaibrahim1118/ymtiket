@@ -50,28 +50,32 @@
     </script>
 </head>
 <body onload="preloader()">
-    <div id="preloader" class="d-flex align-items-center">
-        <div id="loader"></div>
-        <strong id="status" role="status" class="position-absolute text-primary" style="top: 60%; left: 45%;">Memuat Halaman...</strong>
-    </div>
-    <div style="display:none;" id="content" class="fade-in">
-
-    <main>
-        <div class="container">
-
-        <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
-            <h1>404</h1>
-            <h2>Maaf, halaman tersebut belum dapat diakses.</h2>
-            <a class="btn" href="{{ url()->previous() }}">Kembali</a>
-            <div class="credits">
+    <div class="container-fluid position-absolute top-50 start-50 translate-middle">
+        <div id="preloader">
+            <div class="position-absolute top-50 start-50 translate-middle">
+                <div id="loader"></div>
+                <div><strong id="status" role="status" class="text-primary">Memuat Halaman...</strong></div>
             </div>
-        </section>
-
         </div>
-    </main><!-- End #main -->
+        <div style="display:none;" id="content" class="fade-in">
 
-    <!-- Back To Top -->
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+        <main>
+            <div class="container">
+
+            <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
+                <h1>404</h1>
+                <h2>Maaf, halaman tersebut belum dapat diakses.</h2>
+                <a class="btn" href="{{ url()->previous() }}">Kembali</a>
+                <div class="credits">
+                </div>
+            </section>
+
+            </div>
+        </main><!-- End #main -->
+
+        <!-- Back To Top -->
+        <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+        </div>
     </div>
     <!-- Vendor JS Files -->
     <script src="dist/vendor/apexcharts/apexcharts.min.js"></script>

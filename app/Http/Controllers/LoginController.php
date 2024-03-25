@@ -25,7 +25,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             // Authentication passed...
-            return redirect()->intended('/dashboard'.'/'.encrypt(auth()->user()->id).'-'.encrypt(auth()->user()->role));
+            return redirect()->intended('/dashboard');
         }
 
         return back()->with('loginError', 'No. Induk Karyawan atau Password salah!');

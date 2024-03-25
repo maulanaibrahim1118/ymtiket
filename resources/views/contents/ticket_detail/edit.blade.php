@@ -53,7 +53,7 @@
                                         <label for="no_asset" class="form-label fw-bold">No. Asset</label>
                                     </div>
                                     <div class="col-md-4 m-0">
-                                        <label for="no_asset" class="form-label">: <a href="/tickets/asset{{ encrypt($ticket->asset_id) }}">{{ $ticket->asset->no_asset }}</a></label>
+                                        <label for="no_asset" class="form-label">: <a href="{{ route('ticket.asset', ['asset_id' => encrypt($ticket->asset->id)]) }}">{{ $ticket->asset->no_asset }}</a></label>
                                     </div>
                                     <div class="col-md-2 m-0">
                                         <label for="agent" class="form-label fw-bold">Ditujukan Pada</label>
@@ -88,7 +88,34 @@
                                         @elseif($ticket->status == 'finished')
                                         <label for="tanggal" class="form-label">: <span class="badge bg-success">{{ ucwords($ticket->status) }}</span></label>
                                         @endif
+                                        | <a href="#" data-bs-toggle="modal" data-bs-target="#verticalycentered">Lihat Detail Status</a>
                                     </div>
+                                    <div class="modal fade" id="verticalycentered" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Detail Status Ticket - <span class="text-success">{{ $ticket->no_ticket}}</span></h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="activity">
+                                                        @foreach($progress_tickets as $pt)
+                                                        <div class="activity-item d-flex">
+                                                            <div class="activite-label pe-3">{{ date('d-M-Y H:i', strtotime($pt->process_at)) }}</div>
+                                                            <i class='bi bi-circle-fill activity-badge text-secondary align-self-start'></i>
+                                                            <div class="activity-content">
+                                                                {{ $pt->tindakan }}</a>
+                                                            </div>
+                                                        </div><!-- End activity item-->
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!-- End Vertically centered Modal-->
                                     
                                     <div class="col-md-2 m-0">
                                         <label for="tanggal" class="form-label fw-bold">Detail Kendala</label>
@@ -128,12 +155,8 @@
                                         <p class="border-bottom mt-1 mb-0"></p>
                                     </div>
                         
-                                    @if($title == "Tangani Ticket")
-                                    <form class="row g-3" action="/ticket-details/process" method="POST" onsubmit="return formValidation()">
-                                    @else
-                                    <form class="row g-3" action="/ticket-details/update{{ $td->id }}" method="POST" onsubmit="return formValidation()">
+                                    <form class="row g-3" action="{{ route('ticket-detail.update', ['id' => encrypt($td->id)]) }}" method="POST" onsubmit="return formValidation()">
                                         @method('put')
-                                    @endif
                                         @csrf
                                         <div class="col-md-12 mb-0" style="font-size: 14px">
                                             <table class="table table-bordered">

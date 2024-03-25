@@ -7,9 +7,9 @@
                     <div class="col-12">
                         <div class="card info-card">
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-people me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ui-radios-grid me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/category-sub-tickets/{{ $sct->id }}" method="POST">
+                                <form class="row g-3 mb-3" action="{{ route('sct.update', ['id' => encrypt($sct->id)]) }}" method="POST">
                                     @method('put')
                                     @csrf
                                     <div class="col-md-3">
@@ -67,7 +67,6 @@
                                     </div>
 
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                    <input type="text" name="url" value="/category-sub-tickets/{{ encrypt(auth()->user()->location_id) }}" hidden>
 
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-2 mb-0"></p>

@@ -1,14 +1,14 @@
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('dashboard*') ? '' : 'collapsed' }}" href="/dashboard/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+            <a class="nav-link {{ Request::is('dashboard*') ? '' : 'collapsed' }}" href="/dashboard">
                 <i class="bi bi-house-door"></i>
                 <span>Dashboard</span>
             </a>
         </li><!-- End Dashboards -->
 
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('tickets*') ? '' : 'collapsed' }}" href="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">
+            <a class="nav-link {{ Request::is('tickets*') ? '' : 'collapsed' }}" href="/tickets">
                 <i class="bi bi-ticket-perforated"></i>
                 <span>Ticket</span>
             </a>
@@ -16,7 +16,7 @@
 
         @can('isServiceDesk')
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('agents*') ? '' : 'collapsed' }}" href="/agents/{{ encrypt(auth()->user()->location_id) }}">
+            <a class="nav-link {{ Request::is('agents*') ? '' : 'collapsed' }}" href="/agents">
                 <i class="bi bi-person-workspace"></i>
                 <span>Agent</span>
             </a>
@@ -48,7 +48,7 @@
         @can('manage-ticket')
         <li class="nav-item">
             <a class="nav-link {{ Request::is('assets*') ? '' : 'collapsed' }}" href="/assets">
-                <i class="bi bi-box2"></i>
+                <i class="bi bi-gem"></i>
                 <span>Asset</span>
             </a>
         </li><!-- End Asset -->
@@ -77,12 +77,12 @@
                 </li>
                 @endcan
                 <li>
-                    <a href="/category-tickets/{{ encrypt(auth()->user()->location_id) }}" class="{{ Request::is('category-tickets*') ? 'active' : '' }}">
+                    <a href="/category-tickets" class="{{ Request::is('category-tickets*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Category Ticket</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/category-sub-tickets/{{ encrypt(auth()->user()->location_id) }}" class="{{ Request::is('category-sub-tickets*') ? 'active' : '' }}">
+                    <a href="/category-sub-tickets" class="{{ Request::is('category-sub-tickets*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Sub Category Ticket</span>
                     </a>
                 </li>
@@ -128,7 +128,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('404.underconstruction') }}" class="{{ Request::is('settings-mutation*') ? 'active' : '' }}">
+                    <a href="/settings/change-password" class="{{ Request::is('settings/change-password') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Change Password</span>
                     </a>
                 </li>

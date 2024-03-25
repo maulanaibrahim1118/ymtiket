@@ -36,7 +36,7 @@
 
         // Mengatur waktu loading halaman
         function preloader() {
-            myVar = setTimeout(showPage, 200);
+            myVar = setTimeout(showPage, 300);
         }
 
         // Mengatur urutan tampilan setelah loading selesai
@@ -69,116 +69,127 @@
     </script>
 </head>
 <body onload="preloader()">
-    <div id="preloader" class="d-flex align-items-center">
-        <div id="loader"></div>
-        <strong id="status" role="status" class="position-absolute text-primary" style="top: 60%; left: 45%;">Memuat Halaman...</strong>
-    </div>
-    <div style="display:none;" id="content" class="fade-in">
-        <main>
-            <div class="container">
-                <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-2">
-                    <div class="container">
-                        <!-- Showing Notification Login Error -->
-                        @if(session()->has('loginError'))
-                        <script>
-                            swal("Login Gagal!", "{{ session('loginError') }}", "warning", {
-                                timer: 3000
-                            });
-                        </script>
-                        @endif
-                        @if(session()->has('error'))
-                        <script>
-                            swal("Gagal!", "{{ session('error') }}", "warning", {
-                                timer: 3000
-                            });
-                        </script>
-                        @endif
-                        
-                        <div class="row justify-content-center">
-                            <div class="col-lg-5 col-md-6 d-flex flex-column align-items-center justify-content-center">
-                                    
-                                <div class="card mb-3 px-4 py-2">
-                                    <div class="card-header p-0 mb-4">
-                                        <!-- Login Title -->
-                                        <div class="col-12">
-                                            <h5 class="card-title text-primary text-center pb-2 fs-4 fw-bold">Form Login</h5>
-                                            <p class="text-center small px-3">Masukkan No. Induk Karyawan / Site Cabang dan Password akun anda untuk mulai bekerja.</p>
+    <div class="container-fluid position-absolute top-50 start-50 translate-middle">
+        <div id="preloader">
+            <div class="position-absolute top-50 start-50 translate-middle">
+                <div id="loader"></div>
+                <div><strong id="status" role="status" class="text-primary">Memuat Halaman...</strong></div>
+            </div>
+        </div>
+        <div style="display:none;" id="content" class="fade-in">
+            <main>
+                <div class="container">
+                    <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-2">
+                        <div class="container">
+                            <!-- Showing Notification Login Error -->
+                            @if(session()->has('success'))
+                            <script>
+                                swal("Berhasil!", "{{ session('success') }}", "success", {
+                                    timer: 3000
+                                });
+                            </script>
+                            @endif
+                            @if(session()->has('loginError'))
+                            <script>
+                                swal("Login Gagal!", "{{ session('loginError') }}", "warning", {
+                                    timer: 3000
+                                });
+                            </script>
+                            @endif
+                            @if(session()->has('error'))
+                            <script>
+                                swal("Gagal!", "{{ session('error') }}", "warning", {
+                                    timer: 3000
+                                });
+                            </script>
+                            @endif
+                            
+                            <div class="row justify-content-center">
+                                <div class="col-lg-5 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                                        
+                                    <div class="card mb-3 px-4 py-2">
+                                        <div class="card-header p-0 mb-4">
+                                            <!-- Login Title -->
+                                            <div class="col-12">
+                                                <h5 class="card-title text-primary text-center pb-2 fs-4 fw-bold">Form Login</h5>
+                                                <p class="text-center small px-3">Masukkan No. Induk Karyawan / Site Cabang dan Password akun anda untuk mulai bekerja.</p>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="card-body">
-                                        <!-- Login Form -->
-                                        <form class="row g-3" action="/login" method="post">
-                                            @csrf
-                                            <div class="col-12">
-                                                <div class="border border-3 border-primary d-inline py-2"></div>
-                                                <input type="number" name="nik" class="form-control d-inline rounded-0" id="nik" placeholder="No. Induk Karyawan / Site Cabang" required />
-                                            </div>
-        
-                                            <div class="col-12 pb-2">
-                                                <span class="border border-3 border-primary d-inline py-2"></span>
-                                                <input type="password" name="password" class="form-control d-inline rounded-0 mb-2" id="password" placeholder="Password" required />
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" onclick="myFunction()">
-                                                    <label class="form-check-label" for="inlineCheckbox1">Tampilkan Password</label>
+                                        <div class="card-body">
+                                            <!-- Login Form -->
+                                            <form class="row g-3" action="/login" method="post">
+                                                @csrf
+                                                <div class="col-12">
+                                                    <span class="border border-3 border-primary d-inline py-2"></span>
+                                                    <input type="number" name="nik" class="form-control d-inline rounded-0 mb-2" id="nik" placeholder="No. Induk Karyawan / Site Cabang" required />
                                                 </div>
-                                            </div>
-        
-                                            <div class="card-footer p-0"></div>
-        
-                                            <div class="col-12">
-                                                <button class="btn btn-primary w-100 rounded-5" type="submit">Masuk<i class="bi bi-box-arrow-in-right ms-2"></i></button>
-                                            </div>
-                                                
-                                            {{-- <div class="col-12">
-                                                <p class="small mb-0 text-center">Belum punya akun? Silakan <a href="#" onclick="register()">Daftar</a></p>
-                                            </div> --}}
-                                        </form> <!-- End Login Form -->
-                                    </div> <!-- End card-body -->
-                                </div> <!-- End card mb-3 p-4 -->
+            
+                                                <div class="col-12 pb-2">
+                                                    <span class="border border-3 border-primary d-inline py-2"></span>
+                                                    <input type="password" name="password" class="form-control d-inline rounded-0 mb-2" id="password" placeholder="Password" required />
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" onclick="myFunction()">
+                                                        <label class="form-check-label" for="inlineCheckbox1">Tampilkan Password</label>
+                                                    </div>
+                                                </div>
+            
+                                                <div class="card-footer p-0"></div>
+            
+                                                <div class="col-12">
+                                                    <button class="btn btn-primary w-100 rounded-5" type="submit">Masuk<i class="bi bi-box-arrow-in-right ms-2"></i></button>
+                                                </div>
+                                                    
+                                                {{-- <div class="col-12">
+                                                    <p class="small mb-0 text-center">Belum punya akun? Silakan <a href="#" onclick="register()">Daftar</a></p>
+                                                </div> --}}
+                                            </form> <!-- End Login Form -->
+                                        </div> <!-- End card-body -->
+                                    </div> <!-- End card mb-3 p-4 -->
+                                    
+                                    <div class="col-md-12 text-center border-bottom mb-4 text-secondary">
+                                        <p style="font-size: 14px;">Cari ticket tanpa perlu login? <span class="fst-italic"> Klik <a href="#" class="text-success" data-bs-toggle="modal" data-bs-target="#searchModal">disini</a></span></p>
+                                    </div>
+            
+                                    <!-- Copyright Footer -->
+                                    <div class="credits mt-3">
+                                        Copyright &copy; 2024 <a href="#">Yogya Group</a>. All Right Reserved
+                                    </div>
+                                </div>
+                            </div> <!-- End Row Content -->
+                        </div> <!-- End Container -->
+                    </section>
+                </div> <!-- End Container -->
+            </main><!-- End #main -->
 
-                                <div class="col-md-12 text-center border-bottom mb-4 text-secondary">
-                                    <p style="font-size: 14px;">Cari ticket tanpa perlu login? <span class="fst-italic"> Klik <a href="#" class="text-success" data-bs-toggle="modal" data-bs-target="#searchModal">disini</a></span></p>
-                                </div>
-        
-                                <!-- Copyright Footer -->
-                                <div class="credits mt-3">
-                                    Copyright &copy; 2024 <a href="#">Yogya Group</a>. All Right Reserved
-                                </div>
-                            </div>
-                        </div> <!-- End Row Content -->
-                    </div> <!-- End Container -->
-                </section>
-                <!-- Modal -->
-                <div class="modal fade" id="searchModal" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">.:: Cari Ticket</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form class="row g-3" action="/search-ticket" method="post">
-                                @csrf
-                                <div class="col-md-12">
-                                <div class="input-group">
-                                    <input type="text" name="no_ticket" class="form-control" placeholder="Tuliskan Nomor Ticket..." aria-label="Recipient's username" aria-describedby="button-addon2">
-                                    <button class="btn btn-success" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
-                                </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                    </div>
+            <!-- Back To Top -->
+            <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="searchModal" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">.:: Cari Ticket</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div> <!-- End Container -->
-        </main><!-- End #main -->
-
-        <!-- Back To Top -->
-        <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+                <div class="modal-body">
+                    <form class="row g-3" action="/search-ticket" method="post">
+                        @csrf
+                        <div class="col-md-12">
+                        <div class="input-group">
+                            <input type="text" name="no_ticket" class="form-control" placeholder="Tuliskan Nomor Ticket..." aria-label="Recipient's username" aria-describedby="button-addon2" required>
+                            <button class="btn btn-success" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
+                        </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- Vendor JS Files -->
     <script src="dist/vendor/apexcharts/apexcharts.min.js"></script>

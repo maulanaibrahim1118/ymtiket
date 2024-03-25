@@ -50,162 +50,204 @@
     </script>
 </head>
 <body onload="preloader()">
-    <div id="preloader" class="d-flex align-items-center">
-        <div id="loader"></div>
-        <strong id="status" role="status" class="position-absolute text-primary" style="top: 60%; left: 45%;">Memuat Halaman...</strong>
-    </div>
-    <div style="display:none;" id="content" class="fade-in">
-        <main>
-            <div class="container">
-                <section class="section dashboard mt-5">
-                    <div class="row justify-content-center">
-                        <div class="col-12">
-                            <div class="card info-card mb-4">
-                                <div class="card-body pb-0">
-                                    <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary"> | {{ $ticket->no_ticket }}</span></h5>
-                                    
-                                    <div class="row g-3 mb-3 pt-3" style="font-size: 14px">
-                                        <div class="col-md-2 m-0">
-                                            <label for="tanggal" class="form-label fw-bold">Tanggal/Waktu</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            @if($ticket->jam_kerja == "ya")
-                                            <label for="jam_kerja" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-success">Jam Kerja</span></label>
-                                            @elseif($ticket->jam_kerja == "tidak")
-                                            <label for="jam_kerja" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-warning">Diluar Jam Kerja</span></label>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-2 m-0">
-                                            <label for="no_asset" class="form-label fw-bold">Waktu Estimasi</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            <label for="no_asset" class="form-label">: {{ $ticket->estimated }}</label>
-                                        </div>
-                                        <div class="col-md-2 m-0">
-                                            <label for="agent" class="form-label fw-bold">Ditujukan Pada</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            <label for="agent" class="form-label">: {{ ucwords($ticket->agent->location->nama_lokasi) }}</label>
-                                        </div>
-                                        <div class="col-md-2 m-0">
-                                            <label for="estimated" class="form-label fw-bold">Ticket Pending</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            @php
-                                                $carbonInstance = \Carbon\Carbon::parse($ticket->pending_time);
-                                            @endphp
-                                            @if($ticket->pending_time >= 3600)
-                                            <label for="estimated" class="form-label">: {{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</label>
-                                            @elseif($ticket->pending_time >= 60)
-                                            <label for="estimated" class="form-label">: {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</label>
-                                            @elseif($ticket->pending_time == 0)
-                                            <label for="estimated" class="form-label">: 0 detik</label>
-                                            @else
-                                            <label for="estimated" class="form-label">: {{ $carbonInstance->second }} detik</label>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-2 m-0">
-                                            <label for="kendala" class="form-label fw-bold">Kendala</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            <label for="kendala" class="form-label">: {{ ucwords($ticket->kendala) }}</label>
-                                        </div>
-                                        <div class="col-md-2 m-0">
-                                            <label for="status" class="form-label fw-bold">Status</label>
-                                        </div>
-                                        <div class="col-md-4 m-0">
-                                            @if($ticket->status == 'created')
-                                            <label for="tanggal" class="form-label">: <span class="badge bg-secondary">{{ ucwords($ticket->status) }}</span></label>
-                                            @elseif($ticket->status == 'onprocess')
-                                            <label for="tanggal" class="form-label">: <span class="badge bg-warning">{{ ucwords($ticket->status) }}</span></label>
-                                            @elseif($ticket->status == 'pending')
-                                            <label for="tanggal" class="form-label">: <span class="badge bg-danger">{{ ucwords($ticket->status) }}</span></label>
-                                            @elseif($ticket->status == 'resolved')
-                                            <label for="tanggal" class="form-label">: <span class="badge bg-primary">{{ ucwords($ticket->status) }}</span></label>
-                                            @elseif($ticket->status == 'finished')
-                                            <label for="tanggal" class="form-label">: <span class="badge bg-success">{{ ucwords($ticket->status) }}</span></label>
-                                            @endif
-                                        </div>
+    <div class="container-fluid position-absolute top-50 start-50 translate-middle">
+        <div id="preloader">
+            <div class="position-absolute top-50 start-50 translate-middle">
+                <div id="loader"></div>
+                <div><strong id="status" role="status" class="text-primary">Memuat Halaman...</strong></div>
+            </div>
+        </div>
+        <div style="display:none;" id="content" class="fade-in">
+            <main>
+                <div class="container">
+                    <section class="section dashboard mt-5">
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <div class="card info-card mb-4">
+                                    <div class="card-body pb-0">
+                                        <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary"> | {{ $ticket->no_ticket }}</span></h5>
                                         
-                                        <div class="col-md-2 m-0">
-                                            <label for="tanggal" class="form-label fw-bold">Detail Kendala</label>
-                                        </div>
-                                        <div class="col-md-10 m-0">
-                                            <label for="tanggal" class="form-label">: {{ ucfirst($ticket->detail_kendala) }}</label>
-                                        </div>
-    
-                                        <div class="col-md-12">
-                                            <p class="border-bottom mt-1 mb-0"></p>
-                                        </div>
-                            
-                                        <div class="col-md-12" style="font-size: 14px">
-                                            <table class="table table-bordered text-center">
-                                                <thead class="fw-bold bg-light">
-                                                    <tr>
-                                                    <td>Jenis Ticket</td>
-                                                    <td>Kategori Ticket</td>
-                                                    <td>Sub Kategori Ticket</td>
-                                                    <td>Biaya</td>
-                                                    <td>PIC Agent</td>
-                                                    <td>Status</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="text-capitalize">
-                                                    {{-- Jika belum di proses --}}
-                                                    @if($countDetail == 0)
-                                                    <tr>
-                                                        @if($ticket->status == "created")
-                                                        <td colspan="6" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
-                                                        @else
-                                                        <td colspan="6" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
-                                                        @endif
-                                                    </tr>
-                                                    @else
-                                                    @foreach($ticket_details as $td)
-                                                    <tr>
-                                                    <td>{{ $td->jenis_ticket }}</td>
-                                                    <td>{{ $td->sub_category_ticket->category_ticket->nama_kategori }}</td>
-                                                    <td>{{ $td->sub_category_ticket->nama_sub_kategori }}</td>
-                                                    <td>IDR. {{ number_format($td->biaya,2,'.',',') }}</td>
-                                                    <td>{{ $td->agent->nama_agent }}</td>
-                                                    {{-- Status --}}
-                                                    @if($td->status == 'onprocess')
-                                                    <td><span class="badge bg-warning">{{ $td->status }}</span></td>
-                                                    @elseif($td->status == 'pending')
-                                                    <td><span class="badge bg-danger">{{ $td->status }}</span></td>
-                                                    @elseif($td->status == 'resolved')
-                                                    <td><span class="badge bg-primary">{{ $td->status }}</span></td>
-                                                    @elseif($td->status == 'assigned')
-                                                    <td><span class="badge bg-danger">not resolved</span></td>
-                                                    @endif
-                                                    </tr>
-                                                    @endforeach
-                                                    @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <div class="row g-3 mb-3 pt-3" style="font-size: 14px">
+                                            <div class="col-md-2 m-0">
+                                                <label for="tanggal" class="form-label fw-bold">Tanggal/Waktu</label>
+                                            </div>
+                                            <div class="col-md-4 m-0">
+                                                @if($ticket->jam_kerja == "ya")
+                                                <label for="jam_kerja" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-success">Jam Kerja</span></label>
+                                                @elseif($ticket->jam_kerja == "tidak")
+                                                <label for="jam_kerja" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-warning">Diluar Jam Kerja</span></label>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-2 m-0">
+                                                <label for="no_asset" class="form-label fw-bold">Waktu Estimasi</label>
+                                            </div>
+                                            <div class="col-md-4 m-0">
+                                                <label for="no_asset" class="form-label">: {{ $ticket->estimated }}</label>
+                                            </div>
+                                            <div class="col-md-2 m-0">
+                                                <label for="agent" class="form-label fw-bold">Ditujukan Pada</label>
+                                            </div>
+                                            <div class="col-md-4 m-0">
+                                                <label for="agent" class="form-label">: {{ ucwords($ticket->agent->location->nama_lokasi) }}</label>
+                                            </div>
+                                            <div class="col-md-2 m-0">
+                                                <label for="estimated" class="form-label fw-bold">Ticket Pending</label>
+                                            </div>
+                                            <div class="col-md-4 m-0">
+                                                @php
+                                                    $carbonInstance = \Carbon\Carbon::parse($ticket->pending_time);
+                                                @endphp
+                                                @if($ticket->pending_time >= 3600)
+                                                <label for="estimated" class="form-label">: {{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</label>
+                                                @elseif($ticket->pending_time >= 60)
+                                                <label for="estimated" class="form-label">: {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</label>
+                                                @elseif($ticket->pending_time == 0)
+                                                <label for="estimated" class="form-label">: 0 detik</label>
+                                                @else
+                                                <label for="estimated" class="form-label">: {{ $carbonInstance->second }} detik</label>
+                                                @endif
+                                            </div>
+                                            <div class="col-md-2 m-0">
+                                                <label for="kendala" class="form-label fw-bold">Kendala</label>
+                                            </div>
+                                            <div class="col-md-4 m-0">
+                                                <label for="kendala" class="form-label">: {{ ucwords($ticket->kendala) }}</label>
+                                            </div>
+                                            <div class="col-md-2 m-0">
+                                                <label for="status" class="form-label fw-bold">Status</label>
+                                            </div>
+                                            <div class="col-md-4 m-0">
+                                                @if($ticket->status == 'created')
+                                                <label for="tanggal" class="form-label">: <span class="badge bg-secondary">{{ ucwords($ticket->status) }}</span></label>
+                                                @elseif($ticket->status == 'onprocess')
+                                                <label for="tanggal" class="form-label">: <span class="badge bg-warning">{{ ucwords($ticket->status) }}</span></label>
+                                                @elseif($ticket->status == 'pending')
+                                                <label for="tanggal" class="form-label">: <span class="badge bg-danger">{{ ucwords($ticket->status) }}</span></label>
+                                                @elseif($ticket->status == 'resolved')
+                                                <label for="tanggal" class="form-label">: <span class="badge bg-primary">{{ ucwords($ticket->status) }}</span></label>
+                                                @elseif($ticket->status == 'finished')
+                                                <label for="tanggal" class="form-label">: <span class="badge bg-success">{{ ucwords($ticket->status) }}</span></label>
+                                                @endif
+                                            </div>
+                                            
+                                            <div class="col-md-2 m-0">
+                                                <label for="tanggal" class="form-label fw-bold">Detail Kendala</label>
+                                            </div>
+                                            <div class="col-md-10 m-0">
+                                                <label for="tanggal" class="form-label">: {{ ucfirst($ticket->detail_kendala) }}</label>
+                                            </div>
+        
+                                            <div class="col-md-12">
+                                                <p class="border-bottom mt-1 mb-0"></p>
+                                            </div>
+                                
+                                            <div class="col-md-12" style="font-size: 14px">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered text-center">
+                                                        <thead class="fw-bold bg-light">
+                                                            <tr>
+                                                            <td>Jenis Ticket</td>
+                                                            <td>Kategori Ticket</td>
+                                                            <td>Sub Kategori Ticket</td>
+                                                            <td>Biaya</td>
+                                                            <td>PIC Agent</td>
+                                                            <td>Status</td>
+                                                            <td>Saran Tindakan</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="text-capitalize">
+                                                            {{-- Jika belum di proses --}}
+                                                            @if($countDetail == 0)
+                                                            <tr>
+                                                                @if($ticket->status == "created")
+                                                                <td colspan="6" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
+                                                                @else
+                                                                <td colspan="6" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
+                                                                @endif
+                                                            </tr>
+                                                            @else
+                                                            @foreach($ticket_details as $td)
+                                                            <tr>
+                                                            <td>{{ $td->jenis_ticket }}</td>
+                                                            <td>{{ $td->sub_category_ticket->category_ticket->nama_kategori }}</td>
+                                                            <td>{{ $td->sub_category_ticket->nama_sub_kategori }}</td>
+                                                            <td>IDR. {{ number_format($td->biaya,2,'.',',') }}</td>
+                                                            <td>{{ $td->agent->nama_agent }}</td>
+                                                            {{-- Status --}}
+                                                            @if($td->status == 'onprocess')
+                                                            <td><span class="badge bg-warning">{{ $td->status }}</span></td>
+                                                            @elseif($td->status == 'pending')
+                                                            <td><span class="badge bg-danger">{{ $td->status }}</span></td>
+                                                            @elseif($td->status == 'resolved')
+                                                            <td><span class="badge bg-primary">{{ $td->status }}</span></td>
+                                                            @elseif($td->status == 'assigned')
+                                                            <td><span class="badge bg-danger">not resolved</span></td>
+                                                            @endif
 
-                                        <div class="col-md-12">
-                                            {{-- Tombol Kembali --}}
-                                            <a href="{{ url()->previous() }}"><button type="button" class="btn btn-sm btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                                            <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{{ $td->note }}" onclick="tampilkanData(this)"><i class="bi bi-search me-1"></i> Lihat</button></td>
+                                                            </tr>
+                                                            @endforeach
+                                                            @endif
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                {{-- Tombol Kembali --}}
+                                                <a href="{{ url()->previous() }}"><button type="button" class="btn btn-sm btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Copyright Footer -->
-                            <div class="credits text-center">
-                                Copyright &copy; 2024 <a href="#">Yogya Group</a>. All Right Reserved
+                                <!-- Copyright Footer -->
+                                <div class="credits text-center">
+                                    Copyright &copy; 2024 <a href="#">Yogya Group</a>. All Right Reserved
+                                </div>
                             </div>
-                        </div>
-                    </div> <!-- End Container -->
-                </section>
-            </div> <!-- End Container -->
-        </main><!-- End #main -->
+                        </div> <!-- End Container -->
+                    </section>
+                </div> <!-- End Container -->
+            </main><!-- End #main -->
 
-        <!-- Back To Top -->
-        <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+            <!-- Back To Top -->
+            <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+        </div>
     </div>
+    {{-- Saran Tindakan Modal --}}
+    <div class="modal fade" id="actionModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="modalContent2">
+            </div>
+        </div>
+    </div><!-- End Vertically centered Modal-->
+    <script>
+    // Fungsi untuk menampilkan data pada modal
+    function tampilkanData(ticket_id) {
+        // Mendapatkan elemen modalContent
+        var modalContent2 = document.getElementById("modalContent2");
+    
+        // Menampilkan data pada modalContent
+        modalContent2.innerHTML  =
+        '<div class="modal-header">'+
+            '<h5 class="modal-title">Saran Tindakan Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>'+
+            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
+        '</div>'+
+        '<form action="/tickets/assign" method="post">'+
+        '@method("put")'+
+        '@csrf'+
+        '<div class="modal-body">'+
+            '<div class="col-md-12">'+
+                '<p>'+ticket_id.name+'</p>'+
+            '</div>'+
+        '</div>'+
+        '<div class="modal-footer">'+
+            '<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>'+
+        '</div>'+
+        '</form>';
+    }
+    </script>
     <!-- Vendor JS Files -->
     <script src="dist/vendor/apexcharts/apexcharts.min.js"></script>
     <script src="dist/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

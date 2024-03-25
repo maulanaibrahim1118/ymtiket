@@ -52,7 +52,7 @@
                                         <label for="no_asset" class="form-label fw-bold">No. Asset</label>
                                     </div>
                                     <div class="col-md-4 m-0">
-                                        <label for="no_asset" class="form-label">: <a href="/tickets/asset{{ encrypt($ticket->asset_id) }}">{{ $ticket->asset->no_asset }}</a></label>
+                                        <label for="no_asset" class="form-label">: <a href="{{ route('ticket.asset', ['asset_id' => encrypt($ticket->asset->id)]) }}">{{ $ticket->asset->no_asset }}</a></label>
                                     </div>
                                     <div class="col-md-2 m-0">
                                         <label for="agent" class="form-label fw-bold">Ditujukan Pada</label>
@@ -135,113 +135,116 @@
                                         <p class="border-bottom mt-1 mb-0"></p>
                                     </div>
                         
-                                    <form class="row g-3" action="/ticket-details/process" method="POST" onsubmit="return formValidation()">
+                                    <form class="row" action="/ticket-details/process" method="POST" onsubmit="return formValidation()">
                                         @csrf
                                         <div class="col-md-12 mb-0" style="font-size: 14px">
-                                            <table class="table table-bordered">
-                                                <thead class="fw-bold text-center">
-                                                    <tr>
-                                                    <td>Jenis Ticket*</td>
-                                                    <td>Kategori Ticket*</td>
-                                                    <td>Sub Kategori Ticket*</td>
-                                                    <td class="col-md-2">Biaya</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                    <td>
-                                                    <select class="form-select @error('jenis_ticket') is-invalid @enderror" name="jenis_ticket" id="jenis_ticket" value="{{ old('jenis_ticket') }}" required>
-                                                        <option selected value="" disabled>Choose...</option>
-                                                        @for($i=0; $i < count($types); $i++){
-                                                            @if(old('jenis_ticket') == $types[$i])
-                                                            <option selected value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
-                                                            @else
-                                                            <option value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
-                                                            @endif
-                                                        }@endfor
-                                                    </select>
-            
-                                                    <!-- Showing notification error for input validation -->
-                                                    @error('jenis_ticket')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                    @enderror
-                                                    </td>
-                                                    <td>
-                                                    <select class="form-select @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id" required>
-                                                        <option selected value="" disabled>Choose...</option>
-                                                        @foreach($category_tickets as $ct)
-                                                            @if(old('category_ticket_id') == $ct->id)
-                                                            <option selected value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
-                                                            @else
-                                                            <option value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-
-                                                    <!-- Showing notification error for input validation -->
-                                                    @error('category_ticket_id')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                    @enderror
-                                                    </td>
-                                                    <td>
-                                                    <select class="form-select @error('sub_category_ticket_id') is-invalid @enderror" name="sub_category_ticket_id" id="sub_category_ticket_id" disabled>
-                                                        <option selected value="" disabled>Choose...</option>
-                                                    </select>
-                                                    </td>
-                                                    <td>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text" id="basic-addon1">IDR</span>
-                                                        <input type="text" name="biaya" class="form-control text-capitalize @error('biaya') is-invalid @enderror" id="biaya" placeholder="0" value="{{ old('biaya') }}">
-                                                    </div>
-                                                    </td>
-                                                    <script>
-                                                        $(document).ready(function(){
-                                                            var harga = document.getElementById("biaya");
-                                                            harga.addEventListener("keyup", function(e) {
-                                                                // tambahkan 'Rp.' pada saat form di ketik
-                                                                // gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
-                                                                harga.value = formatRupiah(this.value);
-                                                            });
-
-                                                            /* Fungsi formatRupiah */
-                                                            function formatRupiah(angka, prefix) {
-                                                                var number_string = angka.replace(/[^.\d]/g, "").toString(),
-                                                                split = number_string.split("."),
-                                                                sisa = split[0].length % 3,
-                                                                harga = split[0].substr(0, sisa),
-                                                                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-                                                                // tambahkan titik jika yang di input sudah menjadi angka ribuan
-                                                                if (ribuan) {
-                                                                separator = sisa ? "," : "";
-                                                                harga += separator + ribuan.join(",");
-                                                                }
-
-                                                                harga = split[1] != undefined ? harga + "." + split[1] : harga;
-                                                                return prefix == undefined ? harga : harga ? harga : "";
-                                                            }
-                                                        });
-                                                    </script>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="fw-bold text-center align-middle">Saran Tindakan*</td>
-                                                        <td colspan="3">
-                                                        <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3" placeholder="Sebutkan saran tindakan..." required>{{ old('note') }}</textarea>
-
+                                            <div class="table-responsive mt-2">
+                                                <p class="mb-2">Detail penanganan Ticket Anda :</p>
+                                                <table class="table table-bordered">
+                                                    <thead class="fw-bold text-center">
+                                                        <tr>
+                                                        <td>Jenis Ticket*</td>
+                                                        <td>Kategori Ticket*</td>
+                                                        <td>Sub Kategori Ticket*</td>
+                                                        <td class="col-md-2">Biaya</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                        <td>
+                                                        <select class="form-select @error('jenis_ticket') is-invalid @enderror" name="jenis_ticket" id="jenis_ticket" value="{{ old('jenis_ticket') }}" required>
+                                                            <option selected value="" disabled>Choose...</option>
+                                                            @for($i=0; $i < count($types); $i++){
+                                                                @if(old('jenis_ticket') == $types[$i])
+                                                                <option selected value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
+                                                                @else
+                                                                <option value="{{ $types[$i] }}">{{ ucwords($types[$i]) }}</option>
+                                                                @endif
+                                                            }@endfor
+                                                        </select>
+                
                                                         <!-- Showing notification error for input validation -->
-                                                        @error('note')
+                                                        @error('jenis_ticket')
                                                         <div class="invalid-feedback">
                                                             {{ $message }}
                                                         </div>
                                                         @enderror
                                                         </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                                        <td>
+                                                        <select class="form-select @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id" required>
+                                                            <option selected value="" disabled>Choose...</option>
+                                                            @foreach($category_tickets as $ct)
+                                                                @if(old('category_ticket_id') == $ct->id)
+                                                                <option selected value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
+                                                                @else
+                                                                <option value="{{ $ct->id }}">{{ ucwords($ct->nama_kategori) }}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        </select>
+
+                                                        <!-- Showing notification error for input validation -->
+                                                        @error('category_ticket_id')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                        @enderror
+                                                        </td>
+                                                        <td>
+                                                        <select class="form-select @error('sub_category_ticket_id') is-invalid @enderror" name="sub_category_ticket_id" id="sub_category_ticket_id" disabled>
+                                                            <option selected value="" disabled>Choose...</option>
+                                                        </select>
+                                                        </td>
+                                                        <td>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon1">IDR</span>
+                                                            <input type="text" name="biaya" class="form-control text-capitalize @error('biaya') is-invalid @enderror" id="biaya" placeholder="0" value="{{ old('biaya') }}">
+                                                        </div>
+                                                        </td>
+                                                        <script>
+                                                            $(document).ready(function(){
+                                                                var harga = document.getElementById("biaya");
+                                                                harga.addEventListener("keyup", function(e) {
+                                                                    // tambahkan 'Rp.' pada saat form di ketik
+                                                                    // gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
+                                                                    harga.value = formatRupiah(this.value);
+                                                                });
+
+                                                                /* Fungsi formatRupiah */
+                                                                function formatRupiah(angka, prefix) {
+                                                                    var number_string = angka.replace(/[^.\d]/g, "").toString(),
+                                                                    split = number_string.split("."),
+                                                                    sisa = split[0].length % 3,
+                                                                    harga = split[0].substr(0, sisa),
+                                                                    ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+                                                                    // tambahkan titik jika yang di input sudah menjadi angka ribuan
+                                                                    if (ribuan) {
+                                                                    separator = sisa ? "," : "";
+                                                                    harga += separator + ribuan.join(",");
+                                                                    }
+
+                                                                    harga = split[1] != undefined ? harga + "." + split[1] : harga;
+                                                                    return prefix == undefined ? harga : harga ? harga : "";
+                                                                }
+                                                            });
+                                                        </script>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fw-bold text-center align-middle">Saran Tindakan*</td>
+                                                            <td colspan="3">
+                                                            <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3" placeholder="Sebutkan saran tindakan..." required>{{ old('note') }}</textarea>
+
+                                                            <!-- Showing notification error for input validation -->
+                                                            @error('note')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                            @enderror
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
 
                                         <script>
@@ -277,6 +280,10 @@
                                         <input type="text" name="url" value="{{ encrypt($ticket->id) }}" hidden>
                                         <input type="text" name="status" value="onprocess" hidden>
                                         <input type="text" name="process_at" value="{{ $ticket->process_at }}" hidden>
+
+                                        <div class="col-md-12">
+                                            <p class="border-bottom mt-1 mb-3"></p>
+                                        </div>
 
                                         <div class="col-md-6">
                                             (*) : Mandatory

@@ -10,7 +10,7 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/tickets/update{{ $ticket->id }}" method="POST" enctype="multipart/form-data" onsubmit="return formValidation()">
+                                <form class="row g-3 mb-3" action="{{ route('ticket.update', ['id' => encrypt($ticket->id)]) }}" method="POST" enctype="multipart/form-data" onsubmit="return formValidation()">
                                     @method('put')
                                     @csrf
                                     <div class="col-md-1">
@@ -194,7 +194,6 @@
 
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
-                                    <input type="text" name="url" value="{{ $url }}" hidden>
 
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-2 mb-0"></p>

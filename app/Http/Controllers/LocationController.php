@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Location;
 use App\Wilayah;
+use App\Location;
+use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
@@ -15,9 +15,10 @@ class LocationController extends Controller
      */
     public function index()
     {
+        // Get semua data lokasi
         $locations  = Location::all();
+
         return view('contents.location.index', [
-            "url"       => "",
             "title"     => "Location List",
             "path"      => "Location",
             "path2"     => "Location",
@@ -32,17 +33,17 @@ class LocationController extends Controller
      */
     public function create()
     {
-        $regionals  = ["distribution center", "head office", "regional a", "regional b", "regional c", "regional d", "regional e", "regional f"];
+        // Menyiapkan data array untuk di tampilkan di select option pada view create location
         $areas      = ["area 1", "area 2", "distribution center", "head office"];
+        $regionals  = ["distribution center", "head office", "regional a", "regional b", "regional c", "regional d", "regional e", "regional f"];
 
         return view('contents.location.create', [
-            "url"       => "",
             "title"     => "Create Lokasi",
             "path"      => "Lokasi",
             "path2"     => "Tambah",
-            "wilayahs"  => Wilayah::all(),
+            "areas"     => $areas,
             "regionals" => $regionals,
-            "areas"     => $areas
+            "wilayahs"  => Wilayah::all()
         ]);
     }
 
@@ -62,6 +63,7 @@ class LocationController extends Controller
             'area'          => 'required|min:4|max:13',
             'updated_by'    => 'required'
         ],
+        
         // Create custom notification for the validation request
         [
             'nama_lokasi.required'  => 'Nama Lokasi harus diisi!',
@@ -72,12 +74,15 @@ class LocationController extends Controller
             'regional.required'     => 'Regional harus dipilih!',
             'area.required'         => 'Area harus dipilih!',
         ]);
-        // Saving data to locations table
+
+        // Simpan data Location sesuai request yang telah di validasi
         Location::create($validatedData);
 
-        // Redirect to the employee view if create data succeded
-        $nama_lokasi = $request['nama_lokasi'];
-        return redirect('/locations')->with('success', ucwords($nama_lokasi).' telah ditambahkan!');
+        // Get Nama Lokasi untuk ditampilkan di notifikasi sukses
+        $namaLokasi = $request['nama_lokasi'];
+
+        // Redirect ke halaman Category Ticket List beserta notifikasi sukses
+        return redirect('/locations')->with('success', ucwords($namaLokasi).' telah ditambahkan!');
     }
 
     /**
@@ -97,19 +102,27 @@ class LocationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Location $location)
+    public function edit(Request $request)
     {
-        $regionals  = ["distribution center", "head office", "regional a", "regional b", "regional c", "regional d", "regional e", "regional f"];
+        // Get id Asset dari request parameter
+        $id = decrypt($request['id']);
+
+        // Get data Asset berdasarkan id Asset
+        $location = Location::where('id', $id)->first();
+
+        // Menyiapkan data array untuk di tampilkan di select option pada view edit location
         $areas      = ["area 1", "area 2", "distribution center", "head office"];
+        $regionals  = ["distribution center", "head office", "regional a", "regional b", "regional c", "regional d", "regional e", "regional f"];
+        $wilayah    = Wilayah::all();
 
         return view('contents.location.edit', [
             "title"     => "Edit Location",
             "path"      => "Location",
             "path2"     => "Edit",
-            "wilayahs"  => Wilayah::all(),
-            "regionals" => $regionals,
             "areas"     => $areas,
-            "location"  => $location
+            "location"  => $location,
+            "regionals" => $regionals,
+            "wilayahs"  => $wilayah
         ]);
     }
 
@@ -120,8 +133,14 @@ class LocationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Location $location)
+    public function update(Request $request)
     {
+        // Get id Location dari request parameter
+        $id = decrypt($request['id']);
+        
+        // Get data Location berdasarkan id Location
+        $location = Location::where('id', $id)->first();
+
         // Validating data request
         $rules = [
             'wilayah'       => 'required',
@@ -147,9 +166,10 @@ class LocationController extends Controller
             'updated_by.required'   => 'Wajib diisi!'
         ]);
 
-        // Updating data to branches table
-        Location::where('id', $location->id)->update($validatedData);
+        // Updating data Location sesuai request yang telah di validasi
+        Location::where('id', $id)->update($validatedData);
         
+        // Redirect ke halaman Location List beserta notifikasi sukses
         return redirect('/locations')->with('success', 'Data Location telah diubah!');
     }
 

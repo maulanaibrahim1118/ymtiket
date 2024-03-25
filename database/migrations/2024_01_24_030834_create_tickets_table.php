@@ -16,7 +16,7 @@ class CreateTicketsTable extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->string('no_ticket', 9)->unique();
-            $table->string('kendala', 50);
+            $table->string('kendala', 60);
             $table->text('detail_kendala');
             $table->bigInteger('asset_id');
             $table->bigInteger('user_id');

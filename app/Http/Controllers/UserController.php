@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use App\User;
-use App\Position;
-use App\Location;
-use App\Client;
 use App\Agent;
+use App\Client;
+use App\Location;
+use App\Position;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -20,8 +21,8 @@ class UserController extends Controller
     public function index()
     {
         $users  = User::all();
+        
         return view('contents.user.index', [
-            "url"   => "",
             "title" => "User List",
             "path"  => "User",
             "path2" => "User",
@@ -36,15 +37,16 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles  = ["client", "agent all", "agent head office", "agent store", "service desk"];
+        $roles = ["client", "agent all", "agent head office", "agent store", "service desk"];
+        $positions = Position::orderBy('nama_jabatan', 'ASC')->get();
+        $locations = Location::orderBy('nama_lokasi', 'ASC')->get();
 
         return view('contents.user.create', [
-            "url"       => "",
             "title"     => "Create User",
             "path"      => "User",
             "path2"     => "Tambah",
-            "positions" => Position::orderBy('nama_jabatan', 'ASC')->get(),
-            "locations" => Location::orderBy('nama_lokasi', 'ASC')->get(),
+            "positions" => $positions,
+            "locations" => $locations,
             "roles"     => $roles
         ]);
     }
@@ -169,8 +171,14 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Request $request)
     {
+        // Get id User dari request parameter
+        $id = decrypt($request['id']);
+
+        // Get data User berdasarkan id User
+        $user = User::where('id', $id)->first();
+
         $nikAgent   = $user->nik;
         $agent      = Agent::where('nik', $nikAgent)->first();
 
@@ -186,13 +194,15 @@ class UserController extends Controller
 
         $roles          = ["client", "agent all", "agent head office", "agent store", "service desk"];
         $subDivisiLists = ["hardware maintenance", "helpdesk", "infrastructur networking", "tech support"];
+        $positions = Position::orderBy('nama_jabatan', 'ASC')->get();
+        $locations = Location::orderBy('nama_lokasi', 'ASC')->get();
 
         return view('contents.user.edit', [
             "title"             => "Edit User",
             "path"              => "User",
             "path2"             => "Edit",
-            "positions"         => Position::orderBy('nama_jabatan', 'ASC')->get(),
-            "locations"         => Location::orderBy('nama_lokasi', 'ASC')->get(),
+            "positions"         => $positions,
+            "locations"         => $locations,
             "user"              => $user,
             "roles"             => $roles,
             "subDivisi"         => $subDivisi,
@@ -207,8 +217,14 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request)
     {
+        // Get id Asset dari request parameter
+        $id = decrypt($request['id']);
+        
+        // Get data Asset berdasarkan id Asset
+        $user = User::where('id', $id)->first();
+
         $nik    = $user->nik;
         $data   = $request->all();
 
@@ -304,5 +320,40 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function showChangePasswordForm()
+    {
+        return view('contents.setting.change_password', [
+            "title" => "Change Password",
+            "path"  => "Setting",
+            "path2" => "Change Password"
+        ]);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->with('error', 'Password lama tidak valid.');
+        }
+
+        $request->validate([
+            'current_password'  => 'required',
+            'new_password'      => 'required|min:8|confirmed',
+        ],
+        // Create custom notification for the validation request
+        [
+            'new_password.min'          => 'Ketik minimal 8 karakter!',
+            'new_password.confirmed'    => 'Password baru tidak terkonfirmasi!',
+        ]);
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        Auth::logout();
+
+        return redirect()->route('login.index')->with('success', 'Password telah diubah. Silakan login kembali.');
     }
 }
