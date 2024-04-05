@@ -50,28 +50,28 @@
                 {{-- Kolom Aksi --}}
                 <td class="dropdown">
                     <a class="action-icon pe-2" style="font-size:16px;" href="#" data-bs-toggle="dropdown"><i class="bi bi-list"></i></a>
-                    <ul class="dropdown-menu position-fixed">
+                    <ul class="dropdown-menu">
 
-                    {{-- Tombol Detail --}}
-                    <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
-
-                    @if($ticket->status == "created") {{-- Jika status created, ticket masih bisa di hapus dan di edit --}}
-                        @if($ticket->user_id == auth()->user()->id) {{-- Jika ticket dibuat oleh client sendiri --}}
-                            {{-- Tombol Edit --}}
-                            <li><a class="dropdown-item text-capitalize text-warning" href="{{ route('ticket.edit', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()"><i class="bi bi-pencil-square text-warning"></i>
-                                Edit</a>
-                            </li>
-                            {{-- Tombol Hapus --}}
-                            <form action="{{ route('ticket.delete', ['id' => encrypt($ticket->id)]) }}" method="POST">
-                            @method('put')
-                            @csrf
-                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                            <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Hapus</button></li>
-                            </form>
-                        @else {{-- Jika ticket dibuatkan oleh service desk --}}
+                        {{-- Tombol Detail --}}
+                        <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                    
+                        @if($ticket->status == "created") {{-- Jika status created, ticket masih bisa di hapus dan di edit --}}
+                            @if($ticket->user_id == auth()->user()->id) {{-- Jika ticket dibuat oleh client sendiri --}}
+                                {{-- Tombol Edit --}}
+                                <li><a class="dropdown-item text-capitalize text-warning" href="{{ route('ticket.edit', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()"><i class="bi bi-pencil-square text-warning"></i>
+                                    Edit</a>
+                                </li>
+                                {{-- Tombol Hapus --}}
+                                <form action="{{ route('ticket.delete', ['id' => encrypt($ticket->id)]) }}" method="POST">
+                                @method('put')
+                                @csrf
+                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Hapus</button></li>
+                                </form>
+                            @else {{-- Jika ticket dibuatkan oleh service desk --}}
+                            @endif
+                        @else {{-- Jika status selain created, tombol hapus dan edit di hilangkan --}}
                         @endif
-                    @else {{-- Jika status selain created, tombol hapus dan edit di hilangkan --}}
-                    @endif
                     </ul>
                 </td>
             </tr>

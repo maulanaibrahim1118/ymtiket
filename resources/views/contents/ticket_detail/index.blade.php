@@ -491,15 +491,53 @@
                                             </div><!-- End Pending Modal-->
 
                                             {{-- Tombol Edit --}}
-                                            <a href="{{ route('ticket-detail.edit', ['id' => encrypt($ticket->id)]) }}"><button type="button" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-pencil-square me-1"></i> Edit</button></a>
+                                            <a href="{{ route('ticket-detail.edit', ['id' => encrypt($ticket->id)]) }}"><button type="button" class="btn btn-sm btn-warning float-end ms-1"><i class="bi bi-pencil-square me-1"></i> Edit</button></a>
 
+                                            {{-- Tombol Antrikan --}}
+                                            <button type="button" class="btn btn-sm btn-success float-end ms-1" id="antrikanButton" data-bs-toggle="modal" data-bs-target="#antrikanModal"><i class="bi bi-list-check me-1"></i> Antrikan</button>
+                                            <div class="modal fade" id="antrikanModal" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content" id="modalContent4">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">.:: Pilih Sub Divisi Agent</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="/tickets/queue" method="post">
+                                                        @method("put")
+                                                        @csrf
+                                                        <div class="modal-body">
+                                                            <div class="col-md-12">
+                                                                <label for="sub_divisi" class="form-label">Sub Divisi</label>
+                                                                <select class="form-select" name="sub_divisi" id="sub_divisi" required>
+                                                                    <option selected disabled>Choose...</option>
+                                                                    @if($ticket->ticket_area == "ho")
+                                                                    <option value="hardware maintenance">Hardware Maintenance</option>
+                                                                    <option value="helpdesk">Helpdesk</option>
+                                                                    @else
+                                                                    <option value="hardware maintenance">Hardware Maintenance</option>
+                                                                    <option value="infrastructur networking">Infrastructur Networking</option>
+                                                                    <option value="tech support">Tech Support</option>
+                                                                    @endif
+                                                                </select>
+                                                            </div>
+                                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                            <input type="text" id="ticket_id" name="ticket_id" value="{{ $ticket->id }}" hidden>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Antrikan</button>
+                                                        </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div><!-- End Antrikan Modal-->
+                                            
                                             {{-- Tombol Assign --}}
                                             <button type="button" class="btn btn-sm btn-outline-dark float-end ms-1" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal"><i class="bx bx-share me-1"></i> Assign</button>
                                             <div class="modal fade" id="assignModal" tabindex="-1">
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content" id="modalContent4">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Pilih Nama Agent</h5>
+                                                            <h5 class="modal-title">.:: Pilih Nama Agent</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <form action="/tickets/assign2" method="post">

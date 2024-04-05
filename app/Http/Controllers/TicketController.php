@@ -703,11 +703,46 @@ class TicketController extends Controller
         $now        = date('d-m-Y H:i:s');
         $isQueue    = "ya";
 
-        Ticket::where('id', $ticketId)->update([
-            'is_queue'          => $isQueue,
-            'sub_divisi_agent'  => $request['sub_divisi'],
-            'updated_by'        => $request['updated_by']
-        ]);
+        $ticket     = Ticket::where('id', $ticketId)->first();
+        $status     = $ticket->status;
+        $agentId    = $ticket->agent_id;
+
+        if($status == "created"){
+            Ticket::where('id', $ticketId)->update([
+                'is_queue'          => $isQueue,
+                'sub_divisi_agent'  => $request['sub_divisi'],
+                'updated_by'        => $request['updated_by']
+            ]);
+        }else{
+            $ticketDetail   = Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->first();
+            $processAt      = Carbon::parse($ticketDetail->process_at);
+            $now            = Carbon::parse($now);
+            $processedTime  = $processAt->diffInSeconds($now);
+
+            // Updating data to ticket detail table (agent pertama)
+            Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId]])->update([
+                'processed_time'    => $processedTime,
+                'status'            => "assigned",
+                'updated_by'        => $request['updated_by']
+            ]);
+
+            Ticket::where('id', $ticketId)->update([
+                'pending_at'        => $now,
+                'is_queue'          => $isQueue,
+                'status'            => "pending",
+                'sub_divisi_agent'  => $request['sub_divisi'],
+                'updated_by'        => $request['updated_by']
+            ]);
+
+            // Saving data to progress ticket table
+            $progress_ticket                = new Progress_ticket;
+            $progress_ticket->ticket_id     = $ticketId;
+            $progress_ticket->tindakan      = "Ticket di pending oleh Sistem";
+            $progress_ticket->status        = "pending";
+            $progress_ticket->process_at    = $now;
+            $progress_ticket->updated_by    = "sistem";
+            $progress_ticket->save();
+        }
 
         // Saving data to progress ticket table
         $progress_ticket                = new Progress_ticket;

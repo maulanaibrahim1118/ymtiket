@@ -61,7 +61,7 @@ class AssetController extends Controller
     {
         // Validating data request
         $validatedData = $request->validate([
-            'no_asset'          => 'required|min:13|max:13|unique:assets',
+            'no_asset'          => 'required|min:8|max:13|unique:assets',
             'nama_barang'       => 'required|min:3|max:30',
             'category_asset_id' => 'required',
             'merk'              => 'required|max:30',
@@ -75,7 +75,7 @@ class AssetController extends Controller
         // Create custom notification for the validation request
         [
             'no_asset.required'             => 'No. Asset harus diisi!',
-            'no_asset.min'                  => 'Ketik minimal 13 digit!',
+            'no_asset.min'                  => 'Ketik minimal 8 digit!',
             'no_asset.max'                  => 'Ketik maksimal 13 digit!',
             'unique'                        => 'No. Asset sudah ada!',
             'nama_barang.required'          => 'Nama Barang harus diisi!',
@@ -168,14 +168,14 @@ class AssetController extends Controller
         ];
 
         if($request->no_asset != $asset->no_asset){
-            $rules['no_asset'] = 'required|min:13|max:13|unique:assets';
+            $rules['no_asset'] = 'required|min:8|max:13|unique:assets';
         }
 
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
             'no_asset.required'             => 'No. Asset harus diisi!',
-            'no_asset.min'                  => 'Ketik minimal 13 digit!',
+            'no_asset.min'                  => 'Ketik minimal 8 digit!',
             'no_asset.max'                  => 'Ketik maksimal 13 digit!',
             'unique'                        => 'No. Asset sudah ada!',
             'nama_barang.required'          => 'Nama Barang harus diisi!',

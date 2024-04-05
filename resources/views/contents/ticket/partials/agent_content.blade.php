@@ -46,7 +46,7 @@
                 {{-- Kolom Aksi --}}
                 <td class="dropdown">
                     <a class="action-icon pe-2" style="font-size:16px;" href="#" data-bs-toggle="dropdown"><i class="bi bi-list"></i></a>
-                    <ul class="dropdown-menu position-fixed">
+                    <ul class="dropdown-menu">
                         {{-- Jika ticket di assign dan belum di tangani oleh service desk --}}
                         @if($ticket->status == "created")
                             {{-- Tombol Tangani --}}

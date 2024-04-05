@@ -99,6 +99,15 @@
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-2 mb-0"></p>
                                     </div>
+
+                                    <div class="col-md-12">
+                                        <p class="m-0"><span class="badge bg-secondary">*Note: Jika nomor asset tidak ada / sudah pudar. Ketik nomor asset dengan format : [INISIAL TOKO][LIMA ANGKA UNIK]</span></p>
+                                        <p><span class="badge bg-success">*Contoh: KBA00001, KBA00002, dst.</span></p>
+                                    </div>
+
+                                    <div class="col-md-12 mt-0">
+                                        <p class="border-bottom mb-0"></p>
+                                    </div>
                                     
                                     <div class="col-md-12">
                                         <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Simpan</button>

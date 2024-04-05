@@ -30,6 +30,7 @@ class Asset extends Model
         static::saving(function ($model) {
             $model->no_asset = strtoupper($model->no_asset);
             $model->nama_barang = ucwords($model->nama_barang);
+            $model->merk = ucwords($model->merk);
         });
     }
 }

@@ -95,7 +95,7 @@
                                                                 assetDropdown.empty();
                                                                 assetDropdown.append('<option selected value="" disabled>Choose...</option>');
                                                                 $.each(response, function (key, value) {
-                                                                    assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + ' - ' + value.nama_barang + '</option>');
+                                                                    assetDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.no_asset + ' | ' + value.nama_barang + ' | ' + value.merk + '</option>');
                                                                 });
                                                                 // Aktifkan dropdown no. asset
                                                                 assetDropdown.prop('disabled', false);
