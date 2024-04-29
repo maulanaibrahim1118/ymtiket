@@ -49,19 +49,6 @@
                                         @enderror
                                     </div>
 
-                                    @if($user->role == "client")
-                                    <div class="col-md-2">
-                                        <label for="role" class="form-label">Role</label>
-                                        <input type="role" name="role" class="form-control text-capitalize bg-light @error('role') is-invalid @enderror" id="role" value="{{ old('role', $user->role) }}" readonly>
-                                        
-                                        <!-- Showing notification error for input validation -->
-                                        @error('role')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    @else
                                     <div class="col-md-2">
                                         <label for="role" class="form-label">Role</label>
                                         <select class="form-select @error('role') is-invalid @enderror" name="role" id="role" value="{{ old('role') }}">
@@ -82,7 +69,6 @@
                                         </div>
                                         @enderror
                                     </div>
-                                    @endif
 
                                     <div class="col-md-8">
                                     </div>

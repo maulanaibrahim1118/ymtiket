@@ -24,7 +24,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="wilayah" class="form-label">Wilayah</label>
                                         <select class="form-select @error('wilayah') is-invalid @enderror" name="wilayah" id="wilayah" required>
                                             <option selected value="" disabled>Choose...</option>
@@ -45,7 +45,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="regional" class="form-label">Regional</label>
                                         <select class="form-select @error('regional') is-invalid @enderror" name="regional" id="regional" required>
                                             <option selected value="" disabled>Choose...</option>
@@ -66,7 +66,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="area" class="form-label">Area</label>
                                         <select class="form-select @error('area') is-invalid @enderror" name="area" id="area" required>
                                             <option selected value="" disabled>Choose...</option>

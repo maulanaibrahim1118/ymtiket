@@ -25,6 +25,7 @@ class CreateTicketDetailsTable extends Migration
             $table->bigInteger('processed_time')->nullable();
             $table->bigInteger('biaya')->nullable();
             $table->text('note')->nullable();
+            $table->string('file')->nullable();
             $table->enum('status', ['onprocess', 'pending', 'resolved', 'assigned']);
             $table->string('updated_by', 40);
             $table->timestamps();

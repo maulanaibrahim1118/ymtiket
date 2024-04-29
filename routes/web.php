@@ -30,8 +30,8 @@ use App\Http\Controllers\SubCategoryTicketController;
 
 // Route Login
 Route::get('/', [LoginController::class, 'index'])->middleware('guest')->name('login.index');
-Route::post('/search-ticket', [SearchTicketController::class, 'show'])->middleware('guest')->name('search.ticket');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.auth');
+Route::post('/search-ticket', [SearchTicketController::class, 'show'])->middleware('guest')->name('search.ticket');
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('login.out');
 
 // Route Dashboard
@@ -62,6 +62,7 @@ Route::middleware(['auth', 'agent.info'])->group(function () {
     Route::put('/tickets/queue', [TicketController::class, 'queue'])->name('ticket.queue');
     Route::put('/tickets/assign', [TicketController::class, 'assign'])->name('ticket.assign');
     Route::put('/tickets/assign2', [TicketController::class, 'assign2'])->name('ticket.assign2');
+    Route::put('/tickets/pull', [TicketController::class, 'pull'])->name('ticket.pull');
     Route::put('/tickets/pending', [TicketController::class, 'pending'])->name('ticket.pending');
     Route::put('/tickets/reProcess1', [TicketController::class, 'reProcess1'])->name('ticket.reProcess1');
     Route::get('/tickets/reProcess2', [TicketController::class, 'reProcess2'])->name('ticket.reProcess2');
@@ -69,7 +70,7 @@ Route::middleware(['auth', 'agent.info'])->group(function () {
 });
 
 // Route Ticket (Role = Client)
-Route::put('/tickets/finished', [TicketController::class, 'finished'])->middleware('auth', 'client')->name('ticket.finished');
+Route::put('/tickets/finished', [TicketController::class, 'finished'])->middleware('auth', 'manage.ticket')->name('ticket.finished');
 
 // Route Ticket (Dropdown JQuery)
 Route::get('/tickets/create2{id}', [TicketController::class, 'getClient'])->middleware('auth')->name('getClient');

@@ -15,7 +15,7 @@
 
                                     <div class="col-md-3">
                                         <label for="client_id" class="form-label">Client</label>
-                                        <select class="form-select @error('client_id') is-invalid @enderror" name="client_id" id="client_id" required>
+                                        <select class="form-select select2 @error('client_id') is-invalid @enderror" name="client_id" id="client_id" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($clients as $client)
                                                 @if(old('client_id') == $client->id)
@@ -45,7 +45,7 @@
 
                                     <div class="col-md-3">
                                         <label for="asset_id" class="form-label">Asset</label>
-                                        <select class="form-select @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id" disabled>
+                                        <select class="form-select select2 @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id" disabled>
                                             <option selected value="" disabled>Choose...</option>
                                         </select>
 
@@ -112,7 +112,7 @@
                                     
                                     <div class="col-md-3">
                                         <label for="ticket_for" class="form-label">Diajukan Kepada</label>
-                                        <select class="form-select @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for" required>
+                                        <select class="form-select select2 @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @for($i=0; $i < count($ticketFors); $i++){
                                                 @if(old('ticket_for') == $ticketFors[$i])

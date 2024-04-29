@@ -17,6 +17,7 @@
 
     <!-- Vendor CSS Files -->
     <link href="{{ asset('dist/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/bootstrap/css/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/vendor/quill/quill.snow.css') }}" rel="stylesheet">
@@ -26,8 +27,6 @@
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('dist/css/style.css') }}" rel="stylesheet">
-
-    <!-- DataTables -->
 
     <!-- Javascript -->
     <script src="{{ asset('dist/js/config.js') }}"></script>
@@ -232,9 +231,67 @@
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
     </div>
     </div>
+
+    <script>
+        $(document).ready(function(){
+            $('#role').select2({
+                dropdownParent: $('#role').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#position_id').select2({
+                dropdownParent: $('#position_id').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#location_id').select2({
+                dropdownParent: $('#location_id').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#sub_divisi').select2({
+                dropdownParent: $('#sub_divisi').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#client_id').select2({
+                dropdownParent: $('#client_id').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#ticket_for').select2({
+                dropdownParent: $('#ticket_for').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#asset_id').select2({
+                dropdownParent: $('#asset_id').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#category_asset_id').select2({
+                dropdownParent: $('#category_asset_id').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#wilayah').select2({
+                dropdownParent: $('#wilayah').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#regional').select2({
+                dropdownParent: $('#regional').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#area').select2({
+                dropdownParent: $('#area').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#category_ticket_id').select2({
+                dropdownParent: $('#category_ticket_id').parent() // Menentukan parent untuk dropdown
+            });
+
+            $('#asset_change').select2({
+                dropdownParent: $('#asset_change').parent() // Menentukan parent untuk dropdown
+            });
+        });
+    </script>
+
     <!-- Vendor JS Files -->
     <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/bootstrap/js/select2.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/chart.js/chart.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/echarts/echarts.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/quill/quill.min.js') }}"></script>

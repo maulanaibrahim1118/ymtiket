@@ -158,6 +158,7 @@ class TicketDetailController extends Controller
             'sub_category_ticket_id'    => 'required',
             'biaya'                     => 'max:20',
             'note'                      => 'required|min:10',
+            'file'                      => 'max:1024'
         ],
         // Create custom notification for the validation request
         [
@@ -167,12 +168,21 @@ class TicketDetailController extends Controller
             'biaya.max'                         => 'Ketik maksimal 20 digit!',
             'note.required'                     => 'Saran Tindakan harus diisi!',
             'note.min'                          => 'Ketik minimal 10 karakter!',
+            'file.max'                          => 'Maksimal ukuran file 1Mb!'
         ]);
 
         if($request['biaya'] == NULL){
             $biaya = 0;
         }else{
             $biaya = str_replace(',','',$request['biaya']);
+        }
+
+        // Rename Nama File dari request dan Upload ke folder public
+        if($request['file'] == NULL){
+            $imageName  = NULL;
+        }else{
+            $imageName = time() . '.' . $request->file->extension();
+            $request->file->move(public_path('uploads/penanganan'), $imageName);
         }
 
         // Saving data to ticket_detail table
@@ -185,12 +195,13 @@ class TicketDetailController extends Controller
         $ticket_detail->pending_at              = "-";
         $ticket_detail->biaya                   = $biaya;
         $ticket_detail->note                    = strtolower($request['note']);
+        $ticket_detail->file                    = $imageName ?? null;
         $ticket_detail->status                  = "onprocess";
         $ticket_detail->updated_by              = $updatedBy;
         $ticket_detail->save();
 
-        // Jika penanganan memerlukan biaya
-        if($biaya != 0){
+        // Jika penanganan memerlukan biaya diatas 500ribu
+        if($biaya > 500000){
             $now = date('d-m-Y H:i:s');
 
             /** 
@@ -254,38 +265,45 @@ class TicketDetailController extends Controller
                 return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
             }else{
                 $getAgent       = Agent::where('nik', $nik)->first();
-                $subDivisi      = $getAgent->sub_divisi;
+                $agentId        = $getAgent->id;
                 $agentStatus    = $getAgent->status;
+                $subDivisi      = $getAgent->sub_divisi;
                 $agentLocation  = $getAgent->location->nama_lokasi;
+                $countTicket    = Ticket::where('agent_id', $agentId)->count();
+                $countResolved  = Ticket::where([['agent_id', $agentId],['status', 'resolved']])->count();
 
                 if($agentStatus != 'present'){ // Jika Agent tidak hadir, izin, keluar kota, dll
                     return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
                 }else{ // Jika agent hadir di kantor
-                    if($subDivisi == "helpdesk"){
-                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'helpdesk']])->first();
-                    }elseif($subDivisi == "hardware maintenance"){
-                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'hardware maintenance']])->first();
-                    }elseif($subDivisi == "infrastructur networking"){
-                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'infrastructur networking']])->first();
-                    }elseif($subDivisi == "tech support"){
-                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'tech support']])->first();
+                    if($countTicket-$countResolved > 0){
+                        return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
                     }else{
-                        $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'none']])->first();
-                    }
+                        if($subDivisi == "helpdesk"){
+                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'helpdesk']])->first();
+                        }elseif($subDivisi == "hardware maintenance"){
+                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'hardware maintenance']])->first();
+                        }elseif($subDivisi == "infrastructur networking"){
+                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'infrastructur networking']])->first();
+                        }elseif($subDivisi == "tech support"){
+                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'tech support']])->first();
+                        }else{
+                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'none']])->first();
+                        }
 
-                    if($getAntrian == NULL){ // Jika antrian ticket sudah habis
-                        return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
-                    }else {
-                        $ticketId = $getAntrian->id;
+                        if($getAntrian == NULL){ // Jika antrian ticket sudah habis
+                            return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
+                        }else {
+                            $ticketId = $getAntrian->id;
 
-                        Ticket::where('id', $ticketId)->update([
-                            'agent_id'      => $agentId,
-                            'role'          => "agent",
-                            'is_queue'      => "tidak",
-                            'updated_by'    => $updatedBy
-                        ]);
-            
-                        return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
+                            Ticket::where('id', $ticketId)->update([
+                                'agent_id'      => $agentId,
+                                'role'          => "agent",
+                                'is_queue'      => "tidak",
+                                'updated_by'    => $updatedBy
+                            ]);
+                
+                            return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
+                        }
                     }
                 }
             }
@@ -354,6 +372,8 @@ class TicketDetailController extends Controller
 
         $ticketId       = $request['ticket_id'];
         $agentId        = $request['agent_id'];
+        $oldFile        = $request['old_file'];
+        $newFile        = $request['file'];
         $updatedBy      = $request['updated_by'];
 
         // Validating data request
@@ -362,7 +382,8 @@ class TicketDetailController extends Controller
             'category_ticket_id'        => 'required',
             'sub_category_ticket_id'    => 'required',
             'biaya'                     => 'max:20',
-            'note'                      => 'required|min:10'
+            'note'                      => 'required|min:10',
+            'file'                      => 'max:1024'
         ],
         // Create custom notification for the validation request
         [
@@ -371,13 +392,21 @@ class TicketDetailController extends Controller
             'sub_category_ticket_id.required'   => 'Sub Kategori Ticket harus dipilih!',
             'biaya.max'                         => 'Ketik maksimal 20 digit!',
             'note.required'                     => 'Saran Tindakan harus diisi!',
-            'note.min'                          => 'Ketik minimal 10 karakter!'
+            'note.min'                          => 'Ketik minimal 10 karakter!',
+            'file.max'                          => 'Maksimal ukuran file 1Mb!'
         ]);
 
         if($request['biaya'] == NULL){
             $biaya = 0;
         }else{
             $biaya = str_replace(',','',$request['biaya']);
+        }
+
+        if($newFile == NULL){
+            $imageName = $oldFile;
+        }else{
+            $imageName = time() . '.' . $request->file->extension();
+            $request->file->move(public_path('uploads/penanganan'), $imageName);
         }
         
         // Updating data to ticket detail table
@@ -386,13 +415,14 @@ class TicketDetailController extends Controller
             'sub_category_ticket_id' => $request['sub_category_ticket_id'],
             'biaya' => $biaya,
             'note' => strtolower($request['note']),
+            'file' => $imageName,
             'updated_by' => $updatedBy
         ]);
 
         $ticket = Ticket::where('id', $ticketId)->first();
         $approved = $ticket->approved;
 
-        if($biaya != 0 AND $approved == NULL){
+        if($biaya > 500000 AND $approved == NULL){
             $now = date('d-m-Y H:i:s');
 
             /** 

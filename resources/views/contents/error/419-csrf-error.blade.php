@@ -69,7 +69,7 @@
     </script>
 </head>
 <body onload="preloader()">
-    <div class="container-fluid position-absolute top-50 start-50 translate-middle">
+    <div class="container-fluid">
         <div id="preloader">
             <div class="position-absolute top-50 start-50 translate-middle">
                 <div id="loader"></div>
@@ -83,7 +83,7 @@
 
             <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
                 <h1>419</h1>
-                <h2>Maaf, CSRF token Anda telah kadaluwarsa. Silakan kembali ke halaman sebelumnya dan coba lagi.</h2>
+                <h2>Maaf, sesi anda telah habis. Silakan klik tombol kembali dan coba lagi.</h2>
                 <a class="btn" href="javascript:history.back()">Kembali</a>
                 <div class="credits">
                 </div>

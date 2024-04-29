@@ -22,8 +22,13 @@ class AssetController extends Controller
         // Get Lokasi User
         $locationId = Auth::user()->location_id;
 
-        // Get data Asset sesuai lokasi user
-        $assets = Asset::where('location_id', $locationId)->get();
+        if ($locationId == 10) {
+            // Get data Asset sesuai lokasi user
+            $assets = Asset::all();
+        } else {
+            // Get data Asset sesuai lokasi user
+            $assets = Asset::where('location_id', $locationId)->get();
+        }
 
         return view('contents.asset.index', [
             "url"       => "",
@@ -130,12 +135,14 @@ class AssetController extends Controller
 
         // Get data Category Asset untuk ditampilkan di select option view edit
         $category_assets = Category_asset::orderBy('nama_kategori', 'ASC')->get();
+        $locations = Location::orderBy('nama_lokasi', 'ASC')->get();
 
         return view('contents.asset.edit', [
             "title"             => "Edit Asset",
             "path"              => "Asset",
             "path2"             => "Edit",
             "category_assets"   => $category_assets,
+            "locations"         => $locations,
             "asset"             => $asset
         ]);
     }

@@ -50,7 +50,7 @@
 
                                     <div class="col-md-2">
                                         <label for="role" class="form-label">Role</label>
-                                        <select class="form-select @error('role') is-invalid @enderror" name="role" id="role" value="{{ old('role') }}">
+                                        <select class="form-select select2 @error('role') is-invalid @enderror" name="role" id="role" value="{{ old('role') }}">
                                             <option selected disabled>Choose...</option>
                                             @for($i=0; $i < count($roles); $i++){
                                                 @if(old('role') == $roles[$i])
@@ -78,7 +78,7 @@
 
                                     <div class="col-md-3">
                                         <label for="position_id" class="form-label">Jabatan</label>
-                                        <select class="form-select @error('position_id') is-invalid @enderror" name="position_id" id="position_id" value="{{ old('position_id') }}">
+                                        <select class="form-select select2 @error('position_id') is-invalid @enderror" name="position_id" id="position_id" value="{{ old('position_id') }}">
                                             <option selected disabled>Choose...</option>
                                             @foreach($positions as $position)
                                                 @if(old('position_id') == $position->id)
@@ -103,7 +103,7 @@
 
                                     <div class="col-md-3">
                                         <label for="location_id" class="form-label">Divisi / Cabang</label>
-                                        <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location_id" value="{{ old('location_id') }}" required>
+                                        <select class="form-select select2 @error('location_id') is-invalid @enderror" name="location_id" id="location_id" value="{{ old('location_id') }}" required>
                                             <option selected disabled>Choose...</option>
                                             @foreach($locations as $location)
                                                 @if(old('location_id') == $location->id)
@@ -145,7 +145,7 @@
 
                                     <div class="col-md-2">
                                         <label for="sub_divisi" class="form-label">Sub Divisi</label>
-                                        <select class="form-select @error('sub_divisi') is-invalid @enderror" name="sub_divisi" id="sub_divisi" disabled>
+                                        <select class="form-select select2 @error('sub_divisi') is-invalid @enderror" name="sub_divisi" id="sub_divisi" disabled>
                                             <option selected disabled>Choose...</option>
                                         </select>
 

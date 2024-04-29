@@ -126,7 +126,11 @@
 
                                     <div class="col-md-12">
                                         {{-- Tombol Lampiran --}}
+                                        @if($ext == "xlsx" || $ext == "xls" || $ext == "csv" || $ext == "doc" || $ext == "docx" || $ext == "pdf")
+                                        <a href="{{ asset('uploads/ticket/' . $ticket->file) }}"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark me-1"></i> Lampiran</button></a>
+                                        @else
                                         <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark-image me-1"></i> Lampiran</button>
+                                        @endif
                                         <div class="modal fade" id="lampiranModal" tabindex="-1">
                                             @if($ticket->file == NULL)
                                             <div class="modal-dialog modal-dialog-centered">
@@ -273,6 +277,25 @@
                                                             {{ $message }}
                                                         </div>
                                                         @enderror
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-bold text-center align-middle">Attach File</td>
+                                                        <td colspan="3">
+                                                            <input type="file" name="file" id="file" accept=".jpeg, .jpg, .png, .gif, .doc, .docx, .pdf, .xls, .xlsx, .csv" class="form-control text-capitalize @error('file') is-invalid @enderror">
+                                                            <input type="text" name="old_file" value="{{ $ticket->file }}" hidden>
+
+                                                            <!-- Showing notification error for input validation -->
+                                                            @error('file')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                            @enderror
+                                                            @if ($ticket->file == NULL)
+                                                            Lampiran sebelumnya: Tidak ada
+                                                            @else
+                                                            Lampiran sebelumnya: <a href="#" data-bs-toggle="modal" data-bs-target="#lampiranModal">{{ $ticket->file }}</a>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                 </tbody>

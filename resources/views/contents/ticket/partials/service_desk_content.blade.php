@@ -47,7 +47,7 @@
                 @elseif($ticket->assigned == "ya" AND $ticket->status == "created" OR $ticket->assigned == "ya" AND $ticket->status == "pending")
                     <td><span class="badge bg-dark">direct assign</span></td>
                 @else
-                    @if($ticket->is_queue == "ya" AND $ticket->status == "created" OR $ticket->status == "pending")
+                    @if($ticket->is_queue == "ya" AND $ticket->status == "created" OR $ticket->is_queue == "ya" AND $ticket->status == "pending")
                         <td><span class="badge bg-dark">dalam antrian</span></td>
                     @elseif($ticket->is_queue == "tidak" AND $ticket->status == "created")
                         @if($ticket->role == "service desk")
@@ -79,143 +79,165 @@
                 <td class="dropdown">
                     <a class="action-icon pe-2" style="font-size:16px;" href="#" data-bs-toggle="dropdown"><i class="bi bi-list"></i></a>
                     <ul class="dropdown-menu">
-
-                        {{-- ========== Jika status ticket created ========== --}}
-                        @if($ticket->status == "created" AND $ticket->agent->nik == auth()->user()->nik)
-                    
-                            {{-- Tombol Tangani --}}
-                            <li>
-                                <form action="{{ route('ticket.process1', ['id' => encrypt($ticket->id)]) }}" method="post">
-                                @method('put')
-                                @csrf
-                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                <a href="#">
-                                <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
-                                </a>
-                                </form>
-                            </li>
-                    
-                            {{-- Tombol Antrikan --}}
-                            @if($ticket->is_queue == "tidak")
-                                @if(auth()->user()->location_id == 10)
-                            <li><button class="dropdown-item text-capitalize text-success" id="antrikanButton" data-bs-toggle="modal" data-bs-target="#antrikanModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData1(this)"><i class="bi bi-list-check text-success"></i>Antrikan</button></li>
-                                @else
+                        @if($agentId == $ticket->agent_id)
+                            {{-- ========== Jika status ticket created ========== --}}
+                            @if($ticket->status == "created" AND $ticket->agent->nik == auth()->user()->nik)
+                        
+                                {{-- Tombol Tangani --}}
                                 <li>
-                                    <form action="{{ route('ticket.queue', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                    <form action="{{ route('ticket.process1', ['id' => encrypt($ticket->id)]) }}" method="post">
                                     @method('put')
                                     @csrf
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                    <input type="text" name="sub_divisi" value="none" hidden>
+                                    <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
                                     <a href="#">
-                                    <button type="submit" class="dropdown-item text-capitalize text-success"><i class="bi bi-list-check text-success"></i>Antrikan</button>
+                                    <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
                                     </a>
                                     </form>
                                 </li>
-                                @endif
-                            @else
-                            @endif
-                    
-                            {{-- Tombol Assign --}}
-                            <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
-                    
-                            {{-- ========== Jika ticket dibuat oleh service desk ========== --}}
-                            @if($ticket->user_id == auth()->user()->id)
-                    
-                                {{-- Tombol Edit --}}
-                                <li><a class="dropdown-item text-capitalize text-warning" href="{{ route('ticket.edit', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()">
-                                    <i class="bi bi-pencil-square text-warning"></i>Edit
-                                </a></li>
-                    
-                                {{-- Tombol Hapus --}}
-                                <form action="{{ route('ticket.delete', ['id' => encrypt($ticket->id)]) }}" method="POST">
-                                @method('put')
-                                @csrf
-                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Hapus</button></li>
-                                </form>
-                            @endif
-                    
-                        {{-- ========== Jika status ticket pending ========== --}}
-                        @elseif($ticket->status == "pending" AND $ticket->agent->nik == auth()->user()->nik)
-                            @if($ticket->need_approval == "ya")
-                                @if($ticket->approved == NULL || $ticket->approved == "rejected")
-                    
-                                    {{-- Tombol Detail --}}
-                                    <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
-                                @else
-                                    @if($ticket->updated_by != auth()->user()->nama)
-                                        {{-- Tombol Detail --}}
-                                        <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
-                    
-                                        {{-- Tombol Assign --}}
-                                        <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-dark"></i>Assign</button></li>
+                        
+                                {{-- Tombol Antrikan --}}
+                                @if($ticket->is_queue == "tidak")
+                                    @if(auth()->user()->location_id == 10)
+                                <li><button class="dropdown-item text-capitalize text-success" id="antrikanButton" data-bs-toggle="modal" data-bs-target="#antrikanModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData1(this)"><i class="bi bi-list-check text-success"></i>Antrikan</button></li>
                                     @else
-                    
-                                        {{-- Tombol Proses Ulang / Jika di pending oleh agent sendiri --}}
-                                        <li>
-                                            <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post">
-                                            @method('put')
-                                            @csrf
-                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                            <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                            <a href="#">
-                                            <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
-                                            </a>
-                                            </form>
-                                        </li>
-                                    @endif
-                                @endif
-                            @else
-                                @if($ticket->agent->nik == auth()->user()->nik AND $ticket->assigned == "tidak")
-                                    @if($ticket->is_queue == "tidak")
-                                        {{-- Tombol Proses Ulang --}}
-                                        <li>
-                                            <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post">
-                                            @method('put')
-                                            @csrf
-                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                            <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                            <a href="#">
-                                            <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
-                                            </a>
-                                            </form>
-                                        </li>
-                                    @else
-                                        {{-- Tombol Assign --}}
-                                        <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
-                                        
-                                        {{-- Tombol Detail --}}
-                                        <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
-                                    @endif
-                                {{-- Jika status ticket pending assign --}}
-                                @elseif($ticket->agent->nik == auth()->user()->nik AND $ticket->assigned == "ya")
-                                    {{-- Tombol Tangani --}}
                                     <li>
-                                        <form action="{{ route('ticket.process2', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                        <form action="{{ route('ticket.queue', ['id' => encrypt($ticket->id)]) }}" method="post">
                                         @method('put')
                                         @csrf
                                         <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                        <input type="text" name="sub_divisi" value="none" hidden>
                                         <a href="#">
-                                        <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
+                                        <button type="submit" class="dropdown-item text-capitalize text-success"><i class="bi bi-list-check text-success"></i>Antrikan</button>
                                         </a>
                                         </form>
                                     </li>
+                                    @endif
                                 @else
-                                    {{-- Tombol Detail --}}
-                                    <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                                 @endif
+                        
+                                {{-- Tombol Assign --}}
+                                <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
+                        
+                                {{-- ========== Jika ticket dibuat oleh service desk ========== --}}
+                                @if($ticket->user_id == auth()->user()->id)
+                        
+                                    {{-- Tombol Edit --}}
+                                    <li><a class="dropdown-item text-capitalize text-warning" href="{{ route('ticket.edit', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()">
+                                        <i class="bi bi-pencil-square text-warning"></i>Edit
+                                    </a></li>
+                        
+                                    {{-- Tombol Hapus --}}
+                                    <form action="{{ route('ticket.delete', ['id' => encrypt($ticket->id)]) }}" method="POST">
+                                    @method('put')
+                                    @csrf
+                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                    <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Hapus</button></li>
+                                    </form>
+                                @endif
+                        
+                            {{-- ========== Jika status ticket pending ========== --}}
+                            @elseif($ticket->status == "pending" AND $ticket->agent->nik == auth()->user()->nik)
+                                @if($ticket->need_approval == "ya")
+                                    @if($ticket->approved == NULL || $ticket->approved == "rejected")
+                        
+                                        {{-- Tombol Detail --}}
+                                        <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                                    @else
+                                        @if($ticket->updated_by != auth()->user()->nama)
+                                            {{-- Tombol Detail --}}
+                                            <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                        
+                                            {{-- Tombol Assign --}}
+                                            <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-dark"></i>Assign</button></li>
+                                        @else
+                        
+                                            {{-- Tombol Proses Ulang / Jika di pending oleh agent sendiri --}}
+                                            <li>
+                                                <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                                @method('put')
+                                                @csrf
+                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                                <a href="#">
+                                                <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
+                                                </a>
+                                                </form>
+                                            </li>
+                                        @endif
+                                    @endif
+                                @else
+                                    @if($ticket->agent->nik == auth()->user()->nik AND $ticket->assigned == "tidak")
+                                        @if($ticket->is_queue == "tidak")
+                                            {{-- Tombol Proses Ulang --}}
+                                            <li>
+                                                <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                                @method('put')
+                                                @csrf
+                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                                <a href="#">
+                                                <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
+                                                </a>
+                                                </form>
+                                            </li>
+                                        @else
+                                            {{-- Tombol Assign --}}
+                                            <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
+                                            
+                                            {{-- Tombol Detail --}}
+                                            <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                                        @endif
+                                    {{-- Jika status ticket pending assign --}}
+                                    @elseif($ticket->agent->nik == auth()->user()->nik AND $ticket->assigned == "ya")
+                                        {{-- Tombol Tangani --}}
+                                        <li>
+                                            <form action="{{ route('ticket.process2', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                            @method('put')
+                                            @csrf
+                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                            <a href="#">
+                                            <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
+                                            </a>
+                                            </form>
+                                        </li>
+                                    @else
+                                        {{-- Tombol Detail --}}
+                                        <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                                    @endif
+                                @endif
+                        
+                            {{-- ========== Jika status ticket onprocess ========== --}}
+                            @elseif($ticket->status == "onprocess" AND $ticket->agent->nik == auth()->user()->nik) {{-- Jika status onprocess dan belum ada detail ticket --}}
+                                {{-- Tombol Tangani Kembali --}}
+                                <li><a class="dropdown-item text-capitalize text-primary" href="{{ route('ticket.reProcess2', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</a></li>
+                        
+                            {{-- Jika pic ticket bukan service desk --}}
+                            @else
+                                {{-- Tombol Detail --}}
+                                <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                             @endif
-                    
-                        {{-- ========== Jika status ticket onprocess ========== --}}
-                        @elseif($ticket->status == "onprocess" AND $ticket->agent->nik == auth()->user()->nik) {{-- Jika status onprocess dan belum ada detail ticket --}}
-                            {{-- Tombol Tangani Kembali --}}
-                            <li><a class="dropdown-item text-capitalize text-primary" href="{{ route('ticket.reProcess2', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</a></li>
-                    
-                        {{-- Jika pic ticket bukan service desk --}}
                         @else
-                            {{-- Tombol Detail --}}
-                            <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                            @if($ticket->status == "created" || $ticket->status == "onprocess" || $ticket->status == "pending")
+                                {{-- Tombol Tarik Ticket --}}
+                                <li>
+                                    <form action="{{ route('ticket.pull', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                        @method('put')
+                                        @csrf
+                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                        <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                        <a href="#">
+                                        <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bi bi-sign-turn-left text-primary"></i>Tarik</button>
+                                        </a>
+                                    </form>
+                                </li>
+
+                                {{-- Tombol Detail --}}
+                                <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                            @else
+                                {{-- Tombol Detail --}}
+                                <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
+                            @endif
                         @endif
                     </ul>
                 </td>
