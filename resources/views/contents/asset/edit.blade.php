@@ -100,7 +100,7 @@
                                     @if(auth()->user()->location_id == 10)
                                     <div class="col-md-3">
                                         <label for="location_id" class="form-label">Lokasi</label>
-                                        <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location_id" required>
+                                        <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($locations as $location)
                                                 @if(old('location_id', $asset->location_id) == $location->id)

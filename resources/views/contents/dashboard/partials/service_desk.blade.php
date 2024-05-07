@@ -17,7 +17,7 @@
                         <div class="row">
                         <div class="col-md-6 mb-3">
                             <select class="form-select" name="filter1" id="filter1">
-                                <option selected value="" disabled>Semua Agent</option>
+                                <option selected value="">Semua Agent</option>
                                 @foreach($agents as $agent)
                                     @if(old('filter1', $filterArray[0]) == $agent->id)
                                         <option selected value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
@@ -297,7 +297,7 @@
             @endif
 
             <div class="table-responsive">
-                <table class="table datatable table-hover" id="performaAgentDatatable">
+                <table class="table table-hover" id="performaAgentDatatable">
                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                         <tr>
                         <th scope="col">NIK</th>
@@ -306,11 +306,11 @@
                         <th scope="col">SUB DIVISI</th>
                         @endcan
                         <th scope="col">TOTAL TICKET</th>
-                        <th scope="col">BELUM DIPROSES</th>
-                        <th scope="col">SEDANG DIPROSES</th>
                         <th scope="col">SELESAI</th>
-                        <th scope="col">WORKLOAD</th>
-                        <th scope="col">RATA-RATA</th>
+                        <th scope="col">SISA TICKET</th>
+                        <th scope="col">TIDAK SELESAI</th>
+                        {{-- <th scope="col">WORKING DAY</th> --}}
+                        <th scope="col">AVERAGE /DAY</th>
                         <th scope="col">STATUS</th>
                         </tr>
                     </thead>
@@ -323,30 +323,29 @@
                         <td>{{ $data->sub_divisi }}</td>
                         @endcan
                         <td>{{ $data->total_ticket }}</td>
-                        <td>{{ $data->ticket_unprocessed }}</td>
-                        <td>{{ $data->ticket_onprocess }}</td>
                         <td>{{ $data->ticket_finish }}</td>
+                        <td class="sisa">{{ $data->total_ticket-$data->ticket_finish }}</td>
+                        <td>{{ $data->assigned }}</td>
+                        {{-- <td>{{ $data->working_days }}</td> --}}
                         @php
-                            $workload = \Carbon\Carbon::parse($data->processed_time-$data->pending_time);
-                            $average = \Carbon\Carbon::parse($data->avg);
+                            if ($data->working_days == 0) {
+                                $worktime = 0;
+                            } else {
+                                $worktime = $data->sum/$data->working_days;
+                            }
+
+                            $workload = \Carbon\Carbon::parse($worktime);
+                            // $average = \Carbon\Carbon::parse($data->avg);
                         @endphp
-                        @if( $data->processed_time-$data->pending_time >= 3600)
+
+                        @if( $worktime >= 3600)
                         <td>{{ $workload->hour }} Jam {{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
-                        @elseif( $data->processed_time-$data->pending_time >= 60)
+                        @elseif( $worktime >= 60)
                         <td>{{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
                         @else
                         <td>{{ $workload->second }} Detik</td>
                         @endif
 
-                        @if( $data->avg >= 3600)
-                        <td>{{ $average->hour }} Jam {{ $average->minute }} Menit {{ $average->second }} Detik</td>
-                        @elseif( $data->avg >= 60)
-                        <td>{{ $average->minute }} Menit {{ $average->second }} Detik</td>
-                        @elseif( $data->avg == 0)
-                        <td>0 Detik</td>
-                        @else
-                        <td>{{ $average->second }} Detik</td>
-                        @endif
                         @if($data->status == "present")
                         <td><span class="badge bg-primary">HADIR</span></td>
                         @else
@@ -472,7 +471,20 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
+            </div>r
         </div>
     </div>
 </div><!-- End Info Table -->
+
+<script>
+    $(document).ready(function() {
+        $('.sisa').each(function() {
+            let sisaValue = $(this).text();
+            if (sisaValue == '0') {
+                $(this).css('backgroundColor', '#c8ffce');
+            } else {
+                $(this).css('backgroundColor', '#ffdfdf');
+            }
+        });
+    });
+</script>

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>.:: eTicket | {{ $title }}</title>
+    <title>.:: YM-Tiket | {{ $title }}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -103,6 +103,13 @@
                                 });
                             </script>
                             @endif
+                            @if(session()->has('error-419'))
+                            <script>
+                                swal("Page Expired!", "{{ session('error-419') }}", "info", {
+                                    timer: 3000
+                                });
+                            </script>
+                            @endif
                             
                             <div class="row justify-content-center">
                                 <div class="col-lg-5 col-md-6 d-flex flex-column align-items-center justify-content-center">
@@ -167,7 +174,7 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="searchModal" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="searchModal" style="zoom:0.75;" tabindex="1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">

@@ -50,7 +50,7 @@ class Ticket extends Model
 
     public function ticket_detail()
     {
-        return $this->hasMany('App\Ticket_detail');
+        return $this->hasOne('App\Ticket_detail');
     }
 
     protected static function boot()

@@ -38,7 +38,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard.index');
 
 // Route Filter
-Route::post('/dashboard/filter/', [FilterController::class, 'filterDashboard'])->middleware('auth')->name('dashboard.filter');
+Route::post('/dashboard/filter', [FilterController::class, 'dashboard'])->middleware('auth')->name('dashboard.filter');
+Route::post('/report-agents/filter', [FilterController::class, 'reportAgent'])->middleware(['auth', 'service.desk'])->name('reportAgent.filter');
 
 // Route Ticket (semua user)
 Route::get('/tickets-dashboard', [TicketController::class, 'ticketDashboard'])->middleware('auth')->name('ticket.dashboard');
@@ -168,6 +169,5 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
 Route::get('/settings/change-password', [UserController::class, 'showChangePasswordForm'])->middleware('auth')->name('setting.change');
 Route::post('/settings/change-password', [UserController::class, 'changePassword'])->middleware('auth')->name('change.password');
 
-Route::view('/error-419-csrf-error', 'contents.error.419-csrf-error')->name('csrf.error');
 Route::view('/error-403-unauthorized', 'contents.error.403-unauthorized')->name('403.unauthorized');
 Route::view('/error-404-underconstruction', 'contents.error.404-underconstruction')->name('404.underconstruction');

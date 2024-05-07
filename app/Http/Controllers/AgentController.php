@@ -22,7 +22,7 @@ class AgentController extends Controller
 
         // Get data Agent yang ditampilkan
         $data = Agent::where('location_id', $locationId)
-            ->withCount('ticket_detail')
+            ->withCount('ticket_details')
             ->select(
                 'agents.*', 
                 DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),
@@ -117,7 +117,7 @@ class AgentController extends Controller
 
         // Get data Agent yang ditampilkan
         $data = Agent::where('location_id', $locationId)
-            ->withCount('ticket_detail')
+            ->withCount('ticket_details')
             ->select(
                 'agents.*', 
                 DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),

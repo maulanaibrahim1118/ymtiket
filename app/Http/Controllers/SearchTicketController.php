@@ -36,7 +36,7 @@ class SearchTicketController extends Controller
                 $ticketDetails  = Ticket_detail::where('ticket_id', $ticketId)->get();
 
                 return view('contents.search_ticket.index', [
-                    "title"             => "Ticket Detail",
+                    "title"             => "Search Ticket",
                     "path"              => "Ticket",
                     "path2"             => "Detail",
                     "ticket"            => $ticket,

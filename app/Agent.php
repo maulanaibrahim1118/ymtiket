@@ -13,9 +13,9 @@ class Agent extends Model
         return $this->hasMany('App\Ticket');
     }
 
-    public function ticket_detail()
+    public function ticket_details()
     {
-        return $this->hasOne('App\Ticket_detail');
+        return $this->hasMany('App\Ticket_detail');
     }
 
     public function location()

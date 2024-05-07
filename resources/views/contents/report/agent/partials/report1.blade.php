@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-bordered">
+    <table class="table table-bordered table-hover">
         <thead class="bg-light text-center" style="height: 45px;font-size:14px;">
             <tr class="align-middle">
             <th rowspan="2">NO</th>
@@ -18,22 +18,22 @@
             @php
                 $nomorUrut = 1;
             @endphp
-            @foreach($data1 as $data)
+            @foreach($agents as $agent)
             <tr>
             <td>{{ $nomorUrut++ }}</td>
-            <td>{{ $data->nik }}</td>
-            <td>{{ $data->nama_agent }}</td>
-            <td>{{ $data->sub_divisi }}</td>
-            <td class="text-end">{{ $data->ticket_pending }}</td>
-            <td class="text-end">{{ $data->ticket_onprocess }}</td>
-            <td class="text-end">{{ $data->ticket_finish }}</td>
+            <td>{{ $agent->nik }}</td>
+            <td>{{ $agent->nama_agent }}</td>
+            <td>{{ $agent->sub_divisi }}</td>
+            <td class="text-end">{{ $agent->ticket_pending }}</td>
+            <td class="text-end">{{ $agent->ticket_onprocess }}</td>
+            <td class="text-end">{{ $agent->ticket_finish }}</td>
             </tr>
             @endforeach
             <tr class="bg-light text-end">
                 <th class="text-center" colspan="4">TOTAL</th>
-                <th>{{ $total1[0] }}</th>
-                <th>{{ $total1[1] }}</th>
-                <th>{{ $total1[2] }}</th>
+                <th>{{ $total[0] }}</th>
+                <th>{{ $total[1] }}</th>
+                <th>{{ $total[2] }}</th>
             </tr>
         </tbody>
     </table>

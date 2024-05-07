@@ -5,66 +5,47 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>.:: GCITOP | Error 403 - Forbidden</title>
+    <title>.:: YM-Tiket | Error 419 - Page Expired</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="dist/img/favicon1.ico" rel="icon">
-    <link href="dist/img/favicon1.ico" rel="apple-touch-icon">
+    <link href="{{ asset('dist/img/favicon1.ico') }}" rel="icon">
+    <link href="{{ asset('dist/img/favicon1.ico') }}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
-    <link href="dist/css/google-fonts.css" rel="stylesheet">
+    <link href="{{ asset('dist/css/google-fonts.css') }}" rel="stylesheet">
 
     <!-- Vendor CSS Files -->
-    <link href="dist/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="dist/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="dist/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="dist/vendor/quill/quill.snow.css" rel="stylesheet">
-    <link href="dist/vendor/quill/quill.bubble.css" rel="stylesheet">
-    <link href="dist/vendor/remixicon/remixicon.css" rel="stylesheet">
-    <link href="dist/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/bootstrap/css/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/quill/quill.snow.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/simple-datatables/style.css') }}" rel="stylesheet">
 
     <!-- Template Main CSS File -->
-    <link href="dist/css/style.css" rel="stylesheet">
+    <link href="{{ asset('dist/css/style.css') }}" rel="stylesheet">
 
     <!-- Javascript -->
-    <script src="dist/js/sweetalert.min.js"></script>
-    
+    <script src="{{ asset('dist/js/config.js') }}"></script>
+    <script src="{{ asset('dist/js/jquery-3.6.3.min.js') }}"></script>
+    <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
+
     <script type="text/javascript">
         var myVar;
 
-        // Mengatur waktu loading halaman
-        function preloader() {
-            myVar = setTimeout(showPage, 200);
+        function myFunction() {
+            myVar = setTimeout(showPage, 300);
         }
 
-        // Mengatur urutan tampilan setelah loading selesai
         function showPage() {
-            document.getElementById("preloader").style.display = "none";
+            document.getElementById("content").style.display = "block";
             document.getElementById("preloader").style.display = "none";
             document.getElementById("loader").style.display = "none";
             document.getElementById("status").style.display = "none";
-            document.getElementById("content").style.display = "block";
-        }
-
-        // Menampilkan dan menyembunyikan Password
-        function myFunction() {
-            var x = document.getElementById("password");
-            if (x.type === "password") {
-                x.type = "text";
-            } else {
-                x.type = "password";
-            }
-        }
-
-        // Menampilkan informasi pendaftaran akun
-        function register() {
-            swal({
-                title: "Mohon Maaf",
-                text: "Silakan hubungi Staff IT untuk Daftar Akun!",
-                icon: "info",
-            });
         }
     </script>
 </head>
@@ -81,10 +62,18 @@
         <main>
             <div class="container">
 
+            @if(session()->has('error'))
+            <script>
+                swal("Page Expired!", "{{ session('error') }}", "info", {
+                    timer: 3000
+                });
+            </script>
+            @endif
+
             <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
                 <h1>419</h1>
                 <h2>Maaf, sesi anda telah habis. Silakan klik tombol kembali dan coba lagi.</h2>
-                <a class="btn" href="javascript:history.back()">Kembali</a>
+                <a class="btn" href="/">Kembali</a>
                 <div class="credits">
                 </div>
             </section>

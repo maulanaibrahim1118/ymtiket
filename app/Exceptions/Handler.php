@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
-            return response()->view('contents.error.419-csrf-error', [], 419);
+            return redirect('/')->with('error-419', 'Sesi anda telah berakhir. Silakan login kembali.');
         }
         
         return parent::render($request, $exception);

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <title>.:: eTicket | {{ $title }}</title>
+    <title>.:: YM-Tiket | {{ $title }}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -29,6 +29,7 @@
     <link href="{{ asset('dist/css/style.css') }}" rel="stylesheet">
 
     <!-- Javascript -->
+    <script src="{{ asset('dist/vendor/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('dist/js/config.js') }}"></script>
     <script src="{{ asset('dist/js/jquery-3.6.3.min.js') }}"></script>
     <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
@@ -62,7 +63,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <a href="/dashboard/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" class="logo d-flex align-items-center">
                     <img src="{{ asset('dist/img/logo/logo.png') }}" alt="">
-                    <span class="d-none d-lg-block pt-1"><b>eTicket</b></span>
+                    <span class="d-none d-lg-block pt-1"><b>YM-Tiket</b></span>
                 </a>
                 <i class="bi bi-list toggle-sidebar-btn"></i>
             </div><!-- End Logo -->
@@ -242,8 +243,8 @@
                 dropdownParent: $('#position_id').parent() // Menentukan parent untuk dropdown
             });
 
-            $('#location_id').select2({
-                dropdownParent: $('#location_id').parent() // Menentukan parent untuk dropdown
+            $('#location').select2({
+                dropdownParent: $('#location').parent() // Menentukan parent untuk dropdown
             });
 
             $('#sub_divisi').select2({
@@ -295,7 +296,6 @@
     <script src="{{ asset('dist/vendor/chart.js/chart.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/echarts/echarts.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('dist/vendor/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/php-email-form/validate.js') }}"></script>
 

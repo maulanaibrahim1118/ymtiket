@@ -104,7 +104,7 @@
 
                                     <div class="col-md-3">
                                         <label for="location_id" class="form-label">Lokasi</label>
-                                        <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location_id" value="{{ old('location_id') }}">
+                                        <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location" value="{{ old('location_id') }}">
                                             <option selected disabled>Choose...</option>
                                             @foreach($locations as $location)
                                                 @if(old('location_id', $user->location_id) == $location->id)
@@ -124,7 +124,7 @@
                                     </div>
 
                                     <script>
-                                        $('#location_id').change(function(){
+                                        $('#location').change(function(){
                                             var location_id = $(this).val();
                                             var sub_divisi = $('#sub_divisi');
                                             if (location_id == 10) {

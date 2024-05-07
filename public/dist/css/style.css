@@ -401,11 +401,13 @@ h6 {
     padding: 15px 0;
     background: none;
     border: 0;
+    font-family: "Poppins", sans-serif;
 }
 
 .accordion-flush .accordion-button:not(.collapsed) {
     box-shadow: none;
     color: #4154f1;
+    font-family: "Poppins", sans-serif;
 }
 
 .accordion-flush .accordion-body {

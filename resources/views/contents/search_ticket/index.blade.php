@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>.:: eTicket | {{ $title }}</title>
+    <title>.:: YM-Tiket | {{ $title }}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -65,7 +65,7 @@
                             <div class="col-12">
                                 <div class="card info-card mb-4">
                                     <div class="card-body pb-0">
-                                        <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary"> | {{ $ticket->no_ticket }}</span></h5>
+                                        <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $path }} <span class="text-secondary"> | {{ $ticket->no_ticket }}</span></h5>
                                         
                                         <div class="row g-3 mb-3 pt-3" style="font-size: 14px">
                                             <div class="col-md-2 m-0">
