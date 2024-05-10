@@ -50,12 +50,12 @@ class ReportAgentController extends Controller
             $totalTicket = $agent->ticket_details_count;
             $workHour = $agent->ticket_details->sum('processed_time');
             $uniqueDates = $agent->ticket_details->pluck('created_at')
-                                        ->map(function($date) {
-                                            return $date ? $date->format('Y-m-d') : null;
-                                        })
-                                        ->unique()
-                                        ->filter()
-                                        ->count();
+                ->map(function($date) {
+                    return $date ? $date->format('Y-m-d') : null;
+                })
+                ->unique()
+                ->filter()
+                ->count();
             // $totalTicket = $agent->ticket_count;
             // $workHour = $agent->ticket->pluck('ticket_detail.processed_time')->sum();
             // $uniqueDates = $agent->ticket->pluck('ticket_detail.created_at')
@@ -91,15 +91,17 @@ class ReportAgentController extends Controller
         // $totalHourPerDay    = $agents->sum('hour_per_day');
         // $totalPermintaan    = $agents->sum('permintaan');
         // $totalKendala       = $agents->sum('kendala');
-
+        
         //              0               1               2               3                4                     5                  6                7                8
         $total = [$totalPending, $totalOnprocess, $totalFinish, $totalAvgPending, $totalAvgFinish, /* $totalTicketPerDay, $totalHourPerDay, $totalPermintaan, $totalKendala */];
+        $filterArray = ["", ""];
 
         return view('contents.report.agent.index', [
             "url"           => "",
             "title"         => "Report Agent",
             "path"          => "Report",
             "path2"         => "Agent",
+            "filterArray"   => $filterArray,
             "pathFilter"    => $pathFilter,
             "agents"        => $agents,
             "total"         => $total

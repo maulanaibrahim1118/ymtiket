@@ -2,7 +2,18 @@
     <div class="card">
 
     <div class="filter">
-        <a class="icon" href="#" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bx bx-filter"></i></a>
+        <form class="search-form d-flex align-items-center" action="{{ route('dashboard.filter') }}" method="POST">
+            @csrf
+            <input name="filter1" value="{{ $filterArray[0] }}" hidden>
+            <select class="form-select form-select-sm me-2" name="filter2" id="filter2">
+                <option value="" @if($filterArray[1] == "") selected @endif>Semua Periode</option>
+                <option value="today" @if($filterArray[1] == "today") selected @endif>Hari Ini</option>
+                <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>Bulan Ini</option>
+                <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>Tahun Ini</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary px-3 me-3">Filter</button>
+        </form>
+        {{-- <a class="icon" href="#" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bx bx-filter"></i></a>
         <div class="modal fade" id="filterModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content" id="modalContent4">
@@ -32,14 +43,10 @@
                     </form>
                 </div>
             </div>
-        </div><!-- End Filter Modal-->
+        </div><!-- End Filter Modal--> --}}
     </div>
-    <div class="card-body">
-        @if($pathFilter == "Semua")
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard</h5>
-        @else
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span>| {{ $pathFilter }}</span></h5>
-        @endif
+    <div class="card-body pb-0">
+        <h5 class="card-title"><i class="bi bi-house-door me-2"></i>Dashboard</h5>
     </div>
 
     </div>
@@ -180,23 +187,14 @@
 <div class="col-12">
     <div class="card info-table">
 
-        <div class="filter">
-            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bx bxs-chevron-down"></i></a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-            <li class="dropdown-header text-start">
-                <h6>Filter</h6>
-            </li>
-
-            <li><a class="dropdown-item" href="#">Hari Ini</a></li>
-            <li><a class="dropdown-item" href="#">Bulan Ini</a></li>
-            <li><a class="dropdown-item" href="#">Tahun Ini</a></li>
-            </ul>
-        </div>
-
         <div class="card-body">
-            <h5 class="card-title">Ticket Belum Di Close</h5>
+            @if($pathFilter == "Semua")
+            <h5 class="card-title border-bottom">Ticket Belum Di Close</h5>
+            @else
+            <h5 class="card-title border-bottom">Ticket Belum Di Close <span>| {{ $pathFilter }}</span></h5>
+            @endif
 
-            <div class="table-responsive">
+            <div class="table-responsive mt-3">
                 <table class="table datatable">
                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                         <tr>

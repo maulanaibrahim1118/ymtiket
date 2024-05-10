@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Agent;
+use App\Category_ticket;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class ReportSubCategoryController extends Controller
+{
+    public function index(Request $request)
+    {
+        // Get data User
+        $userId     = Auth::user()->id;
+        $userRole   = Auth::user()->role;
+        $locationId = Auth::user()->location_id;
+        $location   = Auth::user()->location->nama_lokasi;
+        $pathFilter = ["", ""];
+
+        $dCategories = Category_ticket::where('location_id', $locationId)->get();
+        $categories = Category_ticket::where('location_id', $locationId)->with(['sub_category_tickets.ticket_details.agent'])->get();
+        $agents = Agent::where('location_id', $locationId)->get();
+
+        // Persiapkan data untuk view
+        $data = [];
+        foreach ($categories as $category) {
+            foreach ($category->sub_category_tickets as $subCategory) {
+                foreach ($agents as $agent) {
+                    $avgTime = $subCategory->ticket_details->where('agent_id', $agent->id)->where('status', 'resolved')->avg('processed_time');
+                    $data[$category->nama_kategori][$subCategory->nama_sub_kategori][$agent->id] = $avgTime;
+                }
+                $data[$category->nama_kategori][$subCategory->nama_sub_kategori]['totalAverage'] = $subCategory->ticket_details->where('status', 'resolved')->avg('processed_time');
+            }
+        }
+
+        $filterArray = ["", "", ""];
+        
+        return view('contents.report.sub_category.index', [
+            "url"           => "",
+            "title"         => "Report Sub Category",
+            "path"          => "Report",
+            "path2"         => "Sub Category",
+            "filterArray"   => $filterArray,
+            "pathFilter"    => $pathFilter,
+            "dCategories"   => $dCategories,
+            "agents"        => $agents,
+            "data"          => $data
+        ]);
+    }
+}

@@ -1,14 +1,19 @@
 <div class="table-responsive">
     <table class="table table-bordered table-hover">
-        <thead class="bg-light text-center" style="height: 45px;font-size:14px;">
-            <tr class="align-middle">
+        <thead class="bg-light" style="height: 45px;font-size:14px;">
+            @if($pathFilter != "Semua")
+            <tr>
+            <td colspan="6" class="font-monospace ps-3">Tanggal : {{ $pathFilter }}</td>
+            </tr>
+            @endif
+            <tr class="text-center align-middle">
             <th rowspan="2">NO</th>
             <th rowspan="2">NIK</th>
             <th rowspan="2">NAMA AGENT</th>
             <th rowspan="2">SUB DIVISI</th>
             <th colspan="2">JENIS TICKET</th>
             </tr>
-            <tr>
+            <tr class="text-center align-middle">
             <th>PERMINTAAN</th>
             <th>KENDALA</th>
             </tr>
@@ -19,7 +24,7 @@
             @endphp
             @foreach($agents as $agent)
             <tr>
-            <td>{{ $nomorUrut++ }}</td>
+            <td class="text-center">{{ $nomorUrut++ }}.</td>
             <td>{{ $agent->nik }}</td>
             <td>{{ $agent->nama_agent }}</td>
             <td>{{ $agent->sub_divisi }}</td>
@@ -29,23 +34,23 @@
             @endphp
 
             @if($agent->permintaan >= 3600)
-            <td class="text-end">{{ $avgHourRequest->hour }} Jam {{ $avgHourRequest->minute }} Menit {{ $avgHourRequest->second }} Detik</td>
+            <td class="text-end">{{ str_pad($avgHourRequest->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->second, 2, "0", STR_PAD_LEFT) }}</td>
             @elseif($agent->permintaan >= 60)
-            <td class="text-end">{{ $avgHourRequest->minute }} Menit {{ $avgHourRequest->second }} Detik</td>
+            <td class="text-end">{{ str_pad($avgHourRequest->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->second, 2, "0", STR_PAD_LEFT) }}</td>
             @elseif($agent->permintaan == 0)
-            <td class="text-end">0 Detik</td>
+            <td class="text-end">00:00:00</td>
             @else
-            <td class="text-end">{{ $avgHourRequest->second }} Detik</td>
+            <td class="text-end">{{ str_pad($avgHourRequest->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->second, 2, "0", STR_PAD_LEFT) }}</td>
             @endif
 
             @if($agent->kendala >= 3600)
-            <td class="text-end">{{ $avgHourIncident->hour }} Jam {{ $avgHourIncident->minute }} Menit {{ $avgHourIncident->second }} Detik</td>
+            <td class="text-end">{{ str_pad($avgHourIncident->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->second, 2, "0", STR_PAD_LEFT) }}</td>
             @elseif($agent->kendala >= 60)
-            <td class="text-end">{{ $avgHourIncident->minute }} Menit {{ $avgHourIncident->second }} Detik</td>
+            <td class="text-end">{{ str_pad($avgHourIncident->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->second, 2, "0", STR_PAD_LEFT) }}</td>
             @elseif($agent->kendala == 0)
-            <td class="text-end">0 Detik</td>
+            <td class="text-end">00:00:00</td>
             @else
-            <td class="text-end">{{ $avgHourIncident->second }} Detik</td>
+            <td class="text-end">{{ str_pad($avgHourIncident->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->second, 2, "0", STR_PAD_LEFT) }}</td>
             @endif
             </tr>
             @endforeach

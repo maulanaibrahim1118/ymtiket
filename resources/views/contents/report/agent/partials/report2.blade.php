@@ -1,14 +1,19 @@
 <div class="table-responsive mt-2">
     <table class="table table-bordered table-hover">
-        <thead class="bg-light text-center" style="height: 45px;font-size:14px;">
-            <tr class="align-middle">
+        <thead class="bg-light" style="height: 45px;font-size:14px;">
+            @if($pathFilter != "Semua")
+            <tr>
+            <td colspan="6" class="font-monospace ps-3">Tanggal : {{ $pathFilter }}</td>
+            </tr>
+            @endif
+            <tr class="text-center align-middle">
             <th rowspan="2">NO</th>
             <th rowspan="2">NIK</th>
             <th rowspan="2">NAMA AGENT</th>
             <th rowspan="2">SUB DIVISI</th>
             <th colspan="2">RATA-RATA WAKTU</th>
             </tr>
-            <tr>
+            <tr class="text-center align-middle">
             <th>PENDING</th>
             <th>RESOLVED</th>
             </tr>
@@ -19,7 +24,7 @@
             @endphp
             @foreach($agents as $agent)
             <tr>
-            <td>{{ $nomorUrut++ }}</td>
+            <td class="text-center">{{ $nomorUrut++ }}.</td>
             <td>{{ $agent->nik }}</td>
             <td>{{ $agent->nama_agent }}</td>
             <td>{{ $agent->sub_divisi }}</td>
@@ -29,27 +34,29 @@
             @endphp
 
             @if($agent->avg_pending >= 3600)
-            <td class="text-end">{{ $average1->hour }} Jam {{ $average1->minute }} Menit {{ $average1->second }} Detik</td>
+            <td class="text-end">{{ str_pad($average1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->second, 2, "0", STR_PAD_LEFT) }}</td>
             @elseif($agent->avg_pending >= 60)
-            <td class="text-end">{{ $average1->minute }} Menit {{ $average1->second }} Detik</td>
+            <td class="text-end">{{ str_pad($average1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->second, 2, "0", STR_PAD_LEFT) }}</td>
             @elseif($agent->avg_pending == 0)
-            <td class="text-end">0 Detik</td>
+            <td class="text-end">00:00:00</td>
             @else
-            <td class="text-end">{{ $average1->second }} Detik</td>
+            <td class="text-end">{{ str_pad($average1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->second, 2, "0", STR_PAD_LEFT) }}</td>
             @endif
 
             @if($agent->avg_finish >= 3600)
-            <td class="text-end">{{ $average2->hour }} Jam {{ $average2->minute }} Menit {{ $average2->second }} Detik</td>
+            <td class="text-end">{{ str_pad($average2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->second, 2, "0", STR_PAD_LEFT) }}</td>
             @elseif($agent->avg_finish >= 60)
-            <td class="text-end">{{ $average2->minute }} Menit {{ $average2->second }} Detik</td>
+            <td class="text-end">{{ str_pad($average2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->second, 2, "0", STR_PAD_LEFT) }}</td>
             @elseif($agent->avg_finish == 0)
-            <td class="text-end">0 Detik</td>
+            <td class="text-end">00:00:00</td>
             @else
-            <td class="text-end">{{ $average2->second }} Detik</td>
+            <td class="text-end">{{ str_pad($average2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->second, 2, "0", STR_PAD_LEFT) }}</td>
             @endif
             </tr>
             @endforeach
             
+        </tbody>
+        <tfoot>
             <tr class="bg-light text-end">
                 <th class="text-center" colspan="4">TOTAL</th>
                 @php
@@ -58,25 +65,25 @@
                 @endphp
 
                 @if($total[3] >= 3600)
-                <th>{{ $avgTotal1->hour }} Jam {{ $avgTotal1->minute }} Menit {{ $avgTotal1->second }} Detik</th>
+                <th class="text-end">{{ str_pad($avgTotal1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->second, 2, "0", STR_PAD_LEFT) }}</th>
                 @elseif($total[3] >= 60)
-                <th>{{ $avgTotal1->minute }} Menit {{ $avgTotal1->second }} Detik</th>
+                <th class="text-end">{{ str_pad($avgTotal1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->second, 2, "0", STR_PAD_LEFT) }}</th>
                 @elseif($total[3] == 0)
                 <th>0 Detik</th>
                 @else
-                <th>{{ $avgTotal1->second }} Detik</th>
+                <th class="text-end">{{ str_pad($avgTotal1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->second, 2, "0", STR_PAD_LEFT) }}</th>
                 @endif
 
                 @if($total[4] >= 3600)
-                <th>{{ $avgTotal2->hour }} Jam {{ $avgTotal2->minute }} Menit {{ $avgTotal2->second }} Detik</th>
+                <th class="text-end">{{ str_pad($avgTotal2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->second, 2, "0", STR_PAD_LEFT) }}</th>
                 @elseif($total[4] >= 60)
-                <th>{{ $avgTotal2->minute }} Menit {{ $avgTotal2->second }} Detik</th>
+                <th class="text-end">{{ str_pad($avgTotal2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->second, 2, "0", STR_PAD_LEFT) }}</th>
                 @elseif($total[4] == 0)
                 <th>0 Detik</th>
                 @else
-                <th>{{ $avgTotal2->second }} Detik</th>
+                <th class="text-end">{{ str_pad($avgTotal2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->second, 2, "0", STR_PAD_LEFT) }}</th>
                 @endif
             </tr>
-        </tbody>
+        </tfoot>
     </table>
 </div>

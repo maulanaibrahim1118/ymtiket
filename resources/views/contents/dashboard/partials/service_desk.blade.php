@@ -2,12 +2,32 @@
     <div class="card">
 
     <div class="filter">
-        <a class="icon" href="#" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="bx bx-filter"></i></a>
+        <form class="search-form d-flex align-items-center" action="{{ route('dashboard.filter') }}" method="POST">
+            @csrf
+            <select class="form-select form-select-sm me-2" name="filter1" id="filter1">
+                <option selected value="">Semua Agent</option>
+                @foreach($agents as $agent)
+                    @if(old('filter1', $filterArray[0]) == $agent->id)
+                        <option selected value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
+                    @else
+                        <option value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
+                    @endif
+                @endforeach
+            </select>
+            <select class="form-select form-select-sm me-2" name="filter2" id="filter2">
+                <option value="" @if($filterArray[1] == "") selected @endif>Semua Periode</option>
+                <option value="today" @if($filterArray[1] == "today") selected @endif>Hari Ini</option>
+                <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>Bulan Ini</option>
+                <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>Tahun Ini</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary px-3 me-3">Filter</button>
+        </form>
+        {{-- <a class="icon" href="#" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal">Filter <i class="bi bi-funnel-fill"></i></a>
         <div class="modal fade" id="filterModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content" id="modalContent4">
                     <div class="modal-header">
-                        <h5 class="modal-title">.:: Filter Report Dashboard</h5>
+                        <h5 class="modal-title">.:: Filter Dashboard</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="/dashboard/filter" method="POST">
@@ -43,14 +63,10 @@
                     </form>
                 </div>
             </div>
-        </div><!-- End Filter Modal-->
+        </div><!-- End Filter Modal--> --}}
     </div>
-    <div class="card-body">
-        @if($pathFilter == "Semua")
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard</h5>
-        @else
-        <h5 class="card-title border-bottom"><i class="bi bi-house-door me-2"></i>Dashboard <span>| {{ $pathFilter }}</span></h5>
-        @endif
+    <div class="card-body pb-0">
+        <h5 class="card-title"><i class="bi bi-house-door me-2"></i>Dashboard</h5>
     </div>
 
     </div>
@@ -291,12 +307,12 @@
     <div class="card info-table">
         <div class="card-body">
             @if($pathFilter == "Semua")
-            <h5 class="card-title">Performa Agent</h5>
+            <h5 class="card-title border-bottom">Performa Agent</h5>
             @else
-            <h5 class="card-title">Performa Agent <span>| {{ $pathFilter }}</span></h5>
+            <h5 class="card-title border-bottom">Performa Agent <span>| {{ $pathFilter }}</span></h5>
             @endif
 
-            <div class="table-responsive">
+            <div class="table-responsive mt-3">
                 <table class="table table-hover" id="performaAgentDatatable">
                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                         <tr>
@@ -307,10 +323,10 @@
                         @endcan
                         <th scope="col">TOTAL TICKET</th>
                         <th scope="col">SELESAI</th>
-                        <th scope="col">SISA TICKET</th>
                         <th scope="col">TIDAK SELESAI</th>
+                        <th scope="col">SISA TICKET</th>
                         {{-- <th scope="col">WORKING DAY</th> --}}
-                        <th scope="col">AVERAGE /DAY</th>
+                        <th scope="col">HOUR /DAY</th>
                         <th scope="col">STATUS</th>
                         </tr>
                     </thead>
@@ -324,8 +340,8 @@
                         @endcan
                         <td>{{ $data->total_ticket }}</td>
                         <td>{{ $data->ticket_finish }}</td>
-                        <td class="sisa">{{ $data->total_ticket-$data->ticket_finish }}</td>
                         <td>{{ $data->assigned }}</td>
+                        <td class="sisa">{{ $data->total_ticket-$data->ticket_finish }}</td>
                         {{-- <td>{{ $data->working_days }}</td> --}}
                         @php
                             if ($data->working_days == 0) {
@@ -338,12 +354,14 @@
                             // $average = \Carbon\Carbon::parse($data->avg);
                         @endphp
 
-                        @if( $worktime >= 3600)
-                        <td>{{ $workload->hour }} Jam {{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
-                        @elseif( $worktime >= 60)
-                        <td>{{ $workload->minute }} Menit {{ $workload->second }} Detik</td>
+                        @if($worktime >= 3600)
+                        <td>{{ str_pad($workload->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->second, 2, "0", STR_PAD_LEFT) }}</td>
+                        @elseif($worktime >= 60)
+                        <td>{{ str_pad($workload->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->second, 2, "0", STR_PAD_LEFT) }}</td>
+                        @elseif($worktime == 0)
+                        <td>00:00:00</td>
                         @else
-                        <td>{{ $workload->second }} Detik</td>
+                        <td>{{ str_pad($workload->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->second, 2, "0", STR_PAD_LEFT) }}</td>
                         @endif
 
                         @if($data->status == "present")
@@ -364,12 +382,12 @@
     <div class="card info-table">
         <div class="card-body">
             @if($pathFilter == "Semua")
-            <h5 class="card-title">Ticket Belum Ada Tindakan</h5>
+            <h5 class="card-title border-bottom">Ticket Belum Ada Tindakan</h5>
             @else
-            <h5 class="card-title">Ticket Belum Ada Tindakan <span>| {{ $pathFilter }}</span></h5>
+            <h5 class="card-title border-bottom">Ticket Belum Ada Tindakan <span>| {{ $pathFilter }}</span></h5>
             @endif
 
-            <div class="table-responsive">
+            <div class="table-responsive mt-3">
                 <table class="table datatable table-hover">
                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                         <tr>
@@ -425,12 +443,12 @@
     <div class="card info-table">
         <div class="card-body">
             @if($pathFilter == "Semua")
-            <h5 class="card-title">Ticket Dalam Antrian</h5>
+            <h5 class="card-title border-bottom">Ticket Dalam Antrian</h5>
             @else
-            <h5 class="card-title">Ticket Dalam Antrian <span>| {{ $pathFilter }}</span></h5>
+            <h5 class="card-title border-bottom">Ticket Dalam Antrian <span>| {{ $pathFilter }}</span></h5>
             @endif
 
-            <div class="table-responsive">
+            <div class="table-responsive mt-3">
                 <table class="table datatable table-hover">
                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                         <tr>
@@ -481,9 +499,7 @@
         $('.sisa').each(function() {
             let sisaValue = $(this).text();
             if (sisaValue == '0') {
-                $(this).css('backgroundColor', '#c8ffce');
-            } else {
-                $(this).css('backgroundColor', '#ffdfdf');
+                $(this).css('backgroundColor', '#ffe3a7');
             }
         });
     });

@@ -1,14 +1,19 @@
 <div class="table-responsive">
     <table class="table table-bordered table-hover">
-        <thead class="bg-light text-center" style="height: 45px;font-size:14px;">
-            <tr class="align-middle">
+        <thead class="bg-light" style="height: 45px;font-size:14px;">
+            @if($pathFilter != "Semua")
+            <tr>
+            <td colspan="6" class="font-monospace ps-3">Tanggal : {{ $pathFilter }}</td>
+            </tr>
+            @endif
+            <tr class="text-center align-middle">
             <th rowspan="2">NO</th>
             <th rowspan="2">NIK</th>
             <th rowspan="2">NAMA AGENT</th>
             <th rowspan="2">SUB DIVISI</th>
             <th colspan="2">RATA-RATA</th>
             </tr>
-            <tr>
+            <tr class="text-center align-middle">
             <th>TICKET/DAY</th>
             <th>HOUR/DAY</th>
             </tr>
@@ -19,7 +24,7 @@
             @endphp
             @foreach($agents as $agent)
             <tr>
-            <td>{{ $nomorUrut++ }}</td>
+            <td class="text-center">{{ $nomorUrut++ }}.</td>
             <td>{{ $agent->nik }}</td>
             <td>{{ $agent->nama_agent }}</td>
             <td>{{ $agent->sub_divisi }}</td>
@@ -31,13 +36,13 @@
             @endphp
 
             @if($agent->hour_per_day >= 3600)
-            <td class="text-end">{{ $hourPerDay->hour }} Jam {{ $hourPerDay->minute }} Menit {{ $hourPerDay->second }} Detik</td>
+            <td class="text-end">{{ str_pad($hourPerDay->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->second, 2, "0", STR_PAD_LEFT) }}</td>
             @elseif($agent->hour_per_day >= 60)
-            <td class="text-end">{{ $hourPerDay->minute }} Menit {{ $hourPerDay->second }} Detik</td>
+            <td class="text-end">{{ str_pad($hourPerDay->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->second, 2, "0", STR_PAD_LEFT) }}</td>
             @elseif($agent->hour_per_day == 0)
-            <td class="text-end">0 Detik</td>
+            <td class="text-end">00:00:00</td>
             @else
-            <td class="text-end">{{ $hourPerDay->second }} Detik</td>
+            <td class="text-end">{{ str_pad($hourPerDay->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->second, 2, "0", STR_PAD_LEFT) }}</td>
             @endif
             </tr>
             @endforeach

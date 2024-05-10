@@ -40,7 +40,7 @@
 
                                     <div class="col-md-3">
                                         <label for="location" class="form-label">Lokasi</label>
-                                        <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="location" value="{{ old('location') }}" disabled>
+                                        <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="locationName" value="{{ old('location') }}" disabled>
                                     </div>
 
                                     <div class="col-md-3">
@@ -80,7 +80,7 @@
                                                             dataType: 'json',
                                                             success: function(response){
                                                                 if(response != null){
-                                                                    $('#location').val(response.nama_lokasi);
+                                                                    $('#locationName').val(response.nama_lokasi);
                                                                 }
                                                             }
                                                         });

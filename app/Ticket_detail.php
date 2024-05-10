@@ -20,6 +20,6 @@ class Ticket_detail extends Model
 
     public function agent()
     {
-        return $this->belongsTo(Agent::class);
+        return $this->belongsTo('App\Agent');
     }
 }

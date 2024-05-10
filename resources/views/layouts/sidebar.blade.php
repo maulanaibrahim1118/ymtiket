@@ -109,7 +109,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('404.underconstruction') }}" class="{{ Request::is('report-sub-categories*') ? 'active' : '' }}">
+                    <a href="{{ route('report.subCategory') }}" class="{{ Request::is('report-sub-categories*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Sub Category</span>
                     </a>
                 </li>

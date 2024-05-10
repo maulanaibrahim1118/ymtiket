@@ -10,6 +10,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportAgentController;
+use App\Http\Controllers\ReportSubCategoryController;
 use App\Http\Controllers\SearchTicketController;
 use App\Http\Controllers\TicketDetailController;
 use App\Http\Controllers\CategoryAssetController;
@@ -40,6 +41,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 // Route Filter
 Route::post('/dashboard/filter', [FilterController::class, 'dashboard'])->middleware('auth')->name('dashboard.filter');
 Route::post('/report-agents/filter', [FilterController::class, 'reportAgent'])->middleware(['auth', 'service.desk'])->name('reportAgent.filter');
+Route::post('/report-sub-categories/filter', [FilterController::class, 'reportSubCategory'])->middleware(['auth', 'service.desk'])->name('reportSubCategory.filter');
 
 // Route Ticket (semua user)
 Route::get('/tickets-dashboard', [TicketController::class, 'ticketDashboard'])->middleware('auth')->name('ticket.dashboard');
@@ -164,6 +166,7 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
 // Route Report
 Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::get('/report-agents', [ReportAgentController::class, 'index'])->name('report.agent');
+    Route::get('/report-sub-categories', [ReportSubCategoryController::class, 'index'])->name('report.subCategory');
 });
 
 Route::get('/settings/change-password', [UserController::class, 'showChangePasswordForm'])->middleware('auth')->name('setting.change');

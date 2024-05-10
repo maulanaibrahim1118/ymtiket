@@ -8,7 +8,7 @@ class Category_ticket extends Model
 {
     protected $guarded = ['id'];
 
-    public function sub_category_ticket()
+    public function sub_category_tickets()
     {
         return $this->hasMany('App\Sub_category_ticket');
     }

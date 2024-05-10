@@ -5,23 +5,19 @@
             <div class="col-lg-12">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card info-card pb-0">
-                            <div class="filter w-50 mt-1">
+                        <div class="card info-card pb-3">
+                            <div class="filter w-50">
                                 <div class="row float-end">
                                     <form class="search-form d-flex align-items-center" action="{{ route('reportAgent.filter') }}" method="POST">
                                         @csrf
-                                        <input type="date" name="start_date" id="start_date" class="form-control form-control-sm me-2" value="{{ old('start_date') }}">
-                                        <input type="date" name="end_date" id="end_date" class="form-control form-control-sm me-2" value="{{ old('end_date') }}">
+                                        <input type="date" name="start_date" id="start_date" class="form-control form-control-sm select2 me-2" value="{{ old('start_date', $filterArray[0]) }}">
+                                        <input type="date" name="end_date" id="end_date" class="form-control form-control-sm me-2" value="{{ old('end_date', $filterArray[1]) }}">
                                         <button type="submit" class="btn btn-sm btn-primary px-3 me-3">Filter</button>
                                     </form>
                                 </div>
                             </div>
                             <div class="card-body border-bottom pb-0">
-                                @if($pathFilter == "Semua")
                                 <h5 class="card-title"><i class="bi bi-person-workspace me-2"></i>{{ $title }}</h5>
-                                @else
-                                <h5 class="card-title"><i class="bi bi-person-workspace me-2"></i>{{ $title }} <span>| {{ $pathFilter }}</span></h5>
-                                @endif
                             </div>
                             <div class="accordion accordion-flush px-4" id="accordionExample">
                                 <div class="accordion-item">
@@ -43,7 +39,7 @@
 
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseOne">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                                             Report #2 | Rata-Rata Waktu Pending & Resolved
                                         </button>
                                     </h2>
@@ -60,7 +56,7 @@
 
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseOne">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
                                             Report #3 | Rata-Rata Ticket & Jam Kerja Harian
                                         </button>
                                     </h2>
@@ -77,7 +73,7 @@
 
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseOne">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
                                             Report #4 | Rata-Rata Waktu Permintaan & Kendala
                                         </button>
                                     </h2>

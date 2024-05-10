@@ -8,6 +8,7 @@ use App\Ticket;
 use App\Location;
 use Carbon\Carbon;
 use App\Ticket_detail;
+use App\Category_ticket;
 use App\Sub_category_ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -161,19 +162,20 @@ class FilterController extends Controller
 
             // Jika role Agent
             }else{
-                $pathFilter = "[".$pathFilter."]";
-
+                if($filter2 == NULL){
+                    return redirect('/dashboard');
+                }
                 // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                $total          = Ticket::where([['agent_id', $agentId],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->count();
-                $resolved       = Ticket::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])->orWhere([['agent_id', $agentId],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
-                $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned'],['created_at', 'like', $filter2.'%']])->count();
-                $processedTime  = Ticket_detail::where([['agent_id', $agentId],['created_at', 'like', $filter2.'%']])->sum('processed_time');
-                $pendingTime    = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])->sum('pending_time');
+                $total          = Ticket::where([['agent_id', $agentId],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
+                $resolved       = Ticket::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['agent_id', $agentId],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
+                $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned'],['created_at', 'like', $periodeFilter.'%']])->count();
+                $processedTime  = Ticket_detail::where([['agent_id', $agentId],['created_at', 'like', $periodeFilter.'%']])->sum('processed_time');
+                $pendingTime    = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->sum('pending_time');
                 $workload       = $processedTime-$pendingTime;
 
                 // Menghitung Waktu Rata-rata Ticket Resolved
-                $resolvedCount  = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])->count();
-                $resolvedTime   = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])->sum('processed_time');
+                $resolvedCount  = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->count();
+                $resolvedTime   = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->sum('processed_time');
 
                 if($resolvedCount == 0){
                     $resolvedAvg    = 0;
@@ -185,10 +187,10 @@ class FilterController extends Controller
 
                 // Mengembalikan data untuk di tampilkan di view
                 $dataArray      = [$total, $resolved, $assigned, $workload, $roundedAvg];
-                $data1          = Ticket::where([['agent_id', $agentId],['status', 'created'],['created_at', 'like', $filter2.'%']])->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'ya'],['created_at', 'like', $filter2.'%']])->get();
-                $data2          = Ticket::where([['agent_id', $agentId],['status', 'onprocess'],['created_at', 'like', $filter2.'%']])->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'tidak'],['created_at', 'like', $filter2.'%']])->get();
+                $data1          = Ticket::where([['agent_id', $agentId],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'ya'],['created_at', 'like', $periodeFilter.'%']])->get();
+                $data2          = Ticket::where([['agent_id', $agentId],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['agent_id', $agentId],['status', 'pending'],['assigned', 'tidak'],['created_at', 'like', $periodeFilter.'%']])->get();
                 $data3          = 0;
-                $filterArray    = [$agentId, $periode];
+                $filterArray    = [$agentId, $filter2];
             }
         }
 
@@ -329,15 +331,107 @@ class FilterController extends Controller
 
         //              0               1               2               3                4                    5                   6                7                8
         $total = [$totalPending, $totalOnprocess, $totalFinish, $totalAvgPending, $totalAvgFinish, /* $totalTicketPerDay, $totalHourPerDay, $totalPermintaan, $totalKendala */];
+        $filterArray = [$request->start_date, $request->end_date];
 
         return view('contents.report.agent.index', [
             "url"           => "",
             "title"         => "Report Agent",
             "path"          => "Report",
             "path2"         => "Agent",
+            "filterArray"   => $filterArray,
             "pathFilter"    => $pathFilter,
             "agents"        => $agents,
             "total"         => $total
+        ]);
+    }
+
+    public function reportSubCategory(Request $request)
+    {
+        // Get data User
+        $userId     = Auth::user()->id;
+        $userRole   = Auth::user()->role;
+        $locationId = Auth::user()->location_id;
+        $location   = Auth::user()->location->nama_lokasi;
+
+        $category = $request->category;
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+        $date1 = Carbon::parse($start_date);
+        $date2 = Carbon::parse($end_date);
+
+        $filterArray = [$category, $start_date, $end_date];
+
+        if ($request->filled('category') && $request->filled('start_date') && !$request->filled('end_date')) {
+            $pathFilter = [$category, $date1->format('d-M-Y')];
+        } elseif ($request->filled('category') && !$request->filled('start_date') && $request->filled('end_date')) {
+            $pathFilter = [$category, $date2->format('d-M-Y')];
+        } elseif ($request->filled('category') && !$request->filled('start_date') && !$request->filled('end_date')) {
+            $pathFilter = [$category, ""]; 
+        } elseif (!$request->filled('category') && $request->filled('start_date') && $request->filled('end_date')) {
+            if ($request->start_date == $request->end_date) {
+                $pathFilter = ["", $date1->format('d-M-Y')];
+            } else {
+                $pathFilter = ["", $date1->format('d-M-Y')." s/d ".$date2->format('d-M-Y')];
+            }
+        } elseif ($request->filled('category') && $request->filled('start_date') && $request->filled('end_date')) {
+            if ($request->start_date == $request->end_date) {
+                $pathFilter = [$category, $date1->format('d-M-Y')];
+            } else {
+                $pathFilter = [$category, $date1->format('d-M-Y')." s/d ".$date2->format('d-M-Y')];
+            }
+        } else {
+            return redirect('/report-sub-categories');
+        }
+
+        $dCategories = Category_ticket::where('location_id', $locationId)->get();
+        
+        $query = Category_ticket::where('location_id', $locationId);
+
+        if (!empty($category)) {
+            $query->where('nama_kategori', $category);
+        }
+
+        $categories = $query->with(['sub_category_tickets.ticket_details' => function($query) use ($start_date, $end_date) {
+            if (!empty($start_date) && empty($end_date)) {
+                $query->whereDate('created_at', '=', $start_date);
+            }
+        
+            if (!empty($end_date) && empty($start_date)) {
+                $query->whereDate('created_at', '=', $end_date);
+            }
+        
+            if (!empty($start_date) && !empty($end_date)) {
+                $query->whereDate('created_at', '>=', $start_date)
+                    ->whereDate('created_at', '<=', $end_date);
+            }
+        
+            $query->where('status', 'resolved');
+            $query->with('agent');
+        }])->get();
+        
+        $agents = Agent::where('location_id', $locationId)->get();
+        $data = [];
+        
+        foreach ($categories as $category) {
+            foreach ($category->sub_category_tickets as $subCategory) {
+                foreach ($agents as $agent) {
+                    $avgTime = $subCategory->ticket_details->where('agent_id', $agent->id)->avg('processed_time');
+                    $data[$category->nama_kategori][$subCategory->nama_sub_kategori][$agent->id] = $avgTime;
+                }
+                $data[$category->nama_kategori][$subCategory->nama_sub_kategori]['totalAverage'] = $subCategory->ticket_details->avg('processed_time');
+            }
+        }
+
+        return view('contents.report.sub_category.index', [
+            "url"           => "",
+            "title"         => "Report Sub Category",
+            "path"          => "Report",
+            "path2"         => "Sub Category",
+            "filterArray"   => $filterArray,
+            "pathFilter"    => $pathFilter,
+            "dCategories"   => $dCategories,
+            "agents"        => $agents,
+            "data"          => $data
         ]);
     }
 }

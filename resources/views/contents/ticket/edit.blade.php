@@ -8,14 +8,14 @@
                         <div class="card info-card">
 
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span>| {{ $ticket->no_ticket }}</span></h5>
                                 
                                 <form class="row g-3 mb-3" action="{{ route('ticket.update', ['id' => encrypt($ticket->id)]) }}" method="POST" enctype="multipart/form-data" onsubmit="return formValidation()">
                                     @method('put')
                                     @csrf
-                                    <div class="col-md-1">
+                                    <div class="col-md-1" hidden>
                                         <label for="no_ticket" class="form-label">No. Ticket</label>
-                                        <input type="text" name="no_ticket" class="form-control text-capitalize bg-light @error('no_ticket') is-invalid @enderror" id="no_ticket" value="{{ $ticket->no_ticket }}" readonly>
+                                        <input type="text" name="no_ticket" class="form-control text-capitalize bg-light @error('no_ticket') is-invalid @enderror" id="no_ticket" value="{{ $ticket->no_ticket }}" hidden>
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('no_ticket')
@@ -52,7 +52,7 @@
 
                                     <div class="col-md-3">
                                         <label for="location" class="form-label">Lokasi</label>
-                                        <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="location" value="{{ old('location', $ticket->location->nama_lokasi) }}" disabled>
+                                        <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="locationName" value="{{ old('location', $ticket->location->nama_lokasi) }}" disabled>
                                     </div>
 
                                     <div class="col-md-3">
@@ -61,9 +61,9 @@
                                             <option value="" disabled>Choose...</option>
                                             @foreach($assets as $asset)
                                             @if(old('asset_id', $ticket->asset_id) == $asset->id)
-                                            <option selected value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} - {{ ucwords($asset->nama_barang) }}</option>
+                                            <option selected value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} | {{ ucwords($asset->nama_barang) }} | {{ $asset->merk }}</option>
                                             @else
-                                            <option value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }}</option>
+                                            <option value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} | {{ ucwords($asset->nama_barang) }} | {{ $asset->merk }}</option>
                                             @endif
                                             @endforeach
                                         </select>
@@ -99,7 +99,7 @@
                                                             dataType: 'json',
                                                             success: function(response){
                                                                 if(response != null){
-                                                                    $('#location').val(response.nama_lokasi);
+                                                                    $('#locationName').val(response.nama_lokasi);
                                                                 }
                                                             }
                                                         });
@@ -114,7 +114,7 @@
                                                                 assetDropdown.empty();
                                                                 assetDropdown.append('<option selected disabled>Choose...</option>');
                                                                 $.each(response, function (key, value) {
-                                                                    assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + ' - ' + value.nama_barang + '</option>');
+                                                                    assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + ' | ' + value.nama_barang + ' | ' + value.merk + '</option>');
                                                                 });
                                                                 // Aktifkan dropdown no. asset
                                                                 assetDropdown.prop('disabled', false);
@@ -129,7 +129,7 @@
                                         });
                                     </script>
                                     
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label for="ticket_for" class="form-label">Diajukan Kepada</label>
                                         <select class="form-select @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for">
                                             <option value="" disabled>Choose...</option>
