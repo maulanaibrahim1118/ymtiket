@@ -65,7 +65,7 @@
             <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
                 <h1>403</h1>
                 <h2>Maaf, anda tidak diizinkan mengakses halaman tersebut.</h2>
-                <a class="btn" href="/dashboard/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Kembali ke Dashboard</a>
+                <a class="btn" href="/dashboard">Kembali ke Dashboard</a>
                 <div class="credits">
                 </div>
             </section>

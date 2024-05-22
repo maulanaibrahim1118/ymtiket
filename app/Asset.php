@@ -8,7 +8,7 @@ class Asset extends Model
 {
     protected $guarded = ['id'];
 
-    public function ticket()
+    public function tickets()
     {
         return $this->hasMany('App\Ticket');
     }

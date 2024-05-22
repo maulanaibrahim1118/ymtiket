@@ -7,10 +7,10 @@
                     <div class="col-12">
                         <div class="card info-card">
                             <div class="filter w-50">
-                                <div class="row float-end">
+                                <div class="row float-end col-md-12">
                                     <form class="search-form d-flex align-items-center" action="{{ route('reportSubCategory.filter') }}" method="POST">
                                         @csrf
-                                        <select class="form-select form-select-sm me-2" name="category" id="category">
+                                        <select class="form-select form-select-sm me-2" style="width:40%;padding:0px;" name="category" id="cat">
                                             <option selected value="">Semua Kategori</option>
                                             @foreach($dCategories as $category)
                                                 @if(old('category', $filterArray[0]) == $category->nama_kategori)
@@ -20,9 +20,9 @@
                                                 @endif
                                             @endforeach
                                         </select>
-                                        <input type="date" name="start_date" id="start_date" class="form-control form-control-sm me-2" value="{{ old('start_date', $filterArray[1]) }}">
-                                        <input type="date" name="end_date" id="end_date" class="form-control form-control-sm me-2" value="{{ old('end_date', $filterArray[2]) }}">
-                                        <button type="submit" class="btn btn-sm btn-primary px-3 me-3">Filter</button>
+                                        <input type="date" name="start_date" id="start_date" class="form-control form-control ms-1" style="width:25%;" placeholder="Pilih Tanggal Awal" value="{{ old('start_date', $filterArray[1]) }}">
+                                        <input type="date" name="end_date" id="end_date" class="form-control form-control ms-1" style="width:25%;" placeholder="Pilih Tanggal Akhir" value="{{ old('end_date', $filterArray[2]) }}">
+                                        <button type="submit" class="btn btn-primary ms-1 me-3" style="width:15%;"><i class="bi bi-funnel me-1"></i> Filter</button>
                                     </form>
                                 </div>
                             </div>
@@ -40,6 +40,13 @@
                                         <div class="accordion-body mt-3">
                                             <div class="card-body">
                                                 <div id="table-container">
+                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportSubCategory') }}" method="GET">
+                                                        @csrf
+                                                        <input type="text" name="category2" id="category2" value="{{ old('category2', $filterArray[0]) }}" hidden>
+                                                        <input type="date" name="startDate" id="startDate" value="{{ old('startDate', $filterArray[1]) }}" hidden>
+                                                        <input type="date" name="endDate" id="endDate" value="{{ old('endDate', $filterArray[2]) }}" hidden>
+                                                        <button type="submit" class="btn btn-success px-3 me-3"><i class="bi bi-cloud-download me-2"></i>Export</button>
+                                                    </form>
                                                     @include('contents.report.sub_category.partials.report1')
                                                 </div>
                                             </div>

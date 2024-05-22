@@ -19,7 +19,7 @@
                                     <table class="table datatable table-hover">
                                         <thead class="bg-light" style="height: 45px;font-size:14px;">
                                             <tr>
-                                            <th scope="col">NIK/SITE</th>
+                                            <th scope="col">NIK</th>
                                             <th scope="col">NAMA LENGKAP</th>
                                             <th scope="col">JABATAN</th>
                                             <th scope="col">LOKASI</th>
@@ -36,10 +36,26 @@
                                             <td>{{ $user->nama }}</td>
                                             <td>{{ $user->position->nama_jabatan }}</td>
                                             <td>{{ $user->location->nama_lokasi }}</td>
-                                            <td>{{ $user->role }}</td>
+                                            <td>{{ $user->role->role_name }}</td>
                                             <td>{{ $user->telp }}</td>
                                             <td>{{ $user->ip_address }}</td>
-                                            <td class="text-capitalize"><a href="{{ route('user.edit', ['id' => encrypt($user->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
+                                            <td class="dropdown">
+                                                <a class="action-icon pe-2" style="font-size:16px;" href="#" data-bs-toggle="dropdown"><i class="bi bi-list"></i></a>
+                                                <ul class="dropdown-menu">
+                                                    {{-- Tombol Edit --}}
+                                                    <li><a class="dropdown-item text-capitalize text-warning" href="{{ route('user.edit', ['id' => encrypt($user->id)]) }}"><i class="bi bi-pencil-square text-warning"></i>
+                                                        Edit</a>
+                                                    </li>
+
+                                                    {{-- Tombol Hapus --}}
+                                                    <form action="{{ route('user.delete', ['id' => encrypt($user->id)]) }}" onsubmit="return confirmAction()" method="POST">
+                                                    @method('put')
+                                                    @csrf
+                                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                    <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Hapus</button></li>
+                                                    </form>
+                                                </ul>
+                                            </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -52,4 +68,16 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+
+    <script>
+        function confirmAction(event) {
+            var lanjut = confirm('Apakah anda yakin ingin menghapus user tersebut?');
+
+            if(lanjut){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    </script>
 @endsection

@@ -7,33 +7,35 @@
                     <div class="col-12">
                         <div class="card info-card">
                             <div class="filter">
-                                <a class="icon" href="/locations"><i class="bx bx-revision"></i></a>
+                                <a class="icon" href="/category-tickets"><i class="bx bx-revision"></i></a>
                             </div> <!-- End Filter -->
 
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-geo-alt me-2"></i>{{ $title }}</h5>
                                 
-                                <a href="/locations/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
+                                <a href="{{ route('area.create') }}"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
 
-                                <div class="table-responsive mt-2">
+                                <div class="table-responsive">
                                     <table class="table datatable table-hover">
                                         <thead class="bg-light" style="height: 45px;font-size:14px;">
                                             <tr>
-                                                <th scope="col">NAMA LOKASI</th>
-                                                <th scope="col">WILAYAH</th>
-                                                <th scope="col">REGIONAL</th>
-                                                <th scope="col">AREA</th>
+                                                <th scope="col">NAMA AREA</th>
                                                 <th scope="col">AKSI</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                                            @foreach($locations as $location)
+                                            @foreach($areas as $area)
                                             <tr>
-                                                <td>{{ $location->nama_lokasi }}</td>
-                                                <td>{{ $location->wilayah }}</td>
-                                                <td>{{ $location->regional }}</td>
-                                                <td>{{ $location->area }}</td>
-                                                <td class="text-capitalize"><a href="{{ route('location.edit', ['id' => encrypt($location->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
+                                            <td>{{ $area->name }}</td>
+                                            <td class="dropdown">
+                                                {{-- Tombol Hapus --}}
+                                                <form action="{{ route('area.delete', ['id' => encrypt($area->id)]) }}" onsubmit="return confirmAction()" method="POST">
+                                                @method('put')
+                                                @csrf
+                                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                <button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger me-1"></i>Hapus</button>
+                                                </form>
+                                            </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -46,4 +48,16 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+
+    <script>
+        function confirmAction(event) {
+            var lanjut = confirm('Apakah anda yakin ingin menghapus area tersebut?');
+
+            if(lanjut){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    </script>
 @endsection

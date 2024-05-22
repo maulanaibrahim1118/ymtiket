@@ -11,15 +11,15 @@
         <thead class="bg-light">
             @if($pathFilter[0] != NULL && $pathFilter[1] != NULL)
             <tr>
-            <td colspan="7" class="font-monospace ps-3">Kategori : {{ ucwords($pathFilter[0]) }} | Tanggal : {{ $pathFilter[1] }}</td>
+            <td colspan="{{ 3+$totalAgents }}" class="font-monospace ps-3">Filter : {{ ucwords($pathFilter[0]) }} | {{ $pathFilter[1] }}</td>
             </tr>
             @elseif($pathFilter[0] != NULL && $pathFilter[1] == NULL)
             <tr>
-            <td colspan="7" class="font-monospace ps-3">Kategori : {{ ucwords($pathFilter[0]) }}</td>
+            <td colspan="{{ 3+$totalAgents }}" class="font-monospace ps-3">Filter : {{ ucwords($pathFilter[0]) }} | Semua Periode</td>
             </tr>
             @elseif($pathFilter[0] == NULL && $pathFilter[1] != NULL)
             <tr>
-            <td colspan="7" class="font-monospace ps-3">Tanggal : {{ $pathFilter[1] }}</td>
+            <td colspan="{{ 3+$totalAgents }}" class="font-monospace ps-3">Filter : Semua Kategori | {{ $pathFilter[1] }}</td>
             </tr>
             @endif
             <tr class="text-center align-middle">

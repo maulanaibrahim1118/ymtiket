@@ -25,7 +25,6 @@
                                                 <th scope="col">CREATED AT</th>
                                                 <th scope="col">UPDATED AT</th>
                                                 <th scope="col">UPDATED BY</th>
-                                                <th scope="col">ID</th>
                                                 <th scope="col">AKSI</th>
                                             </tr>
                                         </thead>
@@ -38,7 +37,6 @@
                                             <td>{{ $sct->created_at }}</td>
                                             <td>{{ $sct->updated_at }}</td>
                                             <td>{{ $sct->updated_by }}</td>
-                                            <td>{{ $sct->id }}</td>
                                             <td class="text-capitalize"><a href="{{ route('sct.edit', ['id' => encrypt($sct->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
                                             </tr>
                                             @endforeach

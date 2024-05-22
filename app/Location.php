@@ -10,12 +10,12 @@ class Location extends Model
 
     public function user()
     {
-        return $this->hasMany('App\User');
+        return $this->hasOne('App\User');
     }
 
-    public function client()
+    public function sub_divisi()
     {
-        return $this->hasMany('App\Client');
+        return $this->hasOne('App\Sub_divisi');
     }
 
     public function agent()
@@ -28,13 +28,18 @@ class Location extends Model
         return $this->hasMany('App\Asset');
     }
 
-    public function ticket()
+    public function tickets()
     {
-        return $this->hasMany('App\Asset');
+        return $this->hasMany('App\Ticket');
     }
 
     public function category_ticket()
     {
         return $this->hasMany('App\Category_ticket');
+    }
+
+    public function wilayah()
+    {
+        return $this->belongsTo('App\Wilayah');
     }
 }

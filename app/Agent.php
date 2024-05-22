@@ -22,4 +22,18 @@ class Agent extends Model
     {
         return $this->belongsTo('App\Location');
     }
+
+    public function sub_divisions()
+    {
+        return $this->belongsToMany('App\Sub_divisi');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $model->sub_divisi = strtolower($model->sub_divisi);
+        });
+    }
 }

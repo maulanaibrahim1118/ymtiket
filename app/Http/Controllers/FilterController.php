@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Agent;
 use App\Ticket;
+use App\Wilayah;
 use App\Location;
 use Carbon\Carbon;
 use App\Ticket_detail;
@@ -20,10 +21,10 @@ class FilterController extends Controller
     {
         // Get data User
         $id         = Auth::user()->id;
-        $role       = Auth::user()->role;
-        $location   = Auth::user()->location->nama_lokasi;
+        $role       = Auth::user()->role_id;
         $locationId = Auth::user()->location_id;
         $positionId = Auth::user()->position_id;
+        $codeAccess = Auth::user()->code_access;
         
         // Memasukkan request kedalam variabel
         $filter1    = $request['filter1'];
@@ -60,46 +61,62 @@ class FilterController extends Controller
         }
 
         // Get data Agent (jika user bukan sebagai client)
-        if($role != "client"){
+        if($role != 3){
             $nik        = Auth::user()->nik;
             $getAgent   = Agent::where('nik', $nik)->first();
             $agentId    = $getAgent['id'];
         }
 
         // Jika role Client
-        if($role == "client"){
-            // Get data lokasi user untuk menyesuaikan tampilan data ticket Korwil, Chief dan Manager (sesuai ticket area)
-            $getLocation    = Location::where('id', $locationId)->first();
-            $namaLokasi     = $getLocation['nama_lokasi'];
-            $area           = substr($getLocation['area'], -1);
-            $regional       = substr($getLocation['regional'], -1);
-            $wilayah        = substr($getLocation['wilayah'], -2);
+        if($role == 3){
+            if($locationId == 17){
+                if($positionId == 2){
+                    // Get total data yang ingin di tampilkan di dashboard sesuai filter
+                    $total      = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
+                    $approval   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $unProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $onProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $pending    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
 
-            // Get parameter ticket area untuk Korwil dan Chief
-            $ticketKorwil   = $area.$regional.$wilayah;
-            $ticketChief    = $area.$regional;
+                    // Menampilkan Data Ticket yang belum di Close
+                    $data1      = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
+                }elseif($positionId == 6){
+                    // Get total data yang ingin di tampilkan di dashboard sesuai filter
+                    $total      = Ticket::where([['code_access', 'like', '%'.$codeAccess],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
+                    $approval   = Ticket::where([['code_access', 'like', '%'.$codeAccess],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $unProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $onProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $pending    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['code_access', 'like', '%'.$codeAccess],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
 
-            if($positionId == "2"){ // Jika jabatan Chief
-                $ticketArea = $ticketChief;
-            }elseif($positionId == "6"){ // Jika jabatan Koordinator Wilayah
-                $ticketArea = $ticketKorwil;
-            }elseif($positionId == "7"){ // Jika jabatan Manager
-                $ticketArea = $area;
-            }
+                    // Menampilkan Data Ticket yang belum di Close
+                    $data1      = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
+                }elseif($positionId == 7){
+                    // Get total data yang ingin di tampilkan di dashboard sesuai filter
+                    $total      = Ticket::where([['code_access', 'like', $codeAccess.'%'],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
+                    $approval   = Ticket::where([['code_access', 'like', $codeAccess.'%'],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $unProcess  = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $onProcess  = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $pending    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['code_access', 'like', $codeAccess.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
 
-            if($positionId == "2" || $positionId == "6" || $positionId == "7"){
-                // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                $total      = Ticket::where([['ticket_area', 'like', $ticketArea.'%'],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                $approval   = Ticket::where([['ticket_area', 'like', $ticketArea.'%'],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $periodeFilter.'%']])->count();
-                $unProcess  = Ticket::where([['ticket_area', 'like', $ticketArea.'%'],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
-                $onProcess  = Ticket::where([['ticket_area', 'like', $ticketArea.'%'],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
-                $pending    = Ticket::where([['ticket_area', 'like', $ticketArea.'%'],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                $finished   = Ticket::where([['ticket_area', 'like', $ticketArea.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['ticket_area', 'like', $ticketChief.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
+                    // Menampilkan Data Ticket yang belum di Close
+                    $data1      = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
+                }else{
+                    // Get total data yang ingin di tampilkan di dashboard sesuai filter
+                    $total      = Ticket::where([['location_id', $locationId],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
+                    $approval   = Ticket::where([['location_id', $locationId],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $unProcess  = Ticket::where([['location_id', $locationId],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $onProcess  = Ticket::where([['location_id', $locationId],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $pending    = Ticket::where([['location_id', $locationId],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $finished   = Ticket::where([['location_id', $locationId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['location_id', $locationId],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
 
-                // Menampilkan Data Ticket yang belum di Close
-                $data1      = Ticket::where([['ticket_area', 'like', $ticketArea.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
+                    // Menampilkan Data Ticket yang belum di Close
+                    $data1      = Ticket::where([['location_id', $locationId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
+                }
 
-            // Jika jabatan selain Korwil, Chief dan Manager
+            // Jika bukan Divisi Operational
             }else{
                 // Get total data yang ingin di tampilkan di dashboard sesuai filter
                 $total      = Ticket::where([['location_id', $locationId],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
@@ -121,20 +138,20 @@ class FilterController extends Controller
 
         }else{
             // Jika role Service Desk
-            if($role == "service desk"){
+            if($role == 1){
                 $pathFilter = "[".$namaAgent."] - [".$pathFilter."]";
 
                 // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                $total          = Ticket::where([['ticket_for', $location],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                $unProcess      = Ticket::where([['ticket_for', $location],['status', 'created'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
-                $onProcess      = Ticket::where([['ticket_for', $location],['status', 'onprocess'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
-                $pending        = Ticket::where([['ticket_for', $location],['status', 'pending'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
-                $resolved       = Ticket::where([['ticket_for', $location],['status', 'resolved'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->orWhere([['ticket_for', $location],['status', 'finished'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
+                $total          = Ticket::where([['ticket_for', $locationId],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
+                $unProcess      = Ticket::where([['ticket_for', $locationId],['status', 'created'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
+                $onProcess      = Ticket::where([['ticket_for', $locationId],['status', 'onprocess'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
+                $pending        = Ticket::where([['ticket_for', $locationId],['status', 'pending'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
+                $resolved       = Ticket::where([['ticket_for', $locationId],['status', 'resolved'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->orWhere([['ticket_for', $locationId],['status', 'finished'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
                 $assigned       = Ticket_detail::where([['agent_id', 'like', '%'.$agentFilter],['status', 'assigned'],['created_at', 'like', $periodeFilter.'%']])->count();
-                $workTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                $freeTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'tidak'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                $asset          = Ticket::where([['ticket_for', $location],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->distinct()->count('asset_id');
-                $category       = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')->where([['tickets.ticket_for', $location],['ticket_details.agent_id', 'like', '%'.$agentFilter],['ticket_details.created_at', 'like', $periodeFilter.'%']])->distinct()->count(['ticket_details.sub_category_ticket_id']);
+                $workTimeTicket = Ticket::where([['ticket_for', $locationId],['jam_kerja', 'ya'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
+                $freeTimeTicket = Ticket::where([['ticket_for', $locationId],['jam_kerja', 'tidak'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
+                $asset          = Ticket::where([['ticket_for', $locationId],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->distinct()->count('asset_id');
+                $category       = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')->where([['tickets.ticket_for', $locationId],['ticket_details.agent_id', 'like', '%'.$agentFilter],['ticket_details.created_at', 'like', $periodeFilter.'%']])->distinct()->count(['ticket_details.sub_category_ticket_id']);
 
                 // Mengembalikan data untuk di tampilkan di view
                 $dataArray      = [$total, $unProcess, $onProcess, $pending, $resolved, $assigned, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
@@ -156,8 +173,8 @@ class FilterController extends Controller
                     )
                     ->orderBy('sub_divisi', 'ASC')
                     ->get();
-                $data2          = Ticket::where([['ticket_for', $location],['status','created'],['is_queue', 'tidak'],['assigned', 'tidak'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->get();
-                $data3          = Ticket::where([['ticket_for', $location],['status','created'],['is_queue', 'ya'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->get();
+                $data2          = Ticket::where([['ticket_for', $locationId],['status','created'],['is_queue', 'tidak'],['assigned', 'tidak'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->get();
+                $data3          = Ticket::where([['ticket_for', $locationId],['status','created'],['is_queue', 'ya'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->get();
                 $filterArray    = [$filter1, $filter2];
 
             // Jika role Agent
@@ -213,7 +230,6 @@ class FilterController extends Controller
     {
         // Get data User
         $userId     = Auth::user()->id;
-        $userRole   = Auth::user()->role;
         $locationId = Auth::user()->location_id;
         $location   = Auth::user()->location->nama_lokasi;
 
@@ -349,7 +365,6 @@ class FilterController extends Controller
     {
         // Get data User
         $userId     = Auth::user()->id;
-        $userRole   = Auth::user()->role;
         $locationId = Auth::user()->location_id;
         $location   = Auth::user()->location->nama_lokasi;
 
@@ -362,9 +377,9 @@ class FilterController extends Controller
         $filterArray = [$category, $start_date, $end_date];
 
         if ($request->filled('category') && $request->filled('start_date') && !$request->filled('end_date')) {
-            $pathFilter = [$category, $date1->format('d-M-Y')];
+            $pathFilter = [$category, $date1->format('d-M-Y')." s/d sekarang"];
         } elseif ($request->filled('category') && !$request->filled('start_date') && $request->filled('end_date')) {
-            $pathFilter = [$category, $date2->format('d-M-Y')];
+            $pathFilter = [$category, "Periode Awal s/d ".$date2->format('d-M-Y')];
         } elseif ($request->filled('category') && !$request->filled('start_date') && !$request->filled('end_date')) {
             $pathFilter = [$category, ""]; 
         } elseif (!$request->filled('category') && $request->filled('start_date') && $request->filled('end_date')) {
@@ -379,6 +394,10 @@ class FilterController extends Controller
             } else {
                 $pathFilter = [$category, $date1->format('d-M-Y')." s/d ".$date2->format('d-M-Y')];
             }
+        } elseif (!$request->filled('category') && $request->filled('start_date') && !$request->filled('end_date')) {
+            $pathFilter = ["", $date1->format('d-M-Y')." s/d sekarang"];
+        } elseif (!$request->filled('category') && !$request->filled('start_date') && $request->filled('end_date')) {
+                $pathFilter = ["", "Periode Awal s/d ".$date2->format('d-M-Y')];
         } else {
             return redirect('/report-sub-categories');
         }
@@ -393,16 +412,20 @@ class FilterController extends Controller
 
         $categories = $query->with(['sub_category_tickets.ticket_details' => function($query) use ($start_date, $end_date) {
             if (!empty($start_date) && empty($end_date)) {
-                $query->whereDate('created_at', '=', $start_date);
+                $query->whereDate('created_at', '>=', $start_date);
             }
         
             if (!empty($end_date) && empty($start_date)) {
-                $query->whereDate('created_at', '=', $end_date);
+                $query->whereDate('created_at', '<=', $end_date);
             }
         
             if (!empty($start_date) && !empty($end_date)) {
-                $query->whereDate('created_at', '>=', $start_date)
-                    ->whereDate('created_at', '<=', $end_date);
+                if ($start_date == $end_date) {
+                    $query->whereDate('created_at', '=', $start_date);
+                } else {
+                    $query->whereDate('created_at', '>=', $start_date)
+                        ->whereDate('created_at', '<=', $end_date);
+                }
             }
         
             $query->where('status', 'resolved');
@@ -410,6 +433,7 @@ class FilterController extends Controller
         }])->get();
         
         $agents = Agent::where('location_id', $locationId)->get();
+        $totalAgents = Agent::where('location_id', $locationId)->count();
         $data = [];
         
         foreach ($categories as $category) {
@@ -430,8 +454,119 @@ class FilterController extends Controller
             "filterArray"   => $filterArray,
             "pathFilter"    => $pathFilter,
             "dCategories"   => $dCategories,
+            "totalAgents"   => $totalAgents,
             "agents"        => $agents,
             "data"          => $data
+        ]);
+    }
+
+    public function reportLocation(Request $request)
+    {
+        // Get data User
+        $userId     = Auth::user()->id;
+        $userRole   = Auth::user()->role;
+        $locationId = Auth::user()->location_id;
+
+        $wilayahId = $request->wil;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        $date1 = Carbon::parse($startDate);
+        $date2 = Carbon::parse($endDate);
+
+        if($wilayahId != NULL){
+            $getWilayah = Wilayah::find($wilayahId);
+            $namaWilayah = $getWilayah->name;
+        }else{
+            $namaWilayah = '';
+        }
+
+        $filterArray = [$wilayahId, $startDate, $endDate];
+
+        if ($request->filled('wil') && $request->filled('start_date') && !$request->filled('end_date')) {
+            $pathFilter = [$namaWilayah, $date1->format('d-M-Y')." s/d sekarang"];
+        } elseif ($request->filled('wil') && !$request->filled('start_date') && $request->filled('end_date')) {
+            $pathFilter = [$namaWilayah, "Periode Awal s/d ".$date2->format('d-M-Y')];
+        } elseif ($request->filled('wil') && !$request->filled('start_date') && !$request->filled('end_date')) {
+            $pathFilter = [$namaWilayah, ""]; 
+        } elseif (!$request->filled('wil') && $request->filled('start_date') && $request->filled('end_date')) {
+            if ($request->start_date == $request->end_date) {
+                $pathFilter = ["", $date1->format('d-M-Y')];
+            } else {
+                $pathFilter = ["", $date1->format('d-M-Y')." s/d ".$date2->format('d-M-Y')];
+            }
+        } elseif ($request->filled('wil') && $request->filled('start_date') && $request->filled('end_date')) {
+            if ($request->start_date == $request->end_date) {
+                $pathFilter = [$namaWilayah, $date1->format('d-M-Y')];
+            } else {
+                $pathFilter = [$namaWilayah, $date1->format('d-M-Y')." s/d ".$date2->format('d-M-Y')];
+            }
+        } elseif (!$request->filled('wil') && $request->filled('start_date') && !$request->filled('end_date')) {
+                $pathFilter = ["", $date1->format('d-M-Y')." s/d sekarang"];
+        } elseif (!$request->filled('wil') && !$request->filled('start_date') && $request->filled('end_date')) {
+                $pathFilter = ["", "Periode Awal s/d ".$date2->format('d-M-Y')];
+        } else {
+            return redirect('/report-locations');
+        }
+
+        $wilayahs = Wilayah::all();
+
+        $query = Location::orderBy('nama_lokasi');
+        
+        if (!empty($wilayahId)) {
+            $query->where('wilayah_id', $wilayahId);
+        }
+
+        $locations = $query->withCount(['tickets', 'user'])
+            ->with(['tickets' => function($query) use ($locationId, $startDate, $endDate) { 
+                $query->where('ticket_for', $locationId)
+                      ->whereNotIn('status', ['deleted']);
+                
+                // Filter berdasarkan created_at atau updated_at jika startDate dan endDate diisi
+                if (!empty($startDate) && empty($endDate)) {
+                    $query->whereDate('created_at', '>=', $startDate);
+                }
+            
+                if (!empty($endDate) && empty($startDate)) {
+                    $query->whereDate('created_at', '<=', $endDate);
+                }
+            
+                if (!empty($startDate) && !empty($endDate)) {
+                    if ($startDate == $endDate) {
+                        $query->whereDate('created_at', '=', $startDate);
+                    } else {
+                        $query->whereDate('created_at', '>=', $startDate)
+                            ->whereDate('created_at', '<=', $endDate);
+                    }
+                }
+
+                $query->with('ticket_detail');
+            }, 'user']) 
+            ->orderBy('nama_lokasi', 'ASC')
+            ->get();
+
+        $locations = $locations->map(function($location) { 
+            // Report 1 
+            $location->permintaan = $location->tickets->filter(function($ticket) {
+                    return $ticket->ticket_detail->jenis_ticket == "permintaan"; 
+                })->count();
+            $location->kendala = $location->tickets->filter(function($ticket) {
+                    return $ticket->ticket_detail->jenis_ticket == "kendala";
+                })->count();
+            $location->total = $location->permintaan + $location->kendala;
+
+            return $location;
+        });
+
+        
+        return view('contents.report.location.index', [
+            "url"           => "",
+            "title"         => "Report Location",
+            "path"          => "Report",
+            "path2"         => "Location",
+            "filterArray"   => $filterArray,
+            "pathFilter"    => $pathFilter,
+            "locations"     => $locations,
+            "wilayahs"      => $wilayahs,
         ]);
     }
 }

@@ -14,8 +14,8 @@
                                     @method('put')
                                     @csrf
                                     <div class="col-md-2">
-                                        <label for="nik" class="form-label">NIK</label>
-                                        <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize bg-light @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik', $user->nik) }}" maxlength="8" title="Tolong di input dalam bentuk nomor." readonly>
+                                        <label for="nik" class="form-label">No. Induk Karyawan</label>
+                                        <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik', $user->nik) }}" maxlength="8" title="Tolong di input dalam bentuk nomor.">
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('nik')
@@ -27,7 +27,7 @@
 
                                     <div class="col-md-3">
                                         <label for="nama" class="form-label">Nama Lengkap</label>
-                                        <input type="text" name="nama" class="form-control text-capitalize bg-light @error('nama') is-invalid @enderror" id="nama" value="{{ old('nama', $user->nama) }}" readonly>
+                                        <input type="text" name="nama" class="form-control text-capitalize @error('nama') is-invalid @enderror" id="nama" value="{{ old('nama', $user->nama) }}">
 
                                         <!-- Showing notification error for input validation -->
                                         @error('nama')
@@ -51,15 +51,15 @@
 
                                     <div class="col-md-2">
                                         <label for="role" class="form-label">Role</label>
-                                        <select class="form-select @error('role') is-invalid @enderror" name="role" id="role" value="{{ old('role') }}">
+                                        <select class="form-select @error('role') is-invalid @enderror" name="role" id="role">
                                             <option selected disabled>Choose...</option>
-                                            @for($i=0; $i < count($roles); $i++){
-                                                @if(old('role', $user->role) == $roles[$i])
-                                                <option selected value="{{ $roles[$i] }}">{{ ucwords($roles[$i]) }}</option>
+                                            @foreach($roles as $role)
+                                                @if(old('role', $user->role_id) == $role->id)
+                                                <option selected value="{{ $role->id }}">{{ ucwords($role->role_name) }}</option>
                                                 @else
-                                                <option value="{{ $roles[$i] }}">{{ ucwords($roles[$i]) }}</option>
+                                                <option value="{{ $role->id }}">{{ ucwords($role->role_name) }}</option>
                                                 @endif
-                                            }@endfor
+                                            @endforeach
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
@@ -74,7 +74,7 @@
                                     </div>
 
                                     <div class="col-md-12">
-                                        <p class="border-bottom mt-2 mb-0"></p>
+                                        <p class="border-bottom"></p>
                                     </div>
 
                                     <div class="col-md-3">
@@ -85,11 +85,7 @@
                                                 @if(old('position_id', $user->position_id) == $position->id)
                                                 <option selected value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
                                                 @else
-                                                @if($position->id == 5)
-                                                    <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }} (khusus cabang)</option>
-                                                    @else
-                                                    <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
-                                                    @endif
+                                                <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
@@ -103,7 +99,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="location_id" class="form-label">Lokasi</label>
+                                        <label for="location_id" class="form-label">Divisi</label>
                                         <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location" value="{{ old('location_id') }}">
                                             <option selected disabled>Choose...</option>
                                             @foreach($locations as $location)
@@ -123,57 +119,35 @@
                                         @enderror
                                     </div>
 
-                                    <script>
-                                        $('#location').change(function(){
-                                            var location_id = $(this).val();
-                                            var sub_divisi = $('#sub_divisi');
-                                            if (location_id == 10) {
-                                                sub_divisi.empty();
-                                                sub_divisi.append('<option selected disabled>Choose...</option>');
-                                                sub_divisi.append('<option value="hardware maintenance">Hardware Maintenance</option>');
-                                                sub_divisi.append('<option value="helpdesk">Helpdesk</option>');
-                                                sub_divisi.append('<option value="infrastructur networking">Infrastructur Networking</option>');
-                                                sub_divisi.append('<option value="tech support">Tech Support</option>');
-
-                                                // Aktifkan dropdown sub_divisi
-                                                sub_divisi.prop('disabled', false);
-                                            } else {
-                                                sub_divisi.empty();
-                                                sub_divisi.append('<option selected value="none">Tidak Ada</option>');
-                                                sub_divisi.prop('disabled', false);
-                                            }
-                                        });
-                                    </script>
-
-                                    <div class="col-md-2">
-                                        <label for="sub_divisi" class="form-label">Sub Divisi</label>
-                                        @if($user->location_id == 10)
-                                        <select class="form-select @error('sub_divisi') is-invalid @enderror" name="sub_divisi" id="sub_divisi">
-                                            <option selected disabled>Choose...</option>
-                                            @for($i=0; $i < count($subDivisiLists); $i++){
-                                                @if(old('role', $subDivisi[0]) == $subDivisiLists[$i])
-                                                <option selected value="{{ $subDivisiLists[$i] }}">{{ ucwords($subDivisiLists[$i]) }}</option>
+                                    <div class="col-md-3">
+                                        <label for="sub_division" class="form-label">Sub Divisi / Area / Regional / Wilayah</label>
+                                        <select class="form-select @error('sub_division_id') is-invalid @enderror" name="sub_division" id="sub_division">
+                                            <option value="" disabled>Choose...</option>
+                                            @if(old('sub_division', $user->sub_divisi) == "tidak ada")
+                                            <option selected value="tidak ada">Tidak Ada</option>
+                                            @else
+                                                @foreach($subDivisions as $subDivision)
+                                                @if(old('sub_division', ucwords($user->sub_divisi)) == $subDivision->name)
+                                                <option selected value="{{ $subDivision->name }}">{{ $subDivision->name }}</option>
                                                 @else
-                                                <option value="{{ $subDivisiLists[$i] }}">{{ ucwords($subDivisiLists[$i]) }}</option>
+                                                <option value="{{ $subDivision->name }}">{{ $subDivision->name }}</option>
                                                 @endif
-                                            }@endfor
-                                        </select>
-                                        @else
-                                        <select class="form-select @error('sub_divisi') is-invalid @enderror" name="sub_divisi" id="sub_divisi" disabled>
-                                            @if(old('role', $subDivisi[0]) == $subDivisi[0])
-                                            <option selected value="{{ $subDivisi[0] }}">{{ $subDivisi[1] }}</option>
+                                                @endforeach
                                             @endif
                                         </select>
-                                        @endif
 
                                         <!-- Showing notification error for input validation -->
-                                        @error('sub_divisi')
+                                        @error('sub_division')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
                                         @enderror
                                     </div>
 
+                                    <div class="col-md-3"></div>
+
+                                    <div class="col-md-12"></div>
+                                    
                                     <div class="col-md-2">
                                         <label for="nama_client" class="form-label">No. Telp/Ext</label>
                                         <input type="text" name="telp" pattern="[0-9]+" class="form-control text-capitalize @error('telp') is-invalid @enderror" id="telp" value="{{ old('telp', $user->telp) }}" maxlength="15" title="Tolong di input dalam bentuk nomor." required>
@@ -200,7 +174,7 @@
 
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 pt-2">
                                         <p class="border-bottom mt-2 mb-0"></p>
                                     </div>
                                     
@@ -217,4 +191,57 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+
+    <script>
+        $('#location').change(function(){
+            var locationId = $(this).val();
+            var subDivisiDropdown = $('#sub_division');
+
+            var SubDivisi = '{{ route("getSubDivisions", ":id") }}';
+            url = SubDivisi.replace(':id', locationId);
+            $.ajax({
+                url: url,
+                type: 'get',
+                dataType: 'json',
+                success: function(response){
+                    subDivisiDropdown.empty();
+                    subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
+                    $.each(response, function (key, value) {
+                        subDivisiDropdown.append('<option class="text-capitalize" value="' + value.name + '">' + value.name + '</option>');
+                    });
+                    subDivisiDropdown.prop('disabled', false);
+                },
+                error: function(xhr) {
+                    // Jika error, tambahkan nilai default
+                    if (xhr.status === 404) {
+                        subDivisiDropdown.empty();
+                        subDivisiDropdown.append('<option selected value="tidak ada">Tidak Ada</option>');
+                        subDivisiDropdown.prop('disabled', false);
+                    } else {
+                        // Tangani error lainnya jika perlu
+                        console.error('An error occurred:', xhr.statusText);
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function formValidation(){
+            var telp = document.getElementById('telp').value;
+
+            if (telp.length < 4) {
+                alert('Ketikkan No. Telp/Ext minimal 4 karakter!');
+                return false;
+            }
+
+            var lanjut      = confirm('Apakah anda yakin data sudah benar?');
+
+            if(lanjut){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    </script>
 @endsection

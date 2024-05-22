@@ -18,11 +18,6 @@ class Ticket extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function client()
-    {
-        return $this->belongsTo('App\Client');
-    }
-
     public function agent()
     {
         return $this->belongsTo('App\Agent');

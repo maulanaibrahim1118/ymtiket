@@ -10,10 +10,10 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-person-check me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="/users" method="POST">
+                                <form class="row g-3 mb-3" action="/users" method="POST" onsubmit="return formValidation()">
                                     @csrf
                                     <div class="col-lg-2">
-                                        <label for="nik" class="form-label">NIK / Site Cabang</label>
+                                        <label for="nik" class="form-label">No. Induk Karyawan</label>
                                         <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik') }}" maxlength="8" title="Tolong di input dalam bentuk nomor." required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -52,13 +52,13 @@
                                         <label for="role" class="form-label">Role</label>
                                         <select class="form-select select2 @error('role') is-invalid @enderror" name="role" id="role" value="{{ old('role') }}">
                                             <option selected disabled>Choose...</option>
-                                            @for($i=0; $i < count($roles); $i++){
-                                                @if(old('role') == $roles[$i])
-                                                <option selected value="{{ $roles[$i] }}">{{ ucwords($roles[$i]) }}</option>
+                                            @foreach($roles as $role)
+                                                @if(old('role') == $role->id)
+                                                <option selected value="{{ $role->id }}">{{ ucwords($role->role_name) }}</option>
                                                 @else
-                                                <option value="{{ $roles[$i] }}">{{ ucwords($roles[$i]) }}</option>
+                                                <option value="{{ $role->id }}">{{ ucwords($role->role_name) }}</option>
                                                 @endif
-                                            }@endfor
+                                            @endforeach
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
@@ -73,7 +73,7 @@
                                     </div>
 
                                     <div class="col-md-12">
-                                        <p class="border-bottom mt-2 mb-0"></p>
+                                        <p class="border-bottom"></p>
                                     </div>
 
                                     <div class="col-md-3">
@@ -84,11 +84,7 @@
                                                 @if(old('position_id') == $position->id)
                                                 <option selected value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
                                                 @else
-                                                    @if($position->id == 5)
-                                                    <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }} (khusus cabang)</option>
-                                                    @else
-                                                    <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
-                                                    @endif
+                                                <option value="{{ $position->id }}">{{ ucwords($position->nama_jabatan) }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
@@ -102,7 +98,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="location_id" class="form-label">Divisi / Cabang</label>
+                                        <label for="location_id" class="form-label">Divisi</label>
                                         <select class="form-select select2 @error('location_id') is-invalid @enderror" name="location_id" id="location" value="{{ old('location_id') }}" required>
                                             <option selected disabled>Choose...</option>
                                             @foreach($locations as $location)
@@ -121,46 +117,27 @@
                                         </div>
                                         @enderror
                                     </div>
-                                    <script>
-                                        $('#location').change(function(){
-                                            var location_id = $(this).val();
-                                            var sub_divisi = $('#sub_divisi');
-                                            if (location_id == 10) {
-                                                sub_divisi.empty();
-                                                sub_divisi.append('<option selected disabled>Choose...</option>');
-                                                sub_divisi.append('<option value="hardware maintenance">Hardware Maintenance</option>');
-                                                sub_divisi.append('<option value="helpdesk">Helpdesk</option>');
-                                                sub_divisi.append('<option value="infrastructur networking">Infrastructur Networking</option>');
-                                                sub_divisi.append('<option value="tech support">Tech Support</option>');
 
-                                                // Aktifkan dropdown sub_divisi
-                                                sub_divisi.prop('disabled', false);
-                                            } else {
-                                                sub_divisi.empty();
-                                                sub_divisi.append('<option selected value="none">Tidak Ada</option>');
-                                                sub_divisi.prop('disabled', false);
-                                            }
-                                        });
-                                    </script>
-
-                                    <div class="col-md-2">
-                                        <label for="sub_divisi" class="form-label">Sub Divisi</label>
-                                        <select class="form-select select2 @error('sub_divisi') is-invalid @enderror" name="sub_divisi" id="sub_divisi" disabled>
+                                    <div class="col-md-3">
+                                        <label for="sub_division" class="form-label">Sub Divisi / Area / Regional / Wilayah</label>
+                                        <select class="form-select select2 @error('sub_division') is-invalid @enderror" name="sub_division" id="sub_division" disabled>
                                             <option selected disabled>Choose...</option>
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
-                                        @error('sub_divisi')
+                                        @error('sub_division')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-4"></div>
+                                    <div class="col-md-3"></div>
+
+                                    <div class="col-md-12"></div>
 
                                     <div class="col-md-2">
-                                        <label for="nama_client" class="form-label">No. Telp/Ext</label>
+                                        <label for="telp" class="form-label">No. Telp/Ext</label>
                                         <input type="text" name="telp" pattern="[0-9]+" class="form-control text-capitalize @error('telp') is-invalid @enderror" id="telp" value="{{ old('telp') }}" maxlength="15" title="Tolong di input dalam bentuk nomor." required>
 
                                         <!-- Showing notification error for input validation -->
@@ -181,7 +158,7 @@
 
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 pt-2">
                                         <p class="border-bottom mt-2 mb-0"></p>
                                     </div>
                                     
@@ -198,4 +175,57 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+
+    <script>
+        $('#location').change(function(){
+            var locationId = $(this).val();
+            var subDivisiDropdown = $('#sub_division');
+
+            var SubDivisi = '{{ route("getSubDivisions", ":id") }}';
+            url = SubDivisi.replace(':id', locationId);
+            $.ajax({
+                url: url,
+                type: 'get',
+                dataType: 'json',
+                success: function(response){
+                    subDivisiDropdown.empty();
+                    subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
+                    $.each(response, function (key, value) {
+                        subDivisiDropdown.append('<option class="text-capitalize" value="' + value.name + '">' + value.name + '</option>');
+                    });
+                    subDivisiDropdown.prop('disabled', false);
+                },
+                error: function(xhr) {
+                    // Jika error, tambahkan nilai default
+                    if (xhr.status === 404) {
+                        subDivisiDropdown.empty();
+                        subDivisiDropdown.append('<option selected value="tidak ada">Tidak Ada</option>');
+                        subDivisiDropdown.prop('disabled', false);
+                    } else {
+                        // Tangani error lainnya jika perlu
+                        console.error('An error occurred:', xhr.statusText);
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function formValidation(){
+            var telp = document.getElementById('telp').value;
+
+            if (telp.length < 4) {
+                alert('Ketikkan No. Telp/Ext minimal 4 karakter!');
+                return false;
+            }
+
+            var lanjut = confirm('Apakah anda yakin data sudah benar?');
+
+            if(lanjut){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    </script>
 @endsection

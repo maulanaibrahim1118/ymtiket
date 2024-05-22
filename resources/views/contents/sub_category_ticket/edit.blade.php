@@ -73,6 +73,31 @@
                                     </div>
                                     
                                     <div class="col-md-12">
+                                        <div class="accordion" id="accordionExample">
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                        <i class="bi bi-info-circle-fill me-2"></i>Tentang Asset Change
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <div class="card-body">
+                                                            Asset Change adalah status yang digunakan untuk menandakan bahwa asset tersebut dapat/tidak dapat dipergunakan lagi, <b>apabila agent memilih Sub Kategori tersebut saat penanganan tiket</b>. Berikut adalah penjelasan lebih lanjut mengenai pilihan yang tersedia :<br><br>
+                                                            1. <b>Ya </b>: Status Asset akan berubah menjadi tidak digunakan.<br>
+                                                            2. <b>Tidak </b>: Status Asset tidak akan berubah (digunakan).<br>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <p class="border-bottom mt-2 mb-0"></p>
+                                    </div>
+                                    
+                                    <div class="col-md-12">
                                         <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Simpan</button>
                                         <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
                                         <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>

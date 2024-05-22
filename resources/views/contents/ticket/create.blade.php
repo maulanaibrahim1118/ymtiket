@@ -14,20 +14,20 @@
                                     @csrf
 
                                     <div class="col-md-3">
-                                        <label for="client_id" class="form-label">Client</label>
-                                        <select class="form-select select2 @error('client_id') is-invalid @enderror" name="client_id" id="client_id" required>
+                                        <label for="user_id" class="form-label">Client</label>
+                                        <select class="form-select select2 @error('user_id') is-invalid @enderror" name="user_id" id="user_id" required>
                                             <option selected value="" disabled>Choose...</option>
-                                            @foreach($clients as $client)
-                                                @if(old('client_id') == $client->id)
-                                                <option selected value="{{ $client->id }}">{{ ucwords($client->nama_client) }}</option>
+                                            @foreach($users as $user)
+                                                @if(old('user_id') == $user->id)
+                                                <option selected value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
                                                 @else
-                                                <option value="{{ $client->id }}">{{ ucwords($client->nama_client) }}</option>
+                                                <option value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
-                                        @error('client_id')
+                                        @error('user_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -57,70 +57,17 @@
                                         @enderror
                                     </div>
 
-                                    <script>
-                                        $('#client_id').change(function(){
-                                            var client = $(this).val();
-                                            var url = '{{ route("getClient", ":id") }}';
-                                            url = url.replace(':id', client);
-                                            $.ajax({
-                                                url: url,
-                                                type: 'get',
-                                                dataType: 'json',
-                                                success: function(response){
-                                                    if(response != null){
-                                                        $('#location_id').val(response.location_id);
-                                                        var locationId = response.location_id;
-                                                        var assetDropdown = $('#asset_id');
-
-                                                        var Location = '{{ route("getLocation", ":id") }}';
-                                                        url = Location.replace(':id', locationId);
-                                                        $.ajax({
-                                                            url: url,
-                                                            type: 'get',
-                                                            dataType: 'json',
-                                                            success: function(response){
-                                                                if(response != null){
-                                                                    $('#locationName').val(response.nama_lokasi);
-                                                                }
-                                                            }
-                                                        });
-
-                                                        var Asset = '{{ route("getAssets", ":id") }}';
-                                                        url = Asset.replace(':id', locationId);
-                                                        $.ajax({
-                                                            url: url,
-                                                            type: 'get',
-                                                            dataType: 'json',
-                                                            success: function(response){
-                                                                assetDropdown.empty();
-                                                                assetDropdown.append('<option selected value="" disabled>Choose...</option>');
-                                                                $.each(response, function (key, value) {
-                                                                    assetDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.no_asset + ' | ' + value.nama_barang + ' | ' + value.merk + '</option>');
-                                                                });
-                                                                // Aktifkan dropdown no. asset
-                                                                assetDropdown.prop('disabled', false);
-                                                            },
-                                                            error: function (xhr, status, error) {
-                                                                console.error(xhr.responseText);
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            });
-                                        });
-                                    </script>
-                                    
                                     <div class="col-md-3">
                                         <label for="ticket_for" class="form-label">Diajukan Kepada</label>
                                         <select class="form-select select2 @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for" required>
                                             <option selected value="" disabled>Choose...</option>
-                                            @for($i=0; $i < count($ticketFors); $i++){
-                                                @if(old('ticket_for') == $ticketFors[$i])
-                                                <option selected value="{{ $ticketFors[$i] }}">{{ ucwords($ticketFors[$i]) }}</option>
+                                            @foreach($ticketFors as $ticketFor)
+                                                @if(old('ticket_for') == $ticketFor->id)
+                                                <option selected value="{{ $ticketFor->location_id }}">{{ ucwords($ticketFor->location->nama_lokasi) }}</option>
                                                 @else
-                                                <option value="{{ $ticketFors[$i] }}">{{ ucwords($ticketFors[$i]) }}</option>
+                                                <option value="{{ $ticketFor->location_id }}">{{ ucwords($ticketFor->location->nama_lokasi) }}</option>
                                                 @endif
-                                            }@endfor
+                                            @endforeach
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
@@ -167,9 +114,6 @@
                                         @enderror
                                     </div>
 
-                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                    <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
-
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-2 mb-0"></p>
                                     </div>
@@ -180,49 +124,6 @@
                                         <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
-                                <script>
-                                    function formValidation(){
-                                        var asset = document.getElementById('asset_id').value;
-                                        var kendala = document.getElementById('kendala').value;
-                                        var fileInput = document.getElementById('file');
-                                        var maxSizeInBytes = 1024 * 1024; // 1 MB (sesuaikan dengan batas maksimum yang diinginkan)
-                                        var detailKendala = document.getElementById('detail_kendala').value;
-
-                                        if (asset.length == 0) {
-                                            alert('Asset harus dipilih!');
-                                            return false;
-                                        }
-
-                                        if (kendala.length < 5) {
-                                            alert('Ketikkan kendala minimal 5 karakter!');
-                                            return false;
-                                        }
-                                        
-                                        if (fileInput.files.length > 0) {
-                                            var fileSizeInBytes = fileInput.files[0].size;
-                                            var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-
-                                            if (fileSizeInBytes > maxSizeInBytes) {
-                                            alert('Ukuran file melebihi batas maksimum. Batas: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
-                                            return false;
-                                            } 
-                                        }
-
-                                        if (detailKendala.length < 10) {
-                                            alert('Ketikkan detail kendala minimal 10 karakter!');
-                                            return false;
-                                        }
-
-                                        var ticket_for  = document.getElementById('ticket_for').value;
-                                        var lanjut      = confirm('Apakah anda yakin ticket ditujukan untuk ' + ticket_for + '?');
-
-                                        if(lanjut){
-                                            return true;
-                                        }else{
-                                            return false;
-                                        }
-                                    }
-                                </script>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->
                     </div><!-- End col-12 -->
@@ -230,4 +131,100 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+
+    <script>
+        $('#user_id').change(function(){
+            var client = $(this).val();
+            var url = '{{ route("getClient", ":id") }}';
+            url = url.replace(':id', client);
+            $.ajax({
+                url: url,
+                type: 'get',
+                dataType: 'json',
+                success: function(response){
+                    if(response != null){
+                        $('#location_id').val(response.location_id);
+                        var locationId = response.location_id;
+                        var assetDropdown = $('#asset_id');
+
+                        var Location = '{{ route("getLocation", ":id") }}';
+                        url = Location.replace(':id', locationId);
+                        $.ajax({
+                            url: url,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function(response){
+                                if(response != null){
+                                    $('#locationName').val(response.nama_lokasi);
+                                }
+                            }
+                        });
+
+                        var Asset = '{{ route("getAssets", ":id") }}';
+                        url = Asset.replace(':id', locationId);
+                        $.ajax({
+                            url: url,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function(response){
+                                assetDropdown.empty();
+                                assetDropdown.append('<option selected value="" disabled>Choose...</option>');
+                                $.each(response, function (key, value) {
+                                    assetDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.no_asset + ' | ' + value.nama_barang + ' | ' + value.merk + '</option>');
+                                });
+                                // Aktifkan dropdown no. asset
+                                assetDropdown.prop('disabled', false);
+                            },
+                            error: function (xhr, status, error) {
+                                console.error(xhr.responseText);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function formValidation(){
+            var asset = document.getElementById('asset_id').value;
+            var kendala = document.getElementById('kendala').value;
+            var fileInput = document.getElementById('file');
+            var maxSizeInBytes = 1024 * 1024; // 1 MB (sesuaikan dengan batas maksimum yang diinginkan)
+            var detailKendala = document.getElementById('detail_kendala').value;
+
+            if (asset.length == 0) {
+                alert('Asset harus dipilih!');
+                return false;
+            }
+
+            if (kendala.length < 5) {
+                alert('Ketikkan kendala minimal 5 karakter!');
+                return false;
+            }
+            
+            if (fileInput.files.length > 0) {
+                var fileSizeInBytes = fileInput.files[0].size;
+                var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+                if (fileSizeInBytes > maxSizeInBytes) {
+                alert('Ukuran file melebihi batas maksimum. Batas: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
+                return false;
+                } 
+            }
+
+            if (detailKendala.length < 10) {
+                alert('Ketikkan detail kendala minimal 10 karakter!');
+                return false;
+            }
+
+            var lanjut = confirm('Apakah anda yakin data yang di input sudah sesuai?');
+
+            if(lanjut){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    </script>
 @endsection

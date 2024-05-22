@@ -23,11 +23,25 @@ class LoginController extends Controller
     {
         $credentials = $request->only('nik', 'password');
 
+        // Cek kredensial terlebih dahulu
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
+            // Ambil pengguna yang terotentikasi
+            $user = Auth::user();
+
+            // Cek apakah status pengguna aktif
+            if ($user->is_active !== '1') {
+                // Logout pengguna segera
+                Auth::logout();
+
+                // Redirect kembali dengan pesan error
+                return back()->with('loginError', 'No. Induk Karyawan atau Password salah!');
+            }
+
+            // Otentikasi berhasil dan pengguna aktif
             return redirect()->intended('/dashboard');
         }
 
+        // Otentikasi gagal
         return back()->with('loginError', 'No. Induk Karyawan atau Password salah!');
     }
 

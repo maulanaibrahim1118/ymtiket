@@ -57,11 +57,37 @@
         @can('isServiceDesk')
         @can('isIT')
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('locations*') ? '' : 'collapsed' }}" href="/locations">
-                <i class="bi bi-geo-alt"></i>
-                <span>Location</span>
+            <a class="nav-link {{ Request::is('location*') ? '' : 'collapsed' }}" data-bs-target="#locationSideBar" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-geo-alt"></i><span>Location</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-        </li><!-- End Lokasi -->
+            <ul id="locationSideBar" class="nav-content collapse {{ Request::is('location*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/locations" class="{{ Request::is('locations*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Store & Division</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/location-sub-divisions" class="{{ Request::is('location-sub-divisions*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Sub Division</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/location-wilayahs" class="{{ Request::is('location-wilayahs*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Wilayah</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/location-regionals" class="{{ Request::is('location-regionals*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Regional</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/location-areas" class="{{ Request::is('location-areas*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Area</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Master Data -->
         @endcan
 
         <li class="nav-item">
@@ -104,13 +130,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('404.underconstruction') }}" class="{{ Request::is('report-clients*') ? 'active' : '' }}">
-                        <i class="bi bi-file-text"></i><span>Client</span>
+                    <a href="{{ route('report.subCategory') }}" class="{{ Request::is('report-sub-categories*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Sub Category</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('report.subCategory') }}" class="{{ Request::is('report-sub-categories*') ? 'active' : '' }}">
-                        <i class="bi bi-file-text"></i><span>Sub Category</span>
+                    <a href="{{ route('report.location') }}" class="{{ Request::is('report-locations*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Store & Division</span>
                     </a>
                 </li>
             </ul>

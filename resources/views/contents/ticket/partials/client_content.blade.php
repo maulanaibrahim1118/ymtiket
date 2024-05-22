@@ -18,7 +18,7 @@
             <tr>
                 <td>{{ date('d-M-Y H:i', strtotime($ticket->created_at)) }}</td>
                 <td>{{ $ticket->no_ticket }}</td>
-                <td>{{ $ticket->client->nama_client }}</td>
+                <td>{{ $ticket->user->nama }}</td>
                 <td>{{ $ticket->kendala }}</td>
                 <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->detail_kendala }}</td>
                 <td>{{ $ticket->agent->nama_agent }}</td>

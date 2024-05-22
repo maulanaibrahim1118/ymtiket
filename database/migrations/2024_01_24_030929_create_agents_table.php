@@ -18,9 +18,10 @@ class CreateAgentsTable extends Migration
             $table->string('nik', 8)->unique();
             $table->string('nama_agent', 40);
             $table->bigInteger('location_id');
-            $table->enum('sub_divisi', ['none', 'helpdesk', 'hardware maintenance', 'infrastructur networking', 'tech support']);
+            $table->string('sub_divisi', 40);
             $table->enum('pic_ticket', ['all', 'ho', 'store']);
             $table->enum('status', ['present']);
+            $table->enum('is_active', ['0', '1'])->default('1');
             $table->string('updated_by', 40);
             $table->timestamps();
         });

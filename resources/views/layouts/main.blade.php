@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <title>.:: YM-Tiket | {{ $title }}</title>
+    <title>YM-Tiket | {{ $title }}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -63,7 +63,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <a href="/dashboard/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" class="logo d-flex align-items-center">
                     <img src="{{ asset('dist/img/logo/logo.png') }}" alt="">
-                    <span class="d-none d-lg-block pt-1"><b>YM-Tiket</b></span>
+                    <span class="d-none d-lg-block pt-1"><b>YMTIKET</b></span>
                 </a>
                 <i class="bi bi-list toggle-sidebar-btn"></i>
             </div><!-- End Logo -->
@@ -233,62 +233,6 @@
     </div>
     </div>
 
-    <script>
-        $(document).ready(function(){
-            $('#role').select2({
-                dropdownParent: $('#role').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#position_id').select2({
-                dropdownParent: $('#position_id').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#location').select2({
-                dropdownParent: $('#location').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#sub_divisi').select2({
-                dropdownParent: $('#sub_divisi').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#client_id').select2({
-                dropdownParent: $('#client_id').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#ticket_for').select2({
-                dropdownParent: $('#ticket_for').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#asset_id').select2({
-                dropdownParent: $('#asset_id').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#category_asset_id').select2({
-                dropdownParent: $('#category_asset_id').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#wilayah').select2({
-                dropdownParent: $('#wilayah').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#regional').select2({
-                dropdownParent: $('#regional').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#area').select2({
-                dropdownParent: $('#area').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#category_ticket_id').select2({
-                dropdownParent: $('#category_ticket_id').parent() // Menentukan parent untuk dropdown
-            });
-
-            $('#asset_change').select2({
-                dropdownParent: $('#asset_change').parent() // Menentukan parent untuk dropdown
-            });
-        });
-    </script>
-
     <!-- Vendor JS Files -->
     <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -301,7 +245,29 @@
 
     <!-- Template Main JS File -->
     <script src="{{ asset('dist/js/main.js') }}"></script>
+    <script src="{{ asset('dist/js/parent-dropdown.js') }}"></script>
     
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const startDate = document.getElementById("start_date");
+            const endDate = document.getElementById("end_date");
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+
+            const maxDate = `${year}-${month}-${day}`;
+            startDate.setAttribute('max', maxDate);
+            endDate.setAttribute('max', maxDate);
+
+            // Event listener for the start date change
+            $("#start_date").change(function () {
+                var startDate = $(this).val();
+                $("#end_date").val(""); // Clear the end date
+                $("#end_date").attr("min", startDate); // Set the min attribute of end date
+            });
+        });
+    </script>
     <script>
         function reloadAction(){
             window.location.reload();

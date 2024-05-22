@@ -6,12 +6,13 @@ use App\User;
 use App\Agent;
 use App\Ticket;
 use App\Comment;
-use Carbon\Carbon;
+use App\Sub_division;
 use App\Ticket_detail;
 use App\Category_ticket;
 use App\Progress_ticket;
 use App\Ticket_approval;
 use App\Sub_category_ticket;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,22 +25,28 @@ class TicketDetailController extends Controller
      */
     public function index(Request $request)
     {
+        $userId     = Auth::user()->id;
+        $userRole   = Auth::user()->role_id;
+        $locationId = Auth::user()->location_id;
+        $location   = Auth::user()->location->nama_lokasi;
+
         // Get id Ticket dari request parameter
         $ticketId = decrypt($request['ticket_id']);
 
         $ticket     = Ticket::where('id', $ticketId)->first();
+        $codeAccess = $ticket->code_access;
+        $ticketArea = $ticket->location->wilayah_id;
         $agentId    = $ticket->agent_id;
-        $ticketArea = $ticket->ticket_area;
         $getAgent   = Agent::where('id', $agentId)->first();
         $locationId = $getAgent->location_id;
 
         // Cek apakah dia agent atau service desk
         $nik        = $getAgent->nik;
-        $getUser    = User::where('nik', $nik)->first();
-        $role       = $getUser->role;
+        $getUser    = User::where([['is_active', '1'],['nik', $nik]])->first();
+        $role       = $getUser->role_id;
 
-        // Mendapatkan id service desk
-        $getUserSD  = User::where([['location_id', $locationId],['role', 'service desk']])->first();
+        // Mendapatkan id service desk untuk assign oleh agent
+        $getUserSD  = User::where([['is_active', '1'],['location_id', $locationId],['role_id', 1]])->first();
         $nikSD      = $getUserSD->nik;
         $getAgentSD = Agent::where('nik', $nikSD)->first();
         $sdId       = $getAgentSD->id;
@@ -47,23 +54,30 @@ class TicketDetailController extends Controller
         // Mencari extension file
         $ext = substr($ticket->file, -4);
 
-        if($role == "service desk"){
-            if($ticketArea == "ho"){
-                $agents = Agent::where([['location_id', $locationId],['sub_divisi', 'hardware maintenance'],['status', 'present']])
-                                ->orWhere([['location_id', $locationId],['pic_ticket', 'ho'],['status', 'present']])
-                                ->whereNotIn('id', [$agentId])
-                                ->get();
-            }else{
-                $agents = Agent::where([['location_id', $locationId],['sub_divisi', 'hardware maintenance'],['status', 'present']])
-                                ->orWhere([['location_id', $locationId],['pic_ticket', 'store'],['status', 'present']])
-                                ->whereNotIn('id', [$agentId])
-                                ->get();
+        // Mencari agent yang memiliki sub divisi, untuk menentukan antrian dan assign
+        $haveSubDivs = Sub_division::select('location_id')->distinct()->pluck('location_id')->toArray();
+
+        // Get data Sub Divisi Agent HO & Store, untuk select option Antrikan
+        $subDivHo = Agent::where([['location_id', $locationId],['pic_ticket', '!=', 'store']])->whereNotIn('id', [$agentId])->distinct()->pluck('sub_divisi')->toArray();
+        $subDivStore = Agent::where([['location_id', $locationId],['pic_ticket', '!=', 'ho']])->whereNotIn('id', [$agentId])->distinct()->pluck('sub_divisi')->toArray();
+        
+        if($userRole == 1){
+            // Menampilkan nama agent (untuk assign) sesuai pic ticket
+            if($ticket->location->wilayah_id == 2){ // Ticket HO
+                $agents = Agent::where([['is_active', '1'],['location_id', $locationId],['status', 'present'],['pic_ticket', '!=', 'store']])
+                    ->whereNotIn('id', [$agentId])
+                    ->get();
+            }else{ // Ticket Cabang
+                $agents = Agent::where([['is_active', '1'],['location_id', $locationId],['status', 'present'],['pic_ticket', '!=', 'ho']])
+                    ->whereNotIn('id', [$agentId])
+                    ->get();
             }
         }else{
-            $agents = Agent::where([['location_id', $locationId],['id', $sdId]])->get();
+            $agents = Agent::where([['is_active', '1'],['location_id', $locationId],['id', $sdId]])->get();
         }
 
         $ticketApproval = Ticket_approval::where('ticket_id', $ticketId)->first();
+        
         if($ticketApproval == NULL)
         {
             $ticketApproval = "null";
@@ -81,6 +95,9 @@ class TicketDetailController extends Controller
             "ticket_approval"   => $ticketApproval,
             "countDetail"       => Ticket_detail::where('ticket_id', $ticketId)->count(),
             "agents"            => $agents,
+            "subDivHo"          => $subDivHo,
+            "subDivStore"       => $subDivStore,
+            "haveSubDivs"       => $haveSubDivs,
             "ext"               => $ext
         ]);
     }
@@ -132,7 +149,7 @@ class TicketDetailController extends Controller
     {
         // Get data User
         $nik        = Auth::user()->nik;
-        $role       = Auth::user()->role;
+        $role       = Auth::user()->role_id;
         
         $ticketId       = $request['ticket_id'];
         $agentId        = $request['agent_id'];
@@ -213,7 +230,7 @@ class TicketDetailController extends Controller
             $locationId = Auth::user()->location->id;
 
             // Mencari service desk dari agent tersebut berdasarkan nik
-            $getUser = User::where([['location_id', $locationId],['role', 'service desk']])->first();
+            $getUser = User::where([['is_active', '1'],['location_id', $locationId],['role_id', 1]])->first();
             $nikSD = $getUser->nik;
             $getAgent = Agent::where('nik', $nikSD)->first();
             $sdId = $getAgent->id;
@@ -261,7 +278,7 @@ class TicketDetailController extends Controller
             $ticket_approval->save();
 
             // Mengambil ticket baru yang berada di antrian
-            if($role == "service desk"){
+            if($role == 1){
                 return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
             }else{
                 $getAgent       = Agent::where('nik', $nik)->first();
@@ -278,16 +295,8 @@ class TicketDetailController extends Controller
                     if($countTicket-$countResolved > 0){
                         return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
                     }else{
-                        if($subDivisi == "helpdesk"){
-                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'helpdesk']])->first();
-                        }elseif($subDivisi == "hardware maintenance"){
-                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'hardware maintenance']])->first();
-                        }elseif($subDivisi == "infrastructur networking"){
-                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'infrastructur networking']])->first();
-                        }elseif($subDivisi == "tech support"){
-                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'tech support']])->first();
-                        }else{
-                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', 'none']])->first();
+                        if($subDivisi){
+                            $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', $subDivisi]])->first();
                         }
 
                         if($getAntrian == NULL){ // Jika antrian ticket sudah habis
@@ -343,6 +352,9 @@ class TicketDetailController extends Controller
         $categoryId     = $subCategory->category_ticket_id;
         $types          = ["kendala", "permintaan"];
 
+        // Mencari extension file
+        $ext = substr($ticket->file, -4);
+
         return view('contents.ticket_detail.edit', [
             "title"                 => "Edit Detail Tindakan",
             "path"                  => "Ticket",
@@ -352,6 +364,7 @@ class TicketDetailController extends Controller
             "progress_tickets"      => Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get(),
             "ticket"                => $ticket,
             'types'                 => $types,
+            'ext'                   => $ext,
             "td"                    => $ticket_detail
         ]);
     }
@@ -434,7 +447,7 @@ class TicketDetailController extends Controller
             $locationId = Auth::user()->location->id;
 
             // Mencari service desk dari agent tersebut berdasarkan nik
-            $getUser = User::where([['location_id', $locationId],['role', 'service desk']])->first();
+            $getUser = User::where([['is_active', '1'],['location_id', $locationId],['role_id', 1]])->first();
             $nikSD = $getUser->nik;
             $getAgent = Agent::where('nik', $nikSD)->first();
             $sdId = $getAgent->id;

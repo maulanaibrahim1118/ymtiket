@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Agent;
 use App\Category_ticket;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CategoriesExport;
 use Illuminate\Support\Facades\Auth;
 
 class ReportSubCategoryController extends Controller
@@ -19,6 +21,7 @@ class ReportSubCategoryController extends Controller
         $pathFilter = ["", ""];
 
         $dCategories = Category_ticket::where('location_id', $locationId)->get();
+        $totalAgents = Agent::where('location_id', $locationId)->count();
         $categories = Category_ticket::where('location_id', $locationId)->with(['sub_category_tickets.ticket_details.agent'])->get();
         $agents = Agent::where('location_id', $locationId)->get();
 
@@ -44,8 +47,19 @@ class ReportSubCategoryController extends Controller
             "filterArray"   => $filterArray,
             "pathFilter"    => $pathFilter,
             "dCategories"   => $dCategories,
+            "totalAgents"   => $totalAgents,
             "agents"        => $agents,
             "data"          => $data
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $category = $request['category2'];
+        $startDate = $request['startDate'];
+        $endDate = $request['endDate'];
+
+        $locationId = Auth::user()->location_id;
+        return Excel::download(new CategoriesExport($locationId, $category, $startDate, $endDate), 'category-report-'.$category.'-'.$startDate.'-'.$endDate.'.xlsx');
     }
 }

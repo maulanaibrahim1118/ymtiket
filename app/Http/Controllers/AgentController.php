@@ -21,7 +21,7 @@ class AgentController extends Controller
         $locationId = Auth::user()->location_id;
 
         // Get data Agent yang ditampilkan
-        $data = Agent::where('location_id', $locationId)
+        $data = Agent::where([['location_id', $locationId],['is_active', '1']])
             ->withCount('ticket_details')
             ->select(
                 'agents.*', 

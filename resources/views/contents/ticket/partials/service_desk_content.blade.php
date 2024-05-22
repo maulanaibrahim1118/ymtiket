@@ -20,7 +20,7 @@
                 <td>{{ $ticket->no_ticket }}</td>
 
                 {{-- Kolom Lokasi --}}
-                @if($ticket->location->wilayah == "head office")
+                @if($ticket->location->wilayah_id == 2)
                     <td>head office</td>
                 @else
                     <td>store</td>
@@ -50,7 +50,7 @@
                     @if($ticket->is_queue == "ya" AND $ticket->status == "created" OR $ticket->is_queue == "ya" AND $ticket->status == "pending")
                         <td><span class="badge bg-dark">dalam antrian</span></td>
                     @elseif($ticket->is_queue == "tidak" AND $ticket->status == "created")
-                        @if($ticket->role == "service desk")
+                        @if($ticket->role == 1)
                             <td><span class="badge bg-secondary">diluar antrian</span></td>
                         @else
                             <td></td>
@@ -98,11 +98,11 @@
                         
                                 {{-- Tombol Antrikan --}}
                                 @if($ticket->is_queue == "tidak")
-                                    @if(auth()->user()->location_id == 10)
-                                <li><button class="dropdown-item text-capitalize text-success" id="antrikanButton" data-bs-toggle="modal" data-bs-target="#antrikanModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData1(this)"><i class="bi bi-list-check text-success"></i>Antrikan</button></li>
+                                    @if(in_array(auth()->user()->location_id, $haveSubDivs))
+                                    <li><button class="dropdown-item text-capitalize text-success" id="antrikanButton" data-bs-toggle="modal" data-bs-target="#antrikanModal" name="{{ $ticket->id }}" value="{{ $ticket->location->wilayah_id }}" onclick="tampilkanData1(this)"><i class="bi bi-list-check text-success"></i>Antrikan</button></li>
                                     @else
                                     <li>
-                                        <form action="{{ route('ticket.queue', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                        <form action="{{ route('ticket.queue', ['id' => $ticket->id]) }}" method="post">
                                         @method('put')
                                         @csrf
                                         <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
@@ -117,7 +117,7 @@
                                 @endif
                         
                                 {{-- Tombol Assign --}}
-                                <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
+                                <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->location->wilayah_id }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
                         
                                 {{-- ========== Jika ticket dibuat oleh service desk ========== --}}
                                 @if($ticket->user_id == auth()->user()->id)
@@ -149,7 +149,7 @@
                                             <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                         
                                             {{-- Tombol Assign --}}
-                                            <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-dark"></i>Assign</button></li>
+                                            <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->location->wilayah_id }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-dark"></i>Assign</button></li>
                                         @else
                         
                                             {{-- Tombol Proses Ulang / Jika di pending oleh agent sendiri --}}
@@ -183,7 +183,7 @@
                                             </li>
                                         @else
                                             {{-- Tombol Assign --}}
-                                            <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->ticket_area }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
+                                            <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->location->wilayah_id }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
                                             
                                             {{-- Tombol Detail --}}
                                             <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
@@ -257,7 +257,7 @@
                     var modalContent1 = document.getElementById("modalContent1");
                 
                     // Menampilkan data pada modalContent
-                    if(ticket_id.value === "ho"){
+                    if(ticket_id.value == 2){
                         modalContent1.innerHTML  =
                         '<div class="modal-header">'+
                             '<h5 class="modal-title">.:: Pilih Sub Divisi Agent</h5>'+
@@ -271,12 +271,17 @@
                                 '<label for="sub_divisi" class="form-label">Sub Divisi</label>'+
                                 '<select class="form-select" name="sub_divisi" id="sub_divisi" required>'+
                                     '<option selected disabled>Choose...</option>'+
-                                    '<option value="hardware maintenance">Hardware Maintenance</option>'+
-                                    '<option value="helpdesk">Helpdesk</option>'+
+                                    '@foreach($subDivHo as $subDiv)'+
+                                        '@if(old("sub_divisi") == $subDiv)'+
+                                        '<option selected value="{{ $subDiv }}">{{ ucwords($subDiv) }}</option>'+
+                                        '@else'+
+                                        '<option value="{{ $subDiv }}">{{ ucwords($subDiv) }}</option>'+
+                                        '@endif'+
+                                    '@endforeach'+
                                 '</select>'+
                             '</div>'+
                             '<input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>'+
-                            '<input type="text" id="ticket_id" name="ticket_id" value="'+ticket_id.name+'" hidden>'+
+                            '<input type="text" id="ticket_id" name="id" value="'+ticket_id.name+'" hidden>'+
                         '</div>'+
                         '<div class="modal-footer">'+
                             '<button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Antrikan</button>'+
@@ -296,13 +301,17 @@
                                 '<label for="sub_divisi" class="form-label">Sub Divisi</label>'+
                                 '<select class="form-select" name="sub_divisi" id="sub_divisi" required>'+
                                     '<option selected disabled>Choose...</option>'+
-                                    '<option value="hardware maintenance">Hardware Maintenance</option>'+
-                                    '<option value="infrastructur networking">Infrastructur Networking</option>'+
-                                    '<option value="tech support">Tech Support</option>'+
+                                    '@foreach($subDivStore as $subDiv)'+
+                                        '@if(old("sub_divisi") == $subDiv)'+
+                                        '<option selected value="{{ $subDiv }}">{{ ucwords($subDiv) }}</option>'+
+                                        '@else'+
+                                        '<option value="{{ $subDiv }}">{{ ucwords($subDiv) }}</option>'+
+                                        '@endif'+
+                                    '@endforeach'+
                                 '</select>'+
                             '</div>'+
                             '<input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>'+
-                            '<input type="text" id="ticket_id" name="ticket_id" value="'+ticket_id.name+'" hidden>'+
+                            '<input type="text" id="ticket_id" name="id" value="'+ticket_id.name+'" hidden>'+
                         '</div>'+
                         '<div class="modal-footer">'+
                             '<button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Antrikan</button>'+
@@ -326,7 +335,7 @@
                     var modalContent2 = document.getElementById("modalContent2");
                 
                     // Menampilkan data pada modalContent
-                    if(ticket_id.value === "ho"){
+                    if(ticket_id.value == 2){
                         modalContent2.innerHTML  =
                         '<div class="modal-header">'+
                             '<h5 class="modal-title">.:: Pilih Nama Agent</h5>'+

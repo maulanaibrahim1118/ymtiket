@@ -26,20 +26,20 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="client_id" class="form-label">Client</label>
-                                        <select class="form-select @error('client_id') is-invalid @enderror" name="client_id" id="client_id">
+                                        <label for="user_id" class="form-label">Client</label>
+                                        <select class="form-select @error('user_id') is-invalid @enderror" name="user_id" id="user_id">
                                             <option selected disabled>Choose...</option>
-                                            @foreach($clients as $client)
-                                                @if(old('client_id', $ticket->client_id) == $client->id)
-                                                <option selected value="{{ $client->id }}">{{ ucwords($client->nama_client) }}</option>
+                                            @foreach($users as $user)
+                                                @if(old('user_id', $ticket->user_id) == $user->id)
+                                                <option selected value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
                                                 @else
-                                                <option value="{{ $client->id }}">{{ ucwords($client->nama_client) }}</option>
+                                                <option value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
-                                        @error('client_id')
+                                        @error('user_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -77,7 +77,7 @@
                                     </div>
 
                                     <script>
-                                        $('#client_id').change(function(){
+                                        $('#user_id').change(function(){
                                             var client = $(this).val();
                                             var url = '{{ route("getClient", ":id") }}';
                                             url = url.replace(':id', client);

@@ -25,70 +25,74 @@ class DashboardController extends Controller
     {
         // Get data User
         $id         = Auth::user()->id;
-        $role       = Auth::user()->role;
+        $role       = Auth::user()->role_id;
         $locationId = Auth::user()->location_id;
         $positionId = Auth::user()->position_id;
-        $location   = Auth::user()->location->nama_lokasi;
+        $codeAccess = Auth::user()->code_access;
         
         // Get data Agent (jika user bukan sebagai client)
-        if($role != "client"){
+        if($role != 3){
             $nik        = Auth::user()->nik;
             $getAgent   = Agent::where('nik', $nik)->first();
             $agentId    = $getAgent->id;
         }
 
-        if($role == "client"){ // Jika role Client
-            // Mencari nama lokasi user untuk parameter ticket_for atau menampilkan halaman ticket Service Desk
-            $getLocation    = Location::where('id', $locationId)->first();
-            $namaLokasi     = $getLocation['nama_lokasi'];
+        // Jika role Client
+        if($role == 3){ 
+            // Jika Divisi Operational
+            if($locationId == 17){
+                // Jika jabatan Chief
+                if($positionId == 2){
+                    // Get total data yang ingin di tampilkan di dashboard
+                    $total      = Ticket::where('code_access', 'like', '%'.$codeAccess.'%')->whereNotIn('status', ['deleted'])->count();
+                    $approval   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['need_approval', 'ya'],['approved', NULL]])->count();
+                    $unProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'created']])->count();
+                    $onProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'onprocess']])->count();
+                    $pending    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'pending']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'resolved']])->orWhere([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'finished']])->count();
 
-            // Mencari area, regional, wilayah user untuk parameter menampilkan halaman ticket bagi Manager, Chief, Korwil
-            $area           = substr($getLocation['area'], -1);
-            $regional       = substr($getLocation['regional'], -1);
-            $wilayah        = substr($getLocation['wilayah'], -2);
-            $ticketKorwil   = $area.$regional.$wilayah;
-            $ticketChief    = $area.$regional;
+                    // Menampilkan Data Ticket yang belum di Close
+                    $data1   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
+                    
+                // Jika jabatan Koordinator Wilayah
+                }elseif($positionId == 6){
+                    // Get total data yang ingin di tampilkan di dashboard
+                    $total      = Ticket::where('code_access', 'like', '%'.$codeAccess)->whereNotIn('status', ['deleted'])->count();
+                    $approval   = Ticket::where([['code_access', 'like', '%'.$codeAccess],['need_approval', 'ya'],['approved', NULL]])->count();
+                    $unProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'created']])->count();
+                    $onProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'onprocess']])->count();
+                    $pending    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'pending']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'resolved']])->orWhere([['code_access', 'like', '%'.$codeAccess],['status', 'finished']])->count();
 
-            // Jika jabatan Chief
-            if($positionId == "2"){
-                // Get total data yang ingin di tampilkan di dashboard
-                $total      = Ticket::where('ticket_area', 'like', $ticketChief.'%')->whereNotIn('status', ['deleted'])->count();
-                $approval   = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['need_approval', 'ya'],['approved', NULL]])->count();
-                $unProcess  = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'created']])->count();
-                $onProcess  = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'onprocess']])->count();
-                $pending    = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'pending']])->count();
-                $finished   = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'resolved']])->orWhere([['ticket_area', 'like', $ticketChief.'%'],['status', 'finished']])->count();
+                    // Menampilkan Data Ticket yang belum di Close
+                    $data1   = Ticket::where([['code_access', '%'.$codeAccess],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
 
-                // Menampilkan Data Ticket yang belum di Close
-                $data1   = Ticket::where([['ticket_area', 'like', $ticketChief.'%'],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
-                
-            // Jika jabatan Koordinator Wilayah
-            }elseif($positionId == "6"){
-                // Get total data yang ingin di tampilkan di dashboard
-                $total      = Ticket::where('ticket_area', $ticketKorwil)->whereNotIn('status', ['deleted'])->count();
-                $approval   = Ticket::where([['ticket_area', $ticketKorwil],['need_approval', 'ya'],['approved', NULL]])->count();
-                $unProcess  = Ticket::where([['ticket_area', $ticketKorwil],['status', 'created']])->count();
-                $onProcess  = Ticket::where([['ticket_area', $ticketKorwil],['status', 'onprocess']])->count();
-                $pending    = Ticket::where([['ticket_area', $ticketKorwil],['status', 'pending']])->count();
-                $finished   = Ticket::where([['ticket_area', $ticketKorwil],['status', 'resolved']])->orWhere([['ticket_area', $ticketKorwil],['status', 'finished']])->count();
+                // Jika jabatan Manager
+                }elseif($positionId == 7){
+                    // Get total data yang ingin di tampilkan di dashboard
+                    $total      = Ticket::where('code_access', 'like', $codeAccess.'%')->whereNotIn('status', ['deleted'])->count();
+                    $approval   = Ticket::where([['code_access', 'like', $codeAccess.'%'],['need_approval', 'ya'],['approved', NULL]])->count();
+                    $unProcess  = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'created']])->count();
+                    $onProcess  = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'onprocess']])->count();
+                    $pending    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'pending']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'resolved']])->orWhere([['code_access', 'like', $area.'%'],['status', 'finished']])->count();
 
-                // Menampilkan Data Ticket yang belum di Close
-                $data1   = Ticket::where([['ticket_area', $ticketKorwil],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
-
-            // Jika jabatan Manager
-            }elseif($positionId == "7"){
-                // Get total data yang ingin di tampilkan di dashboard
-                $total      = Ticket::where('ticket_area', 'like', $area.'%')->whereNotIn('status', ['deleted'])->count();
-                $approval   = Ticket::where([['ticket_area', 'like', $area.'%'],['need_approval', 'ya'],['approved', NULL]])->count();
-                $unProcess  = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'created']])->count();
-                $onProcess  = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'onprocess']])->count();
-                $pending    = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'pending']])->count();
-                $finished   = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'resolved']])->orWhere([['ticket_area', 'like', $area.'%'],['status', 'finished']])->count();
-
-                // Menampilkan Data Ticket yang belum di Close
-                $data1      = Ticket::where([['ticket_area', 'like', $area.'%'],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
-
-            // Jika jabatan selain Korwil, Chief dan Manager
+                    // Menampilkan Data Ticket yang belum di Close
+                    $data1      = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
+                // Jika jabatan selain Korwil, Chief dan Manager
+                }else{
+                    // Get total data yang ingin di tampilkan di dashboard
+                    $total      = Ticket::where('location_id', $locationId)->whereNotIn('status', ['deleted'])->count();
+                    $approval   = Ticket::where([['location_id', $locationId],['need_approval', 'ya'],['approved', NULL]])->count();
+                    $unProcess  = Ticket::where([['location_id', $locationId],['status', 'created']])->count();
+                    $onProcess  = Ticket::where([['location_id', $locationId],['status', 'onprocess']])->count();
+                    $pending    = Ticket::where([['location_id', $locationId],['status', 'pending']])->count();
+                    $finished   = Ticket::where([['location_id', $locationId],['status', 'resolved']])->orWhere([['location_id', $locationId],['status', 'finished']])->count();
+    
+                    // Menampilkan Data Ticket yang belum di Close
+                    $data1      = Ticket::where([['location_id', $locationId],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
+                }
+            // Jika bukan Divisi Operational
             }else{
                 // Get total data yang ingin di tampilkan di dashboard
                 $total      = Ticket::where('location_id', $locationId)->whereNotIn('status', ['deleted'])->count();
@@ -110,18 +114,18 @@ class DashboardController extends Controller
 
         }else{
             // Jika Role Service Desk
-            if($role == "service desk"){
+            if($role == "1"){
                 // Get total data yang ingin di tampilkan di dashboard
-                $total          = Ticket::where('ticket_for', $location)->whereNotIn('status', ['deleted'])->count();
-                $unProcess      = Ticket::where([['ticket_for', $location],['status', 'created']])->count();
-                $onProcess      = Ticket::where([['ticket_for', $location],['status', 'onprocess']])->count();
-                $pending        = Ticket::where([['ticket_for', $location],['status', 'pending']])->count();
-                $resolved       = Ticket::where([['ticket_for', $location],['status', 'resolved']])->orWhere([['ticket_for', $location],['status', 'finished']])->count();
+                $total          = Ticket::where('ticket_for', $locationId)->whereNotIn('status', ['deleted'])->count();
+                $unProcess      = Ticket::where([['ticket_for', $locationId],['status', 'created']])->count();
+                $onProcess      = Ticket::where([['ticket_for', $locationId],['status', 'onprocess']])->count();
+                $pending        = Ticket::where([['ticket_for', $locationId],['status', 'pending']])->count();
+                $resolved       = Ticket::where([['ticket_for', $locationId],['status', 'resolved']])->orWhere([['ticket_for', $locationId],['status', 'finished']])->count();
                 $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned']])->count();
-                $workTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'ya']])->whereNotIn('status', ['deleted'])->count();
-                $freeTimeTicket = Ticket::where([['ticket_for', $location],['jam_kerja', 'tidak']])->whereNotIn('status', ['deleted'])->count();
-                $asset          = Ticket::where('ticket_for', $location)->whereNotIn('status', ['deleted'])->distinct()->count('asset_id');
-                $category       = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')->where('tickets.ticket_for', $location)->distinct()->count('ticket_details.sub_category_ticket_id');
+                $workTimeTicket = Ticket::where([['ticket_for', $locationId],['jam_kerja', 'ya']])->whereNotIn('status', ['deleted'])->count();
+                $freeTimeTicket = Ticket::where([['ticket_for', $locationId],['jam_kerja', 'tidak']])->whereNotIn('status', ['deleted'])->count();
+                $asset          = Ticket::where('ticket_for', $locationId)->whereNotIn('status', ['deleted'])->distinct()->count('asset_id');
+                $category       = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')->where('tickets.ticket_for', $locationId)->distinct()->count('ticket_details.sub_category_ticket_id');
 
                 // Mengembalikan data untuk di tampilkan di view
                 $dataArray      = [$total, $unProcess, $onProcess, $pending, $resolved, $assigned, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
@@ -140,8 +144,8 @@ class DashboardController extends Controller
                     )
                     ->orderBy('sub_divisi', 'ASC')
                     ->get();
-                $data2          = Ticket::where([['ticket_for', $location],['status','created'],['is_queue', 'tidak'],['assigned', 'tidak']])->get();
-                $data3          = Ticket::where([['ticket_for', $location],['status','created'],['is_queue', 'ya']])->get();
+                $data2          = Ticket::where([['ticket_for', $locationId],['status','created'],['is_queue', 'tidak'],['assigned', 'tidak']])->get();
+                $data3          = Ticket::where([['ticket_for', $locationId],['status','created'],['is_queue', 'ya']])->get();
                 $filterArray    = ["", ""];
 
             // Jika Role Agent

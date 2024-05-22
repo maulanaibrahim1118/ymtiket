@@ -36,7 +36,6 @@ class ReportAgentController extends Controller
         // Melakukan beberapa perhitungan agregat
         $agents->map(function($agent) {
             // Report 1
-            $agent->total_ticket = $agent->ticket->count();
             $agent->ticket_unprocessed = $agent->ticket->where('status', 'created')->count();
             $agent->ticket_pending = $agent->ticket->where('status', 'pending')->count();
             $agent->ticket_onprocess = $agent->ticket->where('status', 'onprocess')->count();

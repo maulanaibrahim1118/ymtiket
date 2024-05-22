@@ -19,6 +19,11 @@ class CreateCategoryAssetsTable extends Migration
             $table->string('updated_by', 40);
             $table->timestamps();
         });
+
+        DB::table('category_assets')->insert([
+            ['nama_kategori' => "information technology", 'updated_by' => "maulana ibrahim", 'created_at' => '2024-02-21 14:14:38', 'updated_at' => '2024-02-21 14:14:38'],
+            ['nama_kategori' => "mechanical electrical", 'updated_by' => "maulana ibrahim", 'created_at' => '2024-02-21 14:14:38', 'updated_at' => '2024-02-21 14:14:38']
+        ]);
     }
 
     /**

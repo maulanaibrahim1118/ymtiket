@@ -55,4 +55,9 @@ class User extends Authenticatable implements Authorizable
     {
         return $this->hasOne('App\Comment');
     }
+
+    public function role()
+    {
+        return $this->belongsTo('App\Role');
+    }
 }

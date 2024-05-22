@@ -25,7 +25,7 @@
                                         <label for="telp" class="form-label fw-bold">Telp/Ext</label>
                                     </div>
                                     <div class="col-md-4 m-0">
-                                        <label for="telp" class="form-label">: {{ $ticket->client->telp }}</label>
+                                        <label for="telp" class="form-label">: {{ $ticket->user->telp }}</label>
                                     </div>
                                     <div class="col-md-2 m-0">
                                         <label for="no_ticket" class="form-label fw-bold">No. Ticket</label>
@@ -37,16 +37,16 @@
                                         <label for="ip_address" class="form-label fw-bold">IP Address</label>
                                     </div>
                                     <div class="col-md-4 m-0">
-                                        <label for="ip_address" class="form-label">: {{ $ticket->client->ip_address }}</label>
+                                        <label for="ip_address" class="form-label">: {{ $ticket->user->ip_address }}</label>
                                     </div>
                                     <div class="col-md-2 m-0">
                                         <label for="client/lokasi" class="form-label fw-bold">Client/Lokasi</label>
                                     </div>
                                     <div class="col-md-4 m-0">
-                                        @if ($ticket->client->nama_client == $ticket->location->nama_lokasi)
-                                        <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->client->nik) }} - {{ ucwords($ticket->client->nama_client) }} / Store</label>
+                                        @if ($ticket->user->nama == $ticket->location->nama_lokasi)
+                                        <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->user->nik) }} - {{ ucwords($ticket->location_name) }} / Store</label>
                                         @else
-                                        <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->client->nama_client) }} / {{ ucwords($ticket->location->nama_lokasi) }}</label>
+                                        <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->user->nama) }} / {{ ucwords($ticket->location->nama_lokasi) }}</label>
                                         @endif
                                     </div>
                                     <div class="col-md-2 m-0">
@@ -182,13 +182,13 @@
                                                     @if($countDetail == 0) 
                                                     <tr>
                                                         @if($ticket->status == "created")
-                                                            @if(auth()->user()->role == "client")
+                                                            @if(auth()->user()->role_id == 3)
                                                             <td colspan="7" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
                                                             @else
                                                             <td colspan="9" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
                                                             @endif
                                                         @else
-                                                            @if(auth()->user()->role == "client")
+                                                            @if(auth()->user()->role_id == 3)
                                                             <td colspan="7" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
                                                             @else
                                                             <td colspan="9" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>

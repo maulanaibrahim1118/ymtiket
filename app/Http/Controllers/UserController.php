@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Role;
 use App\User;
 use App\Agent;
-use App\Client;
 use App\Location;
 use App\Position;
+use App\Sub_division;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +21,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users  = User::all();
+        $users = User::where('is_active', '1')
+            ->whereHas('location', function ($query) {
+                $query->whereIn('wilayah_id', [1, 2]);
+            })
+            ->get();
         
         return view('contents.user.index', [
             "title" => "User List",
@@ -37,9 +42,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = ["client", "agent all", "agent head office", "agent store", "service desk"];
-        $positions = Position::orderBy('nama_jabatan', 'ASC')->get();
-        $locations = Location::orderBy('nama_lokasi', 'ASC')->get();
+        $roles = Role::all();
+        $positions = Position::whereNotIn('nama_jabatan', ['Kepala Toko'])->orderBy('nama_jabatan', 'ASC')->get();
+        $locations = Location::whereIn('wilayah_id', [1, 2])->orderBy('nama_lokasi', 'ASC')->get();
 
         return view('contents.user.create', [
             "title"     => "Create User",
@@ -61,39 +66,39 @@ class UserController extends Controller
     {
         // Validating data request
         $validatedData = $request->validate([
-            'nik'           => 'required|min:5|max:8|unique:users',
-            'nama'          => 'required|min:2|max:40',
-            'password'      => 'required|min:5|max:191',
-            'position_id'   => 'required',
-            'location_id'   => 'required',
-            'sub_divisi'    => 'required',
-            'telp'          => 'required|min:4|max:15',
-            'ip_1'          => 'required',
-            'ip_2'          => 'required',
-            'ip_3'          => 'required',
-            'ip_4'          => 'required',
-            'role'          => 'required',
-            'updated_by'    => 'required'
+            'nik'               => 'required|min:5|max:8|unique:users',
+            'nama'              => 'required|min:2|max:40',
+            'password'          => 'required|min:5|max:191',
+            'position_id'       => 'required',
+            'location_id'       => 'required',
+            'sub_division'      => 'required',
+            'telp'              => 'required|min:4|max:15',
+            'ip_1'              => 'required',
+            'ip_2'              => 'required',
+            'ip_3'              => 'required',
+            'ip_4'              => 'required',
+            'role'              => 'required',
+            'updated_by'        => 'required'
         ],
         // Create custom notification for the validation request
         [
-            'nik.required'          => 'NIK harus diisi!',
-            'nik.min'               => 'Ketik minimal 5 digit!',
-            'nik.max'               => 'Ketik maksimal 8 digit!',
-            'unique'                => 'NIK sudah ada!',
-            'nama.required'         => 'Nama Pengguna harus diisi!',
-            'nama.min'              => 'Ketik minimal 2 digit!',
-            'nama.max'              => 'Ketik maksimal 40 digit!',
-            'password.required'     => 'Password harus diisi!',
-            'password.min'          => 'Ketik minimal 5 digit!',
-            'password.max'          => 'Ketik maksimal 191 digit!',
-            'position_id.required'  => 'Jabatan harus dipilih!',
-            'location_id.required'  => 'Lokasi harus dipilih!',
-            'sub_divisi.required'   => 'Sub Divisi harus dipilih!',
-            'telp.required'         => 'No. Telp/Ext harus diisi!',
-            'telp.min'              => 'Ketik minimal 4 digit!',
-            'telp.max'              => 'Ketik maksimal 15 digit!',
-            'role.required'         => 'Role harus dipilih!',
+            'nik.required'              => 'NIK harus diisi!',
+            'nik.min'                   => 'Ketik minimal 5 digit!',
+            'nik.max'                   => 'Ketik maksimal 8 digit!',
+            'unique'                    => 'NIK sudah ada!',
+            'nama.required'             => 'Nama Pengguna harus diisi!',
+            'nama.min'                  => 'Ketik minimal 2 digit!',
+            'nama.max'                  => 'Ketik maksimal 40 digit!',
+            'password.required'         => 'Password harus diisi!',
+            'password.min'              => 'Ketik minimal 5 digit!',
+            'password.max'              => 'Ketik maksimal 191 digit!',
+            'position_id.required'      => 'Jabatan harus dipilih!',
+            'location_id.required'      => 'Lokasi harus dipilih!',
+            'sub_division.required'     => 'Sub Divisi harus dipilih!',
+            'telp.required'             => 'No. Telp/Ext harus diisi!',
+            'telp.min'                  => 'Ketik minimal 4 digit!',
+            'telp.max'                  => 'Ketik maksimal 15 digit!',
+            'role.required'             => 'Role harus dipilih!',
         ]);
 
         $data   = $request->all();
@@ -104,6 +109,19 @@ class UserController extends Controller
         $ip4    = $data['ip_4'];
         $ip_address = $ip1.'.'.$ip2.'.'.$ip3.'.'.$ip4;
 
+        $subDivisionName = strtolower($data['sub_division']);
+        
+        if($subDivisionName == "tidak ada"){
+            if ($role == 3) {
+                $codeAccess = "tidak ada";
+            } else {
+                $codeAccess = "all";
+            }
+        }else{
+            $subDivisi = Sub_division::where('name', $subDivisionName)->first();
+            $codeAccess = $subDivisi->code_access;
+        }
+        
         // Saving data to user table
         $user                 = new User;
         $user->nik            = $data['nik'];
@@ -113,39 +131,27 @@ class UserController extends Controller
         $user->location_id    = $data['location_id'];
         $user->telp           = $data['telp'];
         $user->ip_address     = $ip_address;
-        $user->role           = $data['role'];
+        $user->sub_divisi     = $subDivisionName;
+        $user->code_access    = $codeAccess;
+        $user->role_id        = $data['role'];
         $user->updated_by     = $data['updated_by'];
         $user->save();
-
-        if($role == "client"){
-            $client                 = new Client;
-            $client->nik            = $data['nik'];
-            $client->nama_client    = $data['nama'];
-            $client->position_id    = $data['position_id'];
-            $client->location_id    = $data['location_id'];
-            $client->telp           = $data['telp'];
-            $client->ip_address     = $ip_address;
-            $client->updated_by     = $data['updated_by'];
-            $client->save();
-        }else{
-            if($role == "service desk"){
+        
+        if($role != 3){
+            if($role == 1){ // Role Service Desk
                 $picTicket  = "all";
-            }elseif($role == "agent all"){
-                $picTicket  = "all";
-            }elseif($role == "agent store"){
-                $picTicket  = "store";
-            }else{
-                $picTicket  = "ho";
+            }elseif($role == 2){ // Role Agent
+                $picTicket  = $codeAccess;
             }
 
-            $agent              = new Agent;
-            $agent->nik         = $data['nik'];
-            $agent->nama_agent  = $data['nama'];
-            $agent->location_id = $data['location_id'];
-            $agent->sub_divisi  = $data['sub_divisi'];
-            $agent->pic_ticket  = $picTicket;
-            $agent->status      = 'present';
-            $agent->updated_by  = $data['updated_by'];
+            $agent                  = new Agent;
+            $agent->nik             = $data['nik'];
+            $agent->nama_agent      = $data['nama'];
+            $agent->location_id     = $data['location_id'];
+            $agent->sub_divisi      = $subDivisionName;
+            $agent->pic_ticket      = $picTicket;
+            $agent->status          = 'present';
+            $agent->updated_by      = $data['updated_by'];
             $agent->save();
         }
 
@@ -179,34 +185,20 @@ class UserController extends Controller
         // Get data User berdasarkan id User
         $user = User::where('id', $id)->first();
 
-        $nikAgent   = $user->nik;
-        $agent      = Agent::where('nik', $nikAgent)->first();
-
-        if($agent == NULL){
-            $subDivisi = ['none', 'Tidak Ada'];
-        }else{
-            if($agent->sub_divisi == "none"){
-                $subDivisi  = [$agent->sub_divisi, 'Tidak Ada'];
-            }else{
-                $subDivisi  = [$agent->sub_divisi, $agent->sub_divisi];
-            }
-        }
-
-        $roles          = ["client", "agent all", "agent head office", "agent store", "service desk"];
-        $subDivisiLists = ["hardware maintenance", "helpdesk", "infrastructur networking", "tech support"];
-        $positions = Position::orderBy('nama_jabatan', 'ASC')->get();
-        $locations = Location::orderBy('nama_lokasi', 'ASC')->get();
+        $roles = Role::all();
+        $positions = Position::whereNotIn('nama_jabatan', ['Kepala Toko'])->orderBy('nama_jabatan', 'ASC')->get();
+        $locations = Location::whereIn('wilayah_id', [1, 2])->orderBy('nama_lokasi', 'ASC')->get();
+        $subDivisions = Sub_division::where('location_id', $user->location_id)->get();
 
         return view('contents.user.edit', [
             "title"             => "Edit User",
             "path"              => "User",
             "path2"             => "Edit",
+            "subDivisions"      => $subDivisions,
             "positions"         => $positions,
             "locations"         => $locations,
-            "user"              => $user,
             "roles"             => $roles,
-            "subDivisi"         => $subDivisi,
-            "subDivisiLists"    => $subDivisiLists
+            "user"              => $user
         ]);
     }
 
@@ -221,92 +213,115 @@ class UserController extends Controller
     {
         // Get id Asset dari request parameter
         $id = decrypt($request['id']);
-        
-        // Get data Asset berdasarkan id Asset
-        $user = User::where('id', $id)->first();
 
-        $nik    = $user->nik;
-        $data   = $request->all();
+                
+        // Get data User berdasarkan id User
+        $user = User::where('id', $id)->first();
 
         // Validating data request
         $rules = [
-            'nama'          => 'required',
-            'password'      => 'required',
-            'role'          => 'required',
-            'position_id'   => 'required',
-            'location_id'   => 'required',
-            'telp'          => 'required|min:4|max:20',
-            'ip_address'    => 'required|min:7|max:15',
-            'updated_by'    => 'required'
+            'nama'              => 'required',
+            'password'          => 'required',
+            'role'              => 'required',
+            'position_id'       => 'required',
+            'location_id'       => 'required',
+            'sub_division'      => 'required',
+            'telp'              => 'required|min:4|max:20',
+            'ip_address'        => 'required|min:7|max:15',
+            'updated_by'        => 'required'
         ];
 
         if($request->nik != $user->nik){
-            $rules['nik'] = 'required|min:5|max:8|unique:user';
+            $rules['nik'] = 'required|min:5|max:8|unique:users';
         }
 
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
-            'nik.required'          => 'NIK harus diisi!',
-            'nik.min'               => 'Ketik minimal 5 digit!',
-            'nik.max'               => 'Ketik maksimal 8 digit!',
-            'unique'                => 'NIK sudah ada!',
-            'nama.required'         => 'Nama harus diisi!',
-            'password.required'     => 'Password harus diisi!',
-            'role.required'         => 'Role harus dipilih!',
-            'position_id.required'  => 'Jabatan harus dipilih!',
-            'location_id.required'  => 'Lokasi harus dipilih!',
-            'telp.required'         => 'No. Telp/Ext harus diisi!',
-            'telp.min'              => 'Ketik minimal 4 digit!',
-            'telp.max'              => 'Ketik maksimal 13 digit!',
-            'ip_address.required'   => 'IP Address harus diisi!',
-            'ip_address.min'        => 'Ketik minimal 7 digit!',
-            'ip_address.max'        => 'Ketik maksimal 15 digit!',
-            'updated_by.required'   => 'Wajib diisi!'
+            'nik.required'              => 'NIK harus diisi!',
+            'nik.min'                   => 'Ketik minimal 5 digit!',
+            'nik.max'                   => 'Ketik maksimal 8 digit!',
+            'unique'                    => 'NIK sudah ada!',
+            'nama.required'             => 'Nama harus diisi!',
+            'role.required'             => 'Role harus dipilih!',
+            'position_id.required'      => 'Jabatan harus dipilih!',
+            'location_id.required'      => 'Lokasi harus dipilih!',
+            'sub_division.required'     => 'Sub Divisi harus dipilih!',
+            'telp.required'             => 'No. Telp/Ext harus diisi!',
+            'telp.min'                  => 'Ketik minimal 4 digit!',
+            'telp.max'                  => 'Ketik maksimal 13 digit!',
+            'ip_address.required'       => 'IP Address harus diisi!',
+            'ip_address.min'            => 'Ketik minimal 7 digit!',
+            'ip_address.max'            => 'Ketik maksimal 15 digit!',
+            'updated_by.required'       => 'Wajib diisi!'
         ]);
 
-        // Validating data request
-        $validatedData2 = $request->validate([
-            'sub_divisi'    => 'required'
-        ],
-        // Create custom notification for the validation request
-        [
-            'sub_divisi.required'   => 'Sub Divisi harus dipilih!'
-        ]);
+        $data   = $request->all();
+
+        $subDivisionName = strtolower($data['sub_division']);
+        
+        if($subDivisionName == "tidak ada"){
+            $codeAccess = "tidak ada";
+        }else{
+            $subDivisi = Sub_division::where('name', $subDivisionName)->first();
+            $codeAccess = $subDivisi->code_access;
+        }
+
+        $role = $data['role'];
+
+        if($role == 1){ // Role Service Desk
+            $picTicket  = "all";
+        }elseif($role == 2){ // Role Agent
+            $picTicket  = $codeAccess;
+        }
+        
+        if($user->role_id == 3){
+            // Perubahan dari Client ke Agent. Create data agent / service desk baru.
+            if($role != 3){ 
+                $agent                  = new Agent;
+                $agent->nik             = $data['nik'];
+                $agent->nama_agent      = $data['nama'];
+                $agent->location_id     = $data['location_id'];
+                $agent->sub_divisi      = $subDivisionName;
+                $agent->pic_ticket      = $picTicket;
+                $agent->status          = 'present';
+                $agent->updated_by      = $data['updated_by'];
+                $agent->save();
+            }
+        }else{
+            // Jika role sebelumnya = agent/service desk, kemudian di edit dan role nya masih sama
+            if($role != 3){
+                // Updating data to agent table
+                Agent::where('nik', $user->nik)->update([
+                    'nik'           => $data['nik'],
+                    'nama_agent'    => $data['nama'],
+                    'location_id'   => $data['location_id'],
+                    'sub_divisi'    => $subDivisionName,
+                    'pic_ticket'    => $picTicket,
+                    'updated_by'    => $data['updated_by']
+                ]);
+            }else{ 
+                // Perubahan dari Agent ke Client. Non aktifkan agent / service desk.
+                Agent::where('nik', $user->nik)->update([
+                    'is_active'     => '0',
+                    'updated_by'    => $data['updated_by']
+                ]);
+            }
+        }
 
         // Updating data to user table
-        User::where('id', $user->id)->update($validatedData);
-
-        $role   = $data['role'];
-
-        if($role == "client"){
-            // Updating data to client table
-            Client::where('nik', $nik)->update([
-                'position_id'   => $data['position_id'],
-                'location_id'   => $data['location_id'],
-                'telp'          => $data['telp'],
-                'ip_address'    => $data['ip_address'],
-                'updated_by'    => $data['updated_by']
-            ]);
-        }else{
-            if($role == "service desk"){
-                $picTicket  = "all";
-            }elseif($role == "agent all"){
-                $picTicket  = "all";
-            }elseif($role == "agent store"){
-                $picTicket  = "store";
-            }else{
-                $picTicket  = "ho";
-            }
-
-            // Updating data to agent table
-            Agent::where('nik', $nik)->update([
-                'location_id'   => $data['location_id'],
-                'sub_divisi'    => $data['sub_divisi'],
-                'pic_ticket'    => $picTicket,
-                'updated_by'    => $data['updated_by']
-            ]);
-        }
+        User::where('id', $user->id)->update([
+            'nik'               => $data['nik'],
+            'nama'              => $data['nama'],
+            'role_id'           => $data['role'],
+            'position_id'       => $data['position_id'],
+            'location_id'       => $data['location_id'],
+            'sub_divisi'        => $subDivisionName,
+            'code_access'       => $codeAccess,
+            'telp'              => $data['telp'],
+            'ip_address'        => $data['ip_address'],
+            'updated_by'        => $data['updated_by']
+        ]);
 
         return redirect('/users')->with('success', 'Data User telah diubah!');
     }
@@ -317,9 +332,53 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        // Get id User dari request parameter
+        $id = decrypt($request['id']);
+        
+        $user   = User::where('id', $id)->first();
+        $nama    = $user->nama;
+        $nik    = $user->nik;
+        $role   = $user->role_id;
+
+        User::where('id', $id)->update([
+            'is_active' => '0',
+            'updated_by' => $request['updated_by']
+        ]);
+
+        if ($role != 3) {
+            Agent::where('nik', $nik)->update([
+                'is_active' => '0',
+                'updated_by' => $request['updated_by']
+            ]);
+        }
+
+        return back()->with('success', 'User '.ucwords($nama).' berhasil dihapus!');
+    }
+
+    // Get data asset untuk JQuery Select Option
+    public function getSubDivisions($id = 0)
+    {
+        $data = Sub_division::where('location_id', $id)->get();
+
+        if ($data->isEmpty()) {
+            // $defaultData = [
+            //     'id' => null,
+            //     'name' => 'tidak ada',
+            //     'location_id' => $id,
+            //     'code_access' => null,
+            //     'updated_by' => null,
+            //     'created_at' => null,
+            //     'updated_at' => null
+            // ];
+            
+            return response()->json([
+                'error' => 'No subdivisions found for the given location ID.',
+            ], 404); // Menggunakan 404 Not Found untuk respons error
+        }
+        
+        return response()->json($data);
     }
 
     public function showChangePasswordForm()

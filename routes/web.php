@@ -1,21 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AreaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportAgentController;
-use App\Http\Controllers\ReportSubCategoryController;
+use App\Http\Controllers\SubDivisionController;
 use App\Http\Controllers\SearchTicketController;
 use App\Http\Controllers\TicketDetailController;
 use App\Http\Controllers\CategoryAssetController;
 use App\Http\Controllers\CategoryTicketController;
+use App\Http\Controllers\ReportLocationController;
 use App\Http\Controllers\TicketApprovalController;
+use App\Http\Controllers\ReportSubCategoryController;
 use App\Http\Controllers\SubCategoryTicketController;
 
 /*
@@ -41,6 +46,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 // Route Filter
 Route::post('/dashboard/filter', [FilterController::class, 'dashboard'])->middleware('auth')->name('dashboard.filter');
 Route::post('/report-agents/filter', [FilterController::class, 'reportAgent'])->middleware(['auth', 'service.desk'])->name('reportAgent.filter');
+Route::post('/report-locations/filter', [FilterController::class, 'reportLocation'])->middleware(['auth', 'service.desk'])->name('reportLocation.filter');
 Route::post('/report-sub-categories/filter', [FilterController::class, 'reportSubCategory'])->middleware(['auth', 'service.desk'])->name('reportSubCategory.filter');
 
 // Route Ticket (semua user)
@@ -114,6 +120,8 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::post('/users', [UserController::class, 'store'])->name('user.store');
     Route::get('/users/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('/users', [UserController::class, 'update'])->name('user.update');
+    Route::put('/users/delete', [UserController::class, 'destroy'])->name('user.delete');
+    Route::get('/users/create1{id}', [UserController::class, 'getSubDivisions'])->middleware('auth')->name('getSubDivisions');
 });
 
 // Route Location
@@ -123,6 +131,35 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::post('/locations', [LocationController::class, 'store'])->name('location.store');
     Route::get('/locations/edit', [LocationController::class, 'edit'])->name('location.edit');
     Route::put('/locations', [LocationController::class, 'update'])->name('location.update');
+    Route::put('/locations/close', [LocationController::class, 'close'])->name('location.close');
+    Route::put('/locations/activate', [LocationController::class, 'activate'])->name('location.activate');
+    Route::get('/get-detail-wilayah/{id}', [LocationController::class, 'getDetailWilayah']);
+    
+    Route::get('/location-sub-divisions', [SubDivisionController::class, 'index'])->name('subDivision.index');
+    Route::get('/location-sub-divisions/create', [SubDivisionController::class, 'create'])->name('subDivision.create');
+    Route::post('/location-sub-divisions', [SubDivisionController::class, 'store'])->name('subDivision.store');
+    Route::get('/location-sub-divisions/edit', [SubDivisionController::class, 'edit'])->name('subDivision.edit');
+    Route::put('/location-sub-divisions', [SubDivisionController::class, 'update'])->name('subDivision.update');
+    
+    Route::get('/location-areas', [AreaController::class, 'index'])->name('area.index');
+    Route::get('/location-areas/create', [AreaController::class, 'create'])->name('area.create');
+    Route::post('/location-areas', [AreaController::class, 'store'])->name('area.store');
+    Route::get('/location-areas/edit', [AreaController::class, 'edit'])->name('area.edit');
+    Route::put('/location-areas', [AreaController::class, 'update'])->name('area.update');
+    Route::put('/location-areas/delete', [AreaController::class, 'destroy'])->name('area.delete');
+
+    Route::get('/location-regionals', [RegionalController::class, 'index'])->name('regional.index');
+    Route::get('/location-regionals/create', [RegionalController::class, 'create'])->name('regional.create');
+    Route::post('/location-regionals', [RegionalController::class, 'store'])->name('regional.store');
+    Route::put('/location-regionals', [RegionalController::class, 'update'])->name('regional.update');
+    Route::put('/location-regionals/delete', [RegionalController::class, 'destroy'])->name('regional.delete');
+    
+    Route::get('/location-wilayahs', [WilayahController::class, 'index'])->name('wilayah.index');
+    Route::get('/location-wilayahs/create', [WilayahController::class, 'create'])->name('wilayah.create');
+    Route::post('/location-wilayahs', [WilayahController::class, 'store'])->name('wilayah.store');
+    Route::put('/location-wilayahs', [WilayahController::class, 'update'])->name('wilayah.update');
+    Route::put('/location-wilayahs/delete', [WilayahController::class, 'destroy'])->name('wilayah.delete');
+    Route::get('/get-detail-regional/{id}', [WilayahController::class, 'getDetailRegional']);
 });
 
 // Route Asset
@@ -166,7 +203,9 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
 // Route Report
 Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::get('/report-agents', [ReportAgentController::class, 'index'])->name('report.agent');
+    Route::get('/report-locations', [ReportLocationController::class, 'index'])->name('report.location');
     Route::get('/report-sub-categories', [ReportSubCategoryController::class, 'index'])->name('report.subCategory');
+    Route::get('/categories/export', [ReportSubCategoryController::class, 'export'])->name('export.reportSubCategory');
 });
 
 Route::get('/settings/change-password', [UserController::class, 'showChangePasswordForm'])->middleware('auth')->name('setting.change');
