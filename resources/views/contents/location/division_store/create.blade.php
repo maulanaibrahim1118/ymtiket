@@ -57,7 +57,7 @@
 
                                     <div class="col-md-3">
                                         <label for="wilayah_id" class="form-label">Wilayah</label>
-                                        <select class="form-select @error('wilayah_id') is-invalid @enderror" name="wilayah_id" id="wilayah_id" required>
+                                        <select class="form-select @error('wilayah_id') is-invalid @enderror" name="wilayah_id" id="wilayah" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($wilayahs as $wilayah)
                                                 @if(old('wilayah_id') == $wilayah->id)
@@ -69,7 +69,7 @@
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
-                                        @error('wilayah')
+                                        @error('wilayah_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -122,7 +122,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#wilayah_id').on('change', function () {
+            $('#wilayah').on('change', function () {
                 var wilayahId = $(this).val();
                 if (wilayahId) {
                     $.ajax({

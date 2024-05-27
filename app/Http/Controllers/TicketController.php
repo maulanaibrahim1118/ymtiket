@@ -63,11 +63,11 @@ class TicketController extends Controller
 
         // Jika role Service Desk
         }elseif($role == 1){
-            $tickets = Ticket::where('ticket_for', $locationId)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
+            $tickets = Ticket::where('ticket_for', $locationId)->whereNotIn('status', ['deleted'])->orderBy('status', 'ASC')->orderBy('created_at', 'ASC')->get();
 
         // Jika role Agent
         }else{
-            $tickets = Ticket::where([['ticket_for', $locationId],['agent_id', $agentId]])->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
+            $tickets = Ticket::where([['ticket_for', $locationId],['agent_id', $agentId]])->whereNotIn('status', ['deleted'])->orderBy('status', 'ASC')->orderBy('created_at', 'DESC')->get();
         }
 
         // Mencari agent yang memiliki sub divisi, untuk menentukan antrian dan assign
@@ -86,7 +86,7 @@ class TicketController extends Controller
             ->get();
 
         return view('contents.ticket.index', [
-            "title"         => "Ticket",
+            "title"         => "Ticket List",
             "path"          => "Ticket",
             "path2"         => "Ticket",
             "tickets"       => $tickets,
@@ -1716,6 +1716,10 @@ class TicketController extends Controller
         }
 
         $haveSubDivs   = Sub_division::select('location_id')->distinct()->pluck('location_id')->toArray();
+        // Get data Sub Divisi Agent HO & Store, untuk select option Antrikan
+        $subDivHo = Agent::where([['location_id', $locationId],['pic_ticket', '!=', 'store']])->whereNotIn('id', [$agentId])->distinct()->pluck('sub_divisi')->toArray();
+        $subDivStore = Agent::where([['location_id', $locationId],['pic_ticket', '!=', 'ho']])->whereNotIn('id', [$agentId])->distinct()->pluck('sub_divisi')->toArray();
+
         $hoAgents      = Agent::where([['is_active', '1'],['location_id', $locationId],['pic_ticket', '!=', 'store'],['status', 'present']])->whereNotIn('id', [$agentId])->get();
         $storeAgents   = Agent::where([['is_active', '1'],['location_id', $locationId],['pic_ticket', '!=', 'ho'],['status', 'present']])->whereNotIn('id', [$agentId])->get();
 
@@ -1727,6 +1731,8 @@ class TicketController extends Controller
             "hoAgents"      => $hoAgents,
             "storeAgents"   => $storeAgents,
             "haveSubDivs"   => $haveSubDivs,
+            "subDivHo"      => $subDivHo,
+            "subDivStore"   => $subDivStore,
             "tickets"       => $tickets,
             "agentId"       => $agentId
         ]);

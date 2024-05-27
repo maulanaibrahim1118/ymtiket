@@ -16,7 +16,11 @@
             </thead>
             <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
                 @foreach($data as $data)
+                @if($data->status != "present")
+                <tr class="bg-light">
+                @else
                 <tr>
+                @endif
                 <td>{{ $data->nik }}</td>
                 <td>{{ $data->nama_agent }}</td>
                 @can('isIT')

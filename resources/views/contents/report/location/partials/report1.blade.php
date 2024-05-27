@@ -30,9 +30,9 @@
             <tr>
             <td class="text-center">{{ $nomorUrut++ }}.</td>
             @if( $location->wilayah_id != 1 && $location->wilayah_id != 2 )
-            <td>{{ $location->site }} - {{ $location->nama_lokasi }}</td>
+            <td><a href="/error-404-underconstruction">{{ $location->site }} - {{ $location->nama_lokasi }}</a></td>
             @else
-            <td><a class="text-dark" href="/error-404-underconstruction">{{ $location->nama_lokasi }}</a></td>
+            <td><a href="/error-404-underconstruction">{{ $location->nama_lokasi }}</a></td>
             @endif
             <td class="text-end">{{ $location->permintaan }}</td>
             <td class="text-end">{{ $location->kendala }}</td>

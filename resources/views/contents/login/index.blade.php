@@ -5,31 +5,31 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>.:: YM-Tiket | {{ $title }}</title>
+    <title>YM-Tiket | {{ $title }}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="dist/img/favicon1.ico" rel="icon">
-    <link href="dist/img/favicon1.ico" rel="apple-touch-icon">
+    <link href="{{ asset('dist/img/favicon1.ico') }}" rel="icon">
+    <link href="{{ asset('dist/img/favicon1.ico') }}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
-    <link href="dist/css/google-fonts.css" rel="stylesheet">
+    <link href="{{ asset('dist/css/google-fonts.css') }}" rel="stylesheet">
 
     <!-- Vendor CSS Files -->
-    <link href="dist/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="dist/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="dist/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="dist/vendor/quill/quill.snow.css" rel="stylesheet">
-    <link href="dist/vendor/quill/quill.bubble.css" rel="stylesheet">
-    <link href="dist/vendor/remixicon/remixicon.css" rel="stylesheet">
-    <link href="dist/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/quill/quill.snow.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/simple-datatables/style.css') }}" rel="stylesheet">
 
     <!-- Template Main CSS File -->
-    <link href="dist/css/style.css" rel="stylesheet">
+    <link href="{{ asset('dist/css/style.css') }}" rel="stylesheet">
 
     <!-- Javascript -->
-    <script src="dist/js/sweetalert.min.js"></script>
+    <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
     
     <script type="text/javascript">
         var myVar;
@@ -79,7 +79,7 @@
         <div style="display:none;" id="content" class="fade-in">
             <main>
                 <div class="container">
-                    <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-2">
+                    <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center">
                         <div class="container">
                             <!-- Showing Notification Login Error -->
                             @if(session()->has('success'))
@@ -113,14 +113,23 @@
                             
                             <div class="row justify-content-center">
                                 <div class="col-lg-5 col-md-6 d-flex flex-column align-items-center justify-content-center">
-                                        
+                                    
                                     <div class="card mb-3 px-4 py-2">
-                                        <div class="card-header p-0 mb-4">
-                                            <!-- Login Title -->
-                                            <div class="col-12">
-                                                <h5 class="card-title text-primary text-center pb-2 fs-4 fw-bold">Form Login</h5>
-                                                <p class="text-center small px-3">Masukkan No. Induk Karyawan / Site Cabang dan Password akun anda untuk mulai bekerja.</p>
-                                            </div>
+                                        
+                                        <div class="card-header mb-3">
+                                            <div class="d-flex justify-content-center">
+                                                <a href="/" class="logo2 d-flex align-items-center">
+                                                  <img src="{{ asset('dist/img/logo/logo4.png') }}" alt="">
+                                                  <span class="d-lg-block">YMTIKET</span>
+                                                </a>
+                                            </div><!-- End Logo -->
+                                            <p class="app-version">Version 1.0</p>
+                                        </div>
+
+                                        <!-- Login Title -->
+                                        <div class="col-12 mb-4">
+                                            {{-- <h5 class="card-title text-center pb-2 fs-5">Login</h5> --}}
+                                            <p class="text-center small px-3">Masukkan No. Induk Karyawan / Site Cabang dan Password untuk login dan mulai bekerja.</p>
                                         </div>
 
                                         <div class="card-body">
@@ -128,13 +137,13 @@
                                             <form class="row g-3" action="/login" method="post">
                                                 @csrf
                                                 <div class="col-12">
-                                                    <span class="border border-3 border-primary d-inline py-2"></span>
-                                                    <input type="number" name="nik" class="form-control d-inline rounded-0 mb-2" id="nik" placeholder="No. Induk Karyawan / Site Cabang" required />
+                                                    <span class="border border-3 border-primary d-inline py-2" style="margin-left: -3px"></span>
+                                                    <input type="number" name="nik" class="form-control rounded-0 mb-2" style="margin-top: -31px;" id="nik" placeholder="No. Induk Karyawan / Site Cabang" required />
                                                 </div>
             
                                                 <div class="col-12 pb-2">
-                                                    <span class="border border-3 border-primary d-inline py-2"></span>
-                                                    <input type="password" name="password" class="form-control d-inline rounded-0 mb-2" id="password" placeholder="Password" required />
+                                                    <span class="border border-3 border-primary position-relative py-2" style="margin-left: -3px"></span>
+                                                    <input type="password" name="password" class="form-control rounded-0 mb-2" style="margin-top: -31px;" id="password" placeholder="Password" required />
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" onclick="myFunction()">
                                                         <label class="form-check-label" for="inlineCheckbox1">Tampilkan Password</label>
@@ -143,8 +152,8 @@
             
                                                 <div class="card-footer p-0"></div>
             
-                                                <div class="col-12">
-                                                    <button class="btn btn-primary w-100 rounded-5" type="submit">Masuk<i class="bi bi-box-arrow-in-right ms-2"></i></button>
+                                                <div class="col-12 pb-2">
+                                                    <button class="btn btn-primary w-100 rounded-1" type="submit">Masuk<i class="bi bi-box-arrow-in-right ms-2"></i></button>
                                                 </div>
                                                     
                                                 {{-- <div class="col-12">
@@ -199,16 +208,16 @@
         </div>
     </div>
     <!-- Vendor JS Files -->
-    <script src="dist/vendor/apexcharts/apexcharts.min.js"></script>
-    <script src="dist/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="dist/vendor/chart.js/chart.min.js"></script>
-    <script src="dist/vendor/echarts/echarts.min.js"></script>
-    <script src="dist/vendor/quill/quill.min.js"></script>
-    <script src="dist/vendor/simple-datatables/simple-datatables.js"></script>
-    <script src="dist/vendor/tinymce/tinymce.min.js"></script>
-    <script src="dist/vendor/php-email-form/validate.js"></script>
+    <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/chart.js/chart.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/echarts/echarts.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ asset('dist/vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/php-email-form/validate.js') }}"></script>
 
     <!-- Template Main JS File -->
-    <script src="dist/js/main.js"></script>
+    <script src="{{ asset('dist/js/main.js') }}"></script>
 </body>
 </html>

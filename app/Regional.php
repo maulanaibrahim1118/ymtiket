@@ -17,4 +17,13 @@ class Regional extends Model
     {
         return $this->hasOne('App\Wilayah');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $model->name = strtolower($model->name);
+        });
+    }
 }

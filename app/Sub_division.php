@@ -23,6 +23,15 @@ class Sub_division extends Model
         return $this->belongsTo('App\Location');
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $model->name = strtolower($model->name);
+        });
+    }
+
     // Accessor untuk mengkapitalisasi huruf pertama dari setiap kata dalam name
     public function getNameAttribute($value)
     {

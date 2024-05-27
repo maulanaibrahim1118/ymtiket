@@ -12,4 +12,13 @@ class Category_asset extends Model
     {
         return $this->hasOne('App\Asset');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $model->nama_kategori = strtolower($model->nama_kategori);
+        });
+    }
 }

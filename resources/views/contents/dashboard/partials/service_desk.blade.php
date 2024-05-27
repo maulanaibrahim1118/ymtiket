@@ -1,27 +1,31 @@
 <div class="col-md-12 pb-0">
-    <div class="card">
+    <div class="card info-card pb-0">
 
-    <div class="filter">
-        <form class="search-form d-flex align-items-center" action="{{ route('dashboard.filter') }}" method="POST">
-            @csrf
-            <select class="form-select form-select-sm me-2" name="filter1" id="filter1">
-                <option selected value="">Semua Agent</option>
-                @foreach($agents as $agent)
-                    @if(old('filter1', $filterArray[0]) == $agent->id)
-                        <option selected value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
-                    @else
-                        <option value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
-                    @endif
-                @endforeach
-            </select>
-            <select class="form-select form-select-sm me-2" name="filter2" id="filter2">
-                <option value="" @if($filterArray[1] == "") selected @endif>Semua Periode</option>
-                <option value="today" @if($filterArray[1] == "today") selected @endif>Hari Ini</option>
-                <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>Bulan Ini</option>
-                <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>Tahun Ini</option>
-            </select>
-            <button type="submit" class="btn btn-sm btn-primary px-3 me-3">Filter</button>
-        </form>
+    <div class="filter w-50">
+        <div class="row float-end col-md-12">
+            <form class="search-form d-flex align-items-center" action="{{ route('dashboard.filter') }}" method="POST">
+                @csrf
+                <div style="width:15%;padding:0px;"></div>
+                <select class="form-select form-select me-2" style="width:40%;" name="filter1" id="filter1">
+                    <option selected value="">Semua Agent</option>
+                    @foreach($agents as $agent)
+                        @if(old('filter1', $filterArray[0]) == $agent->id)
+                            <option selected value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
+                        @else
+                            <option value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
+                        @endif
+                    @endforeach
+                </select>
+                <div class="ms-1"></div>
+                <select class="form-select form-select ms-1" style="width:30%;" name="filter2" id="filter2">
+                    <option value="" @if($filterArray[1] == "") selected @endif>Semua Periode</option>
+                    <option value="today" @if($filterArray[1] == "today") selected @endif>Hari Ini</option>
+                    <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>Bulan Ini</option>
+                    <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>Tahun Ini</option>
+                </select>
+                <button type="submit" class="btn btn-primary ms-1 me-3" style="width:15%;"><i class="bi bi-funnel me-1"></i>Filter</button>
+            </form>
+        </div>
         {{-- <a class="icon" href="#" id="filterButton" data-bs-toggle="modal" data-bs-target="#filterModal">Filter <i class="bi bi-funnel-fill"></i></a>
         <div class="modal fade" id="filterModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">

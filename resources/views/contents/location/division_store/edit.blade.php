@@ -64,7 +64,7 @@
 
                                     <div class="col-md-3">
                                         <label for="wilayah_id" class="form-label">Wilayah</label>
-                                        <select class="form-select @error('wilayah_id') is-invalid @enderror" name="wilayah_id" id="wilayah_id" required>
+                                        <select class="form-select @error('wilayah_id') is-invalid @enderror" name="wilayah_id" id="wilayah" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($wilayahs as $wilayah)
                                                 @if(old('wilayah_id', $location->wilayah_id) == $wilayah->id)
@@ -129,7 +129,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#wilayah_id').on('change', function () {
+            $('#wilayah').on('change', function () {
                 var wilayahId = $(this).val();
                 if (wilayahId) {
                     $.ajax({

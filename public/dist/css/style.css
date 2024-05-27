@@ -479,18 +479,13 @@ h6 {
 
 @media (min-width: 1200px) {
     .logo2 {
-        width: 230px;
+        width: 200px;
     }
 }
 
 .logo img {
-    max-height: 35px;
+    max-height: 28px;
     margin-right: 15px;
-}
-
-.logo2 img {
-    max-height: 20px;
-    margin-right: 6px;
 }
 
 .logo span {
@@ -498,6 +493,23 @@ h6 {
     font-weight: 700;
     color: #012970;
     font-family: "Nunito", sans-serif;
+}
+
+.logo2 img {
+    max-height: 40px;
+    margin-right: 10px;
+}
+
+.logo2 span {
+    font-size: 31px;
+    font-weight: bold;
+    color: #012970;
+    font-family: "Nunito", sans-serif;
+}
+
+.app-version {
+    padding: 0;
+    text-align: center;
 }
 
 .header {

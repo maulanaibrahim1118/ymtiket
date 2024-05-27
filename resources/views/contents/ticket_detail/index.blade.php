@@ -339,6 +339,7 @@
                                     </div>
 
                                     <div class="col-md-6">
+
                                     @can('isClient') {{-- Jika role sebagai Client --}}
                                         @if($ticket->status == "resolved") {{-- Jika status resolved, muncul tombol close/selesai --}}
                                             {{-- Tombol Close --}}
@@ -434,7 +435,7 @@
                                             {{-- Tombol Assign --}}
                                             <button type="button" class="btn btn-sm btn-outline-dark float-end ms-1" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal"><i class="bx bx-share me-1"></i> Assign</button>
                                             
-                                        @elseif($ticket->status == "resolved" AND $ticket->agent->nik == auth()->user()->nik)
+                                        @elseif($ticket->status == "resolved")
                                             @can('isServiceDesk')
                                                 {{-- Tombol Close --}}
                                                 <button type="button" class="btn btn-sm btn-success float-end ms-1" id="closedButton" data-bs-toggle="modal" data-bs-target="#closedModal"><i class="bi bi-check-circle me-1"></i> Close</button>

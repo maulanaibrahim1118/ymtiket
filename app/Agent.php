@@ -33,6 +33,7 @@ class Agent extends Model
         parent::boot();
 
         static::saving(function ($model) {
+            $model->nama_agent = strtolower($model->nama_agent);
             $model->sub_divisi = strtolower($model->sub_divisi);
         });
     }

@@ -60,4 +60,19 @@ class User extends Authenticatable implements Authorizable
     {
         return $this->belongsTo('App\Role');
     }
+
+    // Accessor untuk mengkapitalisasi huruf pertama dari setiap kata dalam name
+    public function getNameAttribute($value)
+    {
+        return ucwords($value);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $model->nama = strtolower($model->nama);
+        });
+    }
 }

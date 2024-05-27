@@ -12,4 +12,13 @@ class Area extends Model
     {
         return $this->hasOne('App\Regional');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $model->name = strtolower($model->name);
+        });
+    }
 }

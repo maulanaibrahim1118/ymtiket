@@ -15,7 +15,11 @@
         </thead>
         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
             @foreach($tickets as $ticket)
+            @if($ticket->status == "resolved" || $ticket->status == "finished")
+            <tr class="bg-light">
+            @else
             <tr>
+            @endif
                 <td>{{ date('d-M-Y H:i', strtotime($ticket->created_at)) }}</td>
                 <td>{{ $ticket->no_ticket }}</td>
 

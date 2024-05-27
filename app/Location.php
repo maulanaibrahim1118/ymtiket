@@ -42,4 +42,13 @@ class Location extends Model
     {
         return $this->belongsTo('App\Wilayah');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $model->nama_lokasi = strtolower($model->nama_lokasi);
+        });
+    }
 }
