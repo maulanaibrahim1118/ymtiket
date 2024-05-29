@@ -64,7 +64,7 @@
 
             <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
                 <h1>404</h1>
-                <h2>Maaf, halaman tersebut belum dapat diakses.</h2>
+                <h2>Mohon maaf, halaman tidak ditemukan.</h2>
                 <a class="btn" href="/dashboard">Kembali ke Dashboard</a>
                 <div class="credits">
                 </div>

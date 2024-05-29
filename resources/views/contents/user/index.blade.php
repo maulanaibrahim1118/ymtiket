@@ -26,6 +26,7 @@
                                             <th scope="col">ROLE</th>
                                             <th scope="col">TELP/EXT</th>
                                             <th scope="col">IP ADDRESS</th>
+                                            <th scope="col">STATUS</th>
                                             <th scope="col">AKSI</th>
                                             </tr>
                                         </thead>
@@ -39,6 +40,11 @@
                                             <td>{{ $user->role->role_name }}</td>
                                             <td>{{ $user->telp }}</td>
                                             <td>{{ $user->ip_address }}</td>
+                                            @if($user->is_active == '1')
+                                            <td><span class="badge bg-primary">AKTIF</span></td>
+                                            @else
+                                            <td><span class="badge bg-secondary">NON AKTIF</span></td>
+                                            @endif
                                             <td class="dropdown">
                                                 <a class="action-icon pe-2" style="font-size:16px;" href="#" data-bs-toggle="dropdown"><i class="bi bi-list"></i></a>
                                                 <ul class="dropdown-menu">
@@ -47,13 +53,19 @@
                                                         Edit</a>
                                                     </li>
 
-                                                    {{-- Tombol Hapus --}}
-                                                    <form action="{{ route('user.delete', ['id' => encrypt($user->id)]) }}" onsubmit="return confirmAction()" method="POST">
-                                                    @method('put')
-                                                    @csrf
-                                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                    <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Hapus</button></li>
-                                                    </form>
+                                                    @if($user->role_id != 1 || $user->location_id != 10)
+                                                        {{-- Tombol Nonaktifkan --}}
+                                                        <form action="{{ route('user.switch', ['id' => encrypt($user->id)]) }}" onsubmit="return confirmAction()" method="POST">
+                                                        @method('put')
+                                                        @csrf
+                                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                                        @if($user->is_active == '1')
+                                                        <li><button type="submit" class="dropdown-item text-capitalize text-secondary"><i class="bi bi-power text-secondary"></i>Non Aktifkan</button></li>
+                                                        @else
+                                                        <li><button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-power text-primary"></i>Aktifkan</button></li>
+                                                        @endif
+                                                        </form>
+                                                    @endif
                                                 </ul>
                                             </td>
                                             </tr>
@@ -71,7 +83,7 @@
 
     <script>
         function confirmAction(event) {
-            var lanjut = confirm('Apakah anda yakin ingin menghapus user tersebut?');
+            var lanjut = confirm('Apakah anda yakin dengan pilihan tersebut?');
 
             if(lanjut){
                 return true;

@@ -133,13 +133,13 @@
                                         <label for="ticket_for" class="form-label">Diajukan Kepada</label>
                                         <select class="form-select @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for">
                                             <option value="" disabled>Choose...</option>
-                                            @for($i=0; $i < count($ticketFors); $i++){
-                                                @if(old('ticket_for', $ticket->ticket_for) == $ticketFors[$i])
-                                                <option selected value="{{ $ticketFors[$i] }}">{{ ucwords($ticketFors[$i]) }}</option>
+                                            @foreach($ticketFors as $ticketFor)
+                                                @if(old('ticket_for', $ticket->ticket_for) == $ticketFor->location_id)
+                                                <option selected value="{{ $ticketFor->location_id }}">{{ ucwords($ticketFor->location->nama_lokasi) }}</option>
                                                 @else
-                                                <option value="{{ $ticketFors[$i] }}">{{ ucwords($ticketFors[$i]) }}</option>
+                                                <option value="{{ $ticketFor->location_id }}">{{ ucwords($ticketFor->location->nama_lokasi) }}</option>
                                                 @endif
-                                            }@endfor
+                                            @endforeach
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
@@ -152,7 +152,7 @@
                                     
                                     <div class="col-md-3">
                                         <label for="kendala" class="form-label">Kendala</label>
-                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="50" value="{{ old('kendala', $ticket->kendala) }}" required>
+                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="35" value="{{ old('kendala', $ticket->kendala) }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('kendala')
@@ -222,7 +222,7 @@
                                                     @if($ticket->file == NULL)
                                                     <p class="text-center">Tidak ada lampiran...</p>
                                                     @else
-                                                    <img src="{{ asset('uploads/' . $ticket->file) }}" class="rounded mx-auto d-block w-100" alt="...">
+                                                    <img src="{{ asset('uploads/ticket/' . $ticket->file) }}" class="rounded mx-auto d-block w-100" alt="...">
                                                     @endif
                                                 </div>
                                             </div>
@@ -266,8 +266,7 @@
                                             return false;
                                         }
 
-                                        var ticket_for  = document.getElementById('ticket_for').value;
-                                        var lanjut      = confirm('Apakah anda yakin ticket ditujukan untuk ' + ticket_for + '?');
+                                        var lanjut = confirm('Apakah anda yakin data yang di input sudah sesuai?');
 
                                         if(lanjut){
                                             return true;

@@ -83,7 +83,7 @@
                                                 <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
                                                         <div class="card-body">
-                                                            Asset Change adalah status yang digunakan untuk menandakan bahwa asset tersebut dapat/tidak dapat dipergunakan lagi, <b>apabila agent memilih Sub Kategori tersebut saat penanganan tiket</b>. Berikut adalah penjelasan lebih lanjut mengenai pilihan yang tersedia :<br><br>
+                                                            Asset Change adalah status yang digunakan untuk menandakan bahwa asset tersebut dapat/tidak dapat dipergunakan lagi, <b>apabila agent memilih Sub Kategori tersebut saat penanganan tiket hingga resolved</b>. Berikut adalah penjelasan lebih lanjut mengenai pilihan yang tersedia :<br><br>
                                                             1. <b>Ya </b>: Status Asset akan berubah menjadi tidak digunakan.<br>
                                                             2. <b>Tidak </b>: Status Asset tidak akan berubah (digunakan).<br>
                                                         </div>

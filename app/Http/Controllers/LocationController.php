@@ -56,7 +56,7 @@ class LocationController extends Controller
         // Validating data request
         $validatedData = $request->validate([
             'site'          => 'required|max:5|unique:locations',
-            'nama_lokasi'   => 'required|min:5|max:50|unique:locations',
+            'nama_lokasi'   => 'required|min:3|max:50|unique:locations',
             'wilayah_id'    => 'required',
             'updated_by'    => 'required'
         ],
@@ -67,8 +67,8 @@ class LocationController extends Controller
             'site.max'              => 'Maks 5!',
             'site.unique'           => 'Exist!',
             'nama_lokasi.required'  => 'Nama Lokasi harus diisi!',
-            'nama_lokasi.min'       => 'Ketik minimal 5 digit!',
-            'nama_lokasi.max'       => 'Ketik maksimal 50 digit!',
+            'nama_lokasi.min'       => 'Ketik minimal 3 karakter!',
+            'nama_lokasi.max'       => 'Ketik maksimal 50 karakter!',
             'nama_lokasi.unique'    => 'Nama Lokasi sudah ada!',
             'wilayah_id.required'   => 'Wilayah harus dipilih!'
         ]);
@@ -179,7 +179,7 @@ class LocationController extends Controller
         ];
 
         if($request->nama_lokasi != $location->nama_lokasi){
-            $rules['nama_lokasi'] = 'required|min:5|max:50|unique:locations';
+            $rules['nama_lokasi'] = 'required|min:3|max:50|unique:locations';
         }
 
         if($request->site != $location->site){
@@ -193,8 +193,8 @@ class LocationController extends Controller
             'site.max'              => 'Maks 5!',
             'site.unique'           => 'Exist!',
             'nama_lokasi.required'  => 'Nama Lokasi harus diisi!',
-            'nama_lokasi.min'       => 'Ketik minimal 5 digit!',
-            'nama_lokasi.max'       => 'Ketik maksimal 50 digit!',
+            'nama_lokasi.min'       => 'Ketik minimal 3 karakter!',
+            'nama_lokasi.max'       => 'Ketik maksimal 50 karakter!',
             'nama_lokasi.unique'    => 'Nama Lokasi sudah ada!',
             'wilayah_id.required'   => 'Wilayah harus dipilih!',
             'updated_by.required'   => 'Wajib diisi!'

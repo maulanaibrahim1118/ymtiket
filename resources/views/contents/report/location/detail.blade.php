@@ -57,75 +57,8 @@
                             {{-- </div><!-- End Card Body --> --}}
                         </div><!-- End Info Card -->
                     </div><!-- End col-12 -->
-
-                    {{-- <div class="col-12">
-                        <div class="card info-card">
-                            <div class="card-body pb-0">
-                                <h5 class="card-title"><i class="bi bi-person-workspace me-2">
-                                    </i>Report Agent<span> | Rata-Rata Waktu Proses Ticket</span>
-                                </h5>
-                                
-                                <div id="table-container">
-                                    @include('contents.report.agent.partials.report2')
-                                </div>
-
-                            </div><!-- End Card Body -->
-                        </div><!-- End Info Card -->
-                    </div><!-- End col-12 -->
-
-                    <div class="col-12">
-                        <div class="card info-card">
-                            <div class="card-body pb-0">
-                                <h5 class="card-title"><i class="bi bi-person-workspace me-2">
-                                    </i>Report Agent<span> | Rata-Rata Harian</span>
-                                </h5>
-                                
-                                <div id="table-container">
-                                    @include('contents.report.agent.partials.report3')
-                                </div>
-
-                            </div><!-- End Card Body -->
-                        </div><!-- End Info Card -->
-                    </div><!-- End col-12 -->
-
-                    <div class="col-12">
-                        <div class="card info-card">
-                            <div class="card-body pb-0">
-                                <h5 class="card-title"><i class="bi bi-person-workspace me-2">
-                                    </i>Report Agent<span> | Rata-Rata Waktu Pending Per Hari</span>
-                                </h5>
-                                
-                                <div id="table-container">
-                                    @include('contents.report.agent.partials.report4')
-                                </div>
-
-                            </div><!-- End Card Body -->
-                        </div><!-- End Info Card -->
-                    </div><!-- End col-12 --> --}}
                 </div> <!-- End row -->
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const startDate = document.getElementById("start_date");
-            const endDate = document.getElementById("end_date");
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-
-            const maxDate = `${year}-${month}-${day}`;
-            startDate.setAttribute('max', maxDate);
-            endDate.setAttribute('max', maxDate);
-
-            // Event listener for the start date change
-            $("#start_date").change(function () {
-                var startDate = $(this).val();
-                $("#end_date").val(""); // Clear the end date
-                $("#end_date").attr("min", startDate); // Set the min attribute of end date
-            });
-        });
-    </script>
 @endsection

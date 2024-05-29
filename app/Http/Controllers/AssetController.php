@@ -22,12 +22,12 @@ class AssetController extends Controller
         // Get Lokasi User
         $locationId = Auth::user()->location_id;
 
+        // Jika user IT
         if ($locationId == 10) {
-            // Get data Asset sesuai lokasi user
             $assets = Asset::all();
+        // Jika user selain IT
         } else {
-            // Get data Asset sesuai lokasi user
-            $assets = Asset::where('location_id', $locationId)->get();
+            $assets = Asset::where('location_id', $locationId)->whereNotIn('status', ['tidak digunakan'])->get();
         }
 
         return view('contents.asset.index', [
@@ -46,13 +46,16 @@ class AssetController extends Controller
      */
     public function create()
     {
+        $category_assets = Category_asset::orderBy('nama_kategori', 'ASC')->get();
+        $locations = Location::where('is_active', '1')->orderBy('nama_lokasi', 'ASC')->get();
+
         return view('contents.asset.create', [
             "url"               => "",
             "title"             => "Create Asset",
             "path"              => "Asset",
             "path2"             => "Tambah",
-            "category_assets"   => Category_asset::orderBy('nama_kategori', 'ASC')->get(),
-            "locations"         => Location::orderBy('nama_lokasi', 'ASC')->get()
+            "category_assets"   => $category_assets,
+            "locations"         => $locations
         ]);
     }
 
@@ -135,7 +138,7 @@ class AssetController extends Controller
 
         // Get data Category Asset untuk ditampilkan di select option view edit
         $category_assets = Category_asset::orderBy('nama_kategori', 'ASC')->get();
-        $locations = Location::orderBy('nama_lokasi', 'ASC')->get();
+        $locations = Location::where('is_active', '1')->orderBy('nama_lokasi', 'ASC')->get();
 
         return view('contents.asset.edit', [
             "title"             => "Edit Asset",

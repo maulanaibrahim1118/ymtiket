@@ -42,11 +42,11 @@ class TicketDetailController extends Controller
 
         // Cek apakah dia agent atau service desk
         $nik        = $getAgent->nik;
-        $getUser    = User::where([['is_active', '1'],['nik', $nik]])->first();
+        $getUser    = User::where('nik', $nik)->first();
         $role       = $getUser->role_id;
 
         // Mendapatkan id service desk untuk assign oleh agent
-        $getUserSD  = User::where([['is_active', '1'],['location_id', $locationId],['role_id', 1]])->first();
+        $getUserSD  = User::where([['is_active', '1'],['location_id', $locationId],['role_id', 1]])->whereNotIn('position_id', [2, 7])->first();
         $nikSD      = $getUserSD->nik;
         $getAgentSD = Agent::where('nik', $nikSD)->first();
         $sdId       = $getAgentSD->id;
@@ -109,6 +109,8 @@ class TicketDetailController extends Controller
      */
     public function create(Request $request)
     {
+        $locationId = Auth::user()->location_id;
+
         // Get id Asset dari request parameter
         $ticketId = decrypt($request['ticket_id']);
         
@@ -119,6 +121,10 @@ class TicketDetailController extends Controller
         // Mencari extension file
         $ext = substr($ticket->file, -4);
 
+        $category_tickets = Category_ticket::where('location_id', $locationId)->get();
+        $progress_tickets = Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get();
+        $sub_category_tickets = Sub_category_ticket::all();
+
         return view('contents.ticket_detail.create', [
             "title"                 => "Tangani Ticket",
             "path"                  => "Ticket",
@@ -127,9 +133,9 @@ class TicketDetailController extends Controller
             'now'                   => $now,
             'types'                 => $types,
             'ext'                   => $ext,
-            "category_tickets"      => Category_ticket::all(),
-            "progress_tickets"      => Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get(),
-            "sub_category_tickets"  => Sub_category_ticket::all()
+            "category_tickets"      => $category_tickets,
+            "progress_tickets"      => $progress_tickets,
+            "sub_category_tickets"  => $sub_category_tickets
         ]);
     }
 
@@ -230,7 +236,7 @@ class TicketDetailController extends Controller
             $locationId = Auth::user()->location->id;
 
             // Mencari service desk dari agent tersebut berdasarkan nik
-            $getUser = User::where([['is_active', '1'],['location_id', $locationId],['role_id', 1]])->first();
+            $getUser = User::where([['is_active', '1'],['location_id', $locationId],['role_id', 1]])->whereNotIn('position_id', [2, 7])->first();
             $nikSD = $getUser->nik;
             $getAgent = Agent::where('nik', $nikSD)->first();
             $sdId = $getAgent->id;
@@ -355,13 +361,17 @@ class TicketDetailController extends Controller
         // Mencari extension file
         $ext = substr($ticket->file, -4);
 
+        $category_tickets = Category_ticket::where('location_id', $locationId)->get();
+        $sub_category_tickets = Sub_category_ticket::where('category_ticket_id', $categoryId)->get();
+        $progress_tickets = Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get();
+
         return view('contents.ticket_detail.edit', [
             "title"                 => "Edit Detail Tindakan",
             "path"                  => "Ticket",
             "path2"                 => "Edit",
-            "category_tickets"      => Category_ticket::all(),
-            "sub_category_tickets"  => Sub_category_ticket::where('category_ticket_id', $categoryId)->get(),
-            "progress_tickets"      => Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get(),
+            "category_tickets"      => $category_tickets,
+            "sub_category_tickets"  => $sub_category_tickets,
+            "progress_tickets"      => $progress_tickets,
             "ticket"                => $ticket,
             'types'                 => $types,
             'ext'                   => $ext,
@@ -447,7 +457,7 @@ class TicketDetailController extends Controller
             $locationId = Auth::user()->location->id;
 
             // Mencari service desk dari agent tersebut berdasarkan nik
-            $getUser = User::where([['is_active', '1'],['location_id', $locationId],['role_id', 1]])->first();
+            $getUser = User::where([['is_active', '1'],['location_id', $locationId],['role_id', 1]])->whereNotIn('position_id', [2, 7])->first();
             $nikSD = $getUser->nik;
             $getAgent = Agent::where('nik', $nikSD)->first();
             $sdId = $getAgent->id;

@@ -129,7 +129,7 @@ class DashboardController extends Controller
 
                 // Mengembalikan data untuk di tampilkan di view
                 $dataArray      = [$total, $unProcess, $onProcess, $pending, $resolved, $assigned, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
-                $data1          = Agent::where('location_id', $locationId)
+                $data1          = Agent::where([['location_id', $locationId],['is_active', '1']])
                     ->withCount('ticket_details')
                     ->select(
                         'agents.*', 
@@ -179,6 +179,8 @@ class DashboardController extends Controller
             }
         }
 
+        $agents = Agent::where([['location_id', $locationId],['is_active', '1']])->get();
+
         return view('contents.dashboard.index', [
             "title"         => "Dashboard",
             "path"          => "Dashboard",
@@ -189,7 +191,7 @@ class DashboardController extends Controller
             "data1"         => $data1,
             "data2"         => $data2,
             "data3"         => $data3,
-            "agents"        => Agent::where('location_id', $locationId)->get()
+            "agents"        => $agents
         ]);
     }
 

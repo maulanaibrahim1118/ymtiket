@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <title>YM-Tiket | {{ $title }}</title>
+    <title>{{ config('app.title') }} | {{ $title }}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -63,7 +63,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <a href="/dashboard/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" class="logo d-flex align-items-center">
                     <img src="{{ asset('dist/img/logo/logo1.png') }}" alt="">
-                    <span class="d-none d-lg-block pt-1"><b>YMTIKET</b></span>
+                    <span class="d-none d-lg-block pt-1"><b>{{ config('app.name') }}</b></span>
                 </a>
                 <i class="bi bi-list toggle-sidebar-btn"></i>
             </div><!-- End Logo -->
@@ -152,7 +152,7 @@
                     <li class="nav-item dropdown pe-3">
                         <div class="nav-link nav-profile d-flex align-items-center ms-3 me-3">
                             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                            <img src="{{ asset('dist/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle">
+                            <img src="{{ asset('dist/img/profile/user.png') }}" alt="Profile" class="rounded-circle">
                             <span class="position-absolute bottom-0 ms-4 p-1 border border-light rounded-circle" style="background-color: rgb(22, 224, 22)">
                                 <span class="visually-hidden">Online</span>
                             </span>
@@ -171,7 +171,7 @@
                                 @csrf
                                 <a class="nav-link collapsed">
                                     <button type="submit" class="dropdown-item d-flex align-items-center">
-                                    <i class="bi bi-power"></i>
+                                    <i class="bi bi-box-arrow-left"></i>
                                     <span>Logout</span>
                                     </button>
                                 </a>
@@ -224,7 +224,7 @@
 
         <footer id="footer" class="footer">
             <div class="copyright">
-                Copyright &copy; 2024 <a href="#">Yogya Group</a>. All Rights Reserved
+                Copyright &copy; {{ config('app.year_created') }} <a href="#">{{ config('app.company') }}</a>. All Rights Reserved
             </div>
         </footer><!-- End Footer -->
 
@@ -247,27 +247,6 @@
     <script src="{{ asset('dist/js/main.js') }}"></script>
     <script src="{{ asset('dist/js/parent-dropdown.js') }}"></script>
     
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const startDate = document.getElementById("start_date");
-            const endDate = document.getElementById("end_date");
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-
-            const maxDate = `${year}-${month}-${day}`;
-            startDate.setAttribute('max', maxDate);
-            endDate.setAttribute('max', maxDate);
-
-            // Event listener for the start date change
-            $("#start_date").change(function () {
-                var startDate = $(this).val();
-                $("#end_date").val(""); // Clear the end date
-                $("#end_date").attr("min", startDate); // Set the min attribute of end date
-            });
-        });
-    </script>
     <script>
         function reloadAction(){
             window.location.reload();

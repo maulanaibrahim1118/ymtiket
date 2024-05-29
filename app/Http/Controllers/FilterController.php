@@ -211,6 +211,8 @@ class FilterController extends Controller
             }
         }
 
+        $agents = Agent::where([['location_id', $locationId],['is_active', '1']])->get();
+
         return view('contents.dashboard.index', [
             "url"           => "",
             "title"         => "Dashboard",
@@ -222,7 +224,7 @@ class FilterController extends Controller
             "data1"         => $data1,
             "data2"         => $data2,
             "data3"         => $data3,
-            "agents"        => Agent::where('location_id', $locationId)->get()
+            "agents"        => $agents
         ]);
     }
 
@@ -428,12 +430,12 @@ class FilterController extends Controller
                 }
             }
         
-            $query->where('status', 'resolved');
+            $query->whereIn('status', ['resolved', 'assigned']);
             $query->with('agent');
         }])->get();
         
-        $agents = Agent::where('location_id', $locationId)->get();
-        $totalAgents = Agent::where('location_id', $locationId)->count();
+        $agents = Agent::where([['location_id', $locationId],['is_active', '1']])->get();
+        $totalAgents = Agent::where([['location_id', $locationId],['is_active', '1']])->count();
         $data = [];
         
         foreach ($categories as $category) {
@@ -547,10 +549,10 @@ class FilterController extends Controller
         $locations = $locations->map(function($location) { 
             // Report 1 
             $location->permintaan = $location->tickets->filter(function($ticket) {
-                    return $ticket->ticket_detail->jenis_ticket == "permintaan"; 
+                    return isset($ticket->ticket_detail) && $ticket->ticket_detail->jenis_ticket == "permintaan";
                 })->count();
             $location->kendala = $location->tickets->filter(function($ticket) {
-                    return $ticket->ticket_detail->jenis_ticket == "kendala";
+                    return isset($ticket->ticket_detail) && $ticket->ticket_detail->jenis_ticket == "kendala";
                 })->count();
             $location->total = $location->permintaan + $location->kendala;
 
@@ -560,9 +562,9 @@ class FilterController extends Controller
         
         return view('contents.report.location.index', [
             "url"           => "",
-            "title"         => "Report Location",
+            "title"         => "Report Store & Division",
             "path"          => "Report",
-            "path2"         => "Location",
+            "path2"         => "Store & Division",
             "filterArray"   => $filterArray,
             "pathFilter"    => $pathFilter,
             "locations"     => $locations,

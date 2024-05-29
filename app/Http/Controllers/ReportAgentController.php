@@ -22,7 +22,7 @@ class ReportAgentController extends Controller
         $location   = Auth::user()->location->nama_lokasi;
         $pathFilter = "Semua";
 
-        $agents = Agent::where('location_id', $locationId)
+        $agents = Agent::where([['location_id', $locationId],['is_active', '1']])
             ->withCount(['ticket', 'ticket_details'])
             ->with([
                 'ticket' => function($query) {

@@ -193,36 +193,53 @@
     </section>
 
     <script>
-        $('#location').change(function(){
+        $('#position_id').change(function() {
+            var location = $('#location');
+            location.val(''); // Set value to default (disabled) option
+            location.prop('selectedIndex', 0); // Ensure the first option is selected
+            location.change();
+        });
+
+        $('#location').change(function() {
             var locationId = $(this).val();
             var subDivisiDropdown = $('#sub_division');
+            var jabatan = $('#position_id').val();
 
-            var SubDivisi = '{{ route("getSubDivisions", ":id") }}';
-            url = SubDivisi.replace(':id', locationId);
-            $.ajax({
-                url: url,
-                type: 'get',
-                dataType: 'json',
-                success: function(response){
-                    subDivisiDropdown.empty();
-                    subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
-                    $.each(response, function (key, value) {
-                        subDivisiDropdown.append('<option class="text-capitalize" value="' + value.name + '">' + value.name + '</option>');
-                    });
-                    subDivisiDropdown.prop('disabled', false);
-                },
-                error: function(xhr) {
-                    // Jika error, tambahkan nilai default
-                    if (xhr.status === 404) {
+            if (jabatan == 2 || jabatan == 7) {
+                setEmpty();
+            } else {
+                var SubDivisi = '{{ route("getSubDivisions", ":id") }}';
+                var url = SubDivisi.replace(':id', locationId);
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(response) {
                         subDivisiDropdown.empty();
-                        subDivisiDropdown.append('<option selected value="tidak ada">Tidak Ada</option>');
+                        subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
+                        $.each(response, function(key, value) {
+                            subDivisiDropdown.append('<option class="text-capitalize" value="' + value.name + '">' + value.name + '</option>');
+                        });
                         subDivisiDropdown.prop('disabled', false);
-                    } else {
-                        // Tangani error lainnya jika perlu
-                        console.error('An error occurred:', xhr.statusText);
+                    },
+                    error: function(xhr) {
+                        // Jika error, tambahkan nilai default
+                        if (xhr.status === 404) {
+                            setEmpty();
+                        } else {
+                            // Tangani error lainnya jika perlu
+                            console.error('An error occurred:', xhr.statusText);
+                        }
                     }
-                }
-            });
+                });
+            }
+
+            function setEmpty() {
+                subDivisiDropdown.empty();
+                subDivisiDropdown.append('<option value="" disabled>Choose...</option>');
+                subDivisiDropdown.append('<option selected value="tidak ada">Tidak Ada</option>');
+                subDivisiDropdown.prop('disabled', false);
+            }
         });
     </script>
 

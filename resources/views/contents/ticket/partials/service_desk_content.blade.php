@@ -124,7 +124,7 @@
                                 <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->location->wilayah_id }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
                         
                                 {{-- ========== Jika ticket dibuat oleh service desk ========== --}}
-                                @if($ticket->user_id == auth()->user()->id)
+                                @if($ticket->created_by == auth()->user()->nama)
                         
                                     {{-- Tombol Edit --}}
                                     <li><a class="dropdown-item text-capitalize text-warning" href="{{ route('ticket.edit', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()">
@@ -223,18 +223,21 @@
                             @endif
                         @else
                             @if($ticket->status == "created" || $ticket->status == "onprocess" || $ticket->status == "pending")
-                                {{-- Tombol Tarik Ticket --}}
-                                <li>
-                                    <form action="{{ route('ticket.pull', ['id' => encrypt($ticket->id)]) }}" method="post">
-                                        @method('put')
-                                        @csrf
-                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                        <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                        <a href="#">
-                                        <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bi bi-sign-turn-left text-primary"></i>Tarik</button>
-                                        </a>
-                                    </form>
-                                </li>
+                                {{-- Jika bukan chief --}}
+                                @if(auth()->user()->position_id != 2)
+                                    {{-- Tombol Tarik Ticket --}}
+                                    <li>
+                                        <form action="{{ route('ticket.pull', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                            @method('put')
+                                            @csrf
+                                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                            <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
+                                            <a href="#">
+                                            <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bi bi-sign-turn-left text-primary"></i>Tarik</button>
+                                            </a>
+                                        </form>
+                                    </li>
+                                @endif
 
                                 {{-- Tombol Detail --}}
                                 <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>

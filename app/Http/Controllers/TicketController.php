@@ -111,7 +111,7 @@ class TicketController extends Controller
         $locationId = Auth::user()->location_id;
 
         // Data Array untuk select option
-        $ticketFors  = User::where([['is_active', '1'],['role_id', 1]])->orderBy('location_id', 'ASC')->distinct()->get();
+        $ticketFors  = Agent::select('location_id')->distinct()->orderBy('location_id', 'ASC')->get();
 
         // Jika Role Client
         if($role == 3){
@@ -168,7 +168,7 @@ class TicketController extends Controller
             'user_id'           => 'required',
             'asset_id'          => 'required',
             'ticket_for'        => 'required',
-            'kendala'           => 'required|min:5|max:50',
+            'kendala'           => 'required|min:5|max:35',
             'detail_kendala'    => 'required|min:10',
             'file'              => 'required|max:1024',
         ],
@@ -179,10 +179,10 @@ class TicketController extends Controller
             'asset_id.required'         => 'No. Asset harus dipilih!',
             'ticket_for.required'       => 'Ditujukan Kepada harus dipilih!',
             'kendala.required'          => 'Kendala harus diisi!',
-            'kendala.min'               => 'Ketik minimal 5 digit!',
-            'kendala.max'               => 'Ketik maksimal 50 digit!',
+            'kendala.min'               => 'Ketik minimal 5 karakter!',
+            'kendala.max'               => 'Ketik maksimal 35 karakter!',
             'detail_kendala.required'   => 'Detail Kendala harus diisi!',
-            'detail_kendala.min'        => 'Ketik minimal 10 digit!',
+            'detail_kendala.min'        => 'Ketik minimal 10 karakter!',
             'file.required'             => 'Lampiran harus diisi!',
             'file.max'                  => 'Maksimal ukuran file 1Mb!',
         ]);
@@ -218,7 +218,7 @@ class TicketController extends Controller
         $ticketFor = $data['ticket_for'];
 
         // Get NIK Service Desk
-        $getServiceDesk = User::where([['is_active', '1'],['location_id', $ticketFor],['role_id', 1]])->first();
+        $getServiceDesk = User::where([['is_active', '1'],['location_id', $ticketFor],['role_id', 1]])->whereNotIn('position_id', [2, 7])->first();
         $nikServiceDesk = $getServiceDesk['nik'];
 
         // Get ID Service Desk
@@ -336,7 +336,7 @@ class TicketController extends Controller
         // Jika status ticket belum diproses oleh agent
         if($ticket->status == "created"){
             // Data Array untuk select option
-            $ticketFors = ["information technology", "inventory control", "project me", "project sipil"];
+            $ticketFors  = Agent::select('location_id')->distinct()->orderBy('location_id', 'ASC')->get();
 
             // Get data Asset untuk select option
             $assets = Asset::where('location_id', $ticket->location_id)->get();
@@ -344,7 +344,7 @@ class TicketController extends Controller
             // Jika Role Client
             if($role == 3){
                 // Get data Client untuk select option
-                $clients = User::where([['location_id', $locationId],['is_active', '1']])->orderBy('nama', 'ASC')->get();
+                $users = User::where([['location_id', $locationId],['is_active', '1']])->orderBy('nama', 'ASC')->get();
                 
                 return view('contents.ticket.edit', [
                     "title"         => "Edit Ticket",
@@ -352,14 +352,14 @@ class TicketController extends Controller
                     "path2"         => "Edit",
                     "ticket"        => $ticket,
                     "assets"        => $assets,
-                    "clients"       => $clients,
+                    "users"         => $users,
                     "ticketFors"    => $ticketFors
                 ]);
 
             // Jika Role Service Desk
             }elseif($role == 1){
                 // Get data Service De untuk select option
-                $clients = User::where('is_active', '1')->orderBy('nama', 'ASC')->get();
+                $users = User::where('is_active', '1')->orderBy('nama', 'ASC')->get();
 
                 return view('contents.ticket.edit', [
                     "title"         => "Edit Ticket",
@@ -367,7 +367,7 @@ class TicketController extends Controller
                     "path2"         => "Edit",
                     "ticket"        => $ticket,
                     "assets"        => $assets,
-                    "clients"       => $clients,
+                    "users"         => $users,
                     "ticketFors"    => $ticketFors
                 ]);
             }
@@ -395,10 +395,10 @@ class TicketController extends Controller
 
         // Validating data request
         $rules = [
-            'client_id'         => 'required',
+            'user_id'           => 'required',
             'asset_id'          => 'required',
             'ticket_for'        => 'required',
-            'kendala'           => 'required|min:5|max:50',
+            'kendala'           => 'required|min:5|max:35',
             'detail_kendala'    => 'required|min:10',
             'file'              => 'max:1024',
             'updated_by'        => 'required'
@@ -407,14 +407,14 @@ class TicketController extends Controller
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
-            'client_id.required'        => 'Client harus dipilih!',
+            'user_id.required'          => 'Client harus dipilih!',
             'asset_id.required'         => 'No. Asset harus dipilih!',
             'ticket_for.required'       => 'Ditujukan Kepada harus dipilih!',
             'kendala.required'          => 'Kendala harus diisi!',
-            'kendala.min'               => 'Ketik minimal 5 digit!',
-            'kendala.max'               => 'Ketik maksimal 50 digit!',
+            'kendala.min'               => 'Ketik minimal 5 karakter!',
+            'kendala.max'               => 'Ketik maksimal 35 karakter!',
             'detail_kendala.required'   => 'Detail Kendala harus diisi!',
-            'detail_kendala.min'        => 'Ketik minimal 10 digit!',
+            'detail_kendala.min'        => 'Ketik minimal 10 karakter!',
             'updated_by.required'       => 'Wajib diisi!',
             'file.max'                  => 'Maksimal ukuran file 1Mb!',
         ]);
@@ -434,7 +434,7 @@ class TicketController extends Controller
             $imageName = $oldFile;
         }else{
             $imageName = time() . '.' . $request->file->extension();
-            $request->file->move(public_path('uploads'), $imageName);
+            $request->file->move(public_path('uploads/ticket'), $imageName);
         }
 
         // Mencari data Lokasi Client untuk mengisi data code_access
@@ -442,9 +442,18 @@ class TicketController extends Controller
         $locationId     = $getClient['location_id'];
         $codeAccess     = $getClient['code_access'];
 
+        // Get NIK Service Desk
+        $getServiceDesk = User::where([['is_active', '1'],['location_id', $request['ticket_for']],['role_id', 1]])->whereNotIn('position_id', [2, 7])->first();
+        $nikServiceDesk = $getServiceDesk['nik'];
+
+        // Get ID Service Desk
+        $getAgent   = Agent::where([['is_active', '1'],['nik', $nikServiceDesk]])->first();
+        $agentId    = $getAgent['id'];
+
         // Updating data to ticket table
         Ticket::where('id', $id)->update([
-            'client_id'         => $request['client_id'],
+            'user_id'           => $request['user_id'],
+            'agent_id'          => $agentId,
             'location_id'       => $locationId,
             'asset_id'          => $request['asset_id'],
             'ticket_for'        => $request['ticket_for'],
@@ -452,7 +461,7 @@ class TicketController extends Controller
             'detail_kendala'    => strtolower($request['detail_kendala']),
             'file'              => $imageName,
             'code_access'       => $codeAccess,
-            'updated_by'        => $request['client_id']
+            'updated_by'        => Auth::user()->nama
         ]);
 
         // Saving data to progress ticket table
@@ -1508,8 +1517,15 @@ class TicketController extends Controller
 
     public function ticketAsset(Request $request)
     {
+        $nik        = Auth::user()->nik;
+        $locationId = Auth::user()->location_id;
+        
         // Get id Asset dari request parameter
         $assetId = decrypt($request['asset_id']);
+        
+        // Mencari agent_id untuk parameter menampilkan halaman ticket Agent
+        $getAgent   = Agent::where([['is_active', '1'],['nik', $nik]])->first();
+        $agentId    = $getAgent['id'];
         
         // Get data Asset berdasarkan id Asset
         $asset      = Asset::where('id', $assetId)->first();
@@ -1518,14 +1534,28 @@ class TicketController extends Controller
         // Get data ticket berdasarkan asset id
         $tickets    = Ticket::where('asset_id', $assetId)->whereNotIn('status', ['deleted'])->orderBy('created_at', 'DESC')->get();
 
+        // Mencari agent yang memiliki sub divisi, untuk menentukan antrian dan assign
+        $haveSubDivs = Sub_division::select('location_id')->distinct()->pluck('location_id')->toArray();
+
+        // Get data Sub Divisi Agent HO & Store, untuk select option Antrikan
+        $subDivHo = Agent::where([['location_id', $locationId],['pic_ticket', '!=', 'store']])->whereNotIn('id', [$agentId])->distinct()->pluck('sub_divisi')->toArray();
+        $subDivStore = Agent::where([['location_id', $locationId],['pic_ticket', '!=', 'ho']])->whereNotIn('id', [$agentId])->distinct()->pluck('sub_divisi')->toArray();
+        
+        $hoAgents      = Agent::where([['is_active', '1'],['location_id', $locationId],['pic_ticket', '!=', 'store'],['status', 'present']])->whereNotIn('id', [$agentId])->get();
+        $storeAgents   = Agent::where([['is_active', '1'],['location_id', $locationId],['pic_ticket', '!=', 'ho'],['status', 'present']])->whereNotIn('id', [$agentId])->get();
+
         return view('contents.ticket.filter.index', [
             "url"           => $noAsset,
             "title"         => "Ticket",
             "path"          => "Ticket",
             "path2"         => "Asset: ". $noAsset,
             "pathFilter"    => "Asset: ". $noAsset,
-            "hoAgents"      => Agent::all(),
-            "storeAgents"   => Agent::all(),
+            "haveSubDivs"   => $haveSubDivs,
+            "subDivHo"      => $subDivHo,
+            "subDivStore"   => $subDivStore,
+            "hoAgents"      => $hoAgents,
+            "storeAgents"   => $storeAgents,
+            "agentId"       => $agentId,
             "tickets"       => $tickets
         ]);
     }

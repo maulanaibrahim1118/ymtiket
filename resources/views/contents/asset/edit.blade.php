@@ -122,8 +122,32 @@
                                     <input type="text" name="location_id" value="{{ auth()->user()->location_id }}" hidden>
                                     @endif
 
+                                    @if(auth()->user()->location_id == 10)
+                                    <div class="col-md-3">
+                                        <label for="status" class="form-label">Status</label>
+                                        <select class="form-select @error('status') is-invalid @enderror" name="status" id="status" required>
+                                            <option selected value="" disabled>Choose...</option>
+                                            @if(old('status', $asset->status) == "tidak digunakan")
+                                            <option selected value="tidak digunakan">Tidak Digunakan</option>
+                                            <option value="digunakan">Digunakan</option>
+                                            @else
+                                            <option value="tidak digunakan">Tidak Digunakan</option>
+                                            <option selected value="digunakan">Digunakan</option>
+                                            @endif
+                                        </select>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('status')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                    @else
+                                    <input type="text" name="status" value="{{ $asset->status }}" hidden>
+                                    @endif
+
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                    <input type="text" name="status" value="digunakan" hidden>
 
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-2 mb-0"></p>

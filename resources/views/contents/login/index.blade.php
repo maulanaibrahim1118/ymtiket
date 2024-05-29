@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>YM-Tiket | {{ $title }}</title>
+    <title>{{ config('app.title') }} | {{ $title }}</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -120,10 +120,10 @@
                                             <div class="d-flex justify-content-center">
                                                 <a href="/" class="logo2 d-flex align-items-center">
                                                   <img src="{{ asset('dist/img/logo/logo4.png') }}" alt="">
-                                                  <span class="d-lg-block">YMTIKET</span>
+                                                  <span class="d-lg-block">{{ config('app.name') }}</span>
                                                 </a>
                                             </div><!-- End Logo -->
-                                            <p class="app-version">Version 1.0</p>
+                                            <p class="app-version">Versi {{ config('app.version') }}</p>
                                         </div>
 
                                         <!-- Login Title -->
@@ -153,7 +153,7 @@
                                                 <div class="card-footer p-0"></div>
             
                                                 <div class="col-12 pb-2">
-                                                    <button class="btn btn-primary w-100 rounded-1" type="submit">Masuk<i class="bi bi-box-arrow-in-right ms-2"></i></button>
+                                                    <button class="btn btn-primary w-100 rounded-1" type="submit"><i class="bi bi-box-arrow-in-right me-2"></i>Login</button>
                                                 </div>
                                                     
                                                 {{-- <div class="col-12">
@@ -169,7 +169,7 @@
             
                                     <!-- Copyright Footer -->
                                     <div class="credits mt-3">
-                                        Copyright &copy; 2024 <a href="#">Yogya Group</a>. All Right Reserved
+                                        Copyright &copy; {{ config('app.year_created') }} <a href="#">{{ config('app.company') }}</a>. All Right Reserved
                                     </div>
                                 </div>
                             </div> <!-- End Row Content -->

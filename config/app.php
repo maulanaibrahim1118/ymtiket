@@ -13,7 +13,13 @@ return [
     |
     */
 
+    'url' => env('APP_URL', 'Laravel'),
     'name' => env('APP_NAME', 'Laravel'),
+    'title' => env('APP_TITLE', 'Laravel'),
+    'version' => env('APP_VERSION', 'Laravel'),
+    'company' => env('APP_COMPANY', 'Laravel'),
+    'creator' => env('APP_CREATED_BY', 'Laravel'),
+    'year_created' => env('APP_YEAR_CREATED', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------

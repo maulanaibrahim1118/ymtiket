@@ -120,7 +120,7 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::post('/users', [UserController::class, 'store'])->name('user.store');
     Route::get('/users/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('/users', [UserController::class, 'update'])->name('user.update');
-    Route::put('/users/delete', [UserController::class, 'destroy'])->name('user.delete');
+    Route::put('/users/switch', [UserController::class, 'switch'])->name('user.switch');
     Route::get('/users/create1{id}', [UserController::class, 'getSubDivisions'])->middleware('auth')->name('getSubDivisions');
 });
 

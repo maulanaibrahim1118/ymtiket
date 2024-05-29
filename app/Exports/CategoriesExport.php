@@ -23,7 +23,7 @@ class CategoriesExport implements FromCollection, WithHeadings, WithMapping, Sho
         $this->category = $category;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
-        $this->agents = Agent::where('location_id', $locationId)->get();
+        $this->agents = Agent::where([['location_id', $locationId],['is_active', '1']])->get();
     }
     
     /**
@@ -50,7 +50,7 @@ class CategoriesExport implements FromCollection, WithHeadings, WithMapping, Sho
             } elseif (!empty($this->endDate)) {
                 $query->whereDate('created_at', '<=', $this->endDate);
             }
-            $query->where('status', 'resolved');
+            $query->whereIn('status', ['resolved', 'assigned']);
             $query->with('agent');
         }])->get();
 

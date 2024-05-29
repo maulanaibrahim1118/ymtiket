@@ -100,7 +100,7 @@
                                     <div class="col-md-3">
                                         <label for="location_id" class="form-label">Divisi</label>
                                         <select class="form-select select2 @error('location_id') is-invalid @enderror" name="location_id" id="location" value="{{ old('location_id') }}" required>
-                                            <option selected disabled>Choose...</option>
+                                            <option value="" selected disabled>Choose...</option>
                                             @foreach($locations as $location)
                                                 @if(old('location_id') == $location->id)
                                                 <option selected value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
@@ -121,7 +121,7 @@
                                     <div class="col-md-3">
                                         <label for="sub_division" class="form-label">Sub Divisi / Area / Regional / Wilayah</label>
                                         <select class="form-select select2 @error('sub_division') is-invalid @enderror" name="sub_division" id="sub_division" disabled>
-                                            <option selected disabled>Choose...</option>
+                                            <option value="" selected disabled>Choose...</option>
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
@@ -158,8 +158,16 @@
 
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
 
-                                    <div class="col-md-12 pt-2">
+                                    <div class="col-md-12">
                                         <p class="border-bottom mt-2 mb-0"></p>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <p><span class="badge bg-primary">*Note : Untuk Create User Cabang. Masuk ke Menu Location > Store & Division > Tambah .</span></p>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <p class="border-bottom mt-0 mb-0"></p>
                                     </div>
                                     
                                     <div class="col-md-12">
@@ -177,36 +185,53 @@
     </section>
 
     <script>
-        $('#location').change(function(){
+        $('#position_id').change(function() {
+            var location = $('#location');
+            location.val(''); // Set value to default (disabled) option
+            location.prop('selectedIndex', 0); // Ensure the first option is selected
+            location.change();
+        });
+
+        $('#location').change(function() {
             var locationId = $(this).val();
             var subDivisiDropdown = $('#sub_division');
+            var jabatan = $('#position_id').val();
 
-            var SubDivisi = '{{ route("getSubDivisions", ":id") }}';
-            url = SubDivisi.replace(':id', locationId);
-            $.ajax({
-                url: url,
-                type: 'get',
-                dataType: 'json',
-                success: function(response){
-                    subDivisiDropdown.empty();
-                    subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
-                    $.each(response, function (key, value) {
-                        subDivisiDropdown.append('<option class="text-capitalize" value="' + value.name + '">' + value.name + '</option>');
-                    });
-                    subDivisiDropdown.prop('disabled', false);
-                },
-                error: function(xhr) {
-                    // Jika error, tambahkan nilai default
-                    if (xhr.status === 404) {
+            if (jabatan == 2 || jabatan == 7) {
+                setEmpty();
+            } else {
+                var SubDivisi = '{{ route("getSubDivisions", ":id") }}';
+                var url = SubDivisi.replace(':id', locationId);
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(response) {
                         subDivisiDropdown.empty();
-                        subDivisiDropdown.append('<option selected value="tidak ada">Tidak Ada</option>');
+                        subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
+                        $.each(response, function(key, value) {
+                            subDivisiDropdown.append('<option class="text-capitalize" value="' + value.name + '">' + value.name + '</option>');
+                        });
                         subDivisiDropdown.prop('disabled', false);
-                    } else {
-                        // Tangani error lainnya jika perlu
-                        console.error('An error occurred:', xhr.statusText);
+                    },
+                    error: function(xhr) {
+                        // Jika error, tambahkan nilai default
+                        if (xhr.status === 404) {
+                            setEmpty();
+                        } else {
+                            // Tangani error lainnya jika perlu
+                            console.error('An error occurred:', xhr.statusText);
+                        }
                     }
-                }
-            });
+                });
+            }
+
+            function setEmpty() {
+                subDivisiDropdown.empty();
+                subDivisiDropdown.append('<option value="" disabled>Choose...</option>');
+                subDivisiDropdown.append('<option selected value="tidak ada">Tidak Ada</option>');
+                subDivisiDropdown.prop('disabled', false);
+            }
         });
     </script>
 

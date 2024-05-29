@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Role;
 use App\User;
 use App\Agent;
+use App\Ticket;
 use App\Location;
 use App\Position;
 use App\Sub_division;
@@ -21,8 +22,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where('is_active', '1')
-            ->whereHas('location', function ($query) {
+        $users = User::whereHas('location', function ($query) {
                 $query->whereIn('wilayah_id', [1, 2]);
             })
             ->get();
@@ -138,10 +138,17 @@ class UserController extends Controller
         $user->save();
         
         if($role != 3){
+            $positionId = $data['position_id'];
+            $isActive = "1";
+
             if($role == 1){ // Role Service Desk
                 $picTicket  = "all";
             }elseif($role == 2){ // Role Agent
                 $picTicket  = $codeAccess;
+            }
+
+            if($positionId == 2 || $positionId == 7){
+                $isActive = "0";
             }
 
             $agent                  = new Agent;
@@ -151,6 +158,7 @@ class UserController extends Controller
             $agent->sub_divisi      = $subDivisionName;
             $agent->pic_ticket      = $picTicket;
             $agent->status          = 'present';
+            $agent->is_active       = $isActive;
             $agent->updated_by      = $data['updated_by'];
             $agent->save();
         }
@@ -332,29 +340,42 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
+    {
+        //
+    }
+    public function switch(Request $request)
     {
         // Get id User dari request parameter
         $id = decrypt($request['id']);
         
-        $user   = User::where('id', $id)->first();
-        $nama    = $user->nama;
-        $nik    = $user->nik;
-        $role   = $user->role_id;
+        $user       = User::where('id', $id)->first();
+        $nama       = $user->nama;
+        $nik        = $user->nik;
+        $role       = $user->role_id;
+        $isActive   = $user->is_active;
+
+        if ($isActive == '0') {
+            $switch = '1';
+            $status = 'aktifkan';
+        } else {
+            $switch = '0';
+            $status = 'non aktifkan';
+        }
 
         User::where('id', $id)->update([
-            'is_active' => '0',
+            'is_active' => $switch,
             'updated_by' => $request['updated_by']
         ]);
 
         if ($role != 3) {
             Agent::where('nik', $nik)->update([
-                'is_active' => '0',
+                'is_active' => $switch,
                 'updated_by' => $request['updated_by']
             ]);
         }
 
-        return back()->with('success', 'User '.ucwords($nama).' berhasil dihapus!');
+        return back()->with('success', 'User '.ucwords($nama).' berhasil di '.$status.'!');
     }
 
     // Get data asset untuk JQuery Select Option
@@ -363,16 +384,6 @@ class UserController extends Controller
         $data = Sub_division::where('location_id', $id)->get();
 
         if ($data->isEmpty()) {
-            // $defaultData = [
-            //     'id' => null,
-            //     'name' => 'tidak ada',
-            //     'location_id' => $id,
-            //     'code_access' => null,
-            //     'updated_by' => null,
-            //     'created_at' => null,
-            //     'updated_at' => null
-            // ];
-            
             return response()->json([
                 'error' => 'No subdivisions found for the given location ID.',
             ], 404); // Menggunakan 404 Not Found untuk respons error

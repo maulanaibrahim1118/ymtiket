@@ -347,6 +347,9 @@
                                         @else {{-- Jika status bukan resolved, tidak akan muncul tombol apapun --}}
                                         @endif
 
+                                        {{-- Tombol Print --}}
+                                        <button class="btn btn-sm btn-primary print-button d-print-none float-end ms-1" onclick="window.print()"><i class="bi bi-printer me-1"></i> Print</button>
+
                                         @can('isKorwil')
                                             @if($ticket->need_approval == "ya" AND $ticket->approved == NULL)
                                                 {{-- Tombol Rejected --}}
@@ -687,4 +690,6 @@
             '</form>';
         }
     </script>
+
+    @include('contents.ticket_detail.print')
 @endsection

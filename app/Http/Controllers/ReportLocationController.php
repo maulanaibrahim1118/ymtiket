@@ -28,6 +28,49 @@ class ReportLocationController extends Controller
         $locations = $locations->map(function($location) { 
             // Report 1 
             $location->permintaan = $location->tickets->filter(function($ticket) {
+                    return isset($ticket->ticket_detail) && $ticket->ticket_detail->jenis_ticket == "permintaan";  
+                })->count();
+            $location->kendala = $location->tickets->filter(function($ticket) {
+                    return isset($ticket->ticket_detail) && $ticket->ticket_detail->jenis_ticket == "kendala";
+                })->count();
+            $location->total = $location->permintaan+$location->kendala;
+
+            return $location;
+        });
+
+        $filterArray = ["", "", ""];
+        
+        return view('contents.report.location.index', [
+            "url"           => "",
+            "title"         => "Report Store & Division",
+            "path"          => "Report",
+            "path2"         => "Store & Division",
+            "filterArray"   => $filterArray,
+            "pathFilter"    => $pathFilter,
+            "locations"     => $locations,
+            "wilayahs"      => $wilayahs,
+        ]);
+    }
+
+    public function detail(Request $request)
+    {
+        // Get data User
+        $userId     = Auth::user()->id;
+        $userRole   = Auth::user()->role;
+        $locationId = Auth::user()->location_id;
+        $pathFilter = ["", ""];
+
+        $wilayahs = Wilayah::all();
+        
+        $locations = Location::withCount(['tickets', 'user'])
+            ->with(['tickets' => function($query) use ($locationId) { 
+                $query->where('ticket_for', $locationId)->whereNotIn('status', ['deleted'])->with('ticket_detail');
+            }, 'user']) 
+            ->orderBy('nama_lokasi', 'ASC') ->get();
+
+        $locations = $locations->map(function($location) { 
+            // Report 1 
+            $location->permintaan = $location->tickets->filter(function($ticket) {
                     return $ticket->ticket_detail->jenis_ticket == "permintaan"; 
                 })->count();
             $location->kendala = $location->tickets->filter(function($ticket) {
@@ -38,29 +81,13 @@ class ReportLocationController extends Controller
             return $location;
         });
 
-        // $locations = Location::withCount(['tickets', 'user'])
-        //     ->with(['tickets' => function($query) use ($namaLokasi) { 
-        //         $query->where('ticket_for', $namaLokasi)->whereNotIn('status', ['deleted'])->with('ticket_detail');
-        //     }, 'user'])
-        //     ->orderBy('nama_lokasi', 'ASC')
-        //     ->get();
-
-        // $locations->map(function($location) {
-        //     // Report 1
-        //     $location->permintaan = $location->tickets->where('ticket_details.jenis_ticket', 'permintaan')->count();
-        //     $location->kendala = $location->tickets->where('ticket_details.jenis_ticket', 'kendala')->count();
-        //     $location->total = $location->permintaan+$location->kendala;
-
-        //     return $location;
-        // });
-            
         $filterArray = ["", "", ""];
         
         return view('contents.report.location.index', [
             "url"           => "",
-            "title"         => "Report Location",
+            "title"         => "Report Store & Division",
             "path"          => "Report",
-            "path2"         => "Location",
+            "path2"         => "Store & Division",
             "filterArray"   => $filterArray,
             "pathFilter"    => $pathFilter,
             "locations"     => $locations,

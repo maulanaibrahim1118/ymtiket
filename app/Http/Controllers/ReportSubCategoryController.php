@@ -21,9 +21,9 @@ class ReportSubCategoryController extends Controller
         $pathFilter = ["", ""];
 
         $dCategories = Category_ticket::where('location_id', $locationId)->get();
-        $totalAgents = Agent::where('location_id', $locationId)->count();
+        $totalAgents = Agent::where([['location_id', $locationId],['is_active', '1']])->count();
         $categories = Category_ticket::where('location_id', $locationId)->with(['sub_category_tickets.ticket_details.agent'])->get();
-        $agents = Agent::where('location_id', $locationId)->get();
+        $agents = Agent::where([['location_id', $locationId],['is_active', '1']])->get();
 
         // Persiapkan data untuk view
         $data = [];

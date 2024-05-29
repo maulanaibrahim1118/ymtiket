@@ -62,7 +62,7 @@
                                         <select class="form-select select2 @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($ticketFors as $ticketFor)
-                                                @if(old('ticket_for') == $ticketFor->id)
+                                                @if(old('ticket_for') == $ticketFor->location_id)
                                                 <option selected value="{{ $ticketFor->location_id }}">{{ ucwords($ticketFor->location->nama_lokasi) }}</option>
                                                 @else
                                                 <option value="{{ $ticketFor->location_id }}">{{ ucwords($ticketFor->location->nama_lokasi) }}</option>
@@ -80,7 +80,7 @@
 
                                     <div class="col-md-3">
                                         <label for="kendala" class="form-label">Kendala</label>
-                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="50" value="{{ old('kendala') }}" required>
+                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="35" value="{{ old('kendala') }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('kendala')

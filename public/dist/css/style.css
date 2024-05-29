@@ -1346,3 +1346,44 @@ h6 {
     font-size: 13px;
     color: #012970;
 }
+
+/* Gaya khusus untuk media cetak */
+@media print {
+    @page {
+        margin: 25px 25px;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+    }
+
+    .container-fluid {
+        padding: 0;
+    }
+
+    .print-area {
+        display: block !important; /* Tampilkan elemen print-area saat cetak */
+        width: 100%;
+        margin-top: -70px;
+        padding: 0;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    .header,
+    .sidebar,
+    .pagetitle,
+    .section,
+    .footer,
+    .print-button {
+        display: none !important; /* Sembunyikan elemen-elemen ini saat cetak */
+    }
+
+    p {
+        font-size: 12pt;
+    }
+}
