@@ -185,6 +185,13 @@
     </section>
 
     <script>
+        $('#role').change(function() {
+            var location = $('#location');
+            location.val(''); // Set value to default (disabled) option
+            location.prop('selectedIndex', 0); // Ensure the first option is selected
+            location.change();
+        });
+        
         $('#position_id').change(function() {
             var location = $('#location');
             location.val(''); // Set value to default (disabled) option
@@ -196,8 +203,9 @@
             var locationId = $(this).val();
             var subDivisiDropdown = $('#sub_division');
             var jabatan = $('#position_id').val();
+            var role = $('#role').val();
 
-            if (jabatan == 2 || jabatan == 7) {
+            if (jabatan == 2 && role == 1 || jabatan == 7 && role == 1) {
                 setEmpty();
             } else {
                 var SubDivisi = '{{ route("getSubDivisions", ":id") }}';

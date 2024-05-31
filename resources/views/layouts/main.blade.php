@@ -146,7 +146,11 @@
 
                     <li class="nav-item dropdown float-end">
                         <p class="nav-link d-block float-end m-0" style="font-size: 15px;"><b>{{ ucwords(auth()->user()->nama) }}</b></p><br>
-                        <p class="nav-link d-block float-end m-0" style="font-size: 12px;">{{ ucwords(auth()->user()->position->nama_jabatan) }}</p>
+                        @if(auth()->user()->location->wilayah_id == 1 || auth()->user()->location->wilayah_id == 2)
+                        <p class="nav-link d-block float-end m-0" style="font-size: 12px;">{{ ucwords(auth()->user()->location->nama_lokasi) }}</p>
+                        @else
+                        <p class="nav-link d-block float-end m-0" style="font-size: 12px;">{{ ucwords(auth()->user()->location->wilayah->name) }}</p>
+                        @endif
                     </li><!-- End User Profile -->
         
                     <li class="nav-item dropdown pe-3">

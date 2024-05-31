@@ -392,13 +392,29 @@ class UserController extends Controller
         return response()->json($data);
     }
 
-    public function showChangePasswordForm()
+    public function profile()
     {
-        return view('contents.setting.change_password', [
-            "title" => "Change Password",
-            "path"  => "Setting",
-            "path2" => "Change Password"
+        return view('contents.profile.index', [
+            "title" => "Profile",
+            "path"  => "Profile",
+            "path2" => "Profile"
         ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'telp'          => 'required|min:4|max:20',
+            'ip_address'    => 'required|min:7|max:15',
+        ]);
+
+        $user->telp = $request->telp;
+        $user->ip_address = $request->ip_address;
+        $user->save();
+
+        return redirect()->route('profile.index')->with('success', 'Profil berhasil diperbarui.');
     }
 
     public function changePassword(Request $request)
@@ -411,11 +427,11 @@ class UserController extends Controller
 
         $request->validate([
             'current_password'  => 'required',
-            'new_password'      => 'required|min:8|confirmed',
+            'new_password'      => 'required|min:5|confirmed',
         ],
         // Create custom notification for the validation request
         [
-            'new_password.min'          => 'Ketik minimal 8 karakter!',
+            'new_password.min'          => 'Ketik minimal 5 karakter!',
             'new_password.confirmed'    => 'Password baru tidak terkonfirmasi!',
         ]);
 

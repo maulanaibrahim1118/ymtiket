@@ -24,10 +24,11 @@
         </div>
         <div class="col-6">
             <div class="row">
-                <div class="col-4"><b>Client</b></div>
                 @if($ticket->location->wilayah_id !=1 && $ticket->location->wilayah_id !=2)
+                <div class="col-4"><b>Cabang</b></div>
                 <div class="col-8">: {{ $ticket->location->site }} - {{ ucwords($ticket->location->nama_lokasi) }}</span></div>
                 @else
+                <div class="col-4"><b>Divisi</b></div>
                 <div class="col-8">: {{ ucwords($ticket->location->nama_lokasi) }}</span></div>
                 @endif
                 <div class="col-4"><b>Ditujukan Pada</b></div>

@@ -213,13 +213,13 @@
                                                     <tr>
                                                         @if($ticket->status == "created")
                                                             @if(auth()->user()->role_id == 3)
-                                                            <td colspan="7" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
+                                                            <td colspan="8" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
                                                             @else
                                                             <td colspan="9" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
                                                             @endif
                                                         @else
                                                             @if(auth()->user()->role_id == 3)
-                                                            <td colspan="7" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
+                                                            <td colspan="8" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
                                                             @else
                                                             <td colspan="9" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
                                                             @endif

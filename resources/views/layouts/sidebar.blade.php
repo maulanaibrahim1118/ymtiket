@@ -143,22 +143,29 @@
         </li><!-- End Report -->
         @endcan
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link {{ Request::is('settings*') ? '' : 'collapsed' }}" data-bs-target="#setting" data-bs-toggle="collapse" href="#">
                 <i class="bx bx-cog"></i><span>Setting</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="setting" class="nav-content collapse {{ Request::is('settings*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('404.underconstruction') }}" class="{{ Request::is('settings-change-password*') ? 'active' : '' }}">
+                    <a href="/profile" class="{{ Request::is('profile*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Profile</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/settings/change-password" class="{{ Request::is('settings/change-password') ? 'active' : '' }}">
+                    <a href="/settings-change-password" class="{{ Request::is('settings-change-password') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Change Password</span>
                     </a>
                 </li>
             </ul>
-        </li><!-- End Setting -->
+        </li><!-- End Setting --> --}}
+
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('profile*') ? '' : 'collapsed' }}" href="/profile">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+        </li><!-- End Profile -->
     </ul>
 </aside><!-- End Sidebar-->

@@ -18,8 +18,8 @@ class LocationController extends Controller
     public function index()
     {
         // Get semua data lokasi
-        $divisions  = Location::whereIn('wilayah_id', [1, 2])->get();
-        $stores  = Location::whereNotIn('wilayah_id', [1, 2])->get();
+        $divisions  = Location::whereIn('wilayah_id', [1, 2])->orderBy('nama_lokasi', 'ASC')->get();
+        $stores  = Location::whereNotIn('wilayah_id', [1, 2])->orderBy('nama_lokasi', 'ASC')->get();
 
         return view('contents.location.division_store.index', [
             "title"     => "Store & Division List",

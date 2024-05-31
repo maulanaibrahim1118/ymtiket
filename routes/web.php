@@ -208,8 +208,11 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::get('/categories/export', [ReportSubCategoryController::class, 'export'])->name('export.reportSubCategory');
 });
 
-Route::get('/settings/change-password', [UserController::class, 'showChangePasswordForm'])->middleware('auth')->name('setting.change');
-Route::post('/settings/change-password', [UserController::class, 'changePassword'])->middleware('auth')->name('change.password');
+// Route::get('/settings-change-password', [UserController::class, 'showChangePasswordForm'])->middleware('auth')->name('setting.password');
+// Route::post('/profile-check-password', [UserController::class, 'checkPassword'])->middleware('auth')->name('profile.checkPassword');
+Route::get('/profile', [UserController::class, 'profile'])->middleware('auth')->name('profile.index');
+Route::post('/profile-update', [UserController::class, 'updateProfile'])->middleware('auth')->name('profile.update');
+Route::post('/profile-change-password', [UserController::class, 'changePassword'])->middleware('auth')->name('change.password');
 
 Route::view('/error-403-unauthorized', 'contents.error.403-unauthorized')->name('403.unauthorized');
 Route::view('/error-404-underconstruction', 'contents.error.404-underconstruction')->name('404.underconstruction');
