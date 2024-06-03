@@ -180,6 +180,33 @@
                                         @endif
                                     </div>
 
+                                    @can('isClient')
+                                    <input type="text" name="source" id="source2" value="tidak ada" hidden>
+                                    @endcan
+
+                                    @can('isServiceDesk')
+                                    <div class="col-md-2">
+                                        <label for="source" class="form-label">Source</label>
+                                        <select class="form-select select2 @error('source') is-invalid @enderror" name="source" id="source" required>
+                                            <option selected value="" disabled>Choose...</option>
+                                            @foreach($source as $data)
+                                                @if(old('source', $ticket->source) == $data)
+                                                <option selected value="{{ $data }}">{{ ucwords($data) }}</option>
+                                                @else
+                                                <option value="{{ $data }}">{{ ucwords($data) }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('source')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                    @endcan
+
                                     <div class="col-md-12">
                                         <label for="detail_kendala" class="form-label">Detail Kendala</label>
                                         <textarea name="detail_kendala" class="form-control @error('detail_kendala') is-invalid @enderror" id="detail_kendala" rows="3">{{ old('detail_kendala', $ticket->detail_kendala) }}</textarea>

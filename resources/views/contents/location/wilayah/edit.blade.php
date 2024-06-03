@@ -13,7 +13,7 @@
                                     @method('put')
                                     @csrf
                                     <div class="col-md-3">
-                                        <label for="name" class="form-label">Nama Area</label>
+                                        <label for="name" class="form-label">Nama Wilayah</label>
                                         <input type="text" name="name" class="form-control text-capitalize @error('name') is-invalid @enderror" id="name" value="{{ old('name', $area->name) }}" required>
                                         
                                         <!-- Showing notification error for input validation -->

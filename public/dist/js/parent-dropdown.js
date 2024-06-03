@@ -74,4 +74,8 @@ $(document).ready(function () {
     $("#filter2").select2({
         dropdownParent: $("#filter2").parent(), // Menentukan parent untuk dropdown
     });
+
+    $("#source").select2({
+        dropdownParent: $("#source").parent(), // Menentukan parent untuk dropdown
+    });
 });

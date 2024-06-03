@@ -55,15 +55,6 @@ class ReportAgentController extends Controller
                 ->unique()
                 ->filter()
                 ->count();
-            // $totalTicket = $agent->ticket_count;
-            // $workHour = $agent->ticket->pluck('ticket_detail.processed_time')->sum();
-            // $uniqueDates = $agent->ticket->pluck('ticket_detail.created_at')
-            //                             ->map(function($date) {
-            //                                 return $date ? $date->format('Y-m-d') : null;
-            //                             })
-            //                             ->unique()
-            //                             ->filter()
-            //                             ->count();
 
             if ($totalTicket == 0 || $workHour == 0 || $uniqueDates == 0) {
                 $agent->ticket_per_day = 0;
@@ -74,9 +65,17 @@ class ReportAgentController extends Controller
             }
             
             // Report 4
-            $agent->permintaan = $agent->ticket_details->where('status', 'resolved')->where('jenis_ticket', 'permintaan')->average('processed_time');
-            $agent->kendala = $agent->ticket_details->where('status', 'resolved')->where('jenis_ticket', 'kendala')->average('processed_time');
+            $agent->avg_permintaan = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'permintaan')->average('processed_time');
+            $agent->avg_kendala = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'kendala')->average('processed_time');
 
+            // Report 5
+            $agent->permintaan = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'permintaan')->count();
+            $agent->kendala = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'kendala')->count();
+
+            // Report 6
+            $agent->jml_ticket = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->count();
+            $agent->jml_process = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->sum('processed_time');
+            
             return $agent;
         });
         
@@ -86,14 +85,12 @@ class ReportAgentController extends Controller
         $totalFinish        = $agents->sum('ticket_finish');
         $totalAvgPending    = $agents->sum('avg_pending');
         $totalAvgFinish     = $agents->sum('avg_finish');
-        // $totalTicketPerDay  = $agents->sum('ticket_per_day');
-        // $totalHourPerDay    = $agents->sum('hour_per_day');
-        // $totalPermintaan    = $agents->sum('permintaan');
-        // $totalKendala       = $agents->sum('kendala');
         
         //              0               1               2               3                4                     5                  6                7                8
         $total = [$totalPending, $totalOnprocess, $totalFinish, $totalAvgPending, $totalAvgFinish, /* $totalTicketPerDay, $totalHourPerDay, $totalPermintaan, $totalKendala */];
         $filterArray = ["", ""];
+
+        $jsonData = json_encode($agents);
 
         return view('contents.report.agent.index', [
             "url"           => "",
@@ -103,6 +100,7 @@ class ReportAgentController extends Controller
             "filterArray"   => $filterArray,
             "pathFilter"    => $pathFilter,
             "agents"        => $agents,
+            "jsonData"      => $jsonData,
             "total"         => $total
         ]);
     }

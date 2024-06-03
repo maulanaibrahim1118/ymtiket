@@ -29,25 +29,25 @@
             <td>{{ $agent->nama_agent }}</td>
             <td>{{ $agent->sub_divisi }}</td>
             @php
-                $avgHourRequest = \Carbon\Carbon::parse($agent->permintaan);
-                $avgHourIncident = \Carbon\Carbon::parse($agent->kendala);
+                $avgHourRequest = \Carbon\Carbon::parse($agent->avg_permintaan);
+                $avgHourIncident = \Carbon\Carbon::parse($agent->avg_kendala);
             @endphp
 
-            @if($agent->permintaan >= 3600)
+            @if($agent->avg_permintaan >= 3600)
             <td class="text-end">{{ str_pad($avgHourRequest->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @elseif($agent->permintaan >= 60)
+            @elseif($agent->avg_permintaan >= 60)
             <td class="text-end">{{ str_pad($avgHourRequest->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @elseif($agent->permintaan == 0)
+            @elseif($agent->avg_permintaan == 0)
             <td class="text-end">00:00:00</td>
             @else
             <td class="text-end">{{ str_pad($avgHourRequest->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourRequest->second, 2, "0", STR_PAD_LEFT) }}</td>
             @endif
 
-            @if($agent->kendala >= 3600)
+            @if($agent->avg_kendala >= 3600)
             <td class="text-end">{{ str_pad($avgHourIncident->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @elseif($agent->kendala >= 60)
+            @elseif($agent->avg_kendala >= 60)
             <td class="text-end">{{ str_pad($avgHourIncident->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @elseif($agent->kendala == 0)
+            @elseif($agent->avg_kendala == 0)
             <td class="text-end">00:00:00</td>
             @else
             <td class="text-end">{{ str_pad($avgHourIncident->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgHourIncident->second, 2, "0", STR_PAD_LEFT) }}</td>

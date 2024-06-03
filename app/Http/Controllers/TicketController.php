@@ -141,12 +141,14 @@ class TicketController extends Controller
         }elseif($role == 1){
             // Get data client untuk select option
             $users = User::where('is_active', '1')->orderBy('nama', 'ASC')->get();
+            $source = ['email', 'phone', 'tidak ada'];
 
             return view('contents.ticket.create', [
                 "title"         => "Create Ticket",
                 "path"          => "Ticket",
                 "path2"         => "Tambah",
                 "users"         => $users,
+                "source"        => $source,
                 "ticketFors"    => $ticketFors
             ]);
         }
@@ -282,6 +284,7 @@ class TicketController extends Controller
         $ticket->estimated      = "-";
         $ticket->file           = $imageName ?? null;
         $ticket->created_by     = $createdBy;
+        $ticket->source         = $data['source'];
         $ticket->updated_by     = $createdBy;
         $ticket->save();
 
@@ -336,7 +339,7 @@ class TicketController extends Controller
         // Jika status ticket belum diproses oleh agent
         if($ticket->status == "created"){
             // Data Array untuk select option
-            $ticketFors  = Agent::select('location_id')->distinct()->orderBy('location_id', 'ASC')->get();
+            $ticketFors = Agent::select('location_id')->distinct()->orderBy('location_id', 'ASC')->get();
 
             // Get data Asset untuk select option
             $assets = Asset::where('location_id', $ticket->location_id)->get();
@@ -360,6 +363,7 @@ class TicketController extends Controller
             }elseif($role == 1){
                 // Get data Service De untuk select option
                 $users = User::where('is_active', '1')->orderBy('nama', 'ASC')->get();
+                $source = ['email', 'phone', 'tidak ada'];
 
                 return view('contents.ticket.edit', [
                     "title"         => "Edit Ticket",
@@ -368,6 +372,7 @@ class TicketController extends Controller
                     "ticket"        => $ticket,
                     "assets"        => $assets,
                     "users"         => $users,
+                    "source"        => $source,
                     "ticketFors"    => $ticketFors
                 ]);
             }
@@ -461,6 +466,7 @@ class TicketController extends Controller
             'detail_kendala'    => strtolower($request['detail_kendala']),
             'file'              => $imageName,
             'code_access'       => $codeAccess,
+            'source'            => $request['source'],
             'updated_by'        => Auth::user()->nama
         ]);
 

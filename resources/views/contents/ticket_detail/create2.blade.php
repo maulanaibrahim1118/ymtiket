@@ -11,149 +11,7 @@
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
                                 <div class="row g-3 mb-3 pt-3" style="font-size: 14px">
-                                    <div class="col-md-2 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">Tanggal/Waktu</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        @if($ticket->jam_kerja == "ya")
-                                        <label for="jam_kerja" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-success">Jam Kerja</span></label>
-                                        @elseif($ticket->jam_kerja == "tidak")
-                                        <label for="jam_kerja" class="form-label">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }} | <span class="badge bg-warning">Diluar Jam Kerja</span></label>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-2 m-0">
-                                        <label for="telp" class="form-label fw-bold">Telp/Ext</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        <label for="telp" class="form-label">: {{ $ticket->user->telp }}</label>
-                                    </div>
-                                    <div class="col-md-2 m-0">
-                                        <label for="no_ticket" class="form-label fw-bold">No. Ticket</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        <label for="no_ticket" class="form-label">: {{ $ticket->no_ticket }}</label>
-                                    </div>
-                                    <div class="col-md-2 m-0">
-                                        <label for="ip_address" class="form-label fw-bold">IP Address</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        <label for="ip_address" class="form-label">: {{ $ticket->user->ip_address }}</label>
-                                    </div>
-                                    <div class="col-md-2 m-0">
-                                        <label for="client/lokasi" class="form-label fw-bold">Client/Lokasi</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        @if ($ticket->user->nama == $ticket->location->nama_lokasi)
-                                        <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->user->nik) }} - {{ ucwords($ticket->location_name) }} / Store</label>
-                                        @else
-                                        <label for="client/lokasi" class="form-label">: {{ ucwords($ticket->user->nama) }} / {{ ucwords($ticket->location->nama_lokasi) }}</label>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-2 m-0">
-                                        <label for="no_asset" class="form-label fw-bold">No. Asset</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        <label for="no_asset" class="form-label">: <a href="{{ route('ticket.asset', ['asset_id' => encrypt($ticket->asset->id)]) }}">{{ $ticket->asset->no_asset }}</a></label>
-                                    </div>
-                                    <div class="col-md-2 m-0">
-                                        <label for="agent" class="form-label fw-bold">Ditujukan Pada</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        <label for="agent" class="form-label">: {{ ucwords($ticket->agent->location->nama_lokasi) }}</label>
-                                    </div>
-                                    <div class="col-md-2 m-0">
-                                        <label for="estimated" class="form-label fw-bold">Waktu Estimasi</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        <label for="estimated" id="estimated" class="form-label">: {{ $ticket->estimated }}</label>
-                                    </div>
-                                    <div class="col-md-2 m-0">
-                                        <label for="kendala" class="form-label fw-bold">Kendala</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        <label for="kendala" class="form-label">: {{ ucwords($ticket->kendala) }}</label>
-                                    </div>
-                                    <div class="col-md-2 m-0">
-                                        <label for="status" class="form-label fw-bold">Status Ticket</label>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        @if($ticket->status == 'created')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-secondary">{{ ucwords($ticket->status) }}</span></label>
-                                        @elseif($ticket->status == 'onprocess')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-warning">{{ ucwords($ticket->status) }}</span></label>
-                                        @elseif($ticket->status == 'pending')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-danger">{{ ucwords($ticket->status) }}</span></label>
-                                        @elseif($ticket->status == 'resolved')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-primary">{{ ucwords($ticket->status) }}</span></label>
-                                        @elseif($ticket->status == 'finished')
-                                        <label for="tanggal" class="form-label">: <span class="badge bg-success">{{ ucwords($ticket->status) }}</span></label>
-                                        @endif
-                                        | <a href="#" data-bs-toggle="modal" data-bs-target="#verticalycentered">Lihat Detail Status</a>
-                                    </div>
-                                    <div class="modal fade" id="verticalycentered" tabindex="-1">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Detail Status Ticket - <span class="text-success">{{ $ticket->no_ticket}}</span></h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="activity">
-                                                        @foreach($progress_tickets as $pt)
-                                                        <div class="activity-item d-flex">
-                                                            <div class="activite-label pe-3">{{ date('d-M-Y H:i', strtotime($pt->process_at)) }}</div>
-                                                            <i class='bi bi-circle-fill activity-badge text-secondary align-self-start'></i>
-                                                            <div class="activity-content">
-                                                                {{ $pt->tindakan }}</a>
-                                                            </div>
-                                                        </div><!-- End activity item-->
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div><!-- End Vertically centered Modal-->
-                                    
-                                    <div class="col-md-2 m-0">
-                                        <label for="tanggal" class="form-label fw-bold">Detail Kendala</label>
-                                    </div>
-                                    <div class="col-md-10 m-0">
-                                        <label for="tanggal" class="form-label">: {{ ucfirst($ticket->detail_kendala) }}</label>
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        {{-- Tombol Lampiran --}}
-                                        @if($ext == "xlsx" || $ext == "xls" || $ext == "csv" || $ext == "doc" || $ext == "docx" || $ext == "pdf")
-                                        <a href="{{ asset('uploads/ticket/' . $ticket->file) }}"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark me-1"></i> Lampiran</button></a>
-                                        @else
-                                        <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark-image me-1"></i> Lampiran</button>
-                                        @endif
-                                        <div class="modal fade" id="lampiranModal" tabindex="-1">
-                                            @if($ticket->file == NULL)
-                                            <div class="modal-dialog modal-dialog-centered">
-                                            @else
-                                            <div class="modal-dialog modal-xl modal-dialog-centered">
-                                            @endif
-                                                <div class="modal-content" id="modalContent">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Lampiran Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="col-md-12">
-                                                            <img src="{{ asset('uploads/ticket/' . $ticket->file) }}" class="rounded mx-auto d-block w-100" alt="...">
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div><!-- End Lampiran Modal-->
-                                    </div>
+                                    @include('contents.ticket_detail.partials.ticketInfo')
 
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-1 mb-0"></p>
@@ -161,166 +19,9 @@
 
                                     <div class="col-md-12" style="font-size: 14px">
                                         <p class="mb-2">Detail penanganan Ticket Sebelumnya:</p>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered text-center">
-                                                <thead class="fw-bold bg-light">
-                                                    <tr>
-                                                    <td>Jenis Ticket</td>
-                                                    <td>Kategori Ticket</td>
-                                                    <td>Sub Kategori Ticket</td>
-                                                    <td>Biaya</td>
-                                                    <td>PIC Agent</td>
-                                                    <td>Status</td>
-                                                    @can('agent-info')
-                                                    <td>Lama Pending</td>
-                                                    <td>Lama Proses</td>
-                                                    @endcan
-                                                    <td>Saran Tindakan</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="text-capitalize">
-                                                    @if($countDetail == 0) 
-                                                    <tr>
-                                                        @if($ticket->status == "created")
-                                                            @if(auth()->user()->role_id == 3)
-                                                            <td colspan="7" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
-                                                            @else
-                                                            <td colspan="9" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
-                                                            @endif
-                                                        @else
-                                                            @if(auth()->user()->role_id == 3)
-                                                            <td colspan="7" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
-                                                            @else
-                                                            <td colspan="9" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
-                                                            @endif
-                                                        @endif
-                                                    </tr>
-                                                    @else
-                                                    @foreach($ticket_details as $td)
-                                                    <tr>
-                                                    <td>{{ $td->jenis_ticket }}</td>
-                                                    <td>{{ $td->sub_category_ticket->category_ticket->nama_kategori }}</td>
-                                                    <td>{{ $td->sub_category_ticket->nama_sub_kategori }}</td>
-                                                    <td>IDR. {{ number_format($td->biaya,2,'.',',') }}</td>
-                                                    <td>{{ $td->agent->nama_agent }}</td>
-
-                                                    @if($td->status == 'onprocess')
-                                                    <td><span class="badge bg-warning">{{ $td->status }}</span></td>
-                                                    @elseif($td->status == 'pending')
-                                                    <td><span class="badge bg-danger">{{ $td->status }}</span></td>
-                                                    @elseif($td->status == 'resolved')
-                                                    <td><span class="badge bg-primary">{{ $td->status }}</span></td>
-                                                    @elseif($td->status == 'assigned')
-                                                    <td><span class="badge bg-danger">not resolved</span></td>
-                                                    @endif
-
-                                                    @can('agent-info')
-                                                    @if($td->pending_time == NULL)
-                                                    <td>-</td>
-                                                    @else
-                                                        @php
-                                                            $carbonInstance = \Carbon\Carbon::parse($td->pending_time);
-                                                        @endphp
-                                                        @if($td->pending_time >= 3600)
-                                                        <td>{{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
-                                                        @elseif($td->pending_time >= 60)
-                                                        <td>{{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
-                                                        @else
-                                                        <td>{{ $carbonInstance->second }} detik</td>
-                                                        @endif
-                                                    @endif
-
-                                                    @if($td->processed_time == NULL)
-                                                    <td>-</td>
-                                                    @else
-                                                        @php
-                                                            $carbonInstance = \Carbon\Carbon::parse($td->processed_time);
-                                                        @endphp
-                                                        @if($td->processed_time >= 3600)
-                                                        <td>{{ $carbonInstance->hour }} jam {{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
-                                                        @elseif($td->processed_time >= 60)
-                                                        <td>{{ $carbonInstance->minute }} menit {{ $carbonInstance->second }} detik</td>
-                                                        @else
-                                                        <td>{{ $carbonInstance->second }} detik</td>
-                                                        @endif
-                                                    @endif
-                                                    @endcan
-
-                                                    <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{{ $td->note }}" onclick="tampilkanData(this)"><i class="bi bi-search me-1"></i> Lihat</button></td>
-                                                    </tr>
-                                                    @endforeach
-                                                    @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        @if($ticket->need_approval == "ya")
-                                            <div class="col-md-12 mb-2">
-                                            <p class="mb-2">Detail persetujuan Ticket :</p>
-                                            <table class="table table-sm table-bordered text-center mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <td class="col-md-2 fw-bold bg-light">Status Approval</td>
-                                                        <td class="col-md-2 fw-bold bg-light">Tanggal / Waktu</td>
-                                                        <td class="col-md-2 fw-bold bg-light">Atasan Terkait</td>
-                                                        <td class="col-md-7 fw-bold bg-light">Alasan</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        @if($ticket_approval->status == "null")
-                                                            <td class="col-md-2"><span class="badge bg-secondary">Belum Disetujui</span></td>
-                                                            <td class="col-md-2"></td>
-                                                        @else
-                                                            @if($ticket_approval->status == "approved")
-                                                                <td class="col-md-2"><span class="badge bg-success">{{ ucwords($ticket_approval->status) }}</td>
-                                                            @else
-                                                                <td class="col-md-2"><span class="badge bg-danger">{{ ucwords($ticket_approval->status) }}</td>
-                                                            @endif
-                                                            <td class="col-md-2">{{ date('d-M-Y', strtotime($ticket_approval->updated_at)) }} / <span class="text-secondary">{{ date('H:i', strtotime($ticket_approval->updated_at)) }}</span></td>
-                                                        @endif
-                                                        <td class="col-md-2">{{ ucwords($ticket_approval->approved_by) }}</td>
-                                                        <td class="col-md-7">{{ ucfirst($ticket_approval->reason) }}</td>
-                                                    </tr>
-                                            </table>
-                                            </div>
-                                        @endif
+                                        @include('contents.ticket_detail.partials.detailTable')
                                     </div>
 
-                                    {{-- Saran Tindakan Modal --}}
-                                    <div class="modal fade" id="actionModal" tabindex="-1">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content" id="modalContent2">
-                                            </div>
-                                        </div>
-                                    </div><!-- End Vertically centered Modal-->
-                                    <script>
-                                    // Fungsi untuk menampilkan data pada modal
-                                    function tampilkanData(ticket_id) {
-                                        // Mendapatkan elemen modalContent
-                                        var modalContent2 = document.getElementById("modalContent2");
-                                    
-                                        // Menampilkan data pada modalContent
-                                        modalContent2.innerHTML  =
-                                        '<div class="modal-header">'+
-                                            '<h5 class="modal-title">Saran Tindakan Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>'+
-                                            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
-                                        '</div>'+
-                                        '<form action="/tickets/assign" method="post">'+
-                                        '@method("put")'+
-                                        '@csrf'+
-                                        '<div class="modal-body">'+
-                                            '<div class="col-md-12">'+
-                                                '<p>'+ticket_id.name+'</p>'+
-                                            '</div>'+
-                                            '<input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>'+
-                                        '</div>'+
-                                        '<div class="modal-footer">'+
-                                            '<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>'+
-                                        '</div>'+
-                                        '</form>';
-                                    }
-                                    </script>
-                        
                                     <form class="row" action="/ticket-details/process" method="POST" enctype="multipart/form-data" onsubmit="return formValidation()">
                                         @csrf
                                         <div class="col-md-12 mb-0" style="font-size: 14px">
@@ -458,31 +159,6 @@
                                             </table>
                                         </div>
 
-                                        <script>
-                                            $('#category_ticket_id').change(function(){
-                                                var category = $(this).val();
-                                                var url = '{{ route("getSubCategoryTicket", ":id") }}';
-                                                url = url.replace(':id', category);
-                                                $.ajax({
-                                                    url: url,
-                                                    type: 'get',
-                                                    dataType: 'json',
-                                                    success: function(response){
-                                                        var subDropdown = $('#sub_category_ticket_id');
-                                                        subDropdown.empty();
-                                                        subDropdown.append('<option selected disabled>Choose...</option>');
-                                                        $.each(response, function (key, value) {
-                                                            subDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.nama_sub_kategori + '</option>');
-                                                        });
-                                                        // Aktifkan dropdown no. asset
-                                                        subDropdown.prop('disabled', false);
-                                                    },
-                                                    error: function (xhr, status, error) {
-                                                        console.error(xhr.responseText);
-                                                    }
-                                                });
-                                            });
-                                        </script>
                                         <input name="ticket_id" id="ticket_id" value="{{ $ticket->id }}" hidden>
                                         <input name="no_ticket" id="no_ticket" value="{{ $ticket->no_ticket }}" hidden>
                                         <input name="agent_id" id="agent_id" value="{{ $ticket->agent_id }}" hidden>
@@ -508,34 +184,6 @@
                                             <button type="reset" class="btn btn-warning float-end ms-1"><i class="bi bi-trash me-1"></i> Reset</button>
                                         </div>
                                     </form>
-                                    <script>
-                                        function formValidation(){
-                                            var kendala = document.getElementById('sub_category_ticket_id').value;
-                                            var tindakan = document.getElementById('note').value;
-                                            var fileInput = document.getElementById('file');
-                                            var maxSizeInBytes = 1024 * 1024;
-    
-                                            if (kendala.length == 0) {
-                                                alert('Sub Kategori Ticket harus dipilih!');
-                                                return false;
-                                            }
-
-                                            if (tindakan.length < 10) {
-                                                alert('Ketikkan saran tindakan minimal 10 karakter!');
-                                                return false;
-                                            }
-
-                                            var fileSizeInBytes = fileInput.files[0].size;
-                                            var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-
-                                            if (fileSizeInBytes > maxSizeInBytes) {
-                                            alert('Ukuran file melebihi batas maksimum. Batas: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
-                                            return false;
-                                            } 
-                                            
-                                            return true;
-                                        }
-                                    </script>
                                 </div>
                             </div>
                         </div>
@@ -544,4 +192,79 @@
             </div>
         </div> <!-- End row -->
     </section>
+
+    {{-- Lampiran Modal --}}
+    <div class="modal fade" id="lampiranModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content" id="modalContent1">
+                <div class="modal-header">
+                    <h5 class="modal-title">Lampiran Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <img src="{{ asset('uploads/ticket/' . $ticket->file) }}" class="rounded mx-auto d-block w-100" alt="...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- End Lampiran Modal-->
+
+    <script>
+        $('#category_ticket_id').change(function(){
+            var category = $(this).val();
+            var url = '{{ route("getSubCategoryTicket", ":id") }}';
+            url = url.replace(':id', category);
+            $.ajax({
+                url: url,
+                type: 'get',
+                dataType: 'json',
+                success: function(response){
+                    var subDropdown = $('#sub_category_ticket_id');
+                    subDropdown.empty();
+                    subDropdown.append('<option selected disabled>Choose...</option>');
+                    $.each(response, function (key, value) {
+                        subDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.nama_sub_kategori + '</option>');
+                    });
+                    // Aktifkan dropdown no. asset
+                    subDropdown.prop('disabled', false);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function formValidation(){
+            var kendala = document.getElementById('sub_category_ticket_id').value;
+            var tindakan = document.getElementById('note').value;
+            var fileInput = document.getElementById('file');
+            var maxSizeInBytes = 1024 * 1024;
+
+            if (kendala.length == 0) {
+                alert('Sub Kategori Ticket harus dipilih!');
+                return false;
+            }
+
+            if (tindakan.length < 10) {
+                alert('Ketikkan saran tindakan minimal 10 karakter!');
+                return false;
+            }
+
+            var fileSizeInBytes = fileInput.files[0].size;
+            var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+            if (fileSizeInBytes > maxSizeInBytes) {
+            alert('Ukuran file melebihi batas maksimum. Batas: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
+            return false;
+            } 
+            
+            return true;
+        }
+    </script>
 @endsection

@@ -253,8 +253,7 @@ class FilterController extends Controller
             return redirect('/report-agents');
         }
 
-        $agents = Agent::where('location_id', $locationId)
-            ->withCount(['ticket', 'ticket_details'])
+        $agents = Agent::where([['location_id', $locationId],['is_active', '1']])
             ->with([
                 'ticket' => function($query) use ($request) {
                     $query->whereNotIn('status', ['deleted']);
@@ -285,6 +284,7 @@ class FilterController extends Controller
                     }
                 }
             ])
+            ->withCount(['ticket', 'ticket_details'])
             ->orderBy('sub_divisi', 'ASC')
             ->get();
 
@@ -330,11 +330,20 @@ class FilterController extends Controller
             }
             
             // Report 4
-            $agent->permintaan = $agent->ticket_details->where('status', 'resolved')->where('jenis_ticket', 'permintaan')->average('processed_time');
-            $agent->kendala = $agent->ticket_details->where('status', 'resolved')->where('jenis_ticket', 'kendala')->average('processed_time');
+            $agent->avg_permintaan = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'permintaan')->average('processed_time');
+            $agent->avg_kendala = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'kendala')->average('processed_time');
 
+            // Report 5
+            $agent->permintaan = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'permintaan')->count();
+            $agent->kendala = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'kendala')->count();
+
+            // Report 6
+            $agent->jml_ticket = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->count();
+            $agent->jml_process = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->sum('processed_time');
+            
             return $agent;
         });
+        
         
         // Menghitung total untuk semua report
         $totalPending       = $agents->sum('ticket_pending');
@@ -351,6 +360,8 @@ class FilterController extends Controller
         $total = [$totalPending, $totalOnprocess, $totalFinish, $totalAvgPending, $totalAvgFinish, /* $totalTicketPerDay, $totalHourPerDay, $totalPermintaan, $totalKendala */];
         $filterArray = [$request->start_date, $request->end_date];
 
+        $jsonData = $agents->toJson();
+
         return view('contents.report.agent.index', [
             "url"           => "",
             "title"         => "Report Agent",
@@ -359,6 +370,7 @@ class FilterController extends Controller
             "filterArray"   => $filterArray,
             "pathFilter"    => $pathFilter,
             "agents"        => $agents,
+            "jsonData"      => $jsonData,
             "total"         => $total
         ]);
     }

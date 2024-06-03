@@ -56,7 +56,7 @@
                         <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                     
                         @if($ticket->status == "created") {{-- Jika status created, ticket masih bisa di hapus dan di edit --}}
-                            @if($ticket->user_id == auth()->user()->id) {{-- Jika ticket dibuat oleh client sendiri --}}
+                            @if($ticket->created_by == auth()->user()->nama) {{-- Jika ticket dibuat oleh client sendiri --}}
                                 {{-- Tombol Edit --}}
                                 <li><a class="dropdown-item text-capitalize text-warning" href="{{ route('ticket.edit', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()"><i class="bi bi-pencil-square text-warning"></i>
                                     Edit</a>

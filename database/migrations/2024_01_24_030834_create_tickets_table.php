@@ -41,6 +41,7 @@ class CreateTicketsTable extends Migration
             $table->string('code_access', 20);
             $table->string('estimated', 30);
             $table->string('created_by', 40);
+            $table->string('source', 10);
             $table->string('updated_by', 40);
             $table->timestamps();
         });
