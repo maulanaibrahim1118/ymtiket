@@ -14,8 +14,8 @@
                                     @method('put')
                                     @csrf
                                     <div class="col-md-2">
-                                        <label for="nik" class="form-label">No. Induk Karyawan</label>
-                                        <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik', $user->nik) }}" maxlength="8" title="Tolong di input dalam bentuk nomor.">
+                                        <label for="nik" class="form-label">Username</label>
+                                        <input type="text" name="nik" pattern="[0-9]+" class="form-control text-capitalize @error('nik') is-invalid @enderror" id="nik" value="{{ old('nik', $user->nik) }}" maxlength="8" title="Tolong di input dalam bentuk nomor." placeholder="No. Induk Karyawan...">
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('nik')

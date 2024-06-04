@@ -116,7 +116,7 @@
                                     
                                     <div class="card mb-3 px-4 py-2">
                                         
-                                        <div class="card-header mb-3">
+                                        <div class="card-header my-3 p-0">
                                             <div class="d-flex justify-content-center">
                                                 <a href="/" class="logo2 d-flex align-items-center">
                                                   <img src="{{ asset('dist/img/logo/logo4.png') }}" alt="">
@@ -127,9 +127,9 @@
                                         </div>
 
                                         <!-- Login Title -->
-                                        <div class="col-12 mb-4">
+                                        <div class="col-12 mb-4 px-4">
                                             {{-- <h5 class="card-title text-center pb-2 fs-5">Login</h5> --}}
-                                            <p class="text-center small px-3">Masukkan No. Induk Karyawan / Site Cabang dan Password untuk login dan mulai bekerja.</p>
+                                            <p class="text-center small px-4">Masukkan Username dan Password anda untuk login dan mulai bekerja.</p>
                                         </div>
 
                                         <div class="card-body">
@@ -138,7 +138,7 @@
                                                 @csrf
                                                 <div class="col-12">
                                                     <span class="border border-3 border-primary d-inline py-2" style="margin-left: -3px"></span>
-                                                    <input type="number" name="nik" class="form-control rounded-0 mb-2" style="margin-top: -31px;" id="nik" placeholder="No. Induk Karyawan / Site Cabang" required />
+                                                    <input type="number" name="nik" class="form-control rounded-0 mb-2" style="margin-top: -31px;" id="nik" placeholder="Username" required />
                                                 </div>
             
                                                 <div class="col-12 pb-2">
