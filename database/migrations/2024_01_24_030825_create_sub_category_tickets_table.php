@@ -15,7 +15,7 @@ class CreateSubCategoryTicketsTable extends Migration
     {
         Schema::create('sub_category_tickets', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_sub_kategori', 50)->unique();
+            $table->string('nama_sub_kategori', 50);
             $table->bigInteger('category_ticket_id');
             $table->enum('asset_change', ['tidak', 'ya']);
             $table->string('updated_by', 40);

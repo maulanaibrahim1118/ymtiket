@@ -8,6 +8,7 @@ use App\Ticket_detail;
 use App\Category_ticket;
 use App\Sub_category_ticket;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -71,21 +72,31 @@ class SubCategoryTicketController extends Controller
     {
         // Validating data request
         $validatedData = $request->validate([
-            'nama_sub_kategori'     => 'required|min:3|max:50|unique:sub_category_tickets',
+            'nama_sub_kategori'     => 'required|min:3|max:50',
             'category_ticket_id'    => 'required',
             'asset_change'          => 'required',
-            'updated_by'            => 'required'
+            'updated_by'            => 'required',
+            // Menambahkan aturan validasi unik dengan kondisi
+            'nama_sub_kategori'     => [
+                'required',
+                Rule::unique('sub_category_tickets')->where(function ($query) use ($request) {
+                    return $query->where([
+                        ['category_ticket_id', $request->category_ticket_id],
+                        ['nama_sub_kategori', $request->nama_sub_kategori]
+                    ]);
+                })->ignore($request->id),
+            ],
         ],
 
         // Create custom notification for the validation request
         [
-            'nama_sub_kategori.required'    => 'Nama Kategori Ticket harus diisi!',
-            'nama_sub_kategori.min'         => 'Ketik minimal 3 digit!',
-            'nama_sub_kategori.max'         => 'Ketik maksimal 50 digit!',
-            'unique'                        => 'Nama Kategori Ticket sudah ada!',
+            'nama_sub_kategori.required'    => 'Nama Sub Kategori Ticket harus diisi!',
+            'nama_sub_kategori.min'         => 'Minimal 3 karakter!',
+            'nama_sub_kategori.max'         => 'Maksimal 50 karakter!',
+            'nama_sub_kategori.unique'      => 'Nama sudah ada untuk kategori yang sama!',
             'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
             'asset_change.required'         => 'Asset Change harus dipilih!',
-            'updated_by.required'           => 'Wajib diisi!'
+            'updated_by.required'           => 'Harap diisi!'
         ]);
 
         // Mengganti inputan nama sub kategori ke huruf kecil semua
@@ -161,26 +172,32 @@ class SubCategoryTicketController extends Controller
         $subCategoryTicket = Sub_category_ticket::where('id', $id)->first();
 
         // Validating data request
-        $rules = [
+        $validatedData = $request->validate([
+            'nama_sub_kategori'     => 'required|min:3|max:50',
             'category_ticket_id'    => 'required',
             'asset_change'          => 'required',
-            'updated_by'            => 'required'
-        ];
-
-        if($request->nama_sub_kategori != $subCategoryTicket->nama_sub_kategori){
-            $rules['nama_sub_kategori'] = 'required|min:3|max:50|unique:sub_category_tickets';
-        }
+            'updated_by'            => 'required',
+            // Menambahkan aturan validasi unik dengan kondisi
+            'nama_sub_kategori'     => [
+                'required',
+                Rule::unique('sub_category_tickets')->where(function ($query) use ($request, $id) {
+                    return $query->where([
+                        ['category_ticket_id', $request->category_ticket_id],
+                        ['nama_sub_kategori', $request->nama_sub_kategori]
+                    ])->where('id', '!=', $id); // Mengabaikan entri saat ini saat memeriksa unik
+                }),
+            ],
+        ],
 
         // Create custom notification for the validation request
-        $validatedData = $request->validate($rules,
         [
             'nama_sub_kategori.required'    => 'Nama Sub Kategori Ticket harus diisi!',
-            'nama_sub_kategori.min'         => 'Ketik minimal 3 digit!',
-            'nama_sub_kategori.max'         => 'Ketik maksimal 50 digit!',
-            'unique'                        => 'Nama Kategori Ticket sudah ada!',
+            'nama_sub_kategori.min'         => 'Minimal 3 karakter!',
+            'nama_sub_kategori.max'         => 'Maksimal 50 karakter!',
+            'nama_sub_kategori.unique'      => 'Nama sudah ada untuk kategori yang sama!',
             'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
             'asset_change.required'         => 'Asset Change harus dipilih!',
-            'updated_by.required'           => 'Wajib diisi!'
+            'updated_by.required'           => 'Harap diisi!'
         ]);
         
         // Mengganti inputan nama sub kategori ke huruf kecil semua
