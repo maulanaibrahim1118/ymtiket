@@ -60,7 +60,7 @@
     <div class="card info-card secondary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Total Ticket</h5>
+        <h5 class="card-title">Ticket Assigned</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -82,7 +82,7 @@
     <div class="card info-card primary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Selesai</h5>
+        <h5 class="card-title">Ticket Resolved</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -104,7 +104,7 @@
     <div class="card info-card danger-card">
 
     <div class="card-body">
-        <h5 class="card-title">Tidak Selesai</h5>
+        <h5 class="card-title">Ticket Participant</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -186,163 +186,3 @@
     </div>
     </a>
 </div><!-- End Primary Card -->
-
-<div class="col-12">
-    <div class="card info-table">
-        <div class="card-body">
-            @if($pathFilter == "Semua")
-            <h5 class="card-title border-bottom">Ticket Belum Di Proses</h5>
-            @else
-            <h5 class="card-title border-bottom">Ticket Belum Di Proses <span>| {{ $pathFilter }}</span></h5>
-            @endif
-
-            <div class="table-responsive mt-3">
-                <table class="table datatable">
-                    <thead class="bg-light" style="height: 45px;font-size:14px;">
-                        <tr>
-                        <th scope="col">NO. TICKET</th>
-                        <th scope="col">KENDALA</th>
-                        <th scope="col">DETAIL KENDALA</th>
-                        <th scope="col">DIBUAT PADA</th>
-                        <th scope="col">PIC</th>
-                        <th scope="col">STATUS</th>
-                        <th scope="col">KETERANGAN</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                        @foreach($data1 as $data)
-                        <tr>
-                        <td>{{ $data->no_ticket }}</td>
-                        <td>{{ $data->kendala }}</td>
-                        <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
-
-                        {{-- Kolom Dibuat Pada --}}
-                        @if($data->jam_kerja == 'ya')
-                        <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-success">JAM KERJA</span></td>
-                        @else
-                        <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-warning">BUKAN JAM KERJA</span></td>
-                        @endif
-
-                        {{-- Kolom PIC --}}
-                        @if($data->agent->nama_agent == auth()->user()->nama)
-                        <td>{{ $data->agent->nama_agent }} <span class="badge bg-info">saya</span></td>
-                        @else
-                        <td>{{ $data->agent->nama_agent }}</td>
-                        @endif
-
-                        {{-- Kolom Status --}}
-                        @if($data->status == 'created')
-                        <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'onprocess')
-                        <td><span class="badge bg-warning">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'pending')
-                        <td><span class="badge bg-danger">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'resolved')
-                        <td><span class="badge bg-primary">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'finished')
-                        <td><span class="badge bg-success">{{ $data->status }}</span></td>
-                        @endif
-
-                        {{-- Kolom Keterangan --}}
-                        @if($data->assigned == "ya" AND $data->status == "created" OR $data->assigned == "ya" AND $data->status == "pending")
-                        <td><span class="badge bg-primary">direct assign</span></td>
-                        @else
-                            @if($data->is_queue == "ya" AND $data->status == "created")
-                            <td><span class="badge bg-success">dalam antrian</span></td>
-                            @elseif($data->is_queue == "tidak" AND $data->status == "created")
-                                @if($data->role == "service desk")
-                                <td><span class="badge bg-secondary">diluar antrian</span></td>
-                                @else
-                                <td></td>
-                                @endif
-                            @else
-                            <td></td>
-                            @endif
-                        @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div><!-- End Info Table -->
-
-<div class="col-12">
-    <div class="card info-table">
-        <div class="card-body">
-            @if($pathFilter == "Semua")
-            <h5 class="card-title border-bottom">Ticket Sedang Di Proses</h5>
-            @else
-            <h5 class="card-title border-bottom">Ticket Sedang Di Proses <span>| {{ $pathFilter }}</span></h5>
-            @endif
-
-            <div class="table-responsive mt-3">
-                <table class="table datatable">
-                    <thead class="bg-light" style="height: 45px;font-size:14px;">
-                        <tr>
-                        <th scope="col">NO. TICKET</th>
-                        <th scope="col">KENDALA</th>
-                        <th scope="col">DETAIL KENDALA</th>
-                        <th scope="col">DIBUAT PADA</th>
-                        <th scope="col">PIC</th>
-                        <th scope="col">STATUS</th>
-                        <th scope="col">KETERANGAN</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                        @foreach($data2 as $data)
-                        <tr>
-                        <td>{{ $data->no_ticket }}</td>
-                        <td>{{ $data->kendala }}</td>
-                        <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
-
-                        {{-- Kolom Dibuat Pada --}}
-                        @if($data->jam_kerja == 'ya')
-                        <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-success">JAM KERJA</span></td>
-                        @else
-                        <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-warning">BUKAN JAM KERJA</span></td>
-                        @endif
-
-                        {{-- Kolom PIC --}}
-                        @if($data->agent->nama_agent == auth()->user()->nama)
-                        <td>{{ $data->agent->nama_agent }} <span class="badge bg-info">saya</span></td>
-                        @else
-                        <td>{{ $data->agent->nama_agent }}</td>
-                        @endif
-
-                        {{-- Kolom Status --}}
-                        @if($data->status == 'created')
-                        <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'onprocess')
-                        <td><span class="badge bg-warning">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'pending')
-                        <td><span class="badge bg-danger">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'resolved')
-                        <td><span class="badge bg-primary">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'finished')
-                        <td><span class="badge bg-success">{{ $data->status }}</span></td>
-                        @endif
-
-                        {{-- Kolom Keterangan --}}
-                        @if($data->assigned == "ya" AND $data->status == "created" OR $data->assigned == "ya" AND $data->status == "pending")
-                        <td><span class="badge bg-primary">direct assign</span></td>
-                        @else
-                            @if($data->is_queue == "ya" AND $data->status == "created")
-                            <td><span class="badge bg-success">dalam antrian</span></td>
-                            @elseif($data->is_queue == "tidak" AND $data->status == "created")
-                                @if($data->role == "service desk")
-                                <td><span class="badge bg-secondary">diluar antrian</span></td>
-                                @else
-                                <td></td>
-                                @endif
-                            @else
-                            <td></td>
-                            @endif
-                        @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div><!-- End Info Table -->

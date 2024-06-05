@@ -213,7 +213,7 @@
                 <nav style="--bs-breadcrumb-divider: '';">
                     <ol class="breadcrumb">
                         <h1 class="border-end border-2 pe-3 me-3"><b>{{ $path }}</b></h1>
-                        <li class="breadcrumb-item" style="padding-top:5px;"><a href="/dashboard/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}">Home</a></li><i class="bx bxs-chevron-right p-2"></i>
+                        <li class="breadcrumb-item" style="padding-top:5px;"><a href="/dashboard">Home</a></li><i class="bx bxs-chevron-right p-2"></i>
                         @if($path == $path2)
                         <li class="breadcrumb-item active" style="padding-top:5px;">{{ $path }}</li>
                         @else

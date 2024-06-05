@@ -39,6 +39,14 @@ $(document).ready(function () {
         dropdownParent: $("#category_ticket_id").parent(), // Menentukan parent untuk dropdown
     });
 
+    $("#sub_category_ticket_id").select2({
+        dropdownParent: $("#sub_category_ticket_id").parent(), // Menentukan parent untuk dropdown
+    });
+
+    $("#jenis_ticket").select2({
+        dropdownParent: $("#jenis_ticket").parent(), // Menentukan parent untuk dropdown
+    });
+
     $("#asset_change").select2({
         dropdownParent: $("#asset_change").parent(), // Menentukan parent untuk dropdown
     });

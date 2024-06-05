@@ -92,7 +92,7 @@
                             <form class="row g-3 mt-2 mb-3" action="{{ route('change.password') }}" onsubmit="return validateForm2()" method="POST">
                                 @csrf
                                 <div class="row mb-3">
-                                    <label for="current_password" class="col-md-4 col-lg-3 col-form-label">Password</label>
+                                    <label for="current_password" class="col-md-4 col-lg-3 col-form-label">Password Saat Ini</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="current_password" type="password" class="form-control" id="current_password" value="{{ old('current_password') }}" required>
                                         

@@ -170,7 +170,7 @@
     <div class="card info-card success-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Selesai</h5>
+        <h5 class="card-title">Ticket Closed</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -198,7 +198,7 @@
             @endif
 
             <div class="table-responsive mt-3">
-                <table class="table datatable">
+                <table class="table datatable table-hover">
                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                         <tr>
                         <th scope="col">NO. TICKET</th>
@@ -211,7 +211,7 @@
                     </thead>
                     <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
                         @foreach($data1 as $data)
-                        <tr>
+                        <tr class="clickable-row" data-href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($data->id)]) }}">
                         <td>{{ $data->no_ticket }}</td>
                         <td>{{ $data->kendala }}</td>
                         <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
@@ -242,7 +242,7 @@
                         @elseif($data->status == 'finished')
                         <td><span class="badge bg-success">{{ $data->status }}</span></td>
                         @endif
-                        <tr>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>

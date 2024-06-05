@@ -347,6 +347,8 @@ class TicketDetailController extends Controller
      */
     public function edit(Request $request)
     {
+        $locationId = Auth::user()->location_id;
+        
         // Get id Ticket dari request parameter
         $ticketId = decrypt($request['id']);
         

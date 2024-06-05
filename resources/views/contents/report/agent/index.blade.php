@@ -139,7 +139,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="true" aria-controls="collapseSix">
-                                            Report #6 | Pie Chart
+                                            Report #6 | Pie Chart Performa Agent
                                         </button>
                                     </h2>
                                     <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionExample">

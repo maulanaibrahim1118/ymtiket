@@ -77,7 +77,7 @@ class FilterController extends Controller
                     $unProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
                     $onProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
                     $pending    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1      = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
@@ -88,7 +88,7 @@ class FilterController extends Controller
                     $unProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
                     $onProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
                     $pending    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['code_access', 'like', '%'.$codeAccess],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1      = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
@@ -99,7 +99,7 @@ class FilterController extends Controller
                     $unProcess  = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
                     $onProcess  = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
                     $pending    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $finished   = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['code_access', 'like', $codeAccess.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1      = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
@@ -110,7 +110,7 @@ class FilterController extends Controller
                     $unProcess  = Ticket::where([['location_id', $locationId],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
                     $onProcess  = Ticket::where([['location_id', $locationId],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
                     $pending    = Ticket::where([['location_id', $locationId],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $finished   = Ticket::where([['location_id', $locationId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['location_id', $locationId],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $finished   = Ticket::where([['location_id', $locationId],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1      = Ticket::where([['location_id', $locationId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
@@ -124,7 +124,7 @@ class FilterController extends Controller
                 $unProcess  = Ticket::where([['location_id', $locationId],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
                 $onProcess  = Ticket::where([['location_id', $locationId],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
                 $pending    = Ticket::where([['location_id', $locationId],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                $finished   = Ticket::where([['location_id', $locationId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['location_id', $locationId],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
+                $finished   = Ticket::where([['location_id', $locationId],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
 
                 // Menampilkan Data Ticket yang belum di Close
                 $data1      = Ticket::where([['location_id', $locationId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
@@ -142,7 +142,7 @@ class FilterController extends Controller
                 $pathFilter = "[".$namaAgent."] - [".$pathFilter."]";
 
                 // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                $total          = Ticket::where([['ticket_for', $locationId],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
+                $total          = Ticket::where([['ticket_for', $locationId],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted', 'resolved', 'finished'])->count();
                 $unProcess      = Ticket::where([['ticket_for', $locationId],['status', 'created'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
                 $onProcess      = Ticket::where([['ticket_for', $locationId],['status', 'onprocess'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
                 $pending        = Ticket::where([['ticket_for', $locationId],['status', 'pending'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
@@ -183,12 +183,12 @@ class FilterController extends Controller
                     return redirect('/dashboard');
                 }
                 // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                $total          = Ticket::where([['agent_id', $agentId],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
+                $total          = Ticket::where([['agent_id', $agentId],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted', 'resolved', 'finished'])->count();
                 $resolved       = Ticket::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['agent_id', $agentId],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
                 $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned'],['created_at', 'like', $periodeFilter.'%']])->count();
                 $processedTime  = Ticket_detail::where([['agent_id', $agentId],['created_at', 'like', $periodeFilter.'%']])->sum('processed_time');
                 $pendingTime    = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->sum('pending_time');
-                $workload       = $processedTime-$pendingTime;
+                $workload       = $processedTime-0;
 
                 // Menghitung Waktu Rata-rata Ticket Resolved
                 $resolvedCount  = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->count();
@@ -198,7 +198,7 @@ class FilterController extends Controller
                     $resolvedAvg    = 0;
                     $roundedAvg     = 0;
                 }else {
-                    $resolvedAvg    = ($resolvedTime-$pendingTime)/$resolvedCount;
+                    $resolvedAvg    = $resolvedTime/$resolvedCount;
                     $roundedAvg     = round($resolvedAvg);
                 }
 

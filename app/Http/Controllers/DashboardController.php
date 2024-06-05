@@ -49,7 +49,7 @@ class DashboardController extends Controller
                     $unProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'created']])->count();
                     $onProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'onprocess']])->count();
                     $pending    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'pending']])->count();
-                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'resolved']])->orWhere([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'finished']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'finished']])->count();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
@@ -62,7 +62,7 @@ class DashboardController extends Controller
                     $unProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'created']])->count();
                     $onProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'onprocess']])->count();
                     $pending    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'pending']])->count();
-                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'resolved']])->orWhere([['code_access', 'like', '%'.$codeAccess],['status', 'finished']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'finished']])->count();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1   = Ticket::where([['code_access', '%'.$codeAccess],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
@@ -75,7 +75,7 @@ class DashboardController extends Controller
                     $unProcess  = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'created']])->count();
                     $onProcess  = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'onprocess']])->count();
                     $pending    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'pending']])->count();
-                    $finished   = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'resolved']])->orWhere([['code_access', 'like', $area.'%'],['status', 'finished']])->count();
+                    $finished   = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'finished']])->count();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1      = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
@@ -87,7 +87,7 @@ class DashboardController extends Controller
                     $unProcess  = Ticket::where([['location_id', $locationId],['status', 'created']])->count();
                     $onProcess  = Ticket::where([['location_id', $locationId],['status', 'onprocess']])->count();
                     $pending    = Ticket::where([['location_id', $locationId],['status', 'pending']])->count();
-                    $finished   = Ticket::where([['location_id', $locationId],['status', 'resolved']])->orWhere([['location_id', $locationId],['status', 'finished']])->count();
+                    $finished   = Ticket::where([['location_id', $locationId],['status', 'finished']])->count();
     
                     // Menampilkan Data Ticket yang belum di Close
                     $data1      = Ticket::where([['location_id', $locationId],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
@@ -100,7 +100,7 @@ class DashboardController extends Controller
                 $unProcess  = Ticket::where([['location_id', $locationId],['status', 'created']])->count();
                 $onProcess  = Ticket::where([['location_id', $locationId],['status', 'onprocess']])->count();
                 $pending    = Ticket::where([['location_id', $locationId],['status', 'pending']])->count();
-                $finished   = Ticket::where([['location_id', $locationId],['status', 'resolved']])->orWhere([['location_id', $locationId],['status', 'finished']])->count();
+                $finished   = Ticket::where([['location_id', $locationId],['status', 'finished']])->count();
 
                 // Menampilkan Data Ticket yang belum di Close
                 $data1      = Ticket::where([['location_id', $locationId],['status', 'resolved']])->orderBy('created_at', 'DESC')->get();
@@ -116,7 +116,7 @@ class DashboardController extends Controller
             // Jika Role Service Desk
             if($role == "1"){
                 // Get total data yang ingin di tampilkan di dashboard
-                $total          = Ticket::where('ticket_for', $locationId)->whereNotIn('status', ['deleted'])->count();
+                $total          = Ticket::where('ticket_for', $locationId)->whereNotIn('status', ['deleted', 'resolved', 'finished'])->count();
                 $unProcess      = Ticket::where([['ticket_for', $locationId],['status', 'created']])->count();
                 $onProcess      = Ticket::where([['ticket_for', $locationId],['status', 'onprocess']])->count();
                 $pending        = Ticket::where([['ticket_for', $locationId],['status', 'pending']])->count();
@@ -151,12 +151,12 @@ class DashboardController extends Controller
             // Jika Role Agent
             }else{
                 // Get total data yang ingin di tampilkan di dashboard
-                $total          = Ticket::where('agent_id', $agentId)->whereNotIn('status', ['deleted'])->count();
+                $total          = Ticket::where('agent_id', $agentId)->whereNotIn('status', ['deleted', 'resolved', 'finished'])->count();
                 $resolved       = Ticket::where([['agent_id', $agentId],['status', 'resolved']])->orWhere([['agent_id', $agentId],['status', 'finished']])->count();
                 $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned']])->count();
                 $processedTime  = Ticket_detail::where('agent_id', $agentId)->sum('processed_time');
                 $pendingTime    = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->sum('pending_time');
-                $workload       = $processedTime-$pendingTime;
+                $workload       = $processedTime-0;
 
                 // Menghitung Waktu Rata-rata Ticket Resolved
                 $resolvedCount  = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->count();
@@ -166,7 +166,7 @@ class DashboardController extends Controller
                     $resolvedAvg    = 0;
                     $roundedAvg     = 0;
                 }else {
-                    $resolvedAvg    = ($resolvedTime-$pendingTime)/$resolvedCount;
+                    $resolvedAvg    = $resolvedTime/$resolvedCount;
                     $roundedAvg     = round($resolvedAvg);
                 }
 

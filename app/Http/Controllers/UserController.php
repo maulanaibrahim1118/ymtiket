@@ -25,6 +25,7 @@ class UserController extends Controller
         $users = User::whereHas('location', function ($query) {
                 $query->whereIn('wilayah_id', [1, 2]);
             })
+            ->orderBy('nama', 'ASC')
             ->get();
         
         return view('contents.user.index', [

@@ -35,7 +35,7 @@
 
                                     {{-- Tombol Kembali --}}
                                     <div class="col-md-6">
-                                        <a href="/tickets"><button type="button" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
                                     </div>
 
                                     {{-- Action --}}

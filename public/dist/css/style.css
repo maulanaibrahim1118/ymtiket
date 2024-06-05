@@ -26,6 +26,13 @@ body {
     .echart {
         zoom: 1.35;
     }
+
+    .mychart {
+        width: 45%;
+        min-height: 350px;
+        margin: 2%;
+        display: inline-block;
+    }
 }
 
 /* Center the loader */
@@ -1017,6 +1024,10 @@ h6 {
 
 .dashboard .info-table .dataTable-bottom {
     padding: 10px 0 0 0;
+}
+
+.clickable-row {
+    cursor: pointer;
 }
 
 /*--------------------------------------------------------------

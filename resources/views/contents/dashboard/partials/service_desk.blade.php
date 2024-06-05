@@ -84,7 +84,7 @@
     <div class="card info-card secondary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Total Ticket</h5>
+        <h5 class="card-title">Ticket Masuk</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -176,7 +176,7 @@
     <div class="card info-card primary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Sudah Selesai</h5>
+        <h5 class="card-title">Ticket Resolved</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -199,7 +199,7 @@
     <div class="card info-card danger-card">
 
     <div class="card-body">
-        <h5 class="card-title">Tidak Selesai</h5>
+        <h5 class="card-title">Ticket Participant</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -311,9 +311,9 @@
     <div class="card info-table">
         <div class="card-body">
             @if($pathFilter == "Semua")
-            <h5 class="card-title border-bottom">Performa Agent</h5>
+            <h5 class="card-title border-bottom">Informasi Agent</h5>
             @else
-            <h5 class="card-title border-bottom">Performa Agent <span>| {{ $pathFilter }}</span></h5>
+            <h5 class="card-title border-bottom">Informasi Agent <span>| {{ $pathFilter }}</span></h5>
             @endif
 
             <div class="table-responsive mt-3">
@@ -382,7 +382,7 @@
     </div>
 </div><!-- End Info Table -->
 
-<div class="col-12">
+{{-- <div class="col-12">
     <div class="card info-table">
         <div class="card-body">
             @if($pathFilter == "Semua")
@@ -441,7 +441,7 @@
             </div>
         </div>
     </div>
-</div><!-- End Info Table -->
+</div><!-- End Info Table --> --}}
 
 <div class="col-12">
     <div class="card info-table">
@@ -493,7 +493,7 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>r
+            </div>
         </div>
     </div>
 </div><!-- End Info Table -->

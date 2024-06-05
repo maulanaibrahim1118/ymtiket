@@ -4,7 +4,7 @@
             <tr>
                 <th scope="col">DIBUAT PADA</th>
                 <th scope="col">NO. TICKET</th>
-                <th scope="col">LOKASI</th>
+                <th scope="col">CABANG / DIVISI</th>
                 <th scope="col">KENDALA</th>
                 <th scope="col">DETAIL KENDALA</th>
                 <th scope="col">PIC</th>
@@ -22,14 +22,7 @@
             @endif
                 <td>{{ date('d-M-Y H:i', strtotime($ticket->created_at)) }}</td>
                 <td>{{ $ticket->no_ticket }}</td>
-
-                {{-- Kolom Lokasi --}}
-                @if($ticket->location->wilayah_id == 2)
-                    <td>head office</td>
-                @else
-                    <td>store</td>
-                @endif
-
+                <td>{{ $ticket->location->nama_lokasi }}</td>
                 <td>{{ $ticket->kendala }}</td>
                 <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->detail_kendala }}</td>
 
@@ -83,6 +76,7 @@
                 <td class="dropdown">
                     <a class="action-icon pe-2" style="font-size:16px;" href="#" data-bs-toggle="dropdown"><i class="bi bi-list"></i></a>
                     <ul class="dropdown-menu">
+                        <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                         @if($agentId == $ticket->agent_id)
                             {{-- ========== Jika status ticket created ========== --}}
                             @if($ticket->status == "created" AND $ticket->agent->nik == auth()->user()->nik)
@@ -144,14 +138,8 @@
                             @elseif($ticket->status == "pending" AND $ticket->agent->nik == auth()->user()->nik)
                                 @if($ticket->need_approval == "ya")
                                     @if($ticket->approved == NULL || $ticket->approved == "rejected")
-                        
-                                        {{-- Tombol Detail --}}
-                                        <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                                     @else
                                         @if($ticket->updated_by != auth()->user()->nama)
-                                            {{-- Tombol Detail --}}
-                                            <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
-                        
                                             {{-- Tombol Assign --}}
                                             <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->location->wilayah_id }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-dark"></i>Assign</button></li>
                                         @else
@@ -188,10 +176,8 @@
                                         @else
                                             {{-- Tombol Assign --}}
                                             <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ $ticket->id }}" value="{{ $ticket->location->wilayah_id }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
-                                            
-                                            {{-- Tombol Detail --}}
-                                            <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                                         @endif
+                                        
                                     {{-- Jika status ticket pending assign --}}
                                     @elseif($ticket->agent->nik == auth()->user()->nik AND $ticket->assigned == "ya")
                                         {{-- Tombol Tangani --}}
@@ -205,9 +191,6 @@
                                             </a>
                                             </form>
                                         </li>
-                                    @else
-                                        {{-- Tombol Detail --}}
-                                        <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                                     @endif
                                 @endif
                         
@@ -217,9 +200,6 @@
                                 <li><a class="dropdown-item text-capitalize text-primary" href="{{ route('ticket.reProcess2', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</a></li>
                         
                             {{-- Jika pic ticket bukan service desk --}}
-                            @else
-                                {{-- Tombol Detail --}}
-                                <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                             @endif
                         @else
                             @if($ticket->status == "created" || $ticket->status == "onprocess" || $ticket->status == "pending")
@@ -238,12 +218,6 @@
                                         </form>
                                     </li>
                                 @endif
-
-                                {{-- Tombol Detail --}}
-                                <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
-                            @else
-                                {{-- Tombol Detail --}}
-                                <li><a class="dropdown-item text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text text-secondary"></i>Detail</a></li>
                             @endif
                         @endif
                     </ul>

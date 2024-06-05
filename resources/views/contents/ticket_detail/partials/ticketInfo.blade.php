@@ -1,3 +1,4 @@
+{{-- Left Side --}}
 <div class="col-6">
     <div class="row">
         <div class="col-md-3 m-0">
@@ -41,6 +42,7 @@
     </div>
 </div>
 
+{{-- Right Side --}}
 <div class="col-6">
     <div class="row">
         <div class="col-md-3 m-0">
@@ -56,10 +58,10 @@
             <label for="ip_address" class="form-label">: {{ $ticket->user->ip_address }}</label>
         </div>
         <div class="col-md-3 m-0">
-            <label for="no_asset" class="form-label fw-bold">No. Asset</label>
+            <label for="no_asset" class="form-label fw-bold">Asset</label>
         </div>
         <div class="col-md-9 m-0">
-            <label for="no_asset" class="form-label">: <a href="{{ route('ticket.asset', ['asset_id' => encrypt($ticket->asset->id)]) }}">{{ $ticket->asset->no_asset }}</a></label>
+            <label for="no_asset" class="form-label">: <a href="{{ route('ticket.asset', ['asset_id' => encrypt($ticket->asset->id)]) }}">{{ $ticket->asset->no_asset }} | {{ $ticket->asset->nama_barang }}</a></label>
         </div>
         <div class="col-md-3 m-0">
             <label for="estimated" class="form-label fw-bold">Waktu Estimasi</label>
