@@ -38,7 +38,7 @@ class AreaController extends Controller
         return view('contents.location.area.create', [
             "title"     => "Create Area",
             "path"      => "Area",
-            "path2"     => "Tambah"
+            "path2"     => "Create"
         ]);
     }
 
@@ -56,9 +56,9 @@ class AreaController extends Controller
         ],
         // Create custom notification for the validation request
         [
-            'name.required' => 'Nama Area harus diisi!',
-            'name.max'      => 'Ketik maksimal 50 digit!',
-            'unique'        => 'Nama Area sudah ada!',
+            'name.required' => 'Area Name required!',
+            'name.max'      => 'Type maximum 50 characters!',
+            'unique'        => 'Area Name already exists!',
         ]);
 
         // Saving data to Area table
@@ -79,7 +79,7 @@ class AreaController extends Controller
 
         // Redirect to the area view if create data succeded
         $namaArea = $request['name'];
-        return redirect('/location-areas')->with('success', ucwords($namaArea).' telah ditambahkan!');
+        return redirect('/location-areas')->with('success', ucwords($namaArea).' successfully created!');
     }
 
     /**
@@ -178,9 +178,9 @@ class AreaController extends Controller
             $area->delete();
             $sub_division->delete();
         }else{
-            return back()->with('error', ucwords($name).' tidak dapat dihapus!');
+            return back()->with('error', ucwords($name).' cannot be deleted!');
         }
 
-        return back()->with('success', ucwords($name).' berhasil dihapus!');
+        return back()->with('success', ucwords($name).' successfully deleted!');
     }
 }

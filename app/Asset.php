@@ -13,9 +13,9 @@ class Asset extends Model
         return $this->hasMany('App\Ticket');
     }
 
-    public function category_asset()
+    public function item()
     {
-        return $this->belongsTo('App\Category_asset');
+        return $this->belongsTo('App\Item');
     }
 
     public function location()
@@ -29,7 +29,6 @@ class Asset extends Model
 
         static::saving(function ($model) {
             $model->no_asset = strtoupper($model->no_asset);
-            $model->nama_barang = ucwords($model->nama_barang);
             $model->merk = ucwords($model->merk);
         });
     }

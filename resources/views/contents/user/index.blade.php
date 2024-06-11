@@ -19,15 +19,15 @@
                                     <table class="table datatable table-hover">
                                         <thead class="bg-light" style="height: 45px;font-size:14px;">
                                             <tr>
-                                            <th scope="col">NIK</th>
-                                            <th scope="col">NAMA LENGKAP</th>
-                                            <th scope="col">JABATAN</th>
-                                            <th scope="col">LOKASI</th>
+                                            <th scope="col">USERNAME</th>
+                                            <th scope="col">FULL NAME</th>
+                                            <th scope="col">POSITION</th>
+                                            <th scope="col">DIVISION</th>
                                             <th scope="col">ROLE</th>
-                                            <th scope="col">TELP/EXT</th>
+                                            <th scope="col">PHONE / EXT</th>
                                             <th scope="col">IP ADDRESS</th>
                                             <th scope="col">STATUS</th>
-                                            <th scope="col">AKSI</th>
+                                            <th scope="col">ACTION</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -41,9 +41,9 @@
                                             <td>{{ $user->telp }}</td>
                                             <td>{{ $user->ip_address }}</td>
                                             @if($user->is_active == '1')
-                                            <td><span class="badge bg-primary">AKTIF</span></td>
+                                            <td><span class="badge bg-primary">ACTIVE</span></td>
                                             @else
-                                            <td><span class="badge bg-secondary">NON AKTIF</span></td>
+                                            <td><span class="badge bg-secondary">INACTIVE</span></td>
                                             @endif
                                             <td class="dropdown">
                                                 <a class="action-icon pe-2" style="font-size:16px;" href="#" data-bs-toggle="dropdown"><i class="bi bi-list"></i></a>
@@ -60,9 +60,9 @@
                                                         @csrf
                                                         <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                                         @if($user->is_active == '1')
-                                                        <li><button type="submit" class="dropdown-item text-capitalize text-secondary"><i class="bi bi-power text-secondary"></i>Non Aktifkan</button></li>
+                                                        <li><button type="submit" class="dropdown-item text-capitalize text-secondary"><i class="bi bi-power text-secondary"></i>Disable</button></li>
                                                         @else
-                                                        <li><button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-power text-primary"></i>Aktifkan</button></li>
+                                                        <li><button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-power text-primary"></i>Enable</button></li>
                                                         @endif
                                                         </form>
                                                     @endif
@@ -83,7 +83,7 @@
 
     <script>
         function confirmAction(event) {
-            var lanjut = confirm('Apakah anda yakin dengan pilihan tersebut?');
+            var lanjut = confirm('Are you sure want to disable this user?');
 
             if(lanjut){
                 return true;

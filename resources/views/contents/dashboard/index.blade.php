@@ -22,6 +22,8 @@
         </div> <!-- End row -->
     </section>
 
+    <script src="{{ asset('dist/js/refresh-page-interval.js') }}"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const rows = document.querySelectorAll(".clickable-row");

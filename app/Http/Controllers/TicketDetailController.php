@@ -58,8 +58,8 @@ class TicketDetailController extends Controller
         $haveSubDivs = Sub_division::select('location_id')->distinct()->pluck('location_id')->toArray();
 
         // Get data Sub Divisi Agent HO & Store, untuk select option Antrikan
-        $subDivHo = Agent::where([['location_id', $locationId],['pic_ticket', '!=', 'store']])->whereNotIn('id', [$agentId])->distinct()->pluck('sub_divisi')->toArray();
-        $subDivStore = Agent::where([['location_id', $locationId],['pic_ticket', '!=', 'ho']])->whereNotIn('id', [$agentId])->distinct()->pluck('sub_divisi')->toArray();
+        $subDivHo = Agent::where([['location_id', $locationId],['pic_ticket', '!=', 'store']])->whereNotIn('id', [$agentId])->whereNotIn('sub_divisi', ['tidak ada'])->distinct()->pluck('sub_divisi')->toArray();
+        $subDivStore = Agent::where([['location_id', $locationId],['pic_ticket', '!=', 'ho']])->whereNotIn('id', [$agentId])->whereNotIn('sub_divisi', ['tidak ada'])->distinct()->pluck('sub_divisi')->toArray();
         
         if($userRole == 1){
             // Menampilkan nama agent (untuk assign) sesuai pic ticket
@@ -182,16 +182,6 @@ class TicketDetailController extends Controller
             'biaya'                     => 'max:20',
             'note'                      => 'required|min:10',
             'file'                      => 'max:1024'
-        ],
-        // Create custom notification for the validation request
-        [
-            'jenis_ticket.required'             => 'Jenis Ticket harus dipilih!',
-            'category_ticket_id.required'       => 'Kategori Ticket harus dipilih!',
-            'sub_category_ticket_id.required'   => 'Sub Kategori Ticket harus dipilih!',
-            'biaya.max'                         => 'Ketik maksimal 20 digit!',
-            'note.required'                     => 'Saran Tindakan harus diisi!',
-            'note.min'                          => 'Ketik minimal 10 karakter!',
-            'file.max'                          => 'Maksimal ukuran file 1Mb!'
         ]);
 
         if($request['biaya'] == NULL){
@@ -285,7 +275,7 @@ class TicketDetailController extends Controller
 
             // Mengambil ticket baru yang berada di antrian
             if($role == 1){
-                return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
+                return redirect('/tickets')->with('success', 'Tickets are waiting approval!');
             }else{
                 $getAgent       = Agent::where('nik', $nik)->first();
                 $agentId        = $getAgent->id;
@@ -296,17 +286,17 @@ class TicketDetailController extends Controller
                 $countResolved  = Ticket::where([['agent_id', $agentId],['status', 'resolved']])->count();
 
                 if($agentStatus != 'present'){ // Jika Agent tidak hadir, izin, keluar kota, dll
-                    return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
+                    return redirect('/tickets')->with('success', 'Tickets are waiting approval!');
                 }else{ // Jika agent hadir di kantor
                     if($countTicket-$countResolved > 0){
-                        return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
+                        return redirect('/tickets')->with('success', 'Tickets are waiting approval!');
                     }else{
                         if($subDivisi){
                             $getAntrian     = Ticket::where([['ticket_for', $agentLocation],['is_queue', 'ya'],['sub_divisi_agent', $subDivisi]])->first();
                         }
 
                         if($getAntrian == NULL){ // Jika antrian ticket sudah habis
-                            return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
+                            return redirect('/tickets')->with('success', 'Tickets are waiting approval!');
                         }else {
                             $ticketId = $getAntrian->id;
 
@@ -317,7 +307,7 @@ class TicketDetailController extends Controller
                                 'updated_by'    => $updatedBy
                             ]);
                 
-                            return redirect('/tickets')->with('success', 'Ticket sedang menunggu approval!');
+                            return redirect('/tickets')->with('success', 'Tickets are waiting approval!');
                         }
                     }
                 }
@@ -325,7 +315,7 @@ class TicketDetailController extends Controller
         }
 
         // Redirect to the Category Asset view if create data succeded
-        return redirect()->route('ticket-detail.index', ['ticket_id' => encrypt($ticketId)])->with('success', 'Data telah disimpan!');
+        return redirect()->route('ticket-detail.index', ['ticket_id' => encrypt($ticketId)])->with('success', 'Data successfully saved!');
     }
 
     /**
@@ -409,16 +399,6 @@ class TicketDetailController extends Controller
             'biaya'                     => 'max:20',
             'note'                      => 'required|min:10',
             'file'                      => 'max:1024'
-        ],
-        // Create custom notification for the validation request
-        [
-            'jenis_ticket.required'             => 'Jenis Ticket harus dipilih!',
-            'category_ticket_id.required'       => 'Kategori Ticket harus dipilih!',
-            'sub_category_ticket_id.required'   => 'Sub Kategori Ticket harus dipilih!',
-            'biaya.max'                         => 'Ketik maksimal 20 digit!',
-            'note.required'                     => 'Saran Tindakan harus diisi!',
-            'note.min'                          => 'Ketik minimal 10 karakter!',
-            'file.max'                          => 'Maksimal ukuran file 1Mb!'
         ]);
 
         if($request['biaya'] == NULL){
@@ -504,8 +484,7 @@ class TicketDetailController extends Controller
         }
 
         // Redirect to the Category Asset view if create data succeded
-        $no_ticket = $request['no_ticket'];
-        return redirect()->route('ticket-detail.index', ['ticket_id' => encrypt($ticketId)])->with('success', 'Detail tindakan ticket '.$no_ticket.' telah diedit!');
+        return redirect()->route('ticket-detail.index', ['ticket_id' => encrypt($ticketId)])->with('success', 'Detail process successfully updated!');
     }
 
     /**

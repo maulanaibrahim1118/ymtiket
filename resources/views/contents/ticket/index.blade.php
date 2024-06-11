@@ -31,7 +31,7 @@
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
                                 @can('manage-ticket')
-                                <a href="/tickets/create"><button type="button" class="btn btn-primary" onclick="reloadAction()"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
+                                <a href="/tickets/create"><button type="button" class="btn btn-primary" onclick="reloadAction()"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
                                 @endcan
 
                                 @can('isServiceDesk')
@@ -52,4 +52,6 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+    
+    <script src="{{ asset('dist/js/refresh-page-interval.js') }}"></script>
 @endsection

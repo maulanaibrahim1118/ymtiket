@@ -39,7 +39,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="location" class="form-label">Lokasi</label>
+                                        <label for="location" class="form-label">Store/Division</label>
                                         <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="locationName" value="{{ old('location') }}" disabled>
                                     </div>
 
@@ -58,7 +58,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="ticket_for" class="form-label">Diajukan Kepada</label>
+                                        <label for="ticket_for" class="form-label">Ticket For</label>
                                         <select class="form-select select2 @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($ticketFors as $ticketFor)
@@ -79,7 +79,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="kendala" class="form-label">Kendala</label>
+                                        <label for="kendala" class="form-label">Submission</label>
                                         <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="35" value="{{ old('kendala') }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -91,8 +91,8 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="detail_kendala" class="form-label">Lampiran</label>
-                                        <input type="file" name="file" id="file" accept=".jpeg, .jpg, .png, .gif, .doc, .docx, .pdf, .xls, .xlsx, .csv" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}" required>
+                                        <label for="detail_kendala" class="form-label">Attachnent</label>
+                                        <input type="file" name="file" id="file" accept=".jpeg, .jpg, .png, .gif, .doc, .docx, .pdf, .xls, .xlsx, .csv, .zip, .rar" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}" required>
 
                                         <!-- Showing notification error for input validation -->
                                         @error('file')
@@ -108,7 +108,7 @@
 
                                     @can('isServiceDesk')
                                     <div class="col-md-2">
-                                        <label for="source" class="form-label">Source</label>
+                                        <label for="source" class="form-label">Reference</label>
                                         <select class="form-select select2 @error('source') is-invalid @enderror" name="source" id="source" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($source as $data)
@@ -126,7 +126,7 @@
                                     @endcan
 
                                     <div class="col-md-12">
-                                        <label for="detail_kendala" class="form-label">Detail Kendala</label>
+                                        <label for="detail_kendala" class="form-label">Details</label>
                                         <textarea name="detail_kendala" class="form-control @error('detail_kendala') is-invalid @enderror" id="detail_kendala" rows="3" required>{{ old('detail_kendala') }}</textarea>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -142,9 +142,9 @@
                                     </div>
                                     
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Simpan</button>
+                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Save</button>
                                         <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
-                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
                             </div><!-- End Card Body -->
@@ -217,12 +217,12 @@
             var detailKendala = document.getElementById('detail_kendala').value;
 
             if (asset.length == 0) {
-                alert('Asset harus dipilih!');
+                alert('Asset must be choosed!');
                 return false;
             }
 
             if (kendala.length < 5) {
-                alert('Ketikkan kendala minimal 5 karakter!');
+                alert('Submission must be at least 5 characters!');
                 return false;
             }
             
@@ -231,17 +231,17 @@
                 var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
 
                 if (fileSizeInBytes > maxSizeInBytes) {
-                alert('Ukuran file melebihi batas maksimum. Batas: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
+                alert('File maximum size: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
                 return false;
                 } 
             }
 
             if (detailKendala.length < 10) {
-                alert('Ketikkan detail kendala minimal 10 karakter!');
+                alert('Details must be at least 10 characters!');
                 return false;
             }
 
-            var lanjut = confirm('Apakah anda yakin data yang di input sudah sesuai?');
+            var lanjut = confirm('Are you sure the data entered is correct?');
 
             if(lanjut){
                 return true;

@@ -65,49 +65,6 @@
             </table>
         </div>
 
-        <div class="col-md-12" style="font-size: 14px">
-            <p class="mb-2">Detail penanganan Ticket :</p>
-
-            <table class="table table-bordered border-secondary text-center">
-                <thead class="fw-bold bg-light">
-                    <tr>
-                    <td style="width:160px">Tanggal/Waktu</td>
-                    <td style="width:200px">PIC Agent</td>
-                    <td>Saran Tindakan</td>
-                    <td style="width:120px">Status</td>
-                    </tr>
-                </thead>
-                <tbody class="text-capitalize">
-                    @if($countDetail == 0) 
-                    <tr>
-                        @if($ticket->status == "created")
-                            <td colspan="4" class="text-lowercase text-secondary">-- ticket belum diproses --</td>
-                        @else
-                            <td colspan="4" class="text-lowercase text-secondary">-- belum ada tindakan lebih lanjut dari agent --</td>
-                        @endif
-                    </tr>
-                    @else
-                    @foreach($ticket_details as $td)
-                    <tr>
-                    <td>{{ $td->created_at }}</td>
-                    <td>{{ $td->agent->nama_agent }}</td>
-                    <td>{{ $td->note }}</td>
-                    @if($td->status == 'onprocess')
-                    <td>{{ $td->status }}</td>
-                    @elseif($td->status == 'pending')
-                    <td>{{ $td->status }}</td>
-                    @elseif($td->status == 'resolved')
-                    <td>selesai</td>
-                    @elseif($td->status == 'assigned')
-                    <td>tidak selesai</td>
-                    @endif
-                    </tr>
-                    @endforeach
-                    @endif
-                </tbody>
-            </table>
-        </div>
-
         <div class="col-12 pb-0">
             <p style="font-size: 12px;">Tanggal Cetak : {{ date('d-m-Y H:i:s') }} | Source : {{ config('app.url') }}</p>
         </div>

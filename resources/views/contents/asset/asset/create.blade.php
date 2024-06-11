@@ -8,12 +8,11 @@
                         <div class="card info-card">
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-gem me-2"></i>{{ $title }}</h5>
-                                
                                 <form class="row g-3 mb-3" action="/assets" method="POST">
                                     @csrf
                                     <div class="col-md-2">
-                                        <label for="nik" class="form-label">No. Asset</label>
-                                        <input type="text" name="no_asset" class="form-control text-capitalize @error('no_asset') is-invalid @enderror" id="no_asset" value="{{ old('no_asset') }}" required>
+                                        <label for="no_asset" class="form-label">Asset Number</label>
+                                        <input type="text" name="no_asset" class="form-control text-capitalize @error('no_asset') is-invalid @enderror" id="no_asset" value="{{ old('no_asset') }}" maxlength="20" required>
                                         
                                         <!-- Showing notification error for input validation -->
                                         @error('no_asset')
@@ -24,55 +23,7 @@
                                     </div>
                                     
                                     <div class="col-md-3">
-                                        <label for="nama_barang" class="form-label">Nama Barang</label>
-                                        <input type="text" name="nama_barang" class="form-control text-capitalize @error('nama_barang') is-invalid @enderror" id="nama_barang" value="{{ old('nama_barang') }}" required>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('nama_barang')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    
-                                    <div class="col-md-3">
-                                        <label for="merk" class="form-label">Merk</label>
-                                        <input type="text" name="merk" class="form-control text-capitalize @error('merk') is-invalid @enderror" id="merk" value="{{ old('merk') }}" required>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('merk')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <label for="model" class="form-label">Model</label>
-                                        <input type="text" name="model" class="form-control text-capitalize @error('model') is-invalid @enderror" id="model" value="{{ old('model') }}" required>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('model')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <label for="serial_number" class="form-label">Serial Number</label>
-                                        <input type="text" name="serial_number" class="form-control text-capitalize @error('serial_number') is-invalid @enderror" id="serial_number" value="{{ old('serial_number') }}" required>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('serial_number')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <label for="category_asset_id" class="form-label">Kategori</label>
+                                        <label for="category_asset_id" class="form-label">Category</label>
                                         <select class="form-select @error('category_asset_id') is-invalid @enderror" name="category_asset_id" id="category_asset_id" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($category_assets as $ca)
@@ -92,9 +43,59 @@
                                         @enderror
                                     </div>
 
+                                    <div class="col-md-3">
+                                        <label for="item_id" class="form-label">Item Name</label>
+                                        <select class="form-select select2 @error('item_id') is-invalid @enderror" name="item_id" id="item_id" disabled>
+                                            <option selected value="" disabled>Choose...</option>
+                                        </select>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('item_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="col-md-2">
+                                        <label for="merk" class="form-label">Brand</label>
+                                        <input type="text" name="merk" class="form-control text-capitalize @error('merk') is-invalid @enderror" id="merk" value="{{ old('merk') }}" maxlength="30" required>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('merk')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label for="model" class="form-label">Model/Type</label>
+                                        <input type="text" name="model" class="form-control text-capitalize @error('model') is-invalid @enderror" id="model" value="{{ old('model') }}" maxlength="30" required>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('model')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label for="serial_number" class="form-label">Serial Number</label>
+                                        <input type="text" name="serial_number" class="form-control text-capitalize @error('serial_number') is-invalid @enderror" id="serial_number" value="{{ old('serial_number') }}" maxlength="30" required>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('serial_number')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
                                     @if(auth()->user()->location_id == 10)
                                     <div class="col-md-3">
-                                        <label for="location_id" class="form-label">Lokasi</label>
+                                        <label for="location_id" class="form-label">Location</label>
                                         <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($locations as $location)
@@ -134,9 +135,9 @@
                                     </div>
                                     
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Simpan</button>
+                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Save</button>
                                         <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
-                                        <a href="/assets"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="/assets"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
                             </div><!-- End Card Body -->
@@ -146,4 +147,31 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+    <script>
+        $('#category_asset_id').change(function(){
+            var category = $(this).val();
+            var url = '{{ route("getItem", ":id") }}';
+            url = url.replace(':id', category);
+            $.ajax({
+                url: url,
+                type: 'get',
+                dataType: 'json',
+                success: function(response){
+                    var subDropdown = $('#item_id');
+                    subDropdown.empty();
+                    subDropdown.append('<option selected value="" disabled>Choose...</option>');
+                    $.each(response, function (key, value) {
+                        subDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.name + '</option>');
+                    });
+                    // Aktifkan dropdown no. asset
+                    subDropdown.prop('disabled', false);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    </script>
+
+    {{-- @include('contents.asset.partials.validationjs') --}}
 @endsection

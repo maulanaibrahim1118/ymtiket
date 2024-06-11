@@ -19,10 +19,10 @@
                                     <table class="table datatable table-hover">
                                         <thead class="bg-light" style="height: 45px;font-size:14px;">
                                             <tr>
-                                                <th scope="col">NAMA SUB DIVISI</th>
-                                                <th scope="col">NAMA DIVISI</th>
-                                                <th scope="col">KODE AKSES TICKET</th>
-                                                <th scope="col">AKSI</th>
+                                                <th scope="col">SUB DIVISION NAME</th>
+                                                <th scope="col">DIVISION NAME</th>
+                                                <th scope="col">CODE ACCESS</th>
+                                                <th scope="col">ACTION</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">

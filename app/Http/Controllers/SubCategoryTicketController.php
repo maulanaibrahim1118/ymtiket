@@ -31,9 +31,9 @@ class SubCategoryTicketController extends Controller
             ->get();
             
         return view('contents.sub_category_ticket.index', [
-            "title"                 => "Sub Category Ticket List",
-            "path"                  => "Sub Category Ticket",
-            "path2"                 => "Sub Category Ticket",
+            "title"                 => "Ticket Sub Category List",
+            "path"                  => "Ticket Sub Category",
+            "path2"                 => "Ticket Sub Category",
             "sub_category_tickets"  => $subCategoryTicket
         ]);
     }
@@ -54,9 +54,9 @@ class SubCategoryTicketController extends Controller
 
         return view('contents.sub_category_ticket.create', [
             "url"               => "",
-            "title"             => "Create Sub Category Ticket",
-            "path"              => "Sub Category Ticket",
-            "path2"             => "Tambah",
+            "title"             => "Create Ticket Sub Category",
+            "path"              => "Ticket Sub Category",
+            "path2"             => "Create",
             "category_tickets"  => $categoryTickets,
             "assetChange"       => $assetChange
         ]);
@@ -90,12 +90,12 @@ class SubCategoryTicketController extends Controller
 
         // Create custom notification for the validation request
         [
-            'nama_sub_kategori.required'    => 'Nama Sub Kategori Ticket harus diisi!',
-            'nama_sub_kategori.min'         => 'Minimal 3 karakter!',
-            'nama_sub_kategori.max'         => 'Maksimal 50 karakter!',
-            'nama_sub_kategori.unique'      => 'Nama sudah ada untuk kategori yang sama!',
-            'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
-            'asset_change.required'         => 'Asset Change harus dipilih!',
+            'nama_sub_kategori.required'    => 'Sub Category Name required!',
+            'nama_sub_kategori.min'         => 'Type at least 3 characters!',
+            'nama_sub_kategori.max'         => 'Type maximum 50 characters!',
+            'nama_sub_kategori.unique'      => 'Already exists for the same category!',
+            'category_ticket_id.required'   => 'Ticket Category must be selected!',
+            'asset_change.required'         => 'Asset Change must be selected!',
             'updated_by.required'           => 'Harap diisi!'
         ]);
 
@@ -111,7 +111,7 @@ class SubCategoryTicketController extends Controller
         $sct->save();
 
         // Redirect ke halaman Sub Category Ticket List beserta notifikasi sukses
-        return redirect('/category-sub-tickets')->with('success', ucwords($nama_sub_kategori).' telah ditambahkan!');
+        return redirect('/category-sub-tickets')->with('success', ucwords($nama_sub_kategori).' successfully created!');
     }
 
     /**
@@ -147,8 +147,8 @@ class SubCategoryTicketController extends Controller
         $assetChange        = ["ya", "tidak"];
 
         return view('contents.sub_category_ticket.edit', [
-            "title"             => "Edit Sub Category Ticket",
-            "path"              => "Sub Category Ticket",
+            "title"             => "Edit Ticket Sub Category",
+            "path"              => "Ticket Sub Category",
             "path2"             => "Edit",
             "sct"               => $subCategoryTicket,
             "category_tickets"  => $categoryTickets,
@@ -191,12 +191,12 @@ class SubCategoryTicketController extends Controller
 
         // Create custom notification for the validation request
         [
-            'nama_sub_kategori.required'    => 'Nama Sub Kategori Ticket harus diisi!',
-            'nama_sub_kategori.min'         => 'Minimal 3 karakter!',
-            'nama_sub_kategori.max'         => 'Maksimal 50 karakter!',
-            'nama_sub_kategori.unique'      => 'Nama sudah ada untuk kategori yang sama!',
-            'category_ticket_id.required'   => 'Kategori Ticket harus dipilih!',
-            'asset_change.required'         => 'Asset Change harus dipilih!',
+            'nama_sub_kategori.required'    => 'Sub Category Name required!',
+            'nama_sub_kategori.min'         => 'Type at least 3 characters!',
+            'nama_sub_kategori.max'         => 'Type maximum 50 characters!',
+            'nama_sub_kategori.unique'      => 'Already exists for the same category!',
+            'category_ticket_id.required'   => 'Ticket Category must be selected!',
+            'asset_change.required'         => 'Asset Change must be selected!',
             'updated_by.required'           => 'Harap diisi!'
         ]);
         
@@ -212,7 +212,7 @@ class SubCategoryTicketController extends Controller
         ]);
 
         // Redirect ke halaman Sub Category Ticket List beserta notifikasi sukses
-        return redirect('/category-sub-tickets')->with('success', 'Data Sub Category Ticket telah diubah!');
+        return redirect('/category-sub-tickets')->with('success', 'Ticket Sub Category successfully updated!');
     }
 
     /**
@@ -236,12 +236,12 @@ class SubCategoryTicketController extends Controller
         $agent      = $request->input('filter1');
         $periode    = $request->input('filter2');
         
-        $title      = "Kategori Kendala";
+        $title      = "Sub Category";
 
         // Menentukan Filter by Agent
         if($agent == NULL){
             $filter1        = "";
-            $namaAgent      = "Semua Agent";
+            $namaAgent      = "All Agent";
         }else{
             $filter1        = $agent;
             $agentFilter    = Agent::where('id', $filter1)->first();
@@ -260,23 +260,19 @@ class SubCategoryTicketController extends Controller
             $pathFilter = date('Y');
         }else{
             $filter2    = "";
-            $pathFilter = "Semua Periode";
+            $pathFilter = "All Period";
         }
-
-        // Mendapatkan Lokasi User
-        $getLocation    = Location::where('id', $locationId)->first();
-        $location       = $getLocation->nama_lokasi;
 
         // Mencari Kendala berdasarkan lokasi user pada detail ticket
         $data = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')
-            ->where([['tickets.ticket_for', $location],['ticket_details.agent_id', 'like', '%'.$filter1],['ticket_details.created_at', 'like', $filter2.'%']])
+            ->where([['tickets.ticket_for', $locationId],['ticket_details.agent_id', 'like', '%'.$filter1],['ticket_details.created_at', 'like', $filter2.'%']])
             ->select('ticket_details.sub_category_ticket_id')
             ->groupBy('ticket_details.sub_category_ticket_id')
             ->get();
 
         return view('contents.sub_category_ticket.filter.index', [
             "title"         => $title,
-            "path"          => "Sub Category Ticket",
+            "path"          => "Ticket Sub Category",
             "path2"         => $title,
             "pathFilter"    => "[".$namaAgent."] - [".$pathFilter."]",
             "data"          => $data

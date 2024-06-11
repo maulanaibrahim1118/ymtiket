@@ -3,13 +3,13 @@
         <div class="col-12">
             <div class="card info-card">
                 <div class="card-body pb-2">
-                    <h5 class="card-title">Komentar</h5>
+                    <h5 class="card-title">Comments</h5>
                     <div class="col-md-12">
                         <form action="/ticket-comments" method="POST">
                             @csrf
                             <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
                             <input type="text" name="ticket_id" value="{{ $ticket->id }}" hidden>
-                            <textarea name="komentar" class="form-control h-50" id="komentar" rows="4" placeholder="Tulis komentar anda..." required></textarea>
+                            <textarea name="komentar" class="form-control h-50" id="komentar" rows="4" placeholder="Type your comments..." required></textarea>
                             <!-- Showing notification error for input validation -->
                             @error('komentar')
                             <div class="invalid-feedback">
@@ -17,7 +17,7 @@
                             </div>
                             @enderror
                             <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                            <a href="#"><button type="submit" class="btn btn-sm btn-primary float-end mt-2 ms-1"><i class="bi bi-send me-1"></i> Kirim</button></a>
+                            <a href="#"><button type="submit" class="btn btn-sm btn-primary float-end mt-2 ms-1"><i class="bi bi-send me-1"></i> Send</button></a>
                         </form>
                         @if(session()->has('commentSuccess'))
                         <script>
@@ -40,7 +40,7 @@
         <div class="card-body overflow-auto">
             <div class="activity">
                 @if($checkComment == 0)
-                <p class="text-center">Belum ada komentar.</p>
+                <p class="text-center">No comments yet.</p>
                 @else
                 @foreach($comments as $comment)
                 <div class="activity-item d-flex">
@@ -48,7 +48,7 @@
                     <i class='bi bi-circle-fill activity-badge text-secondary align-self-start'></i>
                     <div class="activity-content">
                         @if(auth()->user()->nama == $comment->user->nama)
-                        <a href="#" class="fw-bold text-dark pe-1">{{ ucwords($comment->user->nama) }}</a><span class="badge bg-info text-capitalize">saya</span></td> : {{ $comment->komentar }}
+                        <a href="#" class="fw-bold text-dark pe-1">{{ ucwords($comment->user->nama) }}</a><span class="badge bg-info text-capitalize">me</span></td> : {{ $comment->komentar }}
                         @else
                         <a href="#" class="fw-bold text-dark">{{ ucwords($comment->user->nama) }}</a></td> : {{ $comment->komentar }}
                         @endif

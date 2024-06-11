@@ -1,16 +1,24 @@
+<style>
+    .table thead th {
+        white-space: nowrap; /* Mencegah wrapping teks di header tabel */
+    }
+    .table tbody td {
+        white-space: nowrap; /* Mencegah wrapping teks di header tabel */
+    }
+</style>
 <div class="table-responsive mt-2">
     <table class="table datatable table-hover">
         <thead class="bg-light" style="height: 45px;font-size:14px;">
             <tr>
-                <th scope="col">DIBUAT PADA</th>
-                <th scope="col">NO. TICKET</th>
-                <th scope="col">CABANG / DIVISI</th>
-                <th scope="col">KENDALA</th>
-                <th scope="col">DETAIL KENDALA</th>
-                <th scope="col">PIC</th>
-                <th scope="col">KETERANGAN</th>
+                <th scope="col">CREATED AT</th>
+                <th scope="col">TICKET NUMBER</th>
+                <th scope="col">CLIENT</th>
+                <th scope="col">SUBMISSION</th>
+                <th scope="col">DETAILS</th>
+                <th scope="col">AGENT</th>
+                <th scope="col">NOTE</th>
                 <th scope="col">STATUS</th>
-                <th scope="col">AKSI</th>
+                <th scope="col">ACTION</th>
             </tr>
         </thead>
         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -28,14 +36,14 @@
 
                 {{-- Kolom PIC --}}
                 @if($ticket->agent->nama_agent == auth()->user()->nama)
-                    <td><span class="badge bg-info">saya</span></td>
+                    <td><span class="badge bg-info">me</span></td>
                 @else
                     <td>{{ $ticket->agent->nama_agent }}</td>
                 @endif
 
                 {{-- Kolom Keterangan --}}
                 @if($ticket->need_approval == "ya" AND $ticket->approved == NULL)
-                    <td><span class="badge bg-secondary">menunggu approval</span></td>
+                    <td><span class="badge bg-secondary">waiting for approval</span></td>
                 @elseif($ticket->need_approval == "ya" AND $ticket->approved == "approved")
                     <td><span class="badge bg-dark">{{ $ticket->approved }}</span></td>
                 @elseif($ticket->need_approval == "ya" AND $ticket->approved == "rejected")
@@ -45,10 +53,18 @@
                     <td><span class="badge bg-dark">direct assign</span></td>
                 @else
                     @if($ticket->is_queue == "ya" AND $ticket->status == "created" OR $ticket->is_queue == "ya" AND $ticket->status == "pending")
-                        <td><span class="badge bg-dark">dalam antrian</span></td>
+                        <td>
+                            <span class="badge bg-dark">
+                                @if(in_array(auth()->user()->location_id, $haveSubDivs))
+                                In Queue | {{ $ticket->sub_divisi_agent }}
+                                @else
+                                In Queue
+                                @endif
+                            </span>
+                        </td>
                     @elseif($ticket->is_queue == "tidak" AND $ticket->status == "created")
                         @if($ticket->role == 1)
-                            <td><span class="badge bg-secondary">diluar antrian</span></td>
+                            <td><span class="badge bg-secondary">Not In Queue</span></td>
                         @else
                             <td></td>
                         @endif
@@ -89,7 +105,7 @@
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
                                     <a href="#">
-                                    <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
+                                    <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Process</button>
                                     </a>
                                     </form>
                                 </li>
@@ -106,7 +122,7 @@
                                         <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                         <input type="text" name="sub_divisi" value="none" hidden>
                                         <a href="#">
-                                        <button type="submit" class="dropdown-item text-capitalize text-success"><i class="bi bi-list-check text-success"></i>Antrikan</button>
+                                        <button type="submit" class="dropdown-item text-capitalize text-success"><i class="bi bi-list-check text-success"></i>Queue</button>
                                         </a>
                                         </form>
                                     </li>
@@ -130,7 +146,7 @@
                                     @method('put')
                                     @csrf
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                    <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Hapus</button></li>
+                                    <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Delete</button></li>
                                     </form>
                                 @endif
                         
@@ -152,7 +168,7 @@
                                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                                 <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
                                                 <a href="#">
-                                                <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
+                                                <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Re-Process</button>
                                                 </a>
                                                 </form>
                                             </li>
@@ -169,7 +185,7 @@
                                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                                 <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
                                                 <a href="#">
-                                                <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
+                                                <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Re-Process</button>
                                                 </a>
                                                 </form>
                                             </li>
@@ -187,7 +203,7 @@
                                             @csrf
                                             <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                             <a href="#">
-                                            <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</button>
+                                            <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Process</button>
                                             </a>
                                             </form>
                                         </li>
@@ -197,7 +213,7 @@
                             {{-- ========== Jika status ticket onprocess ========== --}}
                             @elseif($ticket->status == "onprocess" AND $ticket->agent->nik == auth()->user()->nik) {{-- Jika status onprocess dan belum ada detail ticket --}}
                                 {{-- Tombol Tangani Kembali --}}
-                                <li><a class="dropdown-item text-capitalize text-primary" href="{{ route('ticket.reProcess2', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Tangani</a></li>
+                                <li><a class="dropdown-item text-capitalize text-primary" href="{{ route('ticket.reProcess2', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Re-Process</a></li>
                         
                             {{-- Jika pic ticket bukan service desk --}}
                             @endif
@@ -213,7 +229,7 @@
                                             <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                             <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
                                             <a href="#">
-                                            <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bi bi-sign-turn-left text-primary"></i>Tarik</button>
+                                            <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bi bi-sign-turn-left text-primary"></i>Pull</button>
                                             </a>
                                         </form>
                                     </li>
@@ -241,7 +257,7 @@
                     if(ticket_id.value == 2){
                         modalContent1.innerHTML  =
                         '<div class="modal-header">'+
-                            '<h5 class="modal-title">.:: Pilih Sub Divisi Agent</h5>'+
+                            '<h5 class="modal-title">.:: Choose Agent Sub Division</h5>'+
                             '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
                         '</div>'+
                         '<form action="/tickets/queue" method="post">'+
@@ -249,7 +265,7 @@
                         '@csrf'+
                         '<div class="modal-body">'+
                             '<div class="col-md-12">'+
-                                '<label for="sub_divisi" class="form-label">Sub Divisi</label>'+
+                                '<label for="sub_divisi" class="form-label">Sub Division</label>'+
                                 '<select class="form-select" name="sub_divisi" id="sub_divisi" required>'+
                                     '<option selected disabled>Choose...</option>'+
                                     '@foreach($subDivHo as $subDiv)'+
@@ -265,13 +281,13 @@
                             '<input type="text" id="ticket_id" name="id" value="'+ticket_id.name+'" hidden>'+
                         '</div>'+
                         '<div class="modal-footer">'+
-                            '<button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Antrikan</button>'+
+                            '<button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Queue</button>'+
                         '</div>'+
                         '</form>';
                     }else{
                         modalContent1.innerHTML  =
                         '<div class="modal-header">'+
-                            '<h5 class="modal-title">.:: Pilih Sub Divisi Agent</h5>'+
+                            '<h5 class="modal-title">.:: Pilih Agent Sub Division</h5>'+
                             '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
                         '</div>'+
                         '<form action="/tickets/queue" method="post">'+
@@ -279,7 +295,7 @@
                         '@csrf'+
                         '<div class="modal-body">'+
                             '<div class="col-md-12">'+
-                                '<label for="sub_divisi" class="form-label">Sub Divisi</label>'+
+                                '<label for="sub_divisi" class="form-label">Sub Division</label>'+
                                 '<select class="form-select" name="sub_divisi" id="sub_divisi" required>'+
                                     '<option selected disabled>Choose...</option>'+
                                     '@foreach($subDivStore as $subDiv)'+
@@ -295,7 +311,7 @@
                             '<input type="text" id="ticket_id" name="id" value="'+ticket_id.name+'" hidden>'+
                         '</div>'+
                         '<div class="modal-footer">'+
-                            '<button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Antrikan</button>'+
+                            '<button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Queue</button>'+
                         '</div>'+
                         '</form>';
                     }
@@ -319,7 +335,7 @@
                     if(ticket_id.value == 2){
                         modalContent2.innerHTML  =
                         '<div class="modal-header">'+
-                            '<h5 class="modal-title">.:: Pilih Nama Agent</h5>'+
+                            '<h5 class="modal-title">.:: Choose Agent</h5>'+
                             '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
                         '</div>'+
                         '<form action="/tickets/assign" method="post">'+
@@ -327,7 +343,7 @@
                         '@csrf'+
                         '<div class="modal-body">'+
                             '<div class="col-md-12">'+
-                                '<label for="agent_id" class="form-label">Nama Agent</label>'+
+                                '<label for="agent_id" class="form-label">Agent Name</label>'+
                                 '<select class="form-select" name="agent_id" id="agent_id" required>'+
                                     '<option selected disabled>Choose...</option>'+
                                     '@foreach($hoAgents as $hoAgent)'+
@@ -349,7 +365,7 @@
                     }else{
                         modalContent2.innerHTML  =
                         '<div class="modal-header">'+
-                            '<h5 class="modal-title">.:: Pilih Nama Agent</h5>'+
+                            '<h5 class="modal-title">.:: Choose Agent</h5>'+
                             '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
                         '</div>'+
                         '<form action="/tickets/assign" method="post">'+
@@ -357,7 +373,7 @@
                         '@csrf'+
                         '<div class="modal-body">'+
                             '<div class="col-md-12">'+
-                                '<label for="agent_id" class="form-label">Nama Agent</label>'+
+                                '<label for="agent_id" class="form-label">Agent Name</label>'+
                                 '<select class="form-select" name="agent_id" id="agent_id" required>'+
                                     '<option selected disabled>Choose...</option>'+
                                     '@foreach($storeAgents as $storeAgent)'+

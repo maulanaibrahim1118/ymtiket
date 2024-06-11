@@ -86,4 +86,8 @@ $(document).ready(function () {
     $("#source").select2({
         dropdownParent: $("#source").parent(), // Menentukan parent untuk dropdown
     });
+
+    $("#item_id").select2({
+        dropdownParent: $("#item_id").parent(), // Menentukan parent untuk dropdown
+    });
 });

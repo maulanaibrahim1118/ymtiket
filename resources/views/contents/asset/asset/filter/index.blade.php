@@ -17,12 +17,12 @@
                                     <table class="table datatable table-hover">
                                         <thead class="bg-light" style="height: 45px;font-size:14px;">
                                             <tr>
-                                            <th scope="col">NO. ASSET</th>
-                                            <th scope="col">NAMA BARANG</th>
-                                            <th scope="col">MERK</th>
-                                            <th scope="col">MODEL</th>
+                                            <th scope="col">ASSET NUMBER</th>
+                                            <th scope="col">ITEM NAME</th>
+                                            <th scope="col">BRAND</th>
+                                            <th scope="col">MODEL/TYPE</th>
                                             <th scope="col">STATUS</th>
-                                            <th scope="col">LOKASI</th>
+                                            <th scope="col">LOCATION</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="col-md-12 border-top mb-3"></div>
                                 <div class="col-md-12">
-                                    <a href="/dashboard"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                    <a href="/dashboard"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                 </div>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->

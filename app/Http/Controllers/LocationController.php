@@ -40,7 +40,7 @@ class LocationController extends Controller
         return view('contents.location.division_store.create', [
             "title"     => "Create Store & Division",
             "path"      => "Store & Division",
-            "path2"     => "Tambah",
+            "path2"     => "Create",
             "wilayahs"  => Wilayah::all()
         ]);
     }
@@ -63,14 +63,14 @@ class LocationController extends Controller
         
         // Create custom notification for the validation request
         [
-            'site.required'         => 'Isi!',
-            'site.max'              => 'Maks 5!',
-            'site.unique'           => 'Exist!',
-            'nama_lokasi.required'  => 'Nama Lokasi harus diisi!',
-            'nama_lokasi.min'       => 'Ketik minimal 3 karakter!',
-            'nama_lokasi.max'       => 'Ketik maksimal 50 karakter!',
-            'nama_lokasi.unique'    => 'Nama Lokasi sudah ada!',
-            'wilayah_id.required'   => 'Wilayah harus dipilih!'
+            'site.required'         => 'Required!',
+            'site.max'              => 'Max 5 char!',
+            'site.unique'           => 'Exists!',
+            'nama_lokasi.required'  => 'Location Name required!',
+            'nama_lokasi.min'       => 'Type at least 3 characters!',
+            'nama_lokasi.max'       => 'Type maximum 50 characters!',
+            'nama_lokasi.unique'    => 'Location Name already exists!',
+            'wilayah_id.required'   => 'Wilayah must be selected!'
         ]);
 
         $data   = $request->all();
@@ -117,7 +117,7 @@ class LocationController extends Controller
         $namaLokasi = $request['nama_lokasi'];
 
         // Redirect ke halaman Category Ticket List beserta notifikasi sukses
-        return redirect('/locations')->with('success', ucwords($namaLokasi).' telah ditambahkan!');
+        return redirect('/locations')->with('success', ucwords($namaLokasi).' successfully created!');
     }
 
     /**
@@ -189,14 +189,14 @@ class LocationController extends Controller
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
-            'site.required'         => 'Isi!',
-            'site.max'              => 'Maks 5!',
-            'site.unique'           => 'Exist!',
-            'nama_lokasi.required'  => 'Nama Lokasi harus diisi!',
-            'nama_lokasi.min'       => 'Ketik minimal 3 karakter!',
-            'nama_lokasi.max'       => 'Ketik maksimal 50 karakter!',
-            'nama_lokasi.unique'    => 'Nama Lokasi sudah ada!',
-            'wilayah_id.required'   => 'Wilayah harus dipilih!',
+            'site.required'         => 'Required!',
+            'site.max'              => 'Max 5 char!',
+            'site.unique'           => 'Exists!',
+            'nama_lokasi.required'  => 'Location Name required!',
+            'nama_lokasi.min'       => 'Type at least 3 characters!',
+            'nama_lokasi.max'       => 'Type maximum 50 characters!',
+            'nama_lokasi.unique'    => 'Location Name already exists!',
+            'wilayah_id.required'   => 'Wilayah must be selected!',
             'updated_by.required'   => 'Wajib diisi!'
         ]);
 
@@ -230,7 +230,7 @@ class LocationController extends Controller
         }
         
         // Redirect ke halaman Location List beserta notifikasi sukses
-        return redirect('/locations')->with('success', 'Data Location telah diubah!');
+        return redirect('/locations')->with('success', 'Store/Division successfully updated!');
     }
 
     /**
@@ -263,7 +263,7 @@ class LocationController extends Controller
             'updated_by' => $request['updated_by']
         ]);
 
-        return back()->with('success', 'Cabang '.ucwords($nama).' telah ditutup!');
+        return back()->with('success', 'Cabang '.ucwords($nama).' successfully closed!');
     }
 
     public function activate(Request $request)
@@ -285,7 +285,7 @@ class LocationController extends Controller
             'updated_by' => $request['updated_by']
         ]);
 
-        return back()->with('success', 'Cabang '.ucwords($nama).' telah diaktifkan kembali!');
+        return back()->with('success', 'Cabang '.ucwords($nama).' successfully reactivated!');
     }
 
     public function getDetailWilayah($id)

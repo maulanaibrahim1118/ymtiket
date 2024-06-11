@@ -40,7 +40,7 @@ class RegionalController extends Controller
         return view('contents.location.regional.create', [
             "title" => "Create Regional",
             "path"  => "Regional",
-            "path2" => "Tambah",
+            "path2" => "Create",
             "areas" => $areas
         ]);
     }
@@ -61,10 +61,10 @@ class RegionalController extends Controller
         ],
         // Create custom notification for the validation request
         [
-            'name.required'     => 'Nama Regional harus diisi!',
-            'name.max'          => 'Ketik maksimal 50 digit!',
-            'unique'            => 'Nama Regional sudah ada!',
-            'area_id.required'  => 'Area harus dipilih!',
+            'name.required'     => 'Regional Name required!',
+            'name.max'          => 'Type maximum 50 characters!',
+            'unique'            => 'Regional Name already exists!',
+            'area_id.required'  => 'Area must be selected!',
         ]);
 
         // Saving data to Regional table
@@ -82,7 +82,7 @@ class RegionalController extends Controller
 
         // Redirect to the area view if create data succeded
         $namaRegional = $request['name'];
-        return redirect('/location-regionals')->with('success', ucwords($namaRegional).' telah ditambahkan!');
+        return redirect('/location-regionals')->with('success', ucwords($namaRegional).' successfully created!');
     }
 
     /**
@@ -139,9 +139,9 @@ class RegionalController extends Controller
             $regional->delete();
             $sub_division->delete();
         }else{
-            return back()->with('error', ucwords($name).' tidak dapat dihapus!');
+            return back()->with('error', ucwords($name).' cannot be deleted!');
         }
 
-        return back()->with('success', ucwords($name).' berhasil dihapus!');
+        return back()->with('success', ucwords($name).' successfully deleted!');
     }
 }

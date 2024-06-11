@@ -8,48 +8,54 @@
                         <div class="card info-card">
 
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bx bx-cog me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-gem me-2"></i>{{ $title }}</h5>
                                 
-                                <form class="row g-3 mb-3" action="{{ route('change.password') }}" method="POST">
+                                <form class="row g-3 mb-3" action="/asset-items" method="POST">
                                     @csrf
                                     <div class="col-md-3">
-                                        <label for="current_password" class="form-label">Password Lama</label>
-                                        <input type="password" name="current_password" class="form-control text-capitalize @error('current_password') is-invalid @enderror" id="current_password" value="{{ old('current_password') }}" required>
-                                        
+                                        <label for="name" class="form-label">Item Name</label>
+                                        <input type="text" name="name" class="form-control text-capitalize @error('name') is-invalid @enderror" id="name" value="{{ old('name') }}" required>
+
                                         <!-- Showing notification error for input validation -->
-                                        @error('current_password')
+                                        @error('name')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
                                         @enderror
                                     </div>
-                                    <div class="col-md-8"></div>
 
+                                    <div class="col-md-2">
+                                        <label for="uom" class="form-label">UOM</label>
+                                        <input type="text" name="uom" class="form-control text-capitalize @error('uom') is-invalid @enderror" id="uom" value="{{ old('uom') }}" required>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('uom')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                    
                                     <div class="col-md-3">
-                                        <label for="new_password" class="form-label">Password Baru</label>
-                                        <input type="password" name="new_password" class="form-control text-capitalize @error('new_password') is-invalid @enderror" id="new_password" value="{{ old('new_password') }}" required>
-                                        
+                                        <label for="category_asset_id" class="form-label">Asset Category</label>
+                                        <select class="form-select @error('category_asset_id') is-invalid @enderror" name="category_asset_id" id="category_asset_id" value="{{ old('category_asset_id') }}">
+                                            <option selected disabled>Choose...</option>
+                                            @foreach($category_assets as $ca)
+                                                @if(old('category_asset_id') == $ca->id)
+                                                <option selected value="{{ $ca->id }}">{{ ucwords($ca->nama_kategori) }}</option>
+                                                @else
+                                                <option value="{{ $ca->id }}">{{ ucwords($ca->nama_kategori) }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+
                                         <!-- Showing notification error for input validation -->
-                                        @error('new_password')
+                                        @error('category_asset_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
                                         @enderror
                                     </div>
-
-                                    <div class="col-md-3">
-                                        <label for="new_password_confirmation" class="form-label">Konfirmasi Password Baru</label>
-                                        <input type="password" name="new_password_confirmation" class="form-control text-capitalize @error('new_password_confirmation') is-invalid @enderror" id="new_password_confirmation" value="{{ old('new_password_confirmation') }}" required>
-                                        
-                                        <!-- Showing notification error for input validation -->
-                                        @error('new_password_confirmation')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
 
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-2 mb-0"></p>
@@ -58,6 +64,7 @@
                                     <div class="col-md-12">
                                         <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Simpan</button>
                                         <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
+                                        <a href="/asset-items"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
                             </div><!-- End Card Body -->

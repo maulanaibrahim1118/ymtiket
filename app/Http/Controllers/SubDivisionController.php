@@ -41,7 +41,7 @@ class SubDivisionController extends Controller
         return view('contents.location.sub_division.create', [
             "title"     => "Create Sub Division",
             "path"      => "Sub Division",
-            "path2"     => "Tambah",
+            "path2"     => "Create",
             "locations" => $locations,
             "codes"     => $codes
         ]);
@@ -65,10 +65,10 @@ class SubDivisionController extends Controller
         
         // Create custom notification for the validation request
         [
-            'name.required'         => 'Nama Sub Divisi harus diisi!',
-            'name.unique'           => 'Nama Sub Divisi sudah ada!',
-            'location_id.required'  => 'Divisi harus dipilih!',
-            'code_access.required'  => 'Kode Akses harus dipilih!',
+            'name.required'         => 'Sub Division Name required!',
+            'name.unique'           => 'Sub Division Name already exists!',
+            'location_id.required'  => 'Division must be selected!',
+            'code_access.required'  => 'Code Access must be selected!',
         ]);
 
         // Simpan data Sub Divisi sesuai request yang telah di validasi
@@ -78,7 +78,7 @@ class SubDivisionController extends Controller
         $nama = $request['name'];
 
         // Redirect ke halaman Sub Division List beserta notifikasi sukses
-        return redirect('/location-sub-divisions')->with('success', ucwords($nama).' telah ditambahkan!');
+        return redirect('/location-sub-divisions')->with('success', ucwords($nama).' successfully created!');
     }
 
     /**
@@ -149,17 +149,17 @@ class SubDivisionController extends Controller
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
-            'name.required'         => 'Nama Sub Divisi harus diisi!',
-            'name.unique'           => 'Nama Sub Divisi sudah ada!',
-            'location_id.required'  => 'Divisi harus dipilih!',
-            'code_access.required'  => 'Kode Akses harus dipilih!',
+            'name.required'         => 'Sub Division Name required!',
+            'name.unique'           => 'Sub Division Name already exists!',
+            'location_id.required'  => 'Division must be selected!',
+            'code_access.required'  => 'Code Access must be selected!',
         ]);
 
         // Updating data Location sesuai request yang telah di validasi
         Sub_division::where('id', $id)->update($validatedData);
         
         // Redirect ke halaman Location List beserta notifikasi sukses
-        return redirect('/location-sub-divisions')->with('success', 'Data Sub Divisi telah diubah!');
+        return redirect('/location-sub-divisions')->with('success', 'Sub Division successfully updated!');
     }
 
     /**

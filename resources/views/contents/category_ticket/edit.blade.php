@@ -13,7 +13,7 @@
                                     @method('put')
                                     @csrf
                                     <div class="col-md-3">
-                                        <label for="nama_kategori" class="form-label">Nama Kategori Ticket</label>
+                                        <label for="nama_kategori" class="form-label">Ticket Category Name</label>
                                         <input type="text" name="nama_kategori" class="form-control text-capitalize @error('nama_kategori') is-invalid @enderror" id="nama_kategori" value="{{ old('nama_kategori', $ct->nama_kategori) }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -33,9 +33,9 @@
                                     </div>
                                     
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Simpan</button>
+                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Save</button>
                                         <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
-                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
                             </div><!-- End Card Body -->

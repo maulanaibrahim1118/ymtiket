@@ -154,20 +154,18 @@ class DashboardController extends Controller
                 $total          = Ticket::where('agent_id', $agentId)->whereNotIn('status', ['deleted', 'resolved', 'finished'])->count();
                 $resolved       = Ticket::where([['agent_id', $agentId],['status', 'resolved']])->orWhere([['agent_id', $agentId],['status', 'finished']])->count();
                 $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned']])->count();
-                $processedTime  = Ticket_detail::where('agent_id', $agentId)->sum('processed_time');
-                $pendingTime    = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->sum('pending_time');
+                $processedTime  = Ticket_detail::where('agent_id', $agentId)->whereIn('status', ['resolved', 'assigned'])->sum('processed_time');
                 $workload       = $processedTime-0;
 
                 // Menghitung Waktu Rata-rata Ticket Resolved
-                $resolvedCount  = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->count();
-                $resolvedTime   = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved']])->sum('processed_time');
+                $processedCount  = Ticket_detail::where('agent_id', $agentId)->whereIn('status', ['resolved', 'assigned'])->count();
 
-                if($resolvedCount == 0){
+                if($processedCount == 0){
                     $resolvedAvg    = 0;
                     $roundedAvg     = 0;
                 }else {
-                    $resolvedAvg    = $resolvedTime/$resolvedCount;
-                    $roundedAvg     = round($resolvedAvg);
+                    $processedAvg    = $processedTime/$processedCount;
+                    $roundedAvg     = round($processedAvg);
                 }
 
                 // Mengembalikan data untuk di tampilkan di view

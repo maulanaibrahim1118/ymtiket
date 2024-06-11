@@ -2,13 +2,13 @@
     <table class="table datatable table-hover">
         <thead class="bg-light" style="height: 45px;font-size:14px;">
             <tr>
-                <th scope="col">DIBUAT PADA</th>
-                <th scope="col">NO. TICKET</th>
-                <th scope="col">KENDALA</th>
-                <th scope="col">DETAIL KENDALA</th>
-                <th scope="col">KETERANGAN</th>
+                <th scope="col">CREATED AT</th>
+                <th scope="col">TICKET NUMBER</th>
+                <th scope="col">SUBMISSION</th>
+                <th scope="col">DETAILS</th>
+                <th scope="col">NOTE</th>
                 <th scope="col">STATUS</th>
-                <th scope="col">AKSI</th>
+                <th scope="col">ACTION</th>
             </tr>
         </thead>
         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -25,7 +25,7 @@
 
                 {{-- Kolom Keterangan --}}
                 @if($ticket->need_approval == "ya" AND $ticket->approved == NULL)
-                    <td><span class="badge bg-secondary">menunggu approval</span></td>
+                    <td><span class="badge bg-secondary">waiting for approval</span></td>
                 @elseif($ticket->need_approval == "ya" AND $ticket->approved == "approved")
                     <td><span class="badge bg-dark">{{ $ticket->approved }}</span></td>
                 @elseif($ticket->need_approval == "ya" AND $ticket->approved == "rejected")
@@ -61,7 +61,7 @@
                         @method('put')
                         @csrf
                         <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                        <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Tangani</button>
+                        <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Process</button>
                         </form>
 
                     @elseif($ticket->status == "pending") {{-- Jika status pending --}}
@@ -79,7 +79,7 @@
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="url" value="/ticket-details/{{ encrypt($ticket->id) }}" hidden>
                                     <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
-                                    <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Tangani</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Process</button>
                                     </form>
                                     </li>
                                 @else
@@ -91,7 +91,7 @@
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
                                     <a href="#">
-                                    <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Tangani</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Re-Process</button>
                                     </a>
                                     </form>
                                     </li>
@@ -105,7 +105,7 @@
                                 @method('put')
                                 @csrf
                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Tangani</button>
+                                <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Process</button>
                                 </form>
 
                             {{-- Jika ticket di pending oleh agent sendiri --}}
@@ -116,7 +116,7 @@
                                 @csrf
                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                 <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                                <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Tangani</button>
+                                <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Re-Process</button>
                                 </form>
 
                             @else
@@ -128,7 +128,7 @@
                     {{-- Jika status ticket onprocess --}}
                     @elseif($ticket->status == "onprocess") {{-- Jika status onprocess dan belum ada detail ticket --}}
                     {{-- Tombol Tangani Kembali --}}
-                    <a class="btn btn-sm btn-outline-primary text-capitalize" href="{{ route('ticket.reProcess2', ['id' => encrypt($ticket->id)]) }}"><i class="bx bx-analyse me-1" onclick="reloadAction()"></i>Tangani</a>
+                    <a class="btn btn-sm btn-outline-primary text-capitalize" href="{{ route('ticket.reProcess2', ['id' => encrypt($ticket->id)]) }}"><i class="bx bx-analyse me-1" onclick="reloadAction()"></i>Re-Process</a>
                     @elseif($ticket->status == "assigned") {{-- Jika status onprocess dan belum ada detail ticket --}}
                     {{-- Tombol Detail --}}
                     <a class="btn btn-sm btn-outline-secondary text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text me-1"></i>Detail</a>

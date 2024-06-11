@@ -15,16 +15,16 @@ class SearchTicketController extends Controller
 
         // Jika Input No. Ticket tidak diisi (mecegah input validasi html tidak berjalan) 
         if($noTicket == NULL){
-            return back()->with('error', 'Nomor Ticket belum diisi!');
+            return back()->with('error', 'Ticket Number required!');
 
         // Jika Input No. Ticket diisi
         }else {
             // Mencari data ticket by No. Ticket
-            $ticket     = Ticket::where('no_ticket', $noTicket)->whereNotIn('status', ['deleted'])->first();
+            $ticket     = Ticket::where('no_ticket', $noTicket)->whereIn('status', ['resolved', 'finished'])->first();
             
             // Jika No. Ticket tidak ditemukan
             if($ticket == NULL){
-                return back()->with('error', 'Nomor Ticket tidak ditemukan!');
+                return back()->with('error', 'Ticket not found or unauthorized!');
 
             // Jika No. Ticket ditemukan
             }else{

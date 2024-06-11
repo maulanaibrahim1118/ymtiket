@@ -11,19 +11,19 @@
                             </div> <!-- End Filter -->
 
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ui-radios-grid me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-gem me-2"></i>{{ $title }}</h5>
                                 
-                                <a href="/category-assets/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
+                                <a href="/asset-categories/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
 
                                 <div class="table-responsive">
                                     <table class="table datatable table-hover">
                                         <thead class="bg-light" style="height: 45px;font-size:14px;">
                                             <tr>
-                                                <th scope="col">NAMA KATEGORI</th>
+                                                <th scope="col">CATEGORY NAME</th>
                                                 <th scope="col">CREATED AT</th>
                                                 <th scope="col">UPDATED AT</th>
                                                 <th scope="col">UPDATED BY</th>
-                                                <th scope="col">AKSI</th>
+                                                <th scope="col">ACTION</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">

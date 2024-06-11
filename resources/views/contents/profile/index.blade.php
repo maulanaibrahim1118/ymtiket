@@ -43,7 +43,7 @@
 
                     <div class="tab-content pt-2 ps-2">
                         <div class="tab-pane fade show active profile-overview" id="profile-overview">
-                            <h5 class="card-title">Detail Profil</h5>
+                            <h5 class="card-title">Profile Details</h5>
                             @if(auth()->user()->location->wilayah_id == 1 || auth()->user()->location->wilayah_id == 2)
                                 @include('contents.profile.partials.office_overview')
                             @else
@@ -56,7 +56,7 @@
                             <form class="row g-3 mt-2 mb-3" action="{{ route('profile.update') }}" onsubmit="return validateForm1()" method="POST">
                                 @csrf
                                 <div class="row mb-3">
-                                    <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Foto Profil</label>
+                                    <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Photo</label>
                                     <div class="col-md-8 col-lg-9">
                                     <img src="{{ asset('dist/img/profile/user.png') }}" alt="Profile">
                                     <div class="pt-2">
@@ -65,10 +65,10 @@
                                     </div>
                                     </div>
                                 </div>
-                                <h5 class="card-title">Detail Kontak</h5>
+                                <h5 class="card-title">Contact Details</h5>
 
                                 <div class="row mb-3">
-                                    <label for="telp" class="col-md-4 col-lg-3 col-form-label">Telp/Ext</label>
+                                    <label for="telp" class="col-md-4 col-lg-3 col-form-label">Phone/Ext</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="telp" type="text" class="form-control" id="telp" value="{{ ucwords(auth()->user()->telp ) }}">
                                     </div>
@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="row mb-3">
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-primary"><i class="bi bi-save2 me-1"></i> Simpan</button>
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-save2 me-1"></i> Save</button>
                                     </div>
                                 </div>
                             </form><!-- End Profile Edit Form -->
@@ -92,7 +92,7 @@
                             <form class="row g-3 mt-2 mb-3" action="{{ route('change.password') }}" onsubmit="return validateForm2()" method="POST">
                                 @csrf
                                 <div class="row mb-3">
-                                    <label for="current_password" class="col-md-4 col-lg-3 col-form-label">Password Saat Ini</label>
+                                    <label for="current_password" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="current_password" type="password" class="form-control" id="current_password" value="{{ old('current_password') }}" required>
                                         
@@ -105,7 +105,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="new_password" class="col-md-4 col-lg-3 col-form-label">Password Baru</label>
+                                    <label for="new_password" class="col-md-4 col-lg-3 col-form-label">New Password</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="new_password" type="password" class="form-control" id="new_password" value="{{ old('new_password') }}" required>
 
@@ -118,7 +118,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="new_password_confirmation" class="col-md-4 col-lg-3 col-form-label">Ulangi Password Baru</label>
+                                    <label for="new_password_confirmation" class="col-md-4 col-lg-3 col-form-label">Re-Enter New Password</label>
                                     <div class="col-md-8 col-lg-9">
                                         <input name="new_password_confirmation" type="password" class="form-control" id="new_password_confirmation" value="{{ old('new_password_confirmation') }}" required>
                                         
@@ -135,7 +135,7 @@
 
                                 <div class="row mb-3">
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-primary"><i class="bi bi-save2 me-1"></i> Simpan</button>
+                                        <button type="submit" class="btn btn-primary"><i class="bi bi-save2 me-1"></i> Save</button>
                                     </div>
                                 </div>
                             </form><!-- End Change Password Form -->

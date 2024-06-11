@@ -2,15 +2,15 @@
     <table class="table datatable table-hover">
         <thead class="bg-light" style="height: 45px;font-size:14px;">
             <tr>
-                <th scope="col">DIBUAT PADA</th>
-                <th scope="col">NO. TICKET</th>
+                <th scope="col">CREATED AT</th>
+                <th scope="col">TICKET NUMBER</th>
                 <th scope="col">CLIENT</th>
-                <th scope="col">KENDALA</th>
-                <th scope="col">DETAIL KENDALA</th>
+                <th scope="col">SUBMISSION</th>
+                <th scope="col">DETAILS</th>
                 <th scope="col">AGENT</th>
-                <th scope="col">KETERANGAN</th>
+                <th scope="col">NOTE</th>
                 <th scope="col">STATUS</th>
-                <th scope="col">AKSI</th>
+                <th scope="col">ACTION</th>
             </tr>
         </thead>
         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -25,7 +25,7 @@
 
                 {{-- Kolom Keterangan --}}
                 @if($ticket->need_approval == "ya" AND $ticket->approved == NULL)
-                    <td><span class="badge bg-secondary">menunggu approval</span></td>
+                    <td><span class="badge bg-secondary">waiting for approval</span></td>
                 @elseif($ticket->need_approval == "ya" AND $ticket->approved == "approved")
                     <td><span class="badge bg-dark">{{ $ticket->approved }}</span></td>
                 @else
@@ -66,7 +66,7 @@
                                 @method('put')
                                 @csrf
                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Hapus</button></li>
+                                <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Delete</button></li>
                                 </form>
                             @else {{-- Jika ticket dibuatkan oleh service desk --}}
                             @endif

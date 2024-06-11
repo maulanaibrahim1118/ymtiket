@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Item;
 use App\User;
 use App\Asset;
 use App\Ticket;
@@ -30,7 +31,7 @@ class AssetController extends Controller
             $assets = Asset::where('location_id', $locationId)->whereNotIn('status', ['tidak digunakan'])->get();
         }
 
-        return view('contents.asset.index', [
+        return view('contents.asset.asset.index', [
             "url"       => "",
             "title"     => "Asset List",
             "path"      => "Asset",
@@ -49,11 +50,11 @@ class AssetController extends Controller
         $category_assets = Category_asset::orderBy('nama_kategori', 'ASC')->get();
         $locations = Location::where('is_active', '1')->orderBy('nama_lokasi', 'ASC')->get();
 
-        return view('contents.asset.create', [
+        return view('contents.asset.asset.create', [
             "url"               => "",
             "title"             => "Create Asset",
             "path"              => "Asset",
-            "path2"             => "Tambah",
+            "path2"             => "Create",
             "category_assets"   => $category_assets,
             "locations"         => $locations
         ]);
@@ -69,9 +70,8 @@ class AssetController extends Controller
     {
         // Validating data request
         $validatedData = $request->validate([
-            'no_asset'          => 'required|min:8|max:13|unique:assets',
-            'nama_barang'       => 'required|min:3|max:30',
-            'category_asset_id' => 'required',
+            'no_asset'          => 'required|max:20|unique:assets',
+            'item_id'           => 'required',
             'merk'              => 'required|max:30',
             'model'             => 'required|max:30',
             'serial_number'     => 'required|max:30',
@@ -82,33 +82,26 @@ class AssetController extends Controller
         
         // Create custom notification for the validation request
         [
-            'no_asset.required'             => 'No. Asset harus diisi!',
-            'no_asset.min'                  => 'Ketik minimal 8 digit!',
-            'no_asset.max'                  => 'Ketik maksimal 13 digit!',
-            'unique'                        => 'No. Asset sudah ada!',
-            'nama_barang.required'          => 'Nama Barang harus diisi!',
-            'nama_barang.min'               => 'Ketik minimal 3 digit!',
-            'nama_barang.max'               => 'Ketik maksimal 30 digit!',
-            'category_asset_id.required'    => 'Kategori harus dipilih!',
-            'merk.required'                 => 'Merk harus diisi!',
-            'merk.max'                      => 'Ketik maksimal 30 digit!',
-            'model.required'                => 'Model harus diisi!',
-            'model.max'                     => 'Ketik maksimal 30 digit!',
-            'serial_number.required'        => 'Serial Number harus diisi!',
-            'serial_number.max'             => 'Ketik maksimal 30 digit!',
-            'status.required'               => 'Status harus diisi!',
-            'location_id.required'          => 'Lokasi harus dipilih!',
-            'updated_by.required'           => 'Wajib diisi!'
+            'no_asset.required'         => 'Asset Number required!',
+            'no_asset.max'              => 'Type maximum 20 characters!',
+            'unique'                    => 'Asset Number already exists!',
+            'item_id.required'          => 'Item Name required!',
+            'merk.required'             => 'Brand required!',
+            'merk.max'                  => 'Type maximum 30 characters!',
+            'model.required'            => 'Model/Type required!',
+            'model.max'                 => 'Type maximum 30 characters!',
+            'serial_number.required'    => 'Serial Number required!',
+            'serial_number.max'         => 'Type maximum 30 characters!',
+            'status.required'           => 'Status required!',
+            'location_id.required'      => 'Location required!',
+            'updated_by.required'       => 'Wajib diisi!'
         ]);
 
         // Simpan data Asset sesuai request yang telah di validasi
         Asset::create($validatedData);
 
-        // Get nomor Asset untuk ditampilkan di notifikasi sukses
-        $no_asset = $request['no_asset'];
-        
         // Redirect ke halaman asset list beserta notifikasi sukses
-        return redirect('/assets')->with('success', 'No. Asset '.ucwords($no_asset).' telah ditambahkan!');
+        return redirect('/assets')->with('success', 'Asset successfully created!');
     }
 
     /**
@@ -139,14 +132,16 @@ class AssetController extends Controller
         // Get data Category Asset untuk ditampilkan di select option view edit
         $category_assets = Category_asset::orderBy('nama_kategori', 'ASC')->get();
         $locations = Location::where('is_active', '1')->orderBy('nama_lokasi', 'ASC')->get();
+        $items = Item::where('category_asset_id', $asset->item->category_asset_id)->orderBy('name', 'ASC')->get();
 
-        return view('contents.asset.edit', [
+        return view('contents.asset.asset.edit', [
             "title"             => "Edit Asset",
             "path"              => "Asset",
             "path2"             => "Edit",
             "category_assets"   => $category_assets,
             "locations"         => $locations,
-            "asset"             => $asset
+            "asset"             => $asset,
+            "items"             => $items,
         ]);
     }
 
@@ -167,47 +162,42 @@ class AssetController extends Controller
 
         // Validating data request
         $rules = [
-            'nama_barang'       => 'required|min:3|max:30',
-            'category_asset_id' => 'required',
-            'merk'              => 'required|max:30',
-            'model'             => 'required|max:30',
-            'serial_number'     => 'required|max:30',
-            'status'            => 'required',
-            'location_id'       => 'required',
-            'updated_by'        => 'required'
+            'item_id'       => 'required',
+            'merk'          => 'required|max:30',
+            'model'         => 'required|max:30',
+            'serial_number' => 'required|max:30',
+            'status'        => 'required',
+            'location_id'   => 'required',
+            'updated_by'    => 'required'
         ];
 
         if($request->no_asset != $asset->no_asset){
-            $rules['no_asset'] = 'required|min:8|max:13|unique:assets';
+            $rules['no_asset'] = 'required|max:20|unique:assets';
         }
 
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
-            'no_asset.required'             => 'No. Asset harus diisi!',
-            'no_asset.min'                  => 'Ketik minimal 8 digit!',
-            'no_asset.max'                  => 'Ketik maksimal 13 digit!',
-            'unique'                        => 'No. Asset sudah ada!',
-            'nama_barang.required'          => 'Nama Barang harus diisi!',
-            'nama_barang.min'               => 'Ketik minimal 3 digit!',
-            'nama_barang.max'               => 'Ketik maksimal 30 digit!',
-            'category_asset_id.required'    => 'Kategori harus dipilih!',
-            'merk.required'                 => 'Merk harus diisi!',
-            'merk.max'                      => 'Ketik maksimal 30 digit!',
-            'model.required'                => 'Model harus diisi!',
-            'model.max'                     => 'Ketik maksimal 30 digit!',
-            'serial_number.required'        => 'Serial Number harus diisi!',
-            'serial_number.max'             => 'Ketik maksimal 30 digit!',
-            'status.required'               => 'Status harus diisi!',
-            'location_id.required'          => 'Lokasi harus dipilih!',
-            'updated_by.required'           => 'Wajib diisi!'
+            'no_asset.required'         => 'Asset Number required!',
+            'no_asset.max'              => 'Type maximum 20 characters!',
+            'unique'                    => 'Asset Number already exists!',
+            'item_id.required'          => 'Item Name required!',
+            'merk.required'             => 'Brand required!',
+            'merk.max'                  => 'Type maximum 30 characters!',
+            'model.required'            => 'Model/Type required!',
+            'model.max'                 => 'Type maximum 30 characters!',
+            'serial_number.required'    => 'Serial Number required!',
+            'serial_number.max'         => 'Type maximum 30 characters!',
+            'status.required'           => 'Status required!',
+            'location_id.required'      => 'Location required!',
+            'updated_by.required'       => 'Wajib diisi!'
         ]);
 
         // Updating data Asset sesuai request yang telah di validasi
         Asset::where('id', $id)->update($validatedData);
         
         // Redirect ke halaman asset list beserta notifikasi sukses
-        return redirect('/assets')->with('success', 'Data Asset telah diubah!');
+        return redirect('/assets')->with('success', 'Asset successfully updated!');
     }
 
     /**
@@ -227,18 +217,18 @@ class AssetController extends Controller
         // Get data User
         $id         = Auth::user()->id;
         $role       = Auth::user()->role;
-        $location   = Auth::user()->location->nama_lokasi;
+        $locationId   = Auth::user()->location_id;
 
         $status     = $request->input('status');
         $agent      = $request->input('filter1');
         $periode    = $request->input('filter2');
         
-        $title      = "Asset Berkendala";
+        $title      = "Ticket Asset";
 
         // Menentukan Filter by Agent
         if($agent == NULL){
             $filter1        = "";
-            $namaAgent      = "Semua Agent";
+            $namaAgent      = "All Agent";
         }else{
             $filter1        = $agent;
             $agentFilter    = Agent::where('id', $filter1)->first();
@@ -257,17 +247,17 @@ class AssetController extends Controller
             $pathFilter = date('Y');
         }else{
             $filter2    = "";
-            $pathFilter = "Semua Periode";
+            $pathFilter = "All Period";
         }
 
         // Mencari asset yang sedang berkendala berdasarkan ticket yang masuk dan filter (agent & periode)
-        $tickets = Ticket::where([['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%'],['ticket_for', $location]])->whereNotIn('status', ['deleted'])
+        $tickets = Ticket::where([['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%'],['ticket_for', $locationId]])->whereNotIn('status', ['deleted'])
             ->groupBy('asset_id')
             ->select('asset_id')
             ->orderBy('asset_id', 'ASC')
             ->get();
 
-        return view('contents.asset.filter.index', [
+        return view('contents.asset.asset.filter.index', [
             "url"           => "",
             "title"         => $title,
             "path"          => "Asset",
@@ -275,5 +265,11 @@ class AssetController extends Controller
             "pathFilter"    => "[".$namaAgent."] - [".$pathFilter."]",
             "tickets"       => $tickets
         ]);
+    }
+
+    public function getItem($id = 0)
+    {
+        $data = Item::where('category_asset_id', $id)->get();
+        return response()->json($data);
     }
 }

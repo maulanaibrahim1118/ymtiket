@@ -13,14 +13,14 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-geo-alt me-2"></i>{{ $title }}</h5>
                                 
-                                <a href="{{ route('area.create') }}"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
+                                <a href="{{ route('area.create') }}"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
 
                                 <div class="table-responsive">
                                     <table class="table datatable table-hover">
                                         <thead class="bg-light" style="height: 45px;font-size:14px;">
                                             <tr>
-                                                <th scope="col">NAMA AREA</th>
-                                                <th scope="col">AKSI</th>
+                                                <th scope="col">AREA NAME</th>
+                                                <th scope="col">ACTION</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -33,7 +33,7 @@
                                                 @method('put')
                                                 @csrf
                                                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                                <button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger me-1"></i>Hapus</button>
+                                                <button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger me-1"></i>Delete</button>
                                                 </form>
                                             </td>
                                             </tr>

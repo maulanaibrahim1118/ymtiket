@@ -17,11 +17,11 @@ class CategoryAssetController extends Controller
         // Get semua data Category Asset
         $categoryAssets = Category_asset::all();
         
-        return view('contents.category_asset.index', [
+        return view('contents.asset.asset_category.index', [
             "url"               => "",
-            "title"             => "Category Asset List",
-            "path"              => "Category Asset",
-            "path2"             => "Category Asset",
+            "title"             => "Asset Category List",
+            "path"              => "Asset Category",
+            "path2"             => "Asset Category",
             "category_assets"   => $categoryAssets
         ]);
     }
@@ -33,11 +33,11 @@ class CategoryAssetController extends Controller
      */
     public function create()
     {
-        return view('contents.category_asset.create', [
+        return view('contents.asset.asset_category.create', [
             "url"               => "",
-            "title"             => "Create Category Asset",
-            "path"              => "Category Asset",
-            "path2"             => "Tambah"
+            "title"             => "Create Asset Category",
+            "path"              => "Asset Category",
+            "path2"             => "Create"
         ]);
     }
 
@@ -57,10 +57,10 @@ class CategoryAssetController extends Controller
 
         // Create custom notification for the validation request
         [
-            'nama_kategori.required'    => 'Nama Kategori Asset harus diisi!',
-            'nama_kategori.min'         => 'Ketik minimal 5 digit!',
-            'nama_kategori.max'         => 'Ketik maksimal 50 digit!',
-            'unique'                    => 'Nama Kategori Asset sudah ada!',
+            'nama_kategori.required'    => 'Category Name required!',
+            'nama_kategori.min'         => 'Type at least 5 characters!',
+            'nama_kategori.max'         => 'Type maximum 50 characters!',
+            'unique'                    => 'Category Name already exists',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
 
@@ -71,7 +71,7 @@ class CategoryAssetController extends Controller
         $namaKategori = $request['nama_kategori'];
 
         // Redirect ke halaman Category Asset List beserta notifikasi sukses
-        return redirect('/category-assets')->with('success', ucwords($namaKategori).' telah ditambahkan!');
+        return redirect('/asset-categories')->with('success', ucwords($namaKategori).' successfully created!');
     }
 
     /**
@@ -99,9 +99,9 @@ class CategoryAssetController extends Controller
         // Get data Category Asset berdasarkan id Category Asset
         $categoryAsset = Category_asset::where('id', $id)->first();
 
-        return view('contents.category_asset.edit', [
-            "title"     => "Edit Category Asset",
-            "path"      => "Category Asset",
+        return view('contents.asset.asset_category.edit', [
+            "title"     => "Edit Asset Category",
+            "path"      => "Asset Category",
             "path2"     => "Edit",
             "ca"        => $categoryAsset
         ]);
@@ -127,10 +127,10 @@ class CategoryAssetController extends Controller
 
         // Create custom notification for the validation request
         [
-            'nama_kategori.required'    => 'Nama Kategori Asset harus diisi!',
-            'nama_kategori.min'         => 'Ketik minimal 5 digit!',
-            'nama_kategori.max'         => 'Ketik maksimal 50 digit!',
-            'unique'                    => 'Nama Kategori Ticket sudah ada!',
+            'nama_kategori.required'    => 'Category Name required!',
+            'nama_kategori.min'         => 'Type at least 5 characters!',
+            'nama_kategori.max'         => 'Type maximum 50 characters!',
+            'unique'                    => 'Category Name already exists',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
 
@@ -138,7 +138,7 @@ class CategoryAssetController extends Controller
         Category_asset::where('id', $id)->update($validatedData);
 
         // Redirect ke halaman Category Asset List beserta notifikasi sukses
-        return redirect('/category-assets')->with('success', 'Data Category Asset telah diubah!');
+        return redirect('/asset-categories')->with('success', 'Asset Category successfully updated!');
     }
 
     /**

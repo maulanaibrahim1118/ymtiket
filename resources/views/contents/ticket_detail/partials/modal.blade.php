@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content" id="modalContent1">
             <div class="modal-header">
-                <h5 class="modal-title">Lampiran Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                <h5 class="modal-title">Ticket Attachment - <span class="text-success">{{ $ticket->no_ticket}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -18,20 +18,12 @@
     </div>
 </div><!-- End Lampiran Modal-->
 
-{{-- Saran Tindakan Modal --}}
-<div class="modal fade" id="actionModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" id="modalContent2">
-        </div>
-    </div>
-</div><!-- End Vertically centered Modal-->
-
 {{-- Antrikan Modal --}}
 <div class="modal fade" id="antrikanModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" id="modalContent4">
             <div class="modal-header">
-                <h5 class="modal-title">.:: Pilih Sub Divisi Agent</h5>
+                <h5 class="modal-title">.:: Choose Agent Sub Division</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="/tickets/queue" method="post">
@@ -39,7 +31,7 @@
             @csrf
             <div class="modal-body">
                 <div class="col-md-12">
-                    <label for="sub_divisi" class="form-label">Sub Divisi</label>
+                    <label for="sub_divisi" class="form-label">Sub Division</label>
                     <select class="form-select" name="sub_divisi" id="sub_divisi" required>
                         <option selected disabled>Choose...</option>
                         @if($ticket->location->wilayah_id == 2)
@@ -65,7 +57,7 @@
                 <input type="text" id="ticket_id" name="id" value="{{ $ticket->id }}" hidden>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Antrikan</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Queue</button>
             </div>
             </form>
         </div>
@@ -77,7 +69,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" id="modalContent4">
             <div class="modal-header">
-                <h5 class="modal-title">.:: Pilih Nama Agent</h5>
+                <h5 class="modal-title">.:: Choose Agent</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="/tickets/assign2" method="post">
@@ -85,7 +77,7 @@
             @csrf
             <div class="modal-body">
                 <div class="col-md-12">
-                    <label for="agent_id" class="form-label">Nama Agent</label>
+                    <label for="agent_id" class="form-label">Agent Name</label>
                     <select class="form-select" name="agent_id" id="agent_id" required>
                         <option selected disabled>Choose...</option>
                         @foreach($agents as $agent)
@@ -115,7 +107,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" id="modalContent3">
             <div class="modal-header">
-                <h5 class="modal-title">Alasan Pending Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                <h5 class="modal-title">Pending Reason - <span class="text-success">{{ $ticket->no_ticket}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('ticket.pending', ['id' => encrypt($ticket->id)]) }}" method="post">
@@ -123,7 +115,7 @@
             @csrf
             <div class="modal-body">
                 <div class="col-md-12">
-                    <textarea name="alasanPending" class="form-control @error('alasanPending') is-invalid @enderror" id="alasanPending" rows="3" placeholder="Sebutkan alasan pending...">{{ old('alasanPending') }}</textarea>
+                    <textarea name="alasanPending" class="form-control @error('alasanPending') is-invalid @enderror" id="alasanPending" rows="3" placeholder="Type your pending reason...">{{ old('alasanPending') }}</textarea>
                 </div>
                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                 <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
@@ -141,7 +133,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" id="modalContent4">
             <div class="modal-header">
-                <h5 class="modal-title">Status Closed Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                <h5 class="modal-title">Ticket Closed Status - <span class="text-success">{{ $ticket->no_ticket}}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('ticket.finished', ['id' => encrypt($ticket->id)]) }}" method="post">
@@ -156,43 +148,15 @@
                     </select>
                 </div>
                 <div class="col-md-12">
-                    <textarea name="alasanClosed" class="form-control" id="alasanClosed" rows="3" placeholder="Tuliskan keterangan tambahan (opsional)">{{ old('alasanClosed') }}</textarea>
+                    <textarea name="alasanClosed" class="form-control" id="alasanClosed" rows="3" placeholder="Type your additional informations (optional)">{{ old('alasanClosed') }}</textarea>
                 </div>
                 <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                 <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role_id) }}" hidden>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Kirim</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Send</button>
             </div>
             </form>
         </div>
     </div>
 </div><!-- End Close Modal-->
-
-<script>
-    // Fungsi untuk menampilkan data pada saran tindakan modal
-    function tampilkanData(ticket_id) {
-        // Mendapatkan elemen modalContent
-        var modalContent2 = document.getElementById("modalContent2");
-    
-        // Menampilkan data pada modalContent
-        modalContent2.innerHTML  =
-        '<div class="modal-header">'+
-            '<h5 class="modal-title">Saran Tindakan Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>'+
-            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
-        '</div>'+
-        '<form action="/tickets/assign" method="post">'+
-        '@method("put")'+
-        '@csrf'+
-        '<div class="modal-body">'+
-            '<div class="col-md-12">'+
-                '<p>'+ticket_id.name+'</p>'+
-            '</div>'+
-            '<input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>'+
-        '</div>'+
-        '<div class="modal-footer">'+
-            '<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>'+
-        '</div>'+
-        '</form>';
-    }
-</script>

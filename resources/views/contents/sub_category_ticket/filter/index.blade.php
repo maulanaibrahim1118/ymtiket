@@ -17,8 +17,8 @@
                                     <table class="table datatable table-hover">
                                         <thead class="bg-light" style="height: 45px;font-size:14px;">
                                             <tr>
-                                                <th scope="col">NAMA SUB KATEGORI</th>
-                                                <th scope="col">KATEGORI</th>
+                                                <th scope="col">SUB CATEGORY</th>
+                                                <th scope="col">CATEGORY</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -33,7 +33,7 @@
                                 </div>
                                 <div class="col-md-12 border-top mb-3"></div>
                                 <div class="col-md-12">
-                                    <a href="/dashboard"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                    <a href="/dashboard"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                 </div>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->

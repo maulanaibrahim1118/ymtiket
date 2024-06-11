@@ -10,33 +10,33 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="dist/img/favicon1.ico" rel="icon">
-    <link href="dist/img/favicon1.ico" rel="apple-touch-icon">
+    <link href="{{ asset('dist/img/favicon1.ico') }}" rel="icon">
+    <link href="{{ asset('dist/img/favicon1.ico') }}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
-    <link href="dist/css/google-fonts.css" rel="stylesheet">
+    <link href="{{ asset('dist/css/google-fonts.css') }}" rel="stylesheet">
 
     <!-- Vendor CSS Files -->
-    <link href="dist/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="dist/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="dist/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="dist/vendor/quill/quill.snow.css" rel="stylesheet">
-    <link href="dist/vendor/quill/quill.bubble.css" rel="stylesheet">
-    <link href="dist/vendor/remixicon/remixicon.css" rel="stylesheet">
-    <link href="dist/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/quill/quill.snow.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/vendor/simple-datatables/style.css') }}" rel="stylesheet">
 
     <!-- Template Main CSS File -->
-    <link href="dist/css/style.css" rel="stylesheet">
+    <link href="{{ asset('dist/css/style.css') }}" rel="stylesheet">
 
     <!-- Javascript -->
-    <script src="dist/js/sweetalert.min.js"></script>
+    <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
     
     <script type="text/javascript">
         var myVar;
 
         // Mengatur waktu loading halaman
         function preloader() {
-            myVar = setTimeout(showPage, 200);
+            myVar = setTimeout(showPage, 300);
         }
 
         // Mengatur urutan tampilan setelah loading selesai
@@ -54,7 +54,7 @@
         <div id="preloader">
             <div class="position-absolute top-50 start-50 translate-middle">
                 <div id="loader"></div>
-                <div><strong id="status" role="status" class="text-primary">Memuat Halaman...</strong></div>
+                <div class="loading"><strong id="status" role="status" class="text-primary">Loading Page...</strong></div>
             </div>
         </div>
         <div style="display:none;" id="content" class="fade-in">
@@ -64,8 +64,8 @@
 
             <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
                 <h1>404</h1>
-                <h2>Mohon maaf, halaman tidak ditemukan.</h2>
-                <a class="btn" href="/dashboard">Kembali ke Dashboard</a>
+                <h2>This page is under construction.</h2>
+                <a class="btn" href="/dashboard">Back to Dashboard</a>
                 <div class="credits">
                 </div>
             </section>

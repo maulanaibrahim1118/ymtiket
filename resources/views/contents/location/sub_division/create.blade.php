@@ -12,7 +12,7 @@
                                 <form class="row g-3 mb-3" action="{{ route('subDivision.store') }}" method="POST">
                                     @csrf
                                     <div class="col-md-3">
-                                        <label for="name" class="form-label">Nama Sub Divisi</label>
+                                        <label for="name" class="form-label">Sub Division Name</label>
                                         <input type="text" name="name" class="form-control text-capitalize @error('name') is-invalid @enderror" id="name" value="{{ old('name') }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -24,7 +24,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="location_id" class="form-label">Nama Divisi</label>
+                                        <label for="location_id" class="form-label">Division Name</label>
                                         <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($locations as $location)
@@ -45,7 +45,7 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <label for="code_access" class="form-label">Kode Akses Ticket</label>
+                                        <label for="code_access" class="form-label">Code Access</label>
                                         <select class="form-select @error('code_access') is-invalid @enderror" name="code_access" id="code_access" required>
                                             <option selected value="" disabled>Choose...</option>
                                             <option value="tidak ada">Tidak Ada</option>
@@ -77,13 +77,13 @@
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                        <i class="bi bi-info-circle-fill me-2"></i>Tentang Kode Akses Ticket
+                                                        <i class="bi bi-info-circle-fill me-2"></i>About Code Access
                                                     </button>
                                                 </h2>
                                                 <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
                                                         <div class="card-body">
-                                                            Kode Akses Ticket adalah kode yang digunakan untuk menentukan pic ticket Agent. Berikut adalah penjelasan lebih lanjut mengenai pilihan kode yang tersedia :<br><br>
+                                                            Code Access adalah kode yang digunakan untuk menentukan pic ticket Agent. Berikut adalah penjelasan lebih lanjut mengenai pilihan kode yang tersedia :<br><br>
                                                             1. <b>Tidak Ada </b>: Khusus untuk Divisi/Sub Divisi yang tidak memiliki Agent maupun Service Desk.<br>
                                                             2. <b>All </b>: Agent dari Sub Divisi tersebut bisa mendapatkan ticket dari Head Office maupun Cabang.<br>
                                                             3. <b>Ho </b>: Agent dari Sub Divisi tersebut hanya mendapatkan ticket dari Head Office Saja.<br>
@@ -100,9 +100,9 @@
                                     </div>
                                     
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Simpan</button>
+                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Save</button>
                                         <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
-                                        <a href="/location-sub-divisions"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="/location-sub-divisions"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
                             </div><!-- End Card Body -->

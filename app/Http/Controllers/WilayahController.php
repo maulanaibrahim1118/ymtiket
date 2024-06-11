@@ -40,7 +40,7 @@ class WilayahController extends Controller
         return view('contents.location.wilayah.create', [
             "title"     => "Create Wilayah",
             "path"      => "Wilayah",
-            "path2"     => "Tambah",
+            "path2"     => "Create",
             "regionals" => $regionals
         ]);
     }
@@ -61,10 +61,10 @@ class WilayahController extends Controller
         ],
         // Create custom notification for the validation request
         [
-            'name.required'         => 'Nama Wilayah harus diisi!',
-            'name.max'              => 'Ketik maksimal 50 digit!',
-            'unique'                => 'Nama Wilayah sudah ada!',
-            'regional_id.required'  => 'Regional harus dipilih!',
+            'name.required'         => 'Wilayah Name required!',
+            'name.max'              => 'type maximum 50 characters!',
+            'unique'                => 'Wilayah Name already exists!',
+            'regional_id.required'  => 'Regional must be selected!',
         ]);
 
         // Saving data to Regional table
@@ -82,7 +82,7 @@ class WilayahController extends Controller
 
         // Redirect to the area view if create data succeded
         $namaWilayah = $request['name'];
-        return redirect('/location-wilayahs')->with('success', ucwords($namaWilayah).' telah ditambahkan!');
+        return redirect('/location-wilayahs')->with('success', ucwords($namaWilayah).' successfully created!');
     }
 
     /**
@@ -139,10 +139,10 @@ class WilayahController extends Controller
             $wilayah->delete();
             $sub_division->delete();
         }else{
-            return back()->with('error', ucwords($name).' tidak dapat dihapus!');
+            return back()->with('error', ucwords($name).' cannot be deleted!');
         }
 
-        return back()->with('success', ucwords($name).' berhasil dihapus!');
+        return back()->with('success', ucwords($name).' successfully deleted!');
     }
 
     public function getDetailRegional($id)

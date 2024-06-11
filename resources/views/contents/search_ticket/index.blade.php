@@ -152,7 +152,6 @@
                                                             <td>Biaya</td>
                                                             <td>PIC Agent</td>
                                                             <td>Status</td>
-                                                            <td>Saran Tindakan</td>
                                                             </tr>
                                                         </thead>
                                                         <tbody class="text-capitalize">
@@ -183,8 +182,6 @@
                                                             @elseif($td->status == 'assigned')
                                                             <td><span class="badge bg-danger">not resolved</span></td>
                                                             @endif
-
-                                                            <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{{ $td->note }}" onclick="tampilkanData(this)"><i class="bi bi-search me-1"></i> Lihat</button></td>
                                                             </tr>
                                                             @endforeach
                                                             @endif
@@ -215,39 +212,6 @@
             <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
         </div>
     </div>
-    {{-- Saran Tindakan Modal --}}
-    <div class="modal fade" id="actionModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" id="modalContent2">
-            </div>
-        </div>
-    </div><!-- End Vertically centered Modal-->
-    <script>
-    // Fungsi untuk menampilkan data pada modal
-    function tampilkanData(ticket_id) {
-        // Mendapatkan elemen modalContent
-        var modalContent2 = document.getElementById("modalContent2");
-    
-        // Menampilkan data pada modalContent
-        modalContent2.innerHTML  =
-        '<div class="modal-header">'+
-            '<h5 class="modal-title">Saran Tindakan Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>'+
-            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
-        '</div>'+
-        '<form action="/tickets/assign" method="post">'+
-        '@method("put")'+
-        '@csrf'+
-        '<div class="modal-body">'+
-            '<div class="col-md-12">'+
-                '<p>'+ticket_id.name+'</p>'+
-            '</div>'+
-        '</div>'+
-        '<div class="modal-footer">'+
-            '<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>'+
-        '</div>'+
-        '</form>';
-    }
-    </script>
     <!-- Vendor JS Files -->
     <script src="dist/vendor/apexcharts/apexcharts.min.js"></script>
     <script src="dist/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

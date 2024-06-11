@@ -23,9 +23,9 @@ class CategoryTicketController extends Controller
         $category_tickets = Category_ticket::where('location_id', $location_id)->get();
 
         return view('contents.category_ticket.index', [
-            "title"             => "Category Ticket List",
-            "path"              => "Category Ticket",
-            "path2"             => "Category Ticket",
+            "title"             => "Ticket Category List",
+            "path"              => "Ticket Category",
+            "path2"             => "Ticket Category",
             "category_tickets"  => $category_tickets
         ]);
     }
@@ -38,9 +38,9 @@ class CategoryTicketController extends Controller
     public function create()
     {
         return view('contents.category_ticket.create', [
-            "title"             => "Create Category Ticket",
-            "path"              => "Category Ticket",
-            "path2"             => "Tambah"
+            "title"             => "Create Ticket Category",
+            "path"              => "Ticket Category",
+            "path2"             => "Create"
         ]);
     }
 
@@ -61,11 +61,11 @@ class CategoryTicketController extends Controller
         
         // Create custom notification for the validation request
         [
-            'nama_kategori.required'    => 'Nama Kategori Ticket harus diisi!',
-            'nama_kategori.min'         => 'Ketik minimal 3 digit!',
-            'nama_kategori.max'         => 'Ketik maksimal 50 digit!',
-            'unique'                    => 'Nama Kategori Ticket sudah ada!',
-            'location_id.required'      => 'Lokasi harus dipilih!',
+            'nama_kategori.required'    => 'Category Name required!',
+            'nama_kategori.min'         => 'Type at least 3 characters!',
+            'nama_kategori.max'         => 'Type maximum 50 characters!',
+            'unique'                    => 'Category Name already exists!',
+            'location_id.required'      => 'Location must be selected!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
 
@@ -77,7 +77,7 @@ class CategoryTicketController extends Controller
         $nama_kategori  = ucwords($request['nama_kategori']);
 
         // Redirect ke halaman Category Ticket List beserta notifikasi sukses
-        return redirect('/category-tickets')->with('success', $nama_kategori.' telah ditambahkan!');
+        return redirect('/category-tickets')->with('success', $nama_kategori.' successfully created!');
     }
 
     /**
@@ -106,8 +106,8 @@ class CategoryTicketController extends Controller
         $category_ticket = Category_ticket::where('id', $id)->first();
 
         return view('contents.category_ticket.edit', [
-            "title"     => "Edit Category Ticket",
-            "path"      => "Category Ticket",
+            "title"     => "Edit Ticket Category",
+            "path"      => "Ticket Category",
             "path2"     => "Edit",
             "ct"        => $category_ticket
         ]);
@@ -141,11 +141,11 @@ class CategoryTicketController extends Controller
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
-            'nama_kategori.required'    => 'Nama Kategori Ticket harus diisi!',
-            'nama_kategori.min'         => 'Ketik minimal 3 digit!',
-            'nama_kategori.max'         => 'Ketik maksimal 50 digit!',
-            'unique'                    => 'Nama Kategori Ticket sudah ada!',
-            'location_id.required'      => 'Lokasi harus dipilih!',
+            'nama_kategori.required'    => 'Category Name required!',
+            'nama_kategori.min'         => 'Type at least 3 characters!',
+            'nama_kategori.max'         => 'Type maximum 50 characters!',
+            'unique'                    => 'Category Name already exists!',
+            'location_id.required'      => 'Location must be selected!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
 
@@ -154,7 +154,7 @@ class CategoryTicketController extends Controller
         Category_ticket::where('id', $id)->update($data);
 
         // Redirect ke halaman Category Ticket List beserta notifikasi sukses
-        return redirect('/category-tickets')->with('success', 'Data Category Ticket telah diubah!');
+        return redirect('/category-tickets')->with('success', 'Category Ticket successfully updated!');
     }
 
     /**

@@ -38,7 +38,7 @@
         var myVar;
 
         function myFunction() {
-            myVar = setTimeout(showPage, 300);
+            myVar = setTimeout(showPage, 1000);
         }
 
         function showPage() {
@@ -54,7 +54,7 @@
     <div id="preloader">
         <div class="position-absolute top-50 start-50 translate-middle">
             <div id="loader"></div>
-            <div><strong id="status" role="status" class="text-primary">Memuat Halaman...</strong></div>
+            <div class="loading"><strong id="status" role="status" class="text-primary">Loading Page...</strong></div>
         </div>
     </div>
 
@@ -77,14 +77,14 @@
                             {{-- <span class="badge bg-primary badge-number">4</span> --}}
                         </a><!-- End Notification Icon -->
                 
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                            <li class="dropdown-header">
-                            Pemberitahuan
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">Lihat semua</span></a>
+                        {{-- <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications"> --}}
+                            {{-- <li class="dropdown-header">
+                            Notifications
+                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">More notifications</span></a>
                             </li>
                             <li>
                             <hr class="dropdown-divider">
-                            </li>
+                            </li> --}}
                 
                             {{-- <li class="notification-item">
                             <i class="bi bi-exclamation-circle text-warning"></i>
@@ -125,13 +125,13 @@
                             <hr class="dropdown-divider">
                             </li> --}}
                 
-                            <li class="notification-item">
+                            {{-- <li class="notification-item">
                             <i class="bi bi-info-circle text-primary"></i>
                             <div>
-                                <h4>Mohon maaf</h4>
-                                <p>Fitur ini belum berfungsi.</p>
+                                <h4>Sorry</h4>
+                                <p>This feature is under construction.</p>
                             </div>
-                            </li>
+                            </li> --}}
 
                             {{-- <li>
                             <hr class="dropdown-divider">
@@ -140,7 +140,7 @@
                             <a href="#">Tampilkan semua</a>
                             </li> --}}
                 
-                        </ul><!-- End Notification Dropdown Items -->
+                        {{-- </ul><!-- End Notification Dropdown Items --> --}}
                 
                     </li><!-- End Notification Nav -->
 
@@ -191,10 +191,26 @@
         @include('layouts.sidebar')
         
         <main id="main" class="main">
+            {{-- <!-- Toast Container -->
+            <div aria-live="polite" aria-atomic="true" class="position-relative">
+                <!-- Position it -->
+                <div class="toast-container position-absolute" id="toastPlacement" style="top: 0; right: 0;">
+                <!-- Then put toasts within -->
+                <div class="toast" id="validationToast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                    <strong class="me-auto">Validation Error</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" id="toastBody">
+                    <!-- Toast Message will be dynamically inserted here -->
+                    </div>
+                </div>
+                </div>
+            </div> --}}
             <!-- Showing notification succeded -->
             @if(session()->has('success'))
                 <script>
-                    swal("Berhasil!", "{{ session('success') }}", "success", {
+                    swal("Success!", "{{ session('success') }}", "success", {
                         timer: 3000
                     });
                 </script>
@@ -202,7 +218,7 @@
 
             @if(session()->has('error'))
                 <script>
-                    swal("Gagal!", "{{ session('error') }}", "warning", {
+                    swal("Failed!", "{{ session('error') }}", "warning", {
                         timer: 3000
                     });
                 </script>

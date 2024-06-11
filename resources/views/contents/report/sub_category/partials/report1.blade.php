@@ -7,7 +7,7 @@
     }
 </style>
 <div class="table-responsive">
-    <table class="table table-bordered table-hover">
+    <table class="table datatable table-hover">
         <thead class="bg-light">
             @if($pathFilter[0] != NULL && $pathFilter[1] != NULL)
             <tr>
@@ -40,7 +40,7 @@
                 @foreach($subCategories as $subCategoryName => $agentData)
                     <tr>
                         <td class="text-center">{{ $nomorUrut++ }}.</td>
-                        <td>{{ $subCategoryName }}</td>
+                        <td>{{ ucwords($categoryName) }} - {{ $subCategoryName }}</td>
                         {{-- <td>{{ $categoryName }}</td> --}}
 
                         @foreach($agents as $agent)
@@ -48,28 +48,20 @@
                             $avgAgent = \Carbon\Carbon::parse(round($agentData[$agent->id]));
                         @endphp
 
-                        @if(round($agentData[$agent->id]) >= 3600)
-                        <td class="text-end">{{ str_pad($avgAgent->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgAgent->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgAgent->second, 2, "0", STR_PAD_LEFT) }}</td>
-                        @elseif(round($agentData[$agent->id]) >= 60)
-                        <td class="text-end">{{ str_pad($avgAgent->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgAgent->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgAgent->second, 2, "0", STR_PAD_LEFT) }}</td>
-                        @elseif(round($agentData[$agent->id]) == 0)
-                        <td class="text-end">00:00:00</td>
+                        @if(round($agentData[$agent->id]) != 0)
+                        <td class="text-end bg-info">{{ str_pad($avgAgent->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgAgent->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgAgent->second, 2, "0", STR_PAD_LEFT) }}</td>
                         @else
-                        <td class="text-end">{{ str_pad($avgAgent->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgAgent->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgAgent->second, 2, "0", STR_PAD_LEFT) }}</td>
+                        <td class="text-end">00:00:00</td>
                         @endif
                         @endforeach
 
                         @php
                             $avgTotal = \Carbon\Carbon::parse(round($agentData['totalAverage']));
                         @endphp
-                        @if(round($agentData['totalAverage']) >= 3600)
-                        <td class="text-end">{{ str_pad($avgTotal->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal->second, 2, "0", STR_PAD_LEFT) }}</td>
-                        @elseif(round($agentData['totalAverage']) >= 60)
-                        <td class="text-end">{{ str_pad($avgTotal->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal->second, 2, "0", STR_PAD_LEFT) }}</td>
-                        @elseif(round($agentData['totalAverage']) == 0)
-                        <td class="text-end">00:00:00</td>
+                        @if(round($agentData['totalAverage']) != 0)
+                        <td class="text-end bg-info">{{ str_pad($avgTotal->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal->second, 2, "0", STR_PAD_LEFT) }}</td>
                         @else
-                        <td class="text-end">{{ str_pad($avgTotal->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal->second, 2, "0", STR_PAD_LEFT) }}</td>
+                        <td class="text-end">00:00:00</td>
                         @endif
                     </tr>
                 @endforeach

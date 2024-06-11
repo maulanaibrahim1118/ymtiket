@@ -7,7 +7,7 @@
                 @csrf
                 <div style="width:15%;padding:0px;"></div>
                 <select class="form-select form-select me-2" style="width:40%;" name="filter1" id="filter1">
-                    <option selected value="">Semua Agent</option>
+                    <option selected value="">All Agent</option>
                     @foreach($agents as $agent)
                         @if(old('filter1', $filterArray[0]) == $agent->id)
                             <option selected value="{{ $agent->id }}">{{ ucwords($agent->nama_agent) }}</option>
@@ -18,10 +18,10 @@
                 </select>
                 <div class="ms-1"></div>
                 <select class="form-select form-select ms-1" style="width:30%;" name="filter2" id="filter2">
-                    <option value="" @if($filterArray[1] == "") selected @endif>Semua Periode</option>
-                    <option value="today" @if($filterArray[1] == "today") selected @endif>Hari Ini</option>
-                    <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>Bulan Ini</option>
-                    <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>Tahun Ini</option>
+                    <option value="" @if($filterArray[1] == "") selected @endif>All Period</option>
+                    <option value="today" @if($filterArray[1] == "today") selected @endif>Today</option>
+                    <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>This Month</option>
+                    <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>This Year</option>
                 </select>
                 <button type="submit" class="btn btn-primary ms-1 me-3" style="width:15%;"><i class="bi bi-funnel me-1"></i>Filter</button>
             </form>
@@ -75,7 +75,7 @@
 
     </div>
 </div>
-@if($filterArray[0] == "")
+{{-- @if($filterArray[0] == "")
 <div class="col-md-3">
 @else
 <div class="col-md-2">
@@ -99,14 +99,14 @@
 
     </div>
     </a>
-</div><!-- End Secondary Card -->
+</div><!-- End Secondary Card --> --}}
 
-<div class="col-md-2">
+<div class="col-md-3">
     <a href="{{ route('ticket.dashboard', ['status' => 'unprocess', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card secondary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Belum Di Proses</h5>
+        <h5 class="card-title">New Ticket</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -123,12 +123,16 @@
     </a>
 </div><!-- End Secondary Card -->
 
+@if($filterArray[0] == "")
+<div class="col-md-3">
+@else
 <div class="col-md-2">
+@endif
     <a href="{{ route('ticket.dashboard', ['status' => 'onprocess', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card warning-card">
 
     <div class="card-body">
-        <h5 class="card-title">Sedang Di Proses</h5>
+        <h5 class="card-title">On Process</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -145,12 +149,16 @@
     </a>
 </div><!-- End Warning Card -->
 
+@if($filterArray[0] == "")
+<div class="col-md-3">
+@else
 <div class="col-md-2">
+@endif
     <a href="{{ route('ticket.dashboard', ['status' => 'pending', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card danger-card">
 
     <div class="card-body">
-        <h5 class="card-title">Sedang Di Pending</h5>
+        <h5 class="card-title">Pending</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -176,7 +184,7 @@
     <div class="card info-card primary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Resolved</h5>
+        <h5 class="card-title">Resolved</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -194,7 +202,7 @@
 </div><!-- End Primary Card -->
 
 @if($filterArray[0] != "")
-<div class="col-md-2">
+<div class="col-md-3">
     <a href="{{ route('ticket.dashboard', ['status' => 'assign', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card danger-card">
 
@@ -222,7 +230,7 @@
     <div class="card info-card success-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Di Jam Kerja</h5>
+        <h5 class="card-title">Work Day Ticket</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -244,7 +252,7 @@
     <div class="card info-card warning-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Di Luar Jam Kerja</h5>
+        <h5 class="card-title">Off Day Ticket</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -268,7 +276,7 @@
     <div class="card info-card primary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Asset Berkendala</h5>
+        <h5 class="card-title">Ticket Asset</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -290,7 +298,7 @@
     <div class="card info-card secondary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Kategori Kendala</h5>
+        <h5 class="card-title">Sub Category</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -298,7 +306,7 @@
         </div>
         <div class="ps-3">
             <h6>{{ $dataArray[9] }}</h6>
-            <span class="text-secondary small pt-1 fw-bold">Kategori</span>
+            <span class="text-secondary small pt-1 fw-bold">Sub Category</span>
         </div>
         </div>
     </div>
@@ -311,9 +319,9 @@
     <div class="card info-table">
         <div class="card-body">
             @if($pathFilter == "Semua")
-            <h5 class="card-title border-bottom">Informasi Agent</h5>
+            <h5 class="card-title border-bottom">Agent Information</h5>
             @else
-            <h5 class="card-title border-bottom">Informasi Agent <span>| {{ $pathFilter }}</span></h5>
+            <h5 class="card-title border-bottom">Agent Information<span>| {{ $pathFilter }}</span></h5>
             @endif
 
             <div class="table-responsive mt-3">
@@ -321,14 +329,14 @@
                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                         <tr>
                         <th scope="col">NIK</th>
-                        <th scope="col">NAMA AGENT</th>
+                        <th scope="col">AGENT NAME</th>
                         @can('isIT')
-                        <th scope="col">SUB DIVISI</th>
+                        <th scope="col">SUB DIVISION</th>
                         @endcan
                         <th scope="col">TOTAL TICKET</th>
-                        <th scope="col">SELESAI</th>
-                        <th scope="col">TIDAK SELESAI</th>
-                        <th scope="col">SISA TICKET</th>
+                        <th scope="col">RESOLVED</th>
+                        <th scope="col">PARTICIPANT</th>
+                        <th scope="col">REMAINING</th>
                         {{-- <th scope="col">WORKING DAY</th> --}}
                         <th scope="col">HOUR /DAY</th>
                         <th scope="col">STATUS</th>
@@ -447,21 +455,21 @@
     <div class="card info-table">
         <div class="card-body">
             @if($pathFilter == "Semua")
-            <h5 class="card-title border-bottom">Ticket Dalam Antrian</h5>
+            <h5 class="card-title border-bottom">Ticket In Queue</h5>
             @else
-            <h5 class="card-title border-bottom">Ticket Dalam Antrian <span>| {{ $pathFilter }}</span></h5>
+            <h5 class="card-title border-bottom">Ticket In Queue <span>| {{ $pathFilter }}</span></h5>
             @endif
 
             <div class="table-responsive mt-3">
                 <table class="table datatable table-hover">
                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                         <tr>
-                        <th scope="col">DIBUAT PADA</th>
-                        <th scope="col">NO. TICKET</th>
-                        <th scope="col">KENDALA</th>
-                        <th scope="col">DETAIL KENDALA</th>
+                        <th scope="col">CREATED AT</th>
+                        <th scope="col">TICKET NUMBER</th>
+                        <th scope="col">SUBMISSION</th>
+                        <th scope="col">DETAIL</th>
                         @can('isIT')
-                        <th scope="col">SUB DIVISI</th>
+                        <th scope="col">SUB DIVISION</th>
                         @endcan
                         <th scope="col">STATUS</th>
                         </tr>

@@ -75,6 +75,7 @@ class CategoriesExport implements FromCollection, WithHeadings, WithMapping, Sho
     public function map($row): array
     {
         $mappedData = [
+            ucwords($row['category']),
             $row['sub_category'],
         ];
         foreach ($this->agents as $agent) {
@@ -95,7 +96,7 @@ class CategoriesExport implements FromCollection, WithHeadings, WithMapping, Sho
 
     public function headings(): array
     {
-        $headings = ['Sub Category'];
+        $headings = ['Category','Sub Category'];
         foreach ($this->agents as $agent) {
             $headings[] = ucwords($agent->nama_agent);
         }

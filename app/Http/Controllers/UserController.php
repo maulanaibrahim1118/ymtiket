@@ -50,7 +50,7 @@ class UserController extends Controller
         return view('contents.user.create', [
             "title"     => "Create User",
             "path"      => "User",
-            "path2"     => "Tambah",
+            "path2"     => "Create",
             "positions" => $positions,
             "locations" => $locations,
             "roles"     => $roles
@@ -83,23 +83,23 @@ class UserController extends Controller
         ],
         // Create custom notification for the validation request
         [
-            'nik.required'              => 'NIK harus diisi!',
-            'nik.min'                   => 'Ketik minimal 5 digit!',
-            'nik.max'                   => 'Ketik maksimal 8 digit!',
-            'unique'                    => 'NIK sudah ada!',
-            'nama.required'             => 'Nama Pengguna harus diisi!',
-            'nama.min'                  => 'Ketik minimal 2 digit!',
-            'nama.max'                  => 'Ketik maksimal 40 digit!',
-            'password.required'         => 'Password harus diisi!',
-            'password.min'              => 'Ketik minimal 5 digit!',
-            'password.max'              => 'Ketik maksimal 191 digit!',
-            'position_id.required'      => 'Jabatan harus dipilih!',
-            'location_id.required'      => 'Lokasi harus dipilih!',
-            'sub_division.required'     => 'Sub Divisi harus dipilih!',
-            'telp.required'             => 'No. Telp/Ext harus diisi!',
-            'telp.min'                  => 'Ketik minimal 4 digit!',
-            'telp.max'                  => 'Ketik maksimal 15 digit!',
-            'role.required'             => 'Role harus dipilih!',
+            'nik.required'              => 'Username required!',
+            'nik.min'                   => 'Type at least 5 characters!',
+            'nik.max'                   => 'Type maximum 8 characters!',
+            'unique'                    => 'Username already exists!',
+            'nama.required'             => 'Full Name required!',
+            'nama.min'                  => 'Type at least 2 characters!',
+            'nama.max'                  => 'Type maximum 40 characters!',
+            'password.required'         => 'Password required!',
+            'password.min'              => 'Type at least 5 characters!',
+            'password.max'              => 'Type maximum 191 characters!',
+            'position_id.required'      => 'Position must be selected!',
+            'location_id.required'      => 'Division must be selected!',
+            'sub_division.required'     => 'Sub Division must be selected!',
+            'telp.required'             => 'Phone/Ext must be selected!',
+            'telp.min'                  => 'Type at least 4 characters!',
+            'telp.max'                  => 'Type maximum 15 characters!',
+            'role.required'             => 'Role must be selected!',
         ]);
 
         $data   = $request->all();
@@ -166,7 +166,7 @@ class UserController extends Controller
 
         // Redirect to the user view if create data succeded
         $nama = $request['nama'];
-        return redirect('/users')->with('success', ucwords($nama).' telah ditambahkan!');
+        return redirect('/users')->with('success', ucwords($nama).' successfully created!');
     }
 
     /**
@@ -247,21 +247,23 @@ class UserController extends Controller
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
         [
-            'nik.required'              => 'NIK harus diisi!',
-            'nik.min'                   => 'Ketik minimal 5 digit!',
-            'nik.max'                   => 'Ketik maksimal 8 digit!',
-            'unique'                    => 'NIK sudah ada!',
-            'nama.required'             => 'Nama harus diisi!',
-            'role.required'             => 'Role harus dipilih!',
-            'position_id.required'      => 'Jabatan harus dipilih!',
-            'location_id.required'      => 'Lokasi harus dipilih!',
-            'sub_division.required'     => 'Sub Divisi harus dipilih!',
-            'telp.required'             => 'No. Telp/Ext harus diisi!',
-            'telp.min'                  => 'Ketik minimal 4 digit!',
-            'telp.max'                  => 'Ketik maksimal 13 digit!',
-            'ip_address.required'       => 'IP Address harus diisi!',
-            'ip_address.min'            => 'Ketik minimal 7 digit!',
-            'ip_address.max'            => 'Ketik maksimal 15 digit!',
+            'nik.required'              => 'Username required!',
+            'nik.min'                   => 'Type at least 5 characters!',
+            'nik.max'                   => 'Type maximum 8 characters!',
+            'unique'                    => 'Username already exists!',
+            'nama.required'             => 'Full Name required!',
+            'nama.min'                  => 'Type at least 2 characters!',
+            'nama.max'                  => 'Type maximum 40 characters!',
+            'password.required'         => 'Password required!',
+            'password.min'              => 'Type at least 5 characters!',
+            'password.max'              => 'Type maximum 191 characters!',
+            'position_id.required'      => 'Position must be selected!',
+            'location_id.required'      => 'Division must be selected!',
+            'sub_division.required'     => 'Sub Division must be selected!',
+            'telp.required'             => 'Phone/Ext must be selected!',
+            'telp.min'                  => 'Type at least 4 characters!',
+            'telp.max'                  => 'Type maximum 15 characters!',
+            'role.required'             => 'Role must be selected!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
 
@@ -332,7 +334,7 @@ class UserController extends Controller
             'updated_by'        => $data['updated_by']
         ]);
 
-        return redirect('/users')->with('success', 'Data User telah diubah!');
+        return redirect('/users')->with('success', 'User successfully updated!');
     }
 
     /**
@@ -358,10 +360,10 @@ class UserController extends Controller
 
         if ($isActive == '0') {
             $switch = '1';
-            $status = 'aktifkan';
+            $status = 'activated';
         } else {
             $switch = '0';
-            $status = 'non aktifkan';
+            $status = 'not activated';
         }
 
         User::where('id', $id)->update([
@@ -376,7 +378,7 @@ class UserController extends Controller
             ]);
         }
 
-        return back()->with('success', 'User '.ucwords($nama).' berhasil di '.$status.'!');
+        return back()->with('success', 'User '.ucwords($nama).' successfully '.$status.'!');
     }
 
     // Get data asset untuk JQuery Select Option
@@ -415,7 +417,7 @@ class UserController extends Controller
         $user->ip_address = $request->ip_address;
         $user->save();
 
-        return redirect()->route('profile.index')->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->route('profile.index')->with('success', 'Profile successfully updated!');
     }
 
     public function changePassword(Request $request)
@@ -423,7 +425,7 @@ class UserController extends Controller
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return redirect()->back()->with('error', 'Password lama tidak valid.');
+            return redirect()->back()->with('error', 'Current Password is not valid!');
         }
 
         $request->validate([
@@ -432,8 +434,8 @@ class UserController extends Controller
         ],
         // Create custom notification for the validation request
         [
-            'new_password.min'          => 'Ketik minimal 5 karakter!',
-            'new_password.confirmed'    => 'Password baru tidak terkonfirmasi!',
+            'new_password.min'          => 'Type at least 5 characters!',
+            'new_password.confirmed'    => 'New Password does not match!',
         ]);
 
         $user->password = Hash::make($request->new_password);
@@ -441,6 +443,6 @@ class UserController extends Controller
 
         Auth::logout();
 
-        return redirect()->route('login.index')->with('success', 'Password telah diubah. Silakan login kembali.');
+        return redirect()->route('login.index')->with('success', 'Password updated! Please login again.');
     }
 }

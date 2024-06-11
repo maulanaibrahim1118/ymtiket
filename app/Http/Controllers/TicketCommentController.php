@@ -48,14 +48,14 @@ class TicketCommentController extends Controller
 
         // Create custom notification for the validation request
         [
-            'komentar.required' => 'Anda belum mengetikkan apapun!',
+            'komentar.required' => 'Comment required!',
         ]);
 
         // Simpan data Comment sesuai request yang telah di validasi
         Comment::create($validatedData);
 
         // Redirect ke halaman ticket detail beserta notifikasi sukses
-        return redirect()->route('ticket-detail.index', ['ticket_id' => encrypt($ticketId)])->with('commentSuccess', 'Komentar telah dikirim!');
+        return redirect()->route('ticket-detail.index', ['ticket_id' => encrypt($ticketId)])->with('commentSuccess', 'Comment has been sent!');
     }
 
     /**

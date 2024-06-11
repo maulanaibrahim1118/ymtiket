@@ -25,7 +25,7 @@
                         
                                     {{-- Detail Table --}}
                                     <div class="col-md-12" style="font-size: 14px">
-                                        <p class="mb-2">Detail penanganan Ticket :</p>
+                                        <p class="mb-2">Ticket Processing Details :</p>
                                         @include('contents.ticket_detail.partials.detailTable')
                                     </div>
 
@@ -35,7 +35,7 @@
 
                                     {{-- Tombol Kembali --}}
                                     <div class="col-md-6">
-                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="{{ url()->previous() }}"><button type="button" class="btn btn-sm btn-secondary"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                     </div>
 
                                     {{-- Action --}}

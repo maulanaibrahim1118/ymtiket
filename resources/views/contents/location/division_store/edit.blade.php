@@ -13,7 +13,7 @@
                                     @method('put')
                                     @csrf
                                     <div class="col-md-1">
-                                        <label for="site" class="form-label">Kode Site</label>
+                                        <label for="site" class="form-label">Site / Code</label>
                                         <input type="number" name="site" class="form-control text-capitalize @error('site') is-invalid @enderror" id="site" value="{{ old('site', $location->site) }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -25,7 +25,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="nama_lokasi" class="form-label">Nama Cabang / Divisi</label>
+                                        <label for="nama_lokasi" class="form-label">Store / Division Name</label>
                                         <input type="text" name="nama_lokasi" class="form-control text-capitalize @error('nama_lokasi') is-invalid @enderror" id="nama_lokasi" value="{{ old('nama_lokasi', $location->nama_lokasi) }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -37,7 +37,7 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <label for="telp" class="form-label">No. Telp/Ext</label>
+                                        <label for="telp" class="form-label">Phone / Ext</label>
                                         <input type="text" name="telp" pattern="[0-9]+" class="form-control text-capitalize @error('telp') is-invalid @enderror" id="telp" value="{{ old('telp', $location->user->telp) }}" maxlength="15" title="Tolong di input dalam bentuk nomor.">
 
                                         <!-- Showing notification error for input validation -->
@@ -114,9 +114,9 @@
                                     </div>
                                     
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Simpan</button>
+                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Save</button>
                                         <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
-                                        <a href="/locations"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="/locations"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
                             </div><!-- End Card Body -->

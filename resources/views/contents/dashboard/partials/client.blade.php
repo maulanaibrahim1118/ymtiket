@@ -8,10 +8,10 @@
                 <div style="width:55%;padding:0px;"></div>
                 <input name="filter1" value="{{ $filterArray[0] }}" hidden>
                 <select class="form-select form-select-sm ms-1" style="width:30%;" name="filter2" id="filter2">
-                    <option value="" @if($filterArray[1] == "") selected @endif>Semua Periode</option>
-                    <option value="today" @if($filterArray[1] == "today") selected @endif>Hari Ini</option>
-                    <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>Bulan Ini</option>
-                    <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>Tahun Ini</option>
+                    <option value="" @if($filterArray[1] == "") selected @endif>All Period</option>
+                    <option value="today" @if($filterArray[1] == "today") selected @endif>Today</option>
+                    <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>This Month</option>
+                    <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>This Year</option>
                 </select>
                 <button type="submit" class="btn btn-primary ms-1 me-3" style="width:15%;"><i class="bi bi-funnel me-1"></i>Filter</button>
             </form>
@@ -60,7 +60,7 @@
     <div class="card info-card secondary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Total Ticket</h5>
+        <h5 class="card-title">Ticket Total</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -82,7 +82,7 @@
     <div class="card info-card secondary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Belum Disetujui</h5>
+        <h5 class="card-title">Need Approval</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -104,7 +104,7 @@
     <div class="card info-card primary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Belum Di Proses</h5>
+        <h5 class="card-title">Unprocessed</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -126,7 +126,7 @@
     <div class="card info-card warning-card">
 
     <div class="card-body">
-        <h5 class="card-title">Sedang Diproses</h5>
+        <h5 class="card-title">On Process</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -148,7 +148,7 @@
     <div class="card info-card danger-card">
 
     <div class="card-body">
-        <h5 class="card-title">Sedang Di Pending</h5>
+        <h5 class="card-title">Pending</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -170,7 +170,7 @@
     <div class="card info-card success-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Closed</h5>
+        <h5 class="card-title">Closed</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -192,43 +192,37 @@
 
         <div class="card-body">
             @if($pathFilter == "Semua")
-            <h5 class="card-title border-bottom">Ticket Belum Di Close</h5>
+            <h5 class="card-title border-bottom">Ticket Unclose</h5>
             @else
-            <h5 class="card-title border-bottom">Ticket Belum Di Close <span>| {{ $pathFilter }}</span></h5>
+            <h5 class="card-title border-bottom">Ticket Unclose <span>| {{ $pathFilter }}</span></h5>
             @endif
 
             <div class="table-responsive mt-3">
                 <table class="table datatable table-hover">
                     <thead class="bg-light" style="height: 45px;font-size:14px;">
                         <tr>
-                        <th scope="col">NO. TICKET</th>
-                        <th scope="col">KENDALA</th>
-                        <th scope="col">DETAIL KENDALA</th>
-                        <th scope="col">DIBUAT PADA</th>
-                        <th scope="col">PIC</th>
+                        <th scope="col">CREATED AT</th>
+                        <th scope="col">TICKET NUMBER</th>
+                        <th scope="col">SUBMISSION</th>
+                        <th scope="col">DETAIL</th>
+                        <th scope="col">AGENT PIC</th>
                         <th scope="col">STATUS</th>
                         </tr>
                     </thead>
                     <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
                         @foreach($data1 as $data)
                         <tr class="clickable-row" data-href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($data->id)]) }}">
+                        {{-- Kolom Dibuat Pada --}}
+                        @if($data->jam_kerja == 'ya')
+                        <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }}</td>
+                        @else
+                        <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }}</td>
+                        @endif
+
                         <td>{{ $data->no_ticket }}</td>
                         <td>{{ $data->kendala }}</td>
                         <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
-
-                        {{-- Kolom Dibuat Pada --}}
-                        @if($data->jam_kerja == 'ya')
-                        <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-success">JAM KERJA</span></td>
-                        @else
-                        <td>{{ date('d-M-Y H:i:s', strtotime($data->created_at)) }} <span class="badge bg-warning">BUKAN JAM KERJA</span></td>
-                        @endif
-
-                        {{-- Kolom PIC --}}
-                        @if($data->agent->nama_agent == auth()->user()->nama)
-                        <td>{{ $data->agent->nama_agent }} <span class="badge bg-info">saya</span></td>
-                        @else
                         <td>{{ $data->agent->nama_agent }}</td>
-                        @endif
 
                         {{-- Kolom Status --}}
                         @if($data->status == 'created')

@@ -27,7 +27,7 @@
                                 
                                 <div class="col-md-12 border-top mb-3"></div>
                                 <div class="col-md-12 mb-5">
-                                    <a href="/dashboard"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                    <a href="/dashboard"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                 </div>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->

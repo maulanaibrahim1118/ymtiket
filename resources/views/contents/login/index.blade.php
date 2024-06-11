@@ -73,7 +73,7 @@
         <div id="preloader">
             <div class="position-absolute top-50 start-50 translate-middle">
                 <div id="loader"></div>
-                <div><strong id="status" role="status" class="text-primary">Memuat Halaman...</strong></div>
+                <div class="loading"><strong id="status" role="status" class="text-primary">Loading Page...</strong></div>
             </div>
         </div>
         <div style="display:none;" id="content" class="fade-in">
@@ -84,21 +84,21 @@
                             <!-- Showing Notification Login Error -->
                             @if(session()->has('success'))
                             <script>
-                                swal("Berhasil!", "{{ session('success') }}", "success", {
+                                swal("Success!", "{{ session('success') }}", "success", {
                                     timer: 3000
                                 });
                             </script>
                             @endif
                             @if(session()->has('loginError'))
                             <script>
-                                swal("Login Gagal!", "{{ session('loginError') }}", "warning", {
+                                swal("Login Failed!", "{{ session('loginError') }}", "warning", {
                                     timer: 3000
                                 });
                             </script>
                             @endif
                             @if(session()->has('error'))
                             <script>
-                                swal("Gagal!", "{{ session('error') }}", "warning", {
+                                swal("Failed!", "{{ session('error') }}", "warning", {
                                     timer: 3000
                                 });
                             </script>
@@ -123,13 +123,13 @@
                                                   <span class="d-lg-block">{{ config('app.name') }}</span>
                                                 </a>
                                             </div><!-- End Logo -->
-                                            <p class="app-version">Versi {{ config('app.version') }}</p>
+                                            <p class="app-version">Version {{ config('app.version') }}</p>
                                         </div>
 
                                         <!-- Login Title -->
                                         <div class="col-12 mb-4 px-4">
                                             {{-- <h5 class="card-title text-center pb-2 fs-5">Login</h5> --}}
-                                            <p class="text-center small px-4">Masukkan Username dan Password anda untuk login dan mulai bekerja.</p>
+                                            <p class="text-center small px-4">Enter your Username and Password to log in and start working.</p>
                                         </div>
 
                                         <div class="card-body">
@@ -146,7 +146,7 @@
                                                     <input type="password" name="password" class="form-control rounded-0 mb-2" style="margin-top: -31px;" id="password" placeholder="Password" required />
                                                     <div class="form-check form-check-inline">
                                                         <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" onclick="myFunction()">
-                                                        <label class="form-check-label" for="inlineCheckbox1">Tampilkan Password</label>
+                                                        <label class="form-check-label" for="inlineCheckbox1">Show Password</label>
                                                     </div>
                                                 </div>
             
@@ -164,7 +164,7 @@
                                     </div> <!-- End card mb-3 p-4 -->
                                     
                                     <div class="col-md-12 text-center border-bottom mb-4 text-secondary">
-                                        <p style="font-size: 14px;">Cari ticket tanpa perlu login? <span class="fst-italic"> Klik <a href="#" class="text-success" data-bs-toggle="modal" data-bs-target="#searchModal">disini</a></span></p>
+                                        <p style="font-size: 14px;">Search ticket without login? <span class="fst-italic"> <a href="#" class="text-success" data-bs-toggle="modal" data-bs-target="#searchModal">Click here</a></span></p>
                                     </div>
             
                                     <!-- Copyright Footer -->
@@ -187,7 +187,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">.:: Cari Ticket</h1>
+                <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">.:: Search Ticket</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -195,7 +195,7 @@
                         @csrf
                         <div class="col-md-12">
                         <div class="input-group">
-                            <input type="text" name="no_ticket" class="form-control" placeholder="Tuliskan Nomor Ticket..." aria-label="Recipient's username" aria-describedby="button-addon2" required>
+                            <input type="text" name="no_ticket" class="form-control" placeholder="Type Ticket Number..." aria-label="Recipient's username" aria-describedby="button-addon2" required>
                             <button class="btn btn-success" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
                         </div>
                         </div>

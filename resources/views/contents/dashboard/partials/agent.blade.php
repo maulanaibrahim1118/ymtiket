@@ -8,10 +8,10 @@
                 <div style="width:55%;padding:0px;"></div>
                 <input name="filter1" value="{{ $filterArray[0] }}" hidden>
                 <select class="form-select form-select-sm ms-1" style="width:30%;" name="filter2" id="filter2">
-                    <option value="" @if($filterArray[1] == "") selected @endif>Semua Periode</option>
-                    <option value="today" @if($filterArray[1] == "today") selected @endif>Hari Ini</option>
-                    <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>Bulan Ini</option>
-                    <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>Tahun Ini</option>
+                    <option value="" @if($filterArray[1] == "") selected @endif>All Period</option>
+                    <option value="today" @if($filterArray[1] == "today") selected @endif>Today</option>
+                    <option value="monthly" @if($filterArray[1] == "monthly") selected @endif>This Month</option>
+                    <option value="yearly" @if($filterArray[1] == "yearly") selected @endif>This Year</option>
                 </select>
                 <button type="submit" class="btn btn-primary ms-1 me-3" style="width:15%;"><i class="bi bi-funnel me-1"></i>Filter</button>
             </form>
@@ -60,7 +60,7 @@
     <div class="card info-card secondary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Assigned</h5>
+        <h5 class="card-title">Assigned</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -82,7 +82,7 @@
     <div class="card info-card primary-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Resolved</h5>
+        <h5 class="card-title">Resolved</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -104,7 +104,7 @@
     <div class="card info-card danger-card">
 
     <div class="card-body">
-        <h5 class="card-title">Ticket Participant</h5>
+        <h5 class="card-title">Participant</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -126,7 +126,7 @@
     <div class="card info-card warning-card">
 
     <div class="card-body">
-        <h5 class="card-title">Total Waktu Kerja</h5>
+        <h5 class="card-title">Workload Total</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -134,18 +134,19 @@
         </div>
         <div class="ps-3">
             @php
-                $carbonInstance = \Carbon\Carbon::parse($dataArray[3]);
+                $workload = \Carbon\Carbon::parse($dataArray[3]);
             @endphp
+
             @if($dataArray[3] >= 3600)
-            <h6>{{ $carbonInstance->hour }} Jam</h6>
-            <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit | {{ $carbonInstance->second }} Detik</span>
+            <h6>{{ str_pad($workload->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->second, 2, "0", STR_PAD_LEFT) }}</h6>
             @elseif($dataArray[3] >= 60)
-            <h6>{{ $carbonInstance->minute }} Menit</h6>
-            <span class="text-warning small pt-1 fw-bold">{{ $carbonInstance->second }} Detik</span>
+            <h6>{{ str_pad($workload->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->second, 2, "0", STR_PAD_LEFT) }}</h6>
+            @elseif($dataArray[3] == 0)
+            <h6>00:00:00</H6>
             @else
-            <h6>{{ $carbonInstance->second }}</h6>
-            <span class="text-warning small pt-1 fw-bold">Detik</span>
+            <h6>{{ str_pad($workload->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->second, 2, "0", STR_PAD_LEFT) }}</h6>
             @endif
+            <span class="text-warning small pt-1 fw-bold">Hour:Minute:Second</span>
         </div>
         </div>
     </div>
@@ -159,7 +160,7 @@
     <div class="card info-card success-card">
 
     <div class="card-body">
-        <h5 class="card-title">Rata-Rata Ticket Selesai</h5>
+        <h5 class="card-title">Workload Average</h5>
 
         <div class="d-flex align-items-center">
         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -167,18 +168,19 @@
         </div>
         <div class="ps-3">
             @php
-                $carbonInstance = \Carbon\Carbon::parse($dataArray[4]);
+                $average = \Carbon\Carbon::parse($dataArray[4]);
             @endphp
+
             @if($dataArray[4] >= 3600)
-            <h6>{{ $carbonInstance->hour }} Jam</h6>
-            <span class="text-success small pt-1 fw-bold">{{ $carbonInstance->minute }} Menit | {{ $carbonInstance->second }} Detik</span>
+            <h6>{{ str_pad($average->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->second, 2, "0", STR_PAD_LEFT) }}</h6>
             @elseif($dataArray[4] >= 60)
-            <h6>{{ $carbonInstance->minute }} Menit</h6>
-            <span class="text-success small pt-1 fw-bold">{{ $carbonInstance->second }} Detik</span>
+            <h6>{{ str_pad($average->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->second, 2, "0", STR_PAD_LEFT) }}</h6>
+            @elseif($dataArray[4] == 0)
+            <h6>00:00:00</H6>
             @else
-            <h6>{{ $carbonInstance->second }}</h6>
-            <span class="text-success small pt-1 fw-bold">Detik</span>
+            <h6>{{ str_pad($average->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->second, 2, "0", STR_PAD_LEFT) }}</h6>
             @endif
+            <span class="text-success small pt-1 fw-bold">Hour:Minute:Second</span>
         </div>
         </div>
     </div>

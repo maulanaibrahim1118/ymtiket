@@ -20,14 +20,14 @@
                                         @csrf
                                         <div class="col-md-12 mb-0" style="font-size: 14px">
                                             <div class="table-responsive mt-2">
-                                                <p class="mb-2">Detail penanganan Ticket Anda :</p>
+                                                <p class="mb-2">Your Ticket Processing Details :</p>
                                                 <table class="table table-bordered">
                                                     <thead class="fw-bold text-center">
                                                         <tr>
-                                                        <td>Jenis Ticket*</td>
-                                                        <td>Kategori Ticket*</td>
-                                                        <td>Sub Kategori Ticket*</td>
-                                                        <td class="col-md-2">Biaya</td>
+                                                        <td>Type*</td>
+                                                        <td>Category*</td>
+                                                        <td>Sub Category*</td>
+                                                        <td class="col-md-2">Cost</td>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -111,9 +111,9 @@
                                                         </script>
                                                         </tr>
                                                         <tr>
-                                                            <td class="fw-bold text-center align-middle">Saran Tindakan*</td>
+                                                            <td class="fw-bold text-center align-middle">Action Suggestion*</td>
                                                             <td colspan="3">
-                                                            <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3" placeholder="Sebutkan saran tindakan..." required>{{ old('note') }}</textarea>
+                                                            <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3" placeholder="Type your action suggestion..." required>{{ old('note') }}</textarea>
 
                                                             <!-- Showing notification error for input validation -->
                                                             @error('note')
@@ -126,7 +126,7 @@
                                                         <tr>
                                                             <td class="fw-bold text-center align-middle">Attach File</td>
                                                             <td colspan="3">
-                                                                <input type="file" name="file" id="file" accept=".jpeg, .jpg, .png, .gif, .doc, .docx, .pdf, .xls, .xlsx, .csv" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}">
+                                                                <input type="file" name="file" id="file" accept=".jpeg, .jpg, .png, .gif, .doc, .docx, .pdf, .xls, .xlsx, .csv, .zip, .rar" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}">
 
                                                             <!-- Showing notification error for input validation -->
                                                             @error('file')
@@ -159,10 +159,10 @@
                                         </div>
                                         <div class="col-md-6">
                                             @if($ticket->status == "onprocess")
-                                            <button type="submit" class="btn btn-primary float-end ms-1"><i class="bi bi-save me-1"></i> Simpan</button>
+                                            <button type="submit" class="btn btn-primary float-end ms-1"><i class="bi bi-save me-1"></i> Save</button>
                                             <button type="reset" class="btn btn-warning float-end ms-1"><i class="bi bi-trash me-1"></i> Reset</button>
                                             @else
-                                            <p class="text-end"><span class="badge bg-danger">Ticket sedang menunggu persetujuan biaya.</span></p>
+                                            <p class="text-end"><span class="badge bg-danger">Waiting for ticket cost approval.</span></p>
                                             @endif
                                         </div>
                                     </form>
@@ -180,7 +180,7 @@
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content" id="modalContent1">
                 <div class="modal-header">
-                    <h5 class="modal-title">Lampiran Ticket - <span class="text-success">{{ $ticket->no_ticket}}</h5>
+                    <h5 class="modal-title">Ticket Attachment - <span class="text-success">{{ $ticket->no_ticket}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -234,7 +234,7 @@
             }
 
             if (tindakan.length < 10) {
-                alert('Ketikkan saran tindakan minimal 10 karakter!');
+                alert('Action Suggestion must be at least 10 characters!');
                 return false;
             }
 
@@ -242,7 +242,7 @@
             var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
 
             if (fileSizeInBytes > maxSizeInBytes) {
-            alert('Ukuran file melebihi batas maksimum. Batas: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
+            alert('File maximum size: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
             return false;
             } 
 

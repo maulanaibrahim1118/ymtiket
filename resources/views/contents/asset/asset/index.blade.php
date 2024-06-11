@@ -13,29 +13,27 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-gem me-2"></i>{{ $title }}</h5>
                                 
-                                <a href="/assets/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
+                                <a href="/assets/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
 
                                 <div class="table-responsive mt-2">
                                     <table class="table datatable table-hover">
                                         <thead class="bg-light" style="height: 45px;font-size:14px;">
                                             <tr>
-                                            <th scope="col">NO. ASSET</th>
-                                            <th scope="col">KATEGORI</th>
-                                            <th scope="col">NAMA BARANG</th>
-                                            <th scope="col">MERK</th>
-                                            <th scope="col">MODEL</th>
+                                            <th scope="col">ASSET NUMBER</th>
+                                            <th scope="col">ITEM NAME</th>
+                                            <th scope="col">BRAND</th>
+                                            <th scope="col">MODEL/TYPE</th>
                                             <th scope="col">SERIAL NUMBER</th>
                                             <th scope="col">STATUS</th>
-                                            <th scope="col">LOKASI</th>
-                                            <th scope="col">AKSI</th>
+                                            <th scope="col">LOCATION</th>
+                                            <th scope="col">ACTION</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
                                             @foreach($assets as $asset)
                                             <tr>
                                             <td><a href="{{ route('ticket.asset', ['asset_id' => encrypt($asset->id)]) }}">{{ $asset->no_asset }}</a></td>
-                                            <td>{{ $asset->category_asset->nama_kategori }}</td>
-                                            <td>{{ $asset->nama_barang }}</td>
+                                            <td>{{ $asset->item->name }}</td>
                                             <td>{{ $asset->merk }}</td>
                                             <td>{{ $asset->model }}</td>
                                             <td>{{ $asset->serial_number }}</td>

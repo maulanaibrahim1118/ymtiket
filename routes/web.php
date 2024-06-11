@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AssetController;
@@ -162,6 +163,15 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::get('/get-detail-regional/{id}', [WilayahController::class, 'getDetailRegional']);
 });
 
+// Route Item
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::get('/asset-items', [ItemController::class, 'index'])->name('item.index');
+    Route::get('/asset-items/create', [ItemController::class, 'create'])->name('item.create');
+    Route::post('/asset-items', [ItemController::class, 'store'])->name('item.store');
+    Route::get('/asset-items/edit', [ItemController::class, 'edit'])->name('item.edit');
+    Route::put('/asset-items', [ItemController::class, 'update'])->name('item.update');
+});
+
 // Route Asset
 Route::get('/assets-dashboard', [AssetController::class, 'assetDashboard'])->middleware('auth', 'service.desk')->name('asset.dashboard');
 Route::middleware(['auth', 'manage.ticket'])->group(function () {
@@ -170,15 +180,16 @@ Route::middleware(['auth', 'manage.ticket'])->group(function () {
     Route::post('/assets', [AssetController::class, 'store'])->name('asset.store');
     Route::get('/assets/edit', [AssetController::class, 'edit'])->name('asset.edit');
     Route::put('/assets', [AssetController::class, 'update'])->name('asset.update');
+    Route::get('/assets/{id}/create1', [AssetController::class, 'getItem'])->middleware('auth')->name('getItem');
 });
 
-// Route Category Asset
+// Route Asset Category
 Route::middleware(['auth', 'service.desk'])->group(function () {
-    Route::get('/category-assets', [CategoryAssetController::class, 'index'])->name('ca.index');
-    Route::get('/category-assets/create', [CategoryAssetController::class, 'create'])->name('ca.create');
-    Route::post('/category-assets', [CategoryAssetController::class, 'store'])->name('ca.store');
-    Route::get('/category-assets/edit', [CategoryAssetController::class, 'edit'])->name('ca.edit');
-    Route::put('/category-assets', [CategoryAssetController::class, 'update'])->name('ca.update');
+    Route::get('/asset-categories', [CategoryAssetController::class, 'index'])->name('ca.index');
+    Route::get('/asset-categories/create', [CategoryAssetController::class, 'create'])->name('ca.create');
+    Route::post('/asset-categories', [CategoryAssetController::class, 'store'])->name('ca.store');
+    Route::get('/asset-categories/edit', [CategoryAssetController::class, 'edit'])->name('ca.edit');
+    Route::put('/asset-categories', [CategoryAssetController::class, 'update'])->name('ca.update');
 });
 
 // Route Category Ticket

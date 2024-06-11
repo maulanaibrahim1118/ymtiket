@@ -3,13 +3,13 @@
         <table class="table datatable table-hover">
             <thead class="bg-light" style="height: 45px;font-size:14px;">
                 <tr>
-                <th scope="col">NIK</th>
-                <th scope="col">NAMA AGENT</th>
+                <th scope="col">EMPLOYEE NUMBER</th>
+                <th scope="col">AGENT NAME</th>
                 @can('isIT')
-                <th scope="col">PIC TICKET</th>
-                <th scope="col">SUB DIVISI</th>
+                <th scope="col">TICKET PIC</th>
+                <th scope="col">SUB DIVISION</th>
                 @endcan
-                <th scope="col">DIVISI</th>
+                <th scope="col">DIVISION</th>
                 <th scope="col">STATUS</th>
                 <th scope="col">SWITCH</th>
                 </tr>

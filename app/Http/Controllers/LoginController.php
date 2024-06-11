@@ -33,8 +33,8 @@ class LoginController extends Controller
                 // Logout pengguna segera
                 Auth::logout();
 
-                // Redirect kembali dengan pesan error
-                return back()->with('loginError', 'No. Induk Karyawan atau Password salah!');
+                // Redirect kembali dengan pesan error jika user tidak aktif
+                return back()->with('loginError', 'Username or Password is incorrect!');
             }
 
             // Otentikasi berhasil dan pengguna aktif
@@ -42,7 +42,7 @@ class LoginController extends Controller
         }
 
         // Otentikasi gagal
-        return back()->with('loginError', 'No. Induk Karyawan atau Password salah!');
+        return back()->with('loginError', 'Username or Password is incorrect!');
     }
 
     public function logout(Request $request)

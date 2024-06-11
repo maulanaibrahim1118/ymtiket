@@ -25,7 +25,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="nama" class="form-label">Nama Lengkap</label>
+                                        <label for="nama" class="form-label">Full Name</label>
                                         <input type="text" name="nama" class="form-control text-capitalize @error('nama') is-invalid @enderror" id="nama" value="{{ old('nama') }}" required>
 
                                         <!-- Showing notification error for input validation -->
@@ -77,7 +77,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="position_id" class="form-label">Jabatan</label>
+                                        <label for="position_id" class="form-label">Position</label>
                                         <select class="form-select select2 @error('position_id') is-invalid @enderror" name="position_id" id="position_id" value="{{ old('position_id') }}">
                                             <option selected disabled>Choose...</option>
                                             @foreach($positions as $position)
@@ -98,7 +98,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="location_id" class="form-label">Divisi</label>
+                                        <label for="location_id" class="form-label">Division</label>
                                         <select class="form-select select2 @error('location_id') is-invalid @enderror" name="location_id" id="location" value="{{ old('location_id') }}" required>
                                             <option value="" selected disabled>Choose...</option>
                                             @foreach($locations as $location)
@@ -119,7 +119,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="sub_division" class="form-label">Sub Divisi / Area / Regional / Wilayah</label>
+                                        <label for="sub_division" class="form-label">Sub Division / Area / Regional / Wilayah</label>
                                         <select class="form-select select2 @error('sub_division') is-invalid @enderror" name="sub_division" id="sub_division" disabled>
                                             <option value="" selected disabled>Choose...</option>
                                         </select>
@@ -137,7 +137,7 @@
                                     <div class="col-md-12"></div>
 
                                     <div class="col-md-2">
-                                        <label for="telp" class="form-label">No. Telp/Ext</label>
+                                        <label for="telp" class="form-label">Phone / Ext</label>
                                         <input type="text" name="telp" pattern="[0-9]+" class="form-control text-capitalize @error('telp') is-invalid @enderror" id="telp" value="{{ old('telp') }}" maxlength="15" title="Tolong di input dalam bentuk nomor." required>
 
                                         <!-- Showing notification error for input validation -->
@@ -163,7 +163,7 @@
                                     </div>
 
                                     <div class="col-md-12">
-                                        <p><span class="badge bg-primary">*Note : Untuk Create User Cabang. Masuk ke Menu Location > Store & Division > Tambah .</span></p>
+                                        <p><span class="badge bg-primary">*Note : Untuk Create User Cabang. Masuk ke Menu Location > Store & Division > Create .</span></p>
                                     </div>
 
                                     <div class="col-md-12">
@@ -171,9 +171,9 @@
                                     </div>
                                     
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Simpan</button>
+                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Save</button>
                                         <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
-                                        <a href="/users"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Kembali</button></a>
+                                        <a href="/users"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                     </div>
                                 </form><!-- End Input Form -->
                             </div><!-- End Card Body -->
@@ -248,11 +248,11 @@
             var telp = document.getElementById('telp').value;
 
             if (telp.length < 4) {
-                alert('Ketikkan No. Telp/Ext minimal 4 karakter!');
+                alert('Type Phone / Ext at least 4 characters!');
                 return false;
             }
 
-            var lanjut = confirm('Apakah anda yakin data sudah benar?');
+            var lanjut = confirm('Are you sure the data is correct?');
 
             if(lanjut){
                 return true;

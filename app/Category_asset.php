@@ -13,6 +13,11 @@ class Category_asset extends Model
         return $this->hasOne('App\Asset');
     }
 
+    public function item()
+    {
+        return $this->hasOne('App\Item');
+    }
+
     protected static function boot()
     {
         parent::boot();

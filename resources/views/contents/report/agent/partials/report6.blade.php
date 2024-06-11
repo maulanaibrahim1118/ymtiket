@@ -35,7 +35,7 @@
             },
             tooltip: {
                 trigger: 'item',
-                formatter: '{a} <br/>{b} : {c} detik ({d}%)'
+                formatter: '{a} <br/>{b} : {c} tiket ({d}%)'
             },
             // legend: {
             //     orient: 'vertical',

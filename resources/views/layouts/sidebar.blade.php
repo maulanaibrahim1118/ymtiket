@@ -45,7 +45,7 @@
             </a>
         </li><!-- End Client --> --}}
 
-        @can('manage-ticket')
+        @can('client')
         <li class="nav-item">
             <a class="nav-link {{ Request::is('assets*') ? '' : 'collapsed' }}" href="/assets">
                 <i class="bi bi-gem"></i>
@@ -56,6 +56,29 @@
 
         @can('isServiceDesk')
         @can('isIT')
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('asset*') ? '' : 'collapsed' }}" data-bs-target="#assetSideBar" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-gem"></i><span>Asset</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="assetSideBar" class="nav-content collapse {{ Request::is('asset*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="/asset-items" class="{{ Request::is('lasset-items*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Item</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/assets" class="{{ Request::is('assets*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Asset</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/asset-categories" class="{{ Request::is('asset-categories*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Asset Category</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Asset -->
+
         <li class="nav-item">
             <a class="nav-link {{ Request::is('location*') ? '' : 'collapsed' }}" data-bs-target="#locationSideBar" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-geo-alt"></i><span>Location</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -87,7 +110,7 @@
                     </a>
                 </li>
             </ul>
-        </li><!-- End Master Data -->
+        </li><!-- End Location -->
         @endcan
 
         <li class="nav-item">
@@ -95,21 +118,14 @@
                 <i class="bi bi-ui-radios-grid"></i><span>Category</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="category" class="nav-content collapse {{ Request::is('category*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                @can('isIT')
-                <li>
-                    <a href="/category-assets" class="{{ Request::is('category-assets*') ? 'active' : '' }}">
-                        <i class="bi bi-file-text"></i><span>Category Asset</span>
-                    </a>
-                </li>
-                @endcan
                 <li>
                     <a href="/category-tickets" class="{{ Request::is('category-tickets*') ? 'active' : '' }}">
-                        <i class="bi bi-file-text"></i><span>Category Ticket</span>
+                        <i class="bi bi-file-text"></i><span>Ticket Category</span>
                     </a>
                 </li>
                 <li>
                     <a href="/category-sub-tickets" class="{{ Request::is('category-sub-tickets*') ? 'active' : '' }}">
-                        <i class="bi bi-file-text"></i><span>Sub Category Ticket</span>
+                        <i class="bi bi-file-text"></i><span>Ticket Sub Category</span>
                     </a>
                 </li>
             </ul>
