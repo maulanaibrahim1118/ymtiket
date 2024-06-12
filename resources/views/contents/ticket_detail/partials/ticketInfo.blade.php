@@ -2,13 +2,13 @@
 <div class="col-6">
     <div class="row">
         <div class="col-md-3 m-0">
-            <label for="no_ticket" class="form-label fw-bold">Created By</label>
+            <label for="no_ticket" class="form-label fw-bold">Ticket Number</label>
         </div>
         <div class="col-md-9 m-0">
-            <label for="no_ticket" class="form-label">: {{ ucwords($ticket->created_by) }} | Reference : {{ ucwords($ticket->source) }}</label>
+            <label for="no_ticket" class="form-label">: <b>{{ $ticket->no_ticket }}</b></label>
         </div>
         <div class="col-md-3 m-0">
-            <label class="form-label fw-bold">Date/Time</label>
+            <label class="form-label fw-bold">Created At</label>
         </div>
         <div class="col-md-9 m-0">
             @if($ticket->jam_kerja == "ya")
@@ -18,10 +18,10 @@
             @endif
         </div>
         <div class="col-md-3 m-0">
-            <label for="no_ticket" class="form-label fw-bold">Ticket Number</label>
+            <label for="no_ticket" class="form-label fw-bold">Created By</label>
         </div>
         <div class="col-md-9 m-0">
-            <label for="no_ticket" class="form-label">: {{ $ticket->no_ticket }}</label>
+            <label for="no_ticket" class="form-label">: {{ ucwords($ticket->created_by) }} | Reference : {{ ucwords($ticket->source) }}</label>
         </div>
         <div class="col-md-3 m-0">
             <label for="agent" class="form-label fw-bold">Ticket For</label>
@@ -55,7 +55,7 @@
             <label for="telp" class="form-label fw-bold">Phone/Ext</label>
         </div>
         <div class="col-md-9 m-0">
-            <label for="telp" class="form-label">: {{ $ticket->user->telp }}</label>
+            <label for="telp" class="form-label">: <a href="https://wa.me/62{{ substr($ticket->user->telp, 1) }}?text=" target="_blank">{{ $ticket->user->telp }}</a></label>
         </div>
         <div class="col-md-3 m-0">
             <label for="ip_address" class="form-label fw-bold">IP Address</label>
@@ -67,7 +67,7 @@
             <label for="no_asset" class="form-label fw-bold">Asset</label>
         </div>
         <div class="col-md-9 m-0">
-            <label for="no_asset" class="form-label">: <a href="{{ route('ticket.asset', ['asset_id' => encrypt($ticket->asset->id)]) }}">{{ $ticket->asset->no_asset }}</a> | {{ $ticket->asset->nama_barang }}</label>
+            <label for="no_asset" class="form-label">: <a href="{{ route('ticket.asset', ['asset_id' => encrypt($ticket->asset->id)]) }}">{{ $ticket->asset->no_asset }}</a> | {{ $ticket->asset->item->name }}</label>
         </div>
         <div class="col-md-3 m-0">
             <label for="status" class="form-label fw-bold">Status Ticket</label>
@@ -148,16 +148,18 @@
         <thead>
             <tr>
                 @php
-                    $pending = \Carbon\Carbon::parse($ticket->pending_time);
+                    $totalSeconds = $ticket->pending_time;
+                    $hours = floor($totalSeconds / 3600);
+                    $minutes = floor(($totalSeconds % 3600) / 60);
+                    $seconds = $totalSeconds % 60;
                 @endphp
-
                 <td class="col-md-1 fw-bold bg-light">Ticket Pending</td>
-                @if($ticket->pending_time == NULL)
-                <td class="col-md-1">00:00:00</td>
-                @elseif($ticket->pending_time >= 86400)
-                <td class="col-md-1">{{ str_pad($pending->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($pending->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($pending->second, 2, "0", STR_PAD_LEFT) }}</td>
+                @if($totalSeconds != 0)
+                    <td class="col-md-1">
+                        {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                    </td>
                 @else
-                <td class="col-md-1">{{ str_pad($pending->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($pending->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($pending->second, 2, "0", STR_PAD_LEFT) }}</td>
+                    <td class="col-md-1">00:00:00</td>
                 @endif
             </tr>
         </thead>

@@ -45,7 +45,7 @@
             </a>
         </li><!-- End Client --> --}}
 
-        @can('client')
+        @can('isClient')
         <li class="nav-item">
             <a class="nav-link {{ Request::is('assets*') ? '' : 'collapsed' }}" href="/assets">
                 <i class="bi bi-gem"></i>

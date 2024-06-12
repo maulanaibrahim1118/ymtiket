@@ -23,13 +23,13 @@
                     @if(auth()->user()->role_id == 3)
                     <td colspan="8" class="text-lowercase text-secondary">-- ticket uprosessed --</td>
                     @else
-                    <td colspan="9" class="text-lowercase text-secondary">-- ticket unrosessed --</td>
+                    <td colspan="10" class="text-lowercase text-secondary">-- ticket unprosessed --</td>
                     @endif
                 @else
                     @if(auth()->user()->role_id == 3)
                     <td colspan="8" class="text-lowercase text-secondary">-- there has been no further action from the agent --</td>
                     @else
-                    <td colspan="9" class="text-lowercase text-secondary">-- there has been no further action from the agent --</td>
+                    <td colspan="10" class="text-lowercase text-secondary">-- there has been no further action from the agent --</td>
                     @endif
                 @endif
             </tr>
@@ -54,17 +54,34 @@
 
             @can('agent-info')
             @php
-                $carbonInstance = \Carbon\Carbon::parse($td->pending_time);
+                $totalSeconds = $td->pending_time;
+                $hours = floor($totalSeconds / 3600);
+                $minutes = floor(($totalSeconds % 3600) / 60);
+                $seconds = $totalSeconds % 60;
             @endphp
-            @if($td->pending_time == NULL)
-            <td>00:00:00</td>
-            @elseif($td->pending_time >= 86400)
-            <td>{{ str_pad($carbonInstance->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($carbonInstance->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($carbonInstance->second, 2, "0", STR_PAD_LEFT) }}</td>
+            @if($totalSeconds != 0)
+                <td>
+                    {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                </td>
             @else
-            <td>{{ str_pad($carbonInstance->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($carbonInstance->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($carbonInstance->second, 2, "0", STR_PAD_LEFT) }}</td>
+                <td>00:00:00</td>
             @endif
 
             @php
+                $totalSeconds = $td->processed_time;
+                $hours = floor($totalSeconds / 3600);
+                $minutes = floor(($totalSeconds % 3600) / 60);
+                $seconds = $totalSeconds % 60;
+            @endphp
+            @if($totalSeconds != 0)
+                <td>
+                    {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                </td>
+            @else
+                <td>00:00:00</td>
+            @endif
+
+            {{-- @php
                 $carbonInstance = \Carbon\Carbon::parse($td->processed_time);
             @endphp
             @if($td->processed_time == NULL)
@@ -73,9 +90,9 @@
             <td>{{ str_pad($carbonInstance->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($carbonInstance->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($carbonInstance->second, 2, "0", STR_PAD_LEFT) }}</td>
             @else
             <td>{{ str_pad($carbonInstance->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($carbonInstance->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($carbonInstance->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @endif
+            @endif --}}
             
-            <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{{ $td->note }}" onclick="tampilkanData(this)"><i class="bi bi-search me-1"></i> See Details</button></td>
+            <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{!! nl2br(e($td->note)) !!}" onclick="tampilkanData(this)"><i class="bi bi-search me-1"></i> See Details</button></td>
             {{-- Saran Tindakan Modal --}}
             <div class="modal fade" id="actionModal" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">

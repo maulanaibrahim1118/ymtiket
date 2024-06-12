@@ -31,35 +31,20 @@
             <td class="text-end">{{ $agent->ticket_per_day }}</td>
 
             @php
-                $hourPerDay = \Carbon\Carbon::parse($agent->hour_per_day);
-                // $totalHour  = \Carbon\Carbon::parse($total[6]);
+                $hourPerDay = $agent->hour_per_day;
+                $hours = floor($hourPerDay / 3600);
+                $minutes = floor(($hourPerDay % 3600) / 60);
+                $seconds = $hourPerDay % 60;
             @endphp
-
-            @if($agent->hour_per_day >= 3600)
-            <td class="text-end">{{ str_pad($hourPerDay->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @elseif($agent->hour_per_day >= 60)
-            <td class="text-end">{{ str_pad($hourPerDay->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @elseif($agent->hour_per_day == 0)
-            <td class="text-end">00:00:00</td>
+            @if($hourPerDay != 0)
+                <td class="text-end">
+                    {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                </td>
             @else
-            <td class="text-end">{{ str_pad($hourPerDay->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($hourPerDay->second, 2, "0", STR_PAD_LEFT) }}</td>
+                <td class="text-end">00:00:00</td>
             @endif
             </tr>
             @endforeach
-            {{-- <tr class="bg-light text-end">
-                <th class="text-center" colspan="4">TOTAL</th>
-                <th>{{ $total[5] }}</th>
-
-                @if($total[6] >= 3600)
-                <th>{{ $totalHour->hour }} Jam {{ $totalHour->minute }} Menit {{ $totalHour->second }} Detik</th>
-                @elseif($total[6] >= 60)
-                <th>{{ $totalHour->minute }} Menit {{ $totalHour->second }} Detik</th>
-                @elseif($total[6] == 0)
-                <th>0 Detik</th>
-                @else
-                <th>{{ $totalHour->second }} Detik</th>
-                @endif
-            </tr> --}}
         </tbody>
     </table>
 </div>

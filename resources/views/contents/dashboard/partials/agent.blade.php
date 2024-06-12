@@ -134,17 +134,17 @@
         </div>
         <div class="ps-3">
             @php
-                $workload = \Carbon\Carbon::parse($dataArray[3]);
+                $workload = $dataArray[3];
+                $hours = floor($workload / 3600);
+                $minutes = floor(($workload % 3600) / 60);
+                $seconds = $workload % 60;
             @endphp
-
-            @if($dataArray[3] >= 3600)
-            <h6>{{ str_pad($workload->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->second, 2, "0", STR_PAD_LEFT) }}</h6>
-            @elseif($dataArray[3] >= 60)
-            <h6>{{ str_pad($workload->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->second, 2, "0", STR_PAD_LEFT) }}</h6>
-            @elseif($dataArray[3] == 0)
-            <h6>00:00:00</H6>
+            @if($workload != 0)
+                <h6>
+                    {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                </h6>
             @else
-            <h6>{{ str_pad($workload->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($workload->second, 2, "0", STR_PAD_LEFT) }}</h6>
+                <h6>00:00:00</h6>
             @endif
             <span class="text-warning small pt-1 fw-bold">Hour:Minute:Second</span>
         </div>
@@ -168,17 +168,17 @@
         </div>
         <div class="ps-3">
             @php
-                $average = \Carbon\Carbon::parse($dataArray[4]);
+                $workloadAverage = $dataArray[4];
+                $hours = floor($workloadAverage / 3600);
+                $minutes = floor(($workloadAverage % 3600) / 60);
+                $seconds = $workloadAverage % 60;
             @endphp
-
-            @if($dataArray[4] >= 3600)
-            <h6>{{ str_pad($average->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->second, 2, "0", STR_PAD_LEFT) }}</h6>
-            @elseif($dataArray[4] >= 60)
-            <h6>{{ str_pad($average->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->second, 2, "0", STR_PAD_LEFT) }}</h6>
-            @elseif($dataArray[4] == 0)
-            <h6>00:00:00</H6>
+            @if($workloadAverage != 0)
+                <h6>
+                    {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                </h6>
             @else
-            <h6>{{ str_pad($average->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average->second, 2, "0", STR_PAD_LEFT) }}</h6>
+                <h6>00:00:00</h6>
             @endif
             <span class="text-success small pt-1 fw-bold">Hour:Minute:Second</span>
         </div>

@@ -14,10 +14,10 @@
         </div>
         <div class="col-6">
             <div class="row">
+                <div class="col-3"><b>No. Ticket</b></div>
+                <div class="col-9"><span style="margin-left:1px;">: <b>{{ $ticket->no_ticket }}</b></span></div>
                 <div class="col-3"><b>Tgl Dibuat</b></div>
                 <div class="col-9"><span style="margin-left:1px;">: {{ date('d/m/Y H:i:s', strtotime($ticket->created_at)) }}</span></div>
-                <div class="col-3"><b>No. Ticket</b></div>
-                <div class="col-9"><span style="margin-left:1px;">: {{ $ticket->no_ticket }}</span></div>
                 <div class="col-3"><b>Kendala</b></div>
                 <div class="col-9"><span style="margin-left:1px;">: {{ ucwords($ticket->kendala) }}</span></div>
             </div>
@@ -56,7 +56,7 @@
                 <tbody class="text-capitalize">
                     <tr>
                     <td>{{ $ticket->asset->no_asset }}</td>
-                    <td>{{ $ticket->asset->nama_barang }}</td>
+                    <td>{{ $ticket->asset->item->name }}</td>
                     <td>{{ $ticket->asset->merk }}</td>
                     <td>{{ $ticket->asset->model }}</td>
                     <td>{{ $ticket->asset->serial_number }}</td>

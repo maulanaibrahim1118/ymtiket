@@ -61,9 +61,9 @@
                                             <option value="" disabled>Choose...</option>
                                             @foreach($assets as $asset)
                                             @if(old('asset_id', $ticket->asset_id) == $asset->id)
-                                            <option selected value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} | {{ ucwords($asset->nama_barang) }} | {{ $asset->merk }}</option>
+                                            <option selected value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} | {{ ucwords($asset->item->name) }} | {{ $asset->merk }}</option>
                                             @else
-                                            <option value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} | {{ ucwords($asset->nama_barang) }} | {{ $asset->merk }}</option>
+                                            <option value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} | {{ ucwords($asset->item->name) }} | {{ $asset->merk }}</option>
                                             @endif
                                             @endforeach
                                         </select>

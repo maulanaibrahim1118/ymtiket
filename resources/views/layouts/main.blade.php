@@ -71,77 +71,9 @@
             <nav class="header-nav ms-auto">
                 <ul class="d-flex align-items-center">
                     <li class="nav-item dropdown me-2">
-
                         <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                             <i class="bi bi-bell"></i>
-                            {{-- <span class="badge bg-primary badge-number">4</span> --}}
                         </a><!-- End Notification Icon -->
-                
-                        {{-- <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications"> --}}
-                            {{-- <li class="dropdown-header">
-                            Notifications
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">More notifications</span></a>
-                            </li>
-                            <li>
-                            <hr class="dropdown-divider">
-                            </li> --}}
-                
-                            {{-- <li class="notification-item">
-                            <i class="bi bi-exclamation-circle text-warning"></i>
-                            <div>
-                                <h4>Lorem Ipsum</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>30 min. ago</p>
-                            </div>
-                            </li>
-                
-                            <li>
-                            <hr class="dropdown-divider">
-                            </li>
-                
-                            <li class="notification-item">
-                            <i class="bi bi-x-circle text-danger"></i>
-                            <div>
-                                <h4>Atque rerum nesciunt</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>1 hr. ago</p>
-                            </div>
-                            </li>
-                
-                            <li>
-                            <hr class="dropdown-divider">
-                            </li>
-                
-                            <li class="notification-item">
-                            <i class="bi bi-check-circle text-success"></i>
-                            <div>
-                                <h4>Sit rerum fuga</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>2 hrs. ago</p>
-                            </div>
-                            </li>
-                
-                            <li>
-                            <hr class="dropdown-divider">
-                            </li> --}}
-                
-                            {{-- <li class="notification-item">
-                            <i class="bi bi-info-circle text-primary"></i>
-                            <div>
-                                <h4>Sorry</h4>
-                                <p>This feature is under construction.</p>
-                            </div>
-                            </li> --}}
-
-                            {{-- <li>
-                            <hr class="dropdown-divider">
-                            </li>
-                            <li class="dropdown-footer">
-                            <a href="#">Tampilkan semua</a>
-                            </li> --}}
-                
-                        {{-- </ul><!-- End Notification Dropdown Items --> --}}
-                
                     </li><!-- End Notification Nav -->
 
                     <li class="nav-item dropdown float-end">
@@ -191,22 +123,6 @@
         @include('layouts.sidebar')
         
         <main id="main" class="main">
-            {{-- <!-- Toast Container -->
-            <div aria-live="polite" aria-atomic="true" class="position-relative">
-                <!-- Position it -->
-                <div class="toast-container position-absolute" id="toastPlacement" style="top: 0; right: 0;">
-                <!-- Then put toasts within -->
-                <div class="toast" id="validationToast" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="toast-header">
-                    <strong class="me-auto">Validation Error</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                    <div class="toast-body" id="toastBody">
-                    <!-- Toast Message will be dynamically inserted here -->
-                    </div>
-                </div>
-                </div>
-            </div> --}}
             <!-- Showing notification succeded -->
             @if(session()->has('success'))
                 <script>

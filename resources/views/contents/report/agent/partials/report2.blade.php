@@ -33,55 +33,64 @@
                 $average2   = \Carbon\Carbon::parse($agent->avg_finish);
             @endphp
 
-            @if($agent->avg_pending >= 3600)
-            <td class="text-end">{{ str_pad($average1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @elseif($agent->avg_pending >= 60)
-            <td class="text-end">{{ str_pad($average1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @elseif($agent->avg_pending == 0)
-            <td class="text-end">00:00:00</td>
-            @else
-            <td class="text-end">{{ str_pad($average1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average1->second, 2, "0", STR_PAD_LEFT) }}</td>
+            @php
+                $avgPending = $agent->avg_pending;
+                $hours = floor($avgPending / 3600);
+                $minutes = floor(($avgPending % 3600) / 60);
+                $seconds = $avgPending % 60;
+                @endphp
+                @if($avgPending != 0)
+                <td class="text-end">
+                    {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                </td>
+                @else
+                <td class="text-end">00:00:00</td>
             @endif
 
-            @if($agent->avg_finish >= 3600)
-            <td class="text-end">{{ str_pad($average2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @elseif($agent->avg_finish >= 60)
-            <td class="text-end">{{ str_pad($average2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->second, 2, "0", STR_PAD_LEFT) }}</td>
-            @elseif($agent->avg_finish == 0)
-            <td class="text-end">00:00:00</td>
+            @php
+                $avgFinish = $agent->avg_finish;
+                $hours = floor($avgFinish / 3600);
+                $minutes = floor(($avgFinish % 3600) / 60);
+                $seconds = $avgFinish % 60;
+            @endphp
+            @if($avgFinish != 0)
+                <td class="text-end">
+                    {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                </td>
             @else
-            <td class="text-end">{{ str_pad($average2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($average2->second, 2, "0", STR_PAD_LEFT) }}</td>
+                <td class="text-end">00:00:00</td>
             @endif
-            </tr>
             @endforeach
-            
         </tbody>
         <tfoot>
             <tr class="bg-light text-end">
                 <th class="text-center" colspan="4">TOTAL</th>
                 @php
-                    $avgTotal1  = \Carbon\Carbon::parse($total[3]);
-                    $avgTotal2  = \Carbon\Carbon::parse($total[4]);
+                $totalAvgPending = $total[3];
+                $hours = floor($totalAvgPending / 3600);
+                $minutes = floor(($totalAvgPending % 3600) / 60);
+                $seconds = $totalAvgPending % 60;
                 @endphp
-
-                @if($total[3] >= 3600)
-                <th class="text-end">{{ str_pad($avgTotal1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->second, 2, "0", STR_PAD_LEFT) }}</th>
-                @elseif($total[3] >= 60)
-                <th class="text-end">{{ str_pad($avgTotal1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->second, 2, "0", STR_PAD_LEFT) }}</th>
-                @elseif($total[3] == 0)
-                <th>0 Detik</th>
+                @if($totalAvgPending != 0)
+                <th class="text-end">
+                    {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                </th>
                 @else
-                <th class="text-end">{{ str_pad($avgTotal1->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal1->second, 2, "0", STR_PAD_LEFT) }}</th>
+                <th class="text-end">00:00:00</th>
                 @endif
 
-                @if($total[4] >= 3600)
-                <th class="text-end">{{ str_pad($avgTotal2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->second, 2, "0", STR_PAD_LEFT) }}</th>
-                @elseif($total[4] >= 60)
-                <th class="text-end">{{ str_pad($avgTotal2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->second, 2, "0", STR_PAD_LEFT) }}</th>
-                @elseif($total[4] == 0)
-                <th>0 Detik</th>
+                @php
+                $totalAvgFinish = $total[4];
+                $hours = floor($totalAvgFinish / 3600);
+                $minutes = floor(($totalAvgFinish % 3600) / 60);
+                $seconds = $totalAvgFinish % 60;
+                @endphp
+                @if($totalAvgFinish != 0)
+                <th class="text-end">
+                    {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                </th>
                 @else
-                <th class="text-end">{{ str_pad($avgTotal2->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal2->second, 2, "0", STR_PAD_LEFT) }}</th>
+                <th class="text-end">00:00:00</th>
                 @endif
             </tr>
         </tfoot>

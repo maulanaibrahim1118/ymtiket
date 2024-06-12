@@ -485,7 +485,16 @@ class TicketController extends Controller
     // Get data asset untuk JQuery Select Option
     public function getAssets($id = 0)
     {
-        $data = Asset::where([['location_id', $id],['status', 'digunakan']])->get();
+        $data = Asset::where([['location_id', $id],['status', 'digunakan']])
+        ->with('item')
+        ->get();
+
+        $data->map(function($data) {
+            $data->nama_barang = $data->item->name;
+
+            return $data;
+        });
+        
         return response()->json($data);
     }
 

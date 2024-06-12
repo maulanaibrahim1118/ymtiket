@@ -283,7 +283,11 @@ class UserController extends Controller
         if($role == 1){ // Role Service Desk
             $picTicket  = "all";
         }elseif($role == 2){ // Role Agent
-            $picTicket  = $codeAccess;
+            if($codeAccess == "tidak ada"){
+                $picTicket  = "all";
+            }else{
+                $picTicket  = $codeAccess;
+            }
         }
         
         if($user->role_id == 3){

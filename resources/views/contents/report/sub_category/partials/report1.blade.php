@@ -44,24 +44,34 @@
                         {{-- <td>{{ $categoryName }}</td> --}}
 
                         @foreach($agents as $agent)
-                        @php
-                            $avgAgent = \Carbon\Carbon::parse(round($agentData[$agent->id]));
-                        @endphp
+                            @php
+                                $totalSeconds = round($agentData[$agent->id]);
+                                $hours = floor($totalSeconds / 3600);
+                                $minutes = floor(($totalSeconds % 3600) / 60);
+                                $seconds = $totalSeconds % 60;
+                            @endphp
 
-                        @if(round($agentData[$agent->id]) != 0)
-                        <td class="text-end bg-info">{{ str_pad($avgAgent->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgAgent->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgAgent->second, 2, "0", STR_PAD_LEFT) }}</td>
-                        @else
-                        <td class="text-end">00:00:00</td>
-                        @endif
+                            @if($totalSeconds != 0)
+                                <td class="text-end bg-info">
+                                    {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                                </td>
+                            @else
+                                <td class="text-end">00:00:00</td>
+                            @endif
                         @endforeach
 
                         @php
-                            $avgTotal = \Carbon\Carbon::parse(round($agentData['totalAverage']));
+                            $totalSeconds = round($agentData['totalAverage']);
+                            $hours = floor($totalSeconds / 3600);
+                            $minutes = floor(($totalSeconds % 3600) / 60);
+                            $seconds = $totalSeconds % 60;
                         @endphp
-                        @if(round($agentData['totalAverage']) != 0)
-                        <td class="text-end bg-info">{{ str_pad($avgTotal->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($avgTotal->second, 2, "0", STR_PAD_LEFT) }}</td>
+                        @if($totalSeconds != 0)
+                            <td class="text-end bg-info">
+                                {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                            </td>
                         @else
-                        <td class="text-end">00:00:00</td>
+                            <td class="text-end">00:00:00</td>
                         @endif
                     </tr>
                 @endforeach
