@@ -4,9 +4,6 @@
 @else {{-- Jika status bukan resolved, tidak akan muncul tombol apapun --}}
 @endif
 
-{{-- Tombol Print --}}
-<button class="btn btn-sm btn-primary print-button d-print-none float-end ms-1" onclick="window.print()"><i class="bi bi-printer me-1"></i> Print</button>
-
 @can('isKorwil')
     @if($ticket->need_approval == "ya" AND $ticket->approved == NULL)
         {{-- Tombol Rejected --}}
@@ -25,9 +22,8 @@
                         <div class="col-md-12">
                             <textarea name="reason" class="form-control" id="reason" rows="3" placeholder="Type your approval reason..." required>{{ old('reason') }}</textarea>
                         </div>
-                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                        <input type="text" name="status" value="rejected" hidden>
-                        <input type="text" name="ticket_id" value="{{ $ticket->id }}" hidden>
+                        <input type="text" name="status" value="{{ encrypt('rejected') }}" hidden>
+                        <input type="text" name="ticket_id" value="{{ encrypt($ticket->id) }}" hidden>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Submit</button>
@@ -41,10 +37,9 @@
         <form action="/ticket-approval" method="POST">
         @method('put')
         @csrf
-        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-        <input type="text" name="status" value="approved" hidden>
+        <input type="text" name="status" value="{{ encrypt('approved') }}" hidden>
         <input type="text" name="reason" value="" hidden>
-        <input type="text" name="ticket_id" value="{{ $ticket->id }}" hidden>
+        <input type="text" name="ticket_id" value="{{ encrypt($ticket->id) }}" hidden>
 
         <button type="submit" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-check-circle me-1"></i> Approve</button>
         </form>

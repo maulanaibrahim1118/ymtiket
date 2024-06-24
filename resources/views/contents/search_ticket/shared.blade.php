@@ -59,7 +59,7 @@
         </div>
         <div style="display:none;" id="content" class="fade-in">
             <main>
-                <div class="align-middle" style="width: 75%;margin: auto;">
+                <div class="align-middle" style="width: 85%;margin: auto;">
                     <section class="section dashboard my-5">
                         <div class="row justify-content-center">
                             <div class="col-12">
@@ -101,6 +101,12 @@
                                                     <div class="col-md-9 m-0">
                                                         <label for="no_ticket" class="form-label">: {{ ucwords($ticket->created_by) }} | Reference : {{ ucwords($ticket->source) }}</label>
                                                     </div>
+                                                    <div class="col-md-3 m-0">
+                                                        <label for="agent" class="form-label fw-bold">Ticket For</label>
+                                                    </div>
+                                                    <div class="col-md-9 m-0">
+                                                        <label for="agent" class="form-label">: {{ ucwords($ticket->agent->location->nama_lokasi) }}</label>
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -118,10 +124,16 @@
                                                         @endif
                                                     </div>
                                                     <div class="col-md-3 m-0">
-                                                        <label for="agent" class="form-label fw-bold">Ticket For</label>
+                                                        <label for="telp" class="form-label fw-bold">Phone/Ext</label>
                                                     </div>
                                                     <div class="col-md-9 m-0">
-                                                        <label for="agent" class="form-label">: {{ ucwords($ticket->agent->location->nama_lokasi) }}</label>
+                                                        <label for="telp" class="form-label">: <a href="https://wa.me/62{{ substr($ticket->user->telp, 1) }}?text=" target="_blank">{{ $ticket->user->telp }}</a></label>
+                                                    </div>
+                                                    <div class="col-md-3 m-0">
+                                                        <label for="ip_address" class="form-label fw-bold">IP Address</label>
+                                                    </div>
+                                                    <div class="col-md-9 m-0">
+                                                        <label for="ip_address" class="form-label">: {{ $ticket->user->ip_address }}</label>
                                                     </div>
                                                     <div class="col-md-3 m-0">
                                                         <label for="status" class="form-label fw-bold">Status Ticket</label>
@@ -146,14 +158,18 @@
                                                 <table class="table table-sm table-bordered text-center mb-0">
                                                     <thead>
                                                         <tr>
-                                                            <th colspan="2" class="fw-bold bg-light">Ticket Submission Details</th>
+                                                            <th colspan="3" class="fw-bold bg-light">Ticket Submission Details</th>
                                                             <th class="col-md-1 fw-bold bg-light">Pending Time</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody class="align-middle">
                                                         <tr>
                                                             <th class="col-md-1 fw-bold bg-light text-start ps-3">Subject</th>
-                                                            <td class="col-md-8 text-start ps-3">{{ ucfirst($ticket->kendala) }}</td>
+                                                            <td class="col-md-7 text-start ps-3">{{ ucfirst($ticket->kendala) }}</td>
+                                                            <td class="col-md-1">
+                                                                {{-- Tombol Lampiran --}}
+                                                                <a href="{{ asset('uploads/ticket/' . $ticket->file) }}" target="_blank"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark me-1"></i> Attachment</button></a>
+                                                            </td>
                                                             @php
                                                                 $totalSeconds = $ticket->pending_time;
                                                                 $hours = floor($totalSeconds / 3600);
@@ -194,6 +210,8 @@
                                                             <td>Cost</td>
                                                             <td>Agent PIC</td>
                                                             <td>Status</td>
+                                                            <td>Action</td>
+                                                            <td>Attachment</td>
                                                             </tr>
                                                         </thead>
                                                         <tbody class="text-capitalize">
@@ -201,9 +219,9 @@
                                                             @if($countDetail == 0)
                                                             <tr>
                                                                 @if($ticket->status == "created")
-                                                                <td colspan="7" class="text-lowercase text-secondary">-- ticket unprocessed --</td>
+                                                                <td colspan="9" class="text-lowercase text-secondary">-- ticket unprocessed --</td>
                                                                 @else
-                                                                <td colspan="7" class="text-lowercase text-secondary">-- there has been no further action from the agent --</td>
+                                                                <td colspan="9" class="text-lowercase text-secondary">-- there has been no further action from the agent --</td>
                                                                 @endif
                                                             </tr>
                                                             @else
@@ -225,21 +243,20 @@
                                                             @elseif($td->status == 'assigned')
                                                             <td><span class="badge bg-danger">not resolved</span></td>
                                                             @endif
+                                                            <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{!! nl2br(e($td->note)) !!}" onclick="tampilkanData(this)"><i class="bx bx-analyse me-1"></i> Details</button></td>
+                                                            <td class="text-capitalize">
+                                                                @if($td->file)
+                                                                <a href="{{ asset('uploads/penanganan/' . $td->file) }}" target="_blank"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark-richtext"></i></button></a>
+                                                                @else
+                                                                Not Yet
+                                                                @endif
+                                                            </td>
                                                             </tr>
                                                             @endforeach
                                                             @endif
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                            </div>
-
-                                            <div class="col-md-12 mt-0">
-                                                <p class="border-bottom mt-1 mb-0"></p>
-                                            </div>
-
-                                            <div class="col-md-12">
-                                                {{-- Tombol Kembali --}}
-                                                <a href="{{ url()->previous() }}"><button type="button" class="btn btn-sm btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
                                             </div>
                                         </div>
                                     </div>
@@ -268,6 +285,40 @@
     <script src="dist/vendor/simple-datatables/simple-datatables.js"></script>
     <script src="dist/vendor/tinymce/tinymce.min.js"></script>
     <script src="dist/vendor/php-email-form/validate.js"></script>
+
+    {{-- Saran Tindakan Modal --}}
+    <div class="modal fade" id="actionModal" style="zoom: 0.75;" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="modalContent2">
+            </div>
+        </div>
+    </div><!-- End Vertically centered Modal-->
+    <script>
+        // Fungsi untuk menampilkan data pada saran tindakan modal
+        function tampilkanData(ticket_id) {
+            // Mendapatkan elemen modalContent
+            var modalContent2 = document.getElementById("modalContent2");
+        
+            // Menampilkan data pada modalContent
+            modalContent2.innerHTML  =
+            '<div class="modal-header">'+
+                '<h5 class="modal-title">Action Suggestion - <span class="text-success">{{ $ticket->no_ticket}}</h5>'+
+                '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'+
+            '</div>'+
+            '<form action="/tickets/assign" method="post">'+
+            '@method("put")'+
+            '@csrf'+
+            '<div class="modal-body">'+
+                '<div class="col-md-12">'+
+                    '<p>'+ticket_id.name+'</p>'+
+                '</div>'+
+            '</div>'+
+            '<div class="modal-footer">'+
+                '<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>'+
+            '</div>'+
+            '</form>';
+        }
+    </script>
 
     <!-- Template Main JS File -->
     <script src="dist/js/main.js"></script>

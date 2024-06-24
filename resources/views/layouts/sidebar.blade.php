@@ -45,13 +45,15 @@
             </a>
         </li><!-- End Client --> --}}
 
-        @can('isClient')
+        @can('manage-ticket')
+        @if(auth()->user()->location_id != 10)
         <li class="nav-item">
             <a class="nav-link {{ Request::is('assets*') ? '' : 'collapsed' }}" href="/assets">
                 <i class="bi bi-gem"></i>
                 <span>Asset</span>
             </a>
         </li><!-- End Asset -->
+        @endif
         @endcan
 
         @can('isServiceDesk')

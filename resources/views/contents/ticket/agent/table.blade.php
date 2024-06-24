@@ -4,7 +4,7 @@
             <tr>
                 <th scope="col">CREATED AT</th>
                 <th scope="col">TICKET NUMBER</th>
-                <th scope="col">SUBMISSION</th>
+                <th scope="col">SUBJECT</th>
                 <th scope="col">DETAILS</th>
                 <th scope="col">NOTE</th>
                 <th scope="col">STATUS</th>
@@ -37,19 +37,7 @@
                 @endif
 
                 {{-- Kolom Status --}}
-                @if($ticket->status == 'created')
-                    <td><span class="badge bg-secondary">{{ $ticket->status }}</span></td>
-                @elseif($ticket->status == 'onprocess')
-                    <td><span class="badge bg-warning">{{ $ticket->status }}</span></td>
-                @elseif($ticket->status == 'pending')
-                    <td><span class="badge bg-danger">{{ $ticket->status }}</span></td>
-                @elseif($ticket->status == 'resolved')
-                    <td><span class="badge bg-primary">{{ $ticket->status }}</span></td>
-                @elseif($ticket->status == 'finished')
-                    <td><span class="badge bg-success">{{ $ticket->status }}</span></td>
-                @else
-                    <td><span class="badge bg-danger">{{ $ticket->status }}</span></td>
-                @endif
+                @include('contents.ticket.partials.status_column')
 
                 {{-- Kolom Aksi --}}
                 <td>
@@ -60,7 +48,6 @@
                         <form action="{{ route('ticket.process1', ['id' => encrypt($ticket->id)]) }}" method="post">
                         @method('put')
                         @csrf
-                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                         <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Process</button>
                         </form>
 
@@ -76,9 +63,7 @@
                                     <form action="{{ route('ticket.process3', ['id' => encrypt($ticket->id)]) }}" method="post">
                                     @method('put')
                                     @csrf
-                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                    <input type="text" name="url" value="/ticket-details/{{ encrypt($ticket->id) }}" hidden>
-                                    <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
+                                    <input type="text" name="agent_id" value="{{ encrypt($ticket->agent_id) }}" hidden>
                                     <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Process</button>
                                     </form>
                                     </li>
@@ -88,8 +73,6 @@
                                     <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post">
                                     @method('put')
                                     @csrf
-                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                    <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
                                     <a href="#">
                                     <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Re-Process</button>
                                     </a>
@@ -104,7 +87,6 @@
                                 <form action="{{ route('ticket.process2', ['id' => encrypt($ticket->id)]) }}" method="post">
                                 @method('put')
                                 @csrf
-                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                 <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Process</button>
                                 </form>
 
@@ -114,8 +96,6 @@
                                 <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post">
                                 @method('put')
                                 @csrf
-                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
                                 <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Re-Process</button>
                                 </form>
 
@@ -128,7 +108,7 @@
                     {{-- Jika status ticket onprocess --}}
                     @elseif($ticket->status == "onprocess") {{-- Jika status onprocess dan belum ada detail ticket --}}
                     {{-- Tombol Tangani Kembali --}}
-                    <a class="btn btn-sm btn-outline-primary text-capitalize" href="{{ route('ticket.reProcess2', ['id' => encrypt($ticket->id)]) }}"><i class="bx bx-analyse me-1" onclick="reloadAction()"></i>Re-Process</a>
+                    <a class="btn btn-sm btn-outline-primary text-capitalize" href="{{ route('ticket.reProcess2', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Re-Process</a>
                     @elseif($ticket->status == "assigned") {{-- Jika status onprocess dan belum ada detail ticket --}}
                     {{-- Tombol Detail --}}
                     <a class="btn btn-sm btn-outline-secondary text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text me-1"></i>Detail</a>
@@ -146,3 +126,5 @@
         </tbody>
     </table>
 </div>
+
+<script src="{{ asset('dist/js/refresh-page-interval.js') }}"></script>

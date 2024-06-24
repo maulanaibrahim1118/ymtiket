@@ -2,6 +2,7 @@
     <table class="table table-bordered text-center">
         <thead class="fw-bold bg-light">
             <tr>
+            <td>Processed At</td>
             <td>Type</td>
             <td>Category</td>
             <td>Sub Category</td>
@@ -11,7 +12,7 @@
             @can('agent-info')
             <td>Pending Time</td>
             <td>Prosessed Time</td>
-            <td>Action Suggestion</td>
+            <td>Action</td>
             <td>Attachment</td>
             @endcan
             </tr>
@@ -20,22 +21,23 @@
             @if($countDetail == 0) 
             <tr>
                 @if($ticket->status == "created")
-                    @if(auth()->user()->role_id == 3)
-                    <td colspan="8" class="text-lowercase text-secondary">-- ticket uprosessed --</td>
-                    @else
-                    <td colspan="10" class="text-lowercase text-secondary">-- ticket unprosessed --</td>
-                    @endif
+                @if(auth()->user()->role_id == 3)
+                <td colspan="9" class="text-lowercase text-secondary">-- ticket uprosessed --</td>
                 @else
-                    @if(auth()->user()->role_id == 3)
-                    <td colspan="8" class="text-lowercase text-secondary">-- there has been no further action from the agent --</td>
-                    @else
-                    <td colspan="10" class="text-lowercase text-secondary">-- there has been no further action from the agent --</td>
-                    @endif
+                <td colspan="11" class="text-lowercase text-secondary">-- ticket unprosessed --</td>
+                @endif
+                @else
+                @if(auth()->user()->role_id == 3)
+                <td colspan="9" class="text-lowercase text-secondary">-- there has been no further action from the agent --</td>
+                @else
+                <td colspan="11" class="text-lowercase text-secondary">-- there has been no further action from the agent --</td>
+                @endif
                 @endif
             </tr>
             @else
             @foreach($ticket_details as $td)
             <tr>
+            <td>{{ date('d-M-Y H:i:s', strtotime($td->process_at)) }}</td>
             <td>{{ $td->jenis_ticket }}</td>
             <td>{{ $td->sub_category_ticket->category_ticket->nama_kategori }}</td>
             <td>{{ $td->sub_category_ticket->nama_sub_kategori }}</td>
@@ -92,7 +94,7 @@
             <td>{{ str_pad($carbonInstance->hour, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($carbonInstance->minute, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($carbonInstance->second, 2, "0", STR_PAD_LEFT) }}</td>
             @endif --}}
             
-            <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{!! nl2br(e($td->note)) !!}" onclick="tampilkanData(this)"><i class="bi bi-search me-1"></i> See Details</button></td>
+            <td class="text-capitalize"><button type="button" class="btn btn-sm btn-light ms-1" id="actionButton" data-bs-toggle="modal" data-bs-target="#actionModal" name="{!! nl2br(e($td->note)) !!}" onclick="tampilkanData(this)"><i class="bx bx-analyse me-1"></i> Details</button></td>
             {{-- Saran Tindakan Modal --}}
             <div class="modal fade" id="actionModal" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">

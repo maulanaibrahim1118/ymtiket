@@ -20,30 +20,60 @@ class SearchTicketController extends Controller
         // Jika Input No. Ticket diisi
         }else {
             // Mencari data ticket by No. Ticket
-            $ticket     = Ticket::where('no_ticket', $noTicket)->whereIn('status', ['resolved', 'finished'])->first();
+            $ticket     = Ticket::where('no_ticket', $noTicket)->first();
             
             // Jika No. Ticket tidak ditemukan
             if($ticket == NULL){
-                return back()->with('error', 'Ticket not found or unauthorized!');
-
-            // Jika No. Ticket ditemukan
+                return back()->with('error', 'Ticket not found!');
+                
+                // Jika No. Ticket ditemukan
             }else{
-                // Get ID Ticket
-                $ticketId   = $ticket->id;
+                $ticket     = Ticket::where('no_ticket', $noTicket)->whereIn('status', ['resolved', 'finished'])->first();
 
-                // Mencari Detail Ticket
-                $countDetail    = Ticket_detail::where('ticket_id', $ticketId)->count();
-                $ticketDetails  = Ticket_detail::where('ticket_id', $ticketId)->get();
+                if($ticket == NULL){
+                    return back()->with('error', 'Ticket is being processed by the agent!');
+                }else{
+                    // Get ID Ticket
+                    $ticketId   = $ticket->id;
 
-                return view('contents.search_ticket.index', [
-                    "title"             => "Search Ticket",
-                    "path"              => "Ticket",
-                    "path2"             => "Detail",
-                    "ticket"            => $ticket,
-                    "countDetail"       => $countDetail,
-                    "ticket_details"    => $ticketDetails
-                ]);
+                    // Mencari Detail Ticket
+                    $countDetail    = Ticket_detail::where('ticket_id', $ticketId)->count();
+                    $ticketDetails  = Ticket_detail::where('ticket_id', $ticketId)->get();
+
+                    return view('contents.search_ticket.index', [
+                        "title"             => "Search Ticket",
+                        "path"              => "Ticket",
+                        "path2"             => "Search",
+                        "ticket"            => $ticket,
+                        "countDetail"       => $countDetail,
+                        "ticket_details"    => $ticketDetails
+                    ]);
+                }
             }
         }
+    }
+
+    public function shared(Request $request)
+    {
+        // Get No. Ticket dari input request
+        $ticketId   = decrypt($request['id']);
+
+        // Mencari Detail Ticket
+        $countDetail    = Ticket_detail::where('ticket_id', $ticketId)->count();
+        $ticketDetails  = Ticket_detail::where('ticket_id', $ticketId)->get();
+        $ticket         = Ticket::where('id', $ticketId)->first();
+
+        // Mencari extension file
+        $ext = substr($ticket->file, -4);
+
+        return view('contents.search_ticket.shared', [
+            "title"             => "Ticket Details",
+            "path"              => "Ticket",
+            "path2"             => "Details",
+            "ext"               => $ext,
+            "ticket"            => $ticket,
+            "countDetail"       => $countDetail,
+            "ticket_details"    => $ticketDetails
+        ]);
     }
 }

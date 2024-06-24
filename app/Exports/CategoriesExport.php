@@ -97,10 +97,10 @@ class CategoriesExport implements FromCollection, WithHeadings, WithMapping, Sho
     public function headings(): array
     {
         $headings = ['Category','Sub Category'];
+        $headings[] = 'Total Average';
         foreach ($this->agents as $agent) {
             $headings[] = ucwords($agent->nama_agent);
         }
-        $headings[] = 'Total Average';
         return $headings;
     }
 }

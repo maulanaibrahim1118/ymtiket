@@ -8,11 +8,6 @@ class Category_asset extends Model
 {
     protected $guarded = ['id'];
 
-    public function asset()
-    {
-        return $this->hasOne('App\Asset');
-    }
-
     public function item()
     {
         return $this->hasOne('App\Item');

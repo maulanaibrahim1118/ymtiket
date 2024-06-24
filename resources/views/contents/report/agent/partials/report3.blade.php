@@ -3,7 +3,7 @@
         <thead class="bg-light" style="height: 45px;font-size:14px;">
             @if($pathFilter != "Semua")
             <tr>
-            <td colspan="6" class="font-monospace ps-3">Tanggal : {{ $pathFilter }}</td>
+            <td colspan="7" class="font-monospace ps-3">Tanggal : {{ $pathFilter }}</td>
             </tr>
             @endif
             <tr class="text-center align-middle">
@@ -12,6 +12,7 @@
             <th rowspan="2">NAMA AGENT</th>
             <th rowspan="2">SUB DIVISI</th>
             <th colspan="2">RATA-RATA</th>
+            <th rowspan="2" class="col-md-1">PERCENTAGE (HOUR/DAY)</th>
             </tr>
             <tr class="text-center align-middle">
             <th>TICKET/DAY</th>
@@ -43,6 +44,7 @@
             @else
                 <td class="text-end">00:00:00</td>
             @endif
+            <td class="text-end">{{ $agent->percentage }}%</td>
             </tr>
             @endforeach
         </tbody>

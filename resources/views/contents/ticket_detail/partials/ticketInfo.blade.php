@@ -46,9 +46,9 @@
         </div>
         <div class="col-md-9 m-0">
             @if ($ticket->user->nama == $ticket->location->nama_lokasi)
-            <label for="client/lokasi" class="form-label text-primary fw-bold">: {{ ucwords($ticket->user->nik) }} - {{ ucwords($ticket->location_name) }} / Store</label>
+            <label for="client/lokasi" class="form-label">: <span class="badge bg-primary" style="font-size: 13px;">{{ ucwords($ticket->user->nik) }} - {{ ucwords($ticket->location_name) }} / Store</span></label>
             @else
-            <label for="client/lokasi" class="form-label text-primary fw-bold">: {{ ucwords($ticket->user->nama) }} / {{ ucwords($ticket->location->nama_lokasi) }}</label>
+            <label for="client/lokasi" class="form-label">: <span class="badge bg-primary" style="font-size: 13px;">{{ ucwords($ticket->user->nama) }} / {{ ucwords($ticket->location->nama_lokasi) }}</span></label>
             @endif
         </div>
         <div class="col-md-3 m-0">
@@ -118,50 +118,39 @@
 </div>
 
 <div class="col-12">
-    <div class="row">
-        <div class="col-md-1 m-0">
-            <label class="form-label fw-bold">Submission</label>
-        </div>
-        <div class="col-md-11 m-0">
-            <label class="form-label">: {{ ucfirst($ticket->kendala) }}</label>
-        </div>
-        <div class="col-md-1 m-0">
-            <label class="form-label fw-bold">Detail</label>
-        </div>
-        <div class="col-md-11 m-0">
-            <label class="form-label">: {{ ucfirst($ticket->detail_kendala) }}</label>
-        </div>
-    </div>
-</div>
-
-<div class="col-md-9">
-    {{-- Tombol Lampiran --}}
-    @if($ext == "xls" || $ext == "xlsx" || $ext == "pdf" || $ext == "doc" || $ext == "docx" || $ext == "csv")
-    <a href="{{ asset('uploads/ticket/' . $ticket->file) }}"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark me-1"></i> Attachment</button></a>
-    @else
-    <button type="button" class="btn btn-outline-primary btn-sm" id="lampiranButton" data-bs-toggle="modal" data-bs-target="#lampiranModal"><i class="bi bi-file-earmark me-1"></i> Attachment</button>
-    @endif
-</div>
-
-<div class="col-md-3 mb-0">
     <table class="table table-sm table-bordered text-center mb-0">
         <thead>
             <tr>
+                <th colspan="3" class="fw-bold bg-light">Ticket Submission Details</th>
+                <th class="col-md-1 fw-bold bg-light">Ticket Pending</th>
+            </tr>
+        </thead>
+        <tbody class="align-middle">
+            <tr>
+                <th class="col-md-1 fw-bold bg-light text-start ps-3">Subject</th>
+                <td class="col-md-7 text-start ps-3">{{ ucfirst($ticket->kendala) }}</td>
+                <td class="col-md-1">
+                    {{-- Tombol Lampiran --}}
+                    <a href="{{ asset('uploads/ticket/' . $ticket->file) }}" target="_blank"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark me-1"></i> Attachment</button></a>
+                </td>
                 @php
                     $totalSeconds = $ticket->pending_time;
                     $hours = floor($totalSeconds / 3600);
                     $minutes = floor(($totalSeconds % 3600) / 60);
                     $seconds = $totalSeconds % 60;
                 @endphp
-                <td class="col-md-1 fw-bold bg-light">Ticket Pending</td>
                 @if($totalSeconds != 0)
-                    <td class="col-md-1">
+                    <td rowspan="2">
                         {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
                     </td>
                 @else
-                    <td class="col-md-1">00:00:00</td>
+                    <td rowspan="2">00:00:00</td>
                 @endif
             </tr>
-        </thead>
+            <tr>
+                <th class="col-md-1 fw-bold bg-light text-start ps-3">Details</th>
+                <td colspan="2" class="text-start ps-3">{{ ucfirst($ticket->detail_kendala) }}</td>
+            </tr>
+        </tbody>
     </table>
 </div>

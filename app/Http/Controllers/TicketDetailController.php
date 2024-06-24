@@ -54,6 +54,8 @@ class TicketDetailController extends Controller
         // Mencari extension file
         $ext = substr($ticket->file, -4);
 
+        $ticketFors  = Agent::whereNotIn('location_id', [$locationId])->select('location_id')->distinct()->orderBy('location_id', 'ASC')->get();
+
         // Mencari agent yang memiliki sub divisi, untuk menentukan antrian dan assign
         $haveSubDivs = Sub_division::select('location_id')->distinct()->pluck('location_id')->toArray();
 
@@ -84,7 +86,7 @@ class TicketDetailController extends Controller
         }
 
         return view('contents.ticket_detail.index', [
-            "title"             => "Ticket Detail",
+            "title"             => "Ticket Processed Details",
             "path"              => "Ticket",
             "path2"             => "Detail",
             "ticket"            => $ticket,
@@ -96,6 +98,7 @@ class TicketDetailController extends Controller
             "countDetail"       => Ticket_detail::where('ticket_id', $ticketId)->count(),
             "agents"            => $agents,
             "subDivHo"          => $subDivHo,
+            "ticketFors"        => $ticketFors,
             "subDivStore"       => $subDivStore,
             "haveSubDivs"       => $haveSubDivs,
             "ext"               => $ext
@@ -126,9 +129,9 @@ class TicketDetailController extends Controller
         $sub_category_tickets = Sub_category_ticket::all();
 
         return view('contents.ticket_detail.create', [
-            "title"                 => "Tangani Ticket",
+            "title"                 => "Ticket Process",
             "path"                  => "Ticket",
-            "path2"                 => "Tangani",
+            "path2"                 => "Process",
             "ticket"                => $ticket,
             'now'                   => $now,
             'types'                 => $types,
@@ -157,9 +160,9 @@ class TicketDetailController extends Controller
         $nik        = Auth::user()->nik;
         $role       = Auth::user()->role_id;
         
-        $ticketId       = $request['ticket_id'];
-        $agentId        = $request['agent_id'];
-        $updatedBy      = $request['updated_by'];
+        $ticketId       = decrypt($request['ticket_id']);
+        $agentId        = decrypt($request['agent_id']);
+        $updatedBy      = Auth::user()->nama;
 
         /** 
          * Cek status ticket (jika onprocess atau pending)
@@ -171,7 +174,7 @@ class TicketDetailController extends Controller
 
         // Mengatasi double penanganan / looping process
         if($statusTicket == "pending" || $countDetail == 1){
-            return redirect('/ticket-details'.'/'.$request['url'])->with('error', 'Ticket sudah anda tangani sebelumnya!');
+            return redirect()->route('ticket-detail.index', ['ticket_id' => encrypt($ticketId)])->with('error', 'Ticket sudah anda tangani sebelumnya!');
         }
 
         // Validating data request
@@ -358,8 +361,8 @@ class TicketDetailController extends Controller
         $progress_tickets = Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get();
 
         return view('contents.ticket_detail.edit', [
-            "title"                 => "Edit Detail Tindakan",
-            "path"                  => "Ticket",
+            "title"                 => "Edit Ticket Process",
+            "path"                  => "Ticket Process",
             "path2"                 => "Edit",
             "category_tickets"      => $category_tickets,
             "sub_category_tickets"  => $sub_category_tickets,
@@ -385,11 +388,9 @@ class TicketDetailController extends Controller
 
         $ticketDetail = Ticket_detail::where('id', $id)->first(); 
 
-        $ticketId       = $request['ticket_id'];
-        $agentId        = $request['agent_id'];
-        $oldFile        = $request['old_file'];
-        $newFile        = $request['file'];
-        $updatedBy      = $request['updated_by'];
+        $ticketId       = decrypt($request['ticket_id']);
+        $agentId        = decrypt($request['agent_id']);
+        $updatedBy      = Auth::user()->nama;
 
         // Validating data request
         $validatedData = $request->validate([
@@ -407,6 +408,9 @@ class TicketDetailController extends Controller
             $biaya = str_replace(',','',$request['biaya']);
         }
 
+        $newFile        = $request['file'];
+        $oldFile        = $request['old_file'];
+        
         if($newFile == NULL){
             $imageName = $oldFile;
         }else{

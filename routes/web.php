@@ -39,6 +39,7 @@ use App\Http\Controllers\SubCategoryTicketController;
 Route::get('/', [LoginController::class, 'index'])->middleware('guest')->name('login.index');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.auth');
 Route::post('/search-ticket', [SearchTicketController::class, 'show'])->middleware('guest')->name('search.ticket');
+Route::get('/ticket-shared', [SearchTicketController::class, 'shared'])->middleware('guest')->name('ticket.shared');
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('login.out');
 
 // Route Dashboard
@@ -77,6 +78,10 @@ Route::middleware(['auth', 'agent.info'])->group(function () {
     Route::put('/tickets/reProcess1', [TicketController::class, 'reProcess1'])->name('ticket.reProcess1');
     Route::get('/tickets/reProcess2', [TicketController::class, 'reProcess2'])->name('ticket.reProcess2');
     Route::put('/tickets/resolved', [TicketController::class, 'resolved'])->name('ticket.resolved');
+});
+
+Route::middleware(['auth', 'service.desk'])->group(function () {
+    Route::put('/tickets/assignAnother', [TicketController::class, 'assignAnother'])->name('ticket.assignAnother');
 });
 
 // Route Ticket (Role = Client)

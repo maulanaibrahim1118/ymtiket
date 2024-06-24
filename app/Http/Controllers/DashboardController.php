@@ -145,7 +145,7 @@ class DashboardController extends Controller
                     ->orderBy('sub_divisi', 'ASC')
                     ->get();
                 $data2          = Ticket::where([['ticket_for', $locationId],['status','created'],['is_queue', 'tidak'],['assigned', 'tidak']])->get();
-                $data3          = Ticket::where([['ticket_for', $locationId],['status','created'],['is_queue', 'ya']])->get();
+                $data3          = Ticket::where([['ticket_for', $locationId],['is_queue', 'ya']])->whereIn('status',['created', 'pending'])->get();
                 $filterArray    = ["", ""];
 
             // Jika Role Agent

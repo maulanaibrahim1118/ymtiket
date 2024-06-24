@@ -22,11 +22,22 @@ class AssetController extends Controller
     {
         // Get Lokasi User
         $locationId = Auth::user()->location_id;
+        $locationName = Auth::user()->location->nama_lokasi;
+        $roleId = Auth::user()->role_id;
 
-        // Jika user IT
-        if ($locationId == 10) {
-            $assets = Asset::all();
-        // Jika user selain IT
+        // Jika user Service Desk
+        if ($roleId == 1) {
+            if($locationId == 10) {
+                $assets = Asset::all();
+            }else{
+                $assets = Asset::where('location_id', $locationId)
+                    ->orWhere(function($query) use ($locationId, $locationName) {
+                        $query->where('location_id', '!=', $locationId)
+                                ->where('category_asset', $locationName);
+                    })
+                    ->get();
+            }
+        // Jika user Client
         } else {
             $assets = Asset::where('location_id', $locationId)->whereNotIn('status', ['tidak digunakan'])->get();
         }
@@ -71,6 +82,7 @@ class AssetController extends Controller
         // Validating data request
         $validatedData = $request->validate([
             'no_asset'          => 'required|max:20|unique:assets',
+            'category_asset'    => 'required',
             'item_id'           => 'required',
             'merk'              => 'required|max:30',
             'model'             => 'required|max:30',
@@ -85,6 +97,7 @@ class AssetController extends Controller
             'no_asset.required'         => 'Asset Number required!',
             'no_asset.max'              => 'Type maximum 20 characters!',
             'unique'                    => 'Asset Number already exists!',
+            'category_asset.required'   => 'Asset Category required!',
             'item_id.required'          => 'Item Name required!',
             'merk.required'             => 'Brand required!',
             'merk.max'                  => 'Type maximum 30 characters!',
@@ -162,13 +175,14 @@ class AssetController extends Controller
 
         // Validating data request
         $rules = [
-            'item_id'       => 'required',
-            'merk'          => 'required|max:30',
-            'model'         => 'required|max:30',
-            'serial_number' => 'required|max:30',
-            'status'        => 'required',
-            'location_id'   => 'required',
-            'updated_by'    => 'required'
+            'category_asset'    => 'required',
+            'item_id'           => 'required',
+            'merk'              => 'required|max:30',
+            'model'             => 'required|max:30',
+            'serial_number'     => 'required|max:30',
+            'status'            => 'required',
+            'location_id'       => 'required',
+            'updated_by'        => 'required'
         ];
 
         if($request->no_asset != $asset->no_asset){
@@ -181,6 +195,7 @@ class AssetController extends Controller
             'no_asset.required'         => 'Asset Number required!',
             'no_asset.max'              => 'Type maximum 20 characters!',
             'unique'                    => 'Asset Number already exists!',
+            'category_asset.required'   => 'Asset Category required!',
             'item_id.required'          => 'Item Name required!',
             'merk.required'             => 'Brand required!',
             'merk.max'                  => 'Type maximum 30 characters!',
@@ -269,7 +284,9 @@ class AssetController extends Controller
 
     public function getItem($id = 0)
     {
-        $data = Item::where('category_asset_id', $id)->get();
+        $ca = Category_asset::where('nama_kategori', $id)->first();
+        $caId = $ca->id;
+        $data = Item::where('category_asset_id', $caId)->get();
         return response()->json($data);
     }
 }

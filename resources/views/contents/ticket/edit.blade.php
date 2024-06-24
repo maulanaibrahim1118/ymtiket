@@ -31,9 +31,17 @@
                                             <option selected disabled>Choose...</option>
                                             @foreach($users as $user)
                                                 @if(old('user_id', $ticket->user_id) == $user->id)
-                                                <option selected value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
+                                                    @if($user->location->wilayah_id == 1 || $user->location->wilayah_id == 2)
+                                                    <option selected value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
+                                                    @else
+                                                    <option selected value="{{ $user->id }}">{{ $user->nik }} - {{ ucwords($user->nama) }}</option>
+                                                    @endif
                                                 @else
-                                                <option value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
+                                                    @if($user->location->wilayah_id == 1 || $user->location->wilayah_id == 2)
+                                                    <option value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
+                                                    @else
+                                                    <option value="{{ $user->id }}">{{ $user->nik }} - {{ ucwords($user->nama) }}</option>
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         </select>
@@ -151,7 +159,7 @@
                                     </div>
                                     
                                     <div class="col-md-3">
-                                        <label for="kendala" class="form-label">Submission</label>
+                                        <label for="kendala" class="form-label">Subject</label>
                                         <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="35" value="{{ old('kendala', $ticket->kendala) }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -163,7 +171,7 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label for="detail_kendala" class="form-label">Attachemnt</label>
+                                        <label for="detail_kendala" class="form-label">Attachment</label>
                                         <input type="file" name="file" id="file" accept=".jpeg, .jpg, .png, .gif, .doc, .docx, .pdf, .xls, .xlsx, .csv, .zip, .rar" class="form-control text-capitalize @error('file') is-invalid @enderror">
                                         <input type="text" name="old_file" value="{{ $ticket->file }}" hidden>
 
@@ -174,9 +182,9 @@
                                         </div>
                                         @enderror
                                         @if ($ticket->file == NULL)
-                                        Lampiran sebelumnya: Tidak ada
+                                        Previous attachment: None
                                         @else
-                                        Lampiran sebelumnya: <a href="#" data-bs-toggle="modal" data-bs-target="#lampiranModal">{{ $ticket->file }}</a>
+                                        Previous attachment: <a href="#" data-bs-toggle="modal" data-bs-target="#lampiranModal">{{ $ticket->file }}</a>
                                         @endif
                                     </div>
 
@@ -218,9 +226,6 @@
                                         </div>
                                         @enderror
                                     </div>
-
-                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                    <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
 
                                     <div class="col-md-12">
                                         <p class="border-bottom mt-2 mb-0"></p>

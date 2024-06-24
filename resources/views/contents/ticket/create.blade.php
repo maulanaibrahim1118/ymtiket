@@ -19,9 +19,17 @@
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($users as $user)
                                                 @if(old('user_id') == $user->id)
-                                                <option selected value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
+                                                    @if($user->location->wilayah_id == 1 || $user->location->wilayah_id == 2)
+                                                    <option selected value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
+                                                    @else
+                                                    <option selected value="{{ $user->id }}">{{ $user->nik }} - {{ ucwords($user->nama) }}</option>
+                                                    @endif
                                                 @else
-                                                <option value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
+                                                    @if($user->location->wilayah_id == 1 || $user->location->wilayah_id == 2)
+                                                    <option value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
+                                                    @else
+                                                    <option value="{{ $user->id }}">{{ $user->nik }} - {{ ucwords($user->nama) }}</option>
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         </select>
@@ -79,7 +87,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="kendala" class="form-label">Submission</label>
+                                        <label for="kendala" class="form-label">Subject</label>
                                         <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="35" value="{{ old('kendala') }}" required>
                                         
                                         <!-- Showing notification error for input validation -->
@@ -91,7 +99,7 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="detail_kendala" class="form-label">Attachnent</label>
+                                        <label for="detail_kendala" class="form-label">Attachment</label>
                                         <input type="file" name="file" id="file" accept=".jpeg, .jpg, .png, .gif, .doc, .docx, .pdf, .xls, .xlsx, .csv, .zip, .rar" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}" required>
 
                                         <!-- Showing notification error for input validation -->

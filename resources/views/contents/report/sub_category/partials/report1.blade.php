@@ -25,11 +25,11 @@
             <tr class="text-center align-middle">
                 <th>No</th>
                 <th style="width:500px">Sub Category</th>
+                <th>Total Average</th>
                 {{-- <th>Category</th> --}}
                 @foreach($agents as $agent)
                     <th>{{ ucwords($agent->nama_agent) }}</th>
                 @endforeach
-                <th>Total Average</th>
             </tr>
         </thead>
         <tbody>
@@ -41,6 +41,19 @@
                     <tr>
                         <td class="text-center">{{ $nomorUrut++ }}.</td>
                         <td>{{ ucwords($categoryName) }} - {{ $subCategoryName }}</td>
+                        @php
+                            $totalSeconds = round($agentData['totalAverage']);
+                            $hours = floor($totalSeconds / 3600);
+                            $minutes = floor(($totalSeconds % 3600) / 60);
+                            $seconds = $totalSeconds % 60;
+                        @endphp
+                        @if($totalSeconds != 0)
+                            <td class="text-end bg-info">
+                                {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                            </td>
+                        @else
+                            <td class="text-end">00:00:00</td>
+                        @endif
                         {{-- <td>{{ $categoryName }}</td> --}}
 
                         @foreach($agents as $agent)
@@ -59,20 +72,6 @@
                                 <td class="text-end">00:00:00</td>
                             @endif
                         @endforeach
-
-                        @php
-                            $totalSeconds = round($agentData['totalAverage']);
-                            $hours = floor($totalSeconds / 3600);
-                            $minutes = floor(($totalSeconds % 3600) / 60);
-                            $seconds = $totalSeconds % 60;
-                        @endphp
-                        @if($totalSeconds != 0)
-                            <td class="text-end bg-info">
-                                {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
-                            </td>
-                        @else
-                            <td class="text-end">00:00:00</td>
-                        @endif
                     </tr>
                 @endforeach
             @endforeach

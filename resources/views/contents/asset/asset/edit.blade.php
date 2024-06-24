@@ -29,20 +29,20 @@
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label for="category_asset_id" class="form-label">Category</label>
-                                        <select class="form-select @error('category_asset_id') is-invalid @enderror" name="category_asset_id" id="category_asset_id" required>
+                                        <label for="category_asset" class="form-label">Category</label>
+                                        <select class="form-select @error('category_asset') is-invalid @enderror" name="category_asset" id="category_asset" required>
                                             <option value="" disabled>Choose...</option>
                                             @foreach($category_assets as $ca)
-                                                @if(old('category_asset_id', $asset->id) == $ca->id)
-                                                <option selected value="{{ $ca->id }}">{{ ucwords($ca->nama_kategori) }}</option>
+                                                @if(old('category_asset', $asset->category_asset) == $ca->nama_kategori)
+                                                <option selected value="{{ $ca->nama_kategori }}">{{ ucwords($ca->nama_kategori) }}</option>
                                                 @else
-                                                <option value="{{ $ca->id }}">{{ ucwords($ca->nama_kategori) }}</option>
+                                                <option value="{{ $ca->nama_kategori }}">{{ ucwords($ca->nama_kategori) }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
 
                                         <!-- Showing notification error for input validation -->
-                                        @error('category_asset_id')
+                                        @error('category_asset')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -107,16 +107,24 @@
                                         @enderror
                                     </div>
 
-                                    @if(auth()->user()->location_id == 10)
+                                    @if(auth()->user()->role_id == 1)
                                     <div class="col-md-3">
                                         <label for="location_id" class="form-label">Location</label>
                                         <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location" required>
                                             <option selected value="" disabled>Choose...</option>
                                             @foreach($locations as $location)
                                                 @if(old('location_id', $asset->location_id) == $location->id)
-                                                <option selected value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
+                                                    @if($location->wilayah_id == 1 || $location->wilayah_id == 2)
+                                                    <option selected value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
+                                                    @else
+                                                    <option selected value="{{ $location->id }}">{{ $location->site }} - {{ ucwords($location->nama_lokasi) }}</option>
+                                                    @endif
                                                 @else
-                                                <option value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
+                                                    @if($location->wilayah_id == 1 || $location->wilayah_id == 2)
+                                                    <option value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
+                                                    @else
+                                                    <option value="{{ $location->id }}">{{ $location->site }} - {{ ucwords($location->nama_lokasi) }}</option>
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         </select>
@@ -178,7 +186,7 @@
     </section>
 
     <script>
-        $('#category_asset_id').change(function(){
+        $('#category_asset').change(function(){
             var category = $(this).val();
             var url = '{{ route("getItem", ":id") }}';
             url = url.replace(':id', category);

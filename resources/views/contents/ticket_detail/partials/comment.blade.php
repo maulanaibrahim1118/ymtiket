@@ -7,8 +7,7 @@
                     <div class="col-md-12">
                         <form action="/ticket-comments" method="POST">
                             @csrf
-                            <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
-                            <input type="text" name="ticket_id" value="{{ $ticket->id }}" hidden>
+                            <input type="text" name="ticket_id" value="{{ encrypt($ticket->id) }}" hidden>
                             <textarea name="komentar" class="form-control h-50" id="komentar" rows="4" placeholder="Type your comments..." required></textarea>
                             <!-- Showing notification error for input validation -->
                             @error('komentar')
@@ -16,7 +15,6 @@
                                 {{ $message }}
                             </div>
                             @enderror
-                            <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                             <a href="#"><button type="submit" class="btn btn-sm btn-primary float-end mt-2 ms-1"><i class="bi bi-send me-1"></i> Send</button></a>
                         </form>
                         @if(session()->has('commentSuccess'))

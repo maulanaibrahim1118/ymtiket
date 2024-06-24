@@ -3,8 +3,7 @@
     <form action="{{ route('ticket.resolved', ['id' => encrypt($ticket->id)]) }}" method="POST">
     @method('put')
     @csrf
-    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-    <input type="text" name="agent_id" value="{{ $ticket->agent_id }}" hidden>
+    <input type="text" name="agent_id" value="{{ encrypt($ticket->agent_id) }}" hidden>
     <button type="submit" class="btn btn-sm btn-primary float-end ms-1"><i class="bi bi-check-circle me-1"></i> Resolve</button>
     </form>
 
@@ -22,7 +21,6 @@
         <form action="{{ route('ticket.queue', ['id' => $ticket->id]) }}" method="post">
         @method('put')
         @csrf
-        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
         <input type="text" name="sub_divisi" value="none" hidden>
         <a href="#">
         <button type="submit" class="btn btn-sm btn-success float-end ms-1"><i class="bi bi-list-check me-1"></i> Queue</button>
@@ -33,7 +31,7 @@
     
     {{-- Tombol Assign --}}
     <button type="button" class="btn btn-sm btn-outline-dark float-end ms-1" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal"><i class="bx bx-share me-1"></i> Assign</button>
-    
+
 @elseif($ticket->status == "resolved")
     @can('isServiceDesk')
         {{-- Tombol Close --}}

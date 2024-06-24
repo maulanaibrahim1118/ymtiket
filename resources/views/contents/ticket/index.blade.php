@@ -31,19 +31,20 @@
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
                                 
                                 @can('manage-ticket')
+                                {{-- Service Desk & Client --}}
                                 <a href="/tickets/create"><button type="button" class="btn btn-primary" onclick="reloadAction()"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
                                 @endcan
 
                                 @can('isServiceDesk')
-                                @include('contents.ticket.partials.service_desk_content')
+                                @include('contents.ticket.service_desk.table')
                                 @endcan
 
                                 @can('isAgent')
-                                @include('contents.ticket.partials.agent_content')
+                                @include('contents.ticket.agent.table')
                                 @endcan
 
                                 @can('isClient')
-                                @include('contents.ticket.partials.client_content')
+                                @include('contents.ticket.client.table')
                                 @endcan
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->
@@ -52,6 +53,4 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
-    
-    <script src="{{ asset('dist/js/refresh-page-interval.js') }}"></script>
 @endsection

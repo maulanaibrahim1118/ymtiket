@@ -63,6 +63,8 @@ class ReportAgentController extends Controller
                 $agent->ticket_per_day = round($totalTicket/$uniqueDates);
                 $agent->hour_per_day = round($workHour/$uniqueDates);
             }
+
+            $agent->percentage = round(($agent->hour_per_day/28800)*100);
             
             // Report 4
             $agent->avg_permintaan = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'permintaan')->average('processed_time');

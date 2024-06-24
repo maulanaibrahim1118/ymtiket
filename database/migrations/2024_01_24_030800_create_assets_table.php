@@ -16,6 +16,7 @@ class CreateAssetsTable extends Migration
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
             $table->string('no_asset', 15)->unique();
+            $table->string('category_asset', 50);
             $table->bigInteger('item_id', 20);
             $table->string('merk', 30);
             $table->string('model', 30);

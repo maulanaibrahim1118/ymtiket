@@ -7,20 +7,30 @@
                     <div class="col-12">
                         <div class="card info-card mb-4">
                             <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }}</h5>
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>Ticket Details</h5>
+                                
+                                <div class="row g-3 mb-3" style="font-size: 14px">
+                                    @include('contents.ticket_detail.partials.ticketInfo')
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card info-card mb-4">
+                            <div class="card-body pb-0">
+                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-ticket-perforated me-2"></i>{{ $title }} <span class="text-secondary">| {{ $ticket->no_ticket }}</h5>
                                 
                                 <div class="row g-3 mb-3 pt-3" style="font-size: 14px">
-                                    @include('contents.ticket_detail.partials.ticketInfo')
-
-                                    <div class="col-md-12">
-                                        <p class="border-bottom mt-1 mb-0"></p>
-                                    </div>
                         
                                     <form class="row" action="/ticket-details/process" method="POST" enctype="multipart/form-data" onsubmit="return formValidation()">
                                         @csrf
                                         <div class="col-md-12 mb-0" style="font-size: 14px">
                                             <div class="table-responsive mt-2">
-                                                <p class="mb-2">Your Ticket Processing Details :</p>
                                                 <table class="table table-bordered">
                                                     <thead class="fw-bold text-center">
                                                         <tr>
@@ -111,7 +121,7 @@
                                                         </script>
                                                         </tr>
                                                         <tr>
-                                                            <td class="fw-bold text-center align-middle">Action Suggestion*</td>
+                                                            <td class="fw-bold text-center align-middle">Action*</td>
                                                             <td colspan="3">
                                                             <textarea name="note" class="form-control @error('note') is-invalid @enderror" id="note" rows="3" placeholder="Type your action suggestion..." required>{{ old('note') }}</textarea>
 
@@ -141,13 +151,8 @@
                                             </div>
                                         </div>
 
-                                        <input name="ticket_id" id="ticket_id" value="{{ $ticket->id }}" hidden>
-                                        <input name="no_ticket" id="no_ticket" value="{{ $ticket->no_ticket }}" hidden>
-                                        <input name="agent_id" id="agent_id" value="{{ $ticket->agent_id }}" hidden>
-                                        <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                        <input type="text" name="user_id" value="{{ auth()->user()->id }}" hidden>
-                                        <input type="text" name="url" value="{{ encrypt($ticket->id) }}" hidden>
-                                        <input type="text" name="status" value="onprocess" hidden>
+                                        <input name="ticket_id" id="ticket_id" value="{{ encrypt($ticket->id) }}" hidden>
+                                        <input name="agent_id" id="agent_id" value="{{ encrypt($ticket->agent_id) }}" hidden>
                                         <input type="text" name="process_at" value="{{ $ticket->process_at }}" hidden>
 
                                         <div class="col-md-12">

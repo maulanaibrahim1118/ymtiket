@@ -174,7 +174,7 @@ class FilterController extends Controller
                     ->orderBy('sub_divisi', 'ASC')
                     ->get();
                 $data2          = Ticket::where([['ticket_for', $locationId],['status','created'],['is_queue', 'tidak'],['assigned', 'tidak'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->get();
-                $data3          = Ticket::where([['ticket_for', $locationId],['status','created'],['is_queue', 'ya'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->get();
+                $data3          = Ticket::where([['ticket_for', $locationId],['is_queue', 'ya'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereIn('status',['created', 'pending'])->get();
                 $filterArray    = [$filter1, $filter2];
 
             // Jika role Agent
@@ -302,7 +302,7 @@ class FilterController extends Controller
             $agent->avg_finish = $agent->ticket->pluck('ticket_detail.processed_time')->average();
             
             // Report 3
-            $totalTicket = $agent->ticket_details_count;
+            $totalTicket = $agent->ticket_details->count();
             $workHour = $agent->ticket_details->sum('processed_time');
             $uniqueDates = $agent->ticket_details->pluck('created_at')
                                         ->map(function($date) {
@@ -328,6 +328,7 @@ class FilterController extends Controller
                 $agent->ticket_per_day = round($totalTicket/$uniqueDates);
                 $agent->hour_per_day = round($workHour/$uniqueDates);
             }
+            $agent->percentage = round(($agent->hour_per_day/28800)*100);
             
             // Report 4
             $agent->avg_permintaan = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'permintaan')->average('processed_time');

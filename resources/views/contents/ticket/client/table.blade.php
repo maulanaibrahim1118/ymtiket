@@ -5,7 +5,7 @@
                 <th scope="col">CREATED AT</th>
                 <th scope="col">TICKET NUMBER</th>
                 <th scope="col">CLIENT</th>
-                <th scope="col">SUBMISSION</th>
+                <th scope="col">SUBJECT</th>
                 <th scope="col">DETAILS</th>
                 <th scope="col">AGENT</th>
                 <th scope="col">NOTE</th>
@@ -33,19 +33,7 @@
                 @endif
 
                 {{-- Kolom Status --}}
-                @if($ticket->status == 'created')
-                    <td><span class="badge bg-secondary">{{ $ticket->status }}</span></td>
-                @elseif($ticket->status == 'onprocess')
-                    <td><span class="badge bg-warning">{{ $ticket->status }}</span></td>
-                @elseif($ticket->status == 'pending')
-                    <td><span class="badge bg-danger">{{ $ticket->status }}</span></td>
-                @elseif($ticket->status == 'resolved')
-                    <td><span class="badge bg-primary">{{ $ticket->status }}</span></td>
-                @elseif($ticket->status == 'finished')
-                    <td><span class="badge bg-success">{{ $ticket->status }}</span></td>
-                @else
-                    <td><span class="badge bg-danger">{{ $ticket->status }}</span></td>
-                @endif
+                @include('contents.ticket.partials.status_column')
 
                 {{-- Kolom Aksi --}}
                 <td class="dropdown">
@@ -61,11 +49,11 @@
                                 <li><a class="dropdown-item text-capitalize text-warning" href="{{ route('ticket.edit', ['id' => encrypt($ticket->id)]) }}" onclick="reloadAction()"><i class="bi bi-pencil-square text-warning"></i>
                                     Edit</a>
                                 </li>
+                                
                                 {{-- Tombol Hapus --}}
                                 <form action="{{ route('ticket.delete', ['id' => encrypt($ticket->id)]) }}" method="POST">
                                 @method('put')
                                 @csrf
-                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                 <li><button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger"></i>Delete</button></li>
                                 </form>
                             @else {{-- Jika ticket dibuatkan oleh service desk --}}

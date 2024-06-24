@@ -14,10 +14,10 @@ class TicketApprovalController extends Controller
     public function update(Request $request)
     {
         // Get input request
-        $approved   = $request['status'];
-        $reason     = $request['reason'];
-        $ticketId   = $request['ticket_id'];
-        $updatedBy  = $request['updated_by'];
+        $approved   = decrypt($request['status']);
+        $reason     = decrypt($request['reason']);
+        $ticketId   = decrypt($request['ticket_id']);
+        $updatedBy  = Auth::user()->nama;
 
         // Get waktu saat ini
         $now = date('d-m-Y H:i:s');
@@ -69,7 +69,7 @@ class TicketApprovalController extends Controller
             // Saving data to progress ticket table
             $progress_ticket                = new Progress_ticket;
             $progress_ticket->ticket_id     = $ticketId;
-            $progress_ticket->tindakan      = "Ticket ".$statusApproval." oleh ".ucwords($request['updated_by']);
+            $progress_ticket->tindakan      = "Ticket ".$statusApproval." oleh ".ucwords($updatedBy);
             $progress_ticket->process_at    = $now;
             $progress_ticket->status        = $statusTicket;
             $progress_ticket->updated_by    = $updatedBy;
@@ -81,7 +81,7 @@ class TicketApprovalController extends Controller
             // Saving data to progress ticket table
             $progress_ticket                = new Progress_ticket;
             $progress_ticket->ticket_id     = $ticketId;
-            $progress_ticket->tindakan      = "Ticket ".$statusApproval." oleh ".ucwords($request['updated_by']);
+            $progress_ticket->tindakan      = "Ticket ".$statusApproval." oleh ".ucwords($updatedBy);
             $progress_ticket->process_at    = $now;
             $progress_ticket->status        = $statusTicket;
             $progress_ticket->updated_by    = $updatedBy;

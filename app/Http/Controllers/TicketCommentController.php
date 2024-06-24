@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Comment;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TicketCommentController extends Controller
 {
@@ -36,20 +37,23 @@ class TicketCommentController extends Controller
     public function store(Request $request)
     {
         // Get ID Ticket
-        $ticketId = $request['ticket_id'];
+        $ticketId = decrypt($request['ticket_id']);
 
         // Validating data request
         $validatedData = $request->validate([
-            'user_id'       => 'required',
             'ticket_id'     => 'required',
             'komentar'      => 'required',
-            'updated_by'    => 'required'
         ],
 
         // Create custom notification for the validation request
         [
             'komentar.required' => 'Comment required!',
         ]);
+
+        // Menambahkan data statis langsung ke array $validatedData
+        $validatedData['ticket_id'] = $ticketId;
+        $validatedData['updated_by'] = Auth::user()->nama;
+        $validatedData['user_id'] = Auth::user()->id;
 
         // Simpan data Comment sesuai request yang telah di validasi
         Comment::create($validatedData);

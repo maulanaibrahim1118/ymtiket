@@ -23,7 +23,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" id="modalContent4">
             <div class="modal-header">
-                <h5 class="modal-title">.:: Choose Agent Sub Division</h5>
+                <h5 class="modal-title">.:: Queue Ticket</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="/tickets/queue" method="post">
@@ -53,11 +53,10 @@
                         @endif
                     </select>
                 </div>
-                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                <input type="text" id="ticket_id" name="id" value="{{ $ticket->id }}" hidden>
+                <input type="text" id="ticket_id" name="id" value="{{ encrypt($ticket->id) }}" hidden>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Queue</button>
+                <button type="submit" class="btn btn-primary" onclick="reloadAction()"><i class="bi bi-list-check me-2"></i>Queue</button>
             </div>
             </form>
         </div>
@@ -69,7 +68,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" id="modalContent4">
             <div class="modal-header">
-                <h5 class="modal-title">.:: Choose Agent</h5>
+                <h5 class="modal-title">.:: Assign Ticket</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="/tickets/assign2" method="post">
@@ -89,18 +88,51 @@
                         @endforeach
                     </select>
                 </div>
-                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                <input type="text" id="ticket_id" name="ticket_id" value="{{ $ticket->id }}" hidden>
-                <input type="text" id="agent_id1" name="agent_id1" value="{{ $ticket->agent_id }}" hidden>
-                <input type="text" id="url" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role_id) }}" hidden>
+                <input type="text" id="ticket_id" name="ticket_id" value="{{ encrypt($ticket->id) }}" hidden>
+                <input type="text" id="agent_id1" name="agent_id1" value="{{ encrypt($ticket->agent_id) }}" hidden>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary"><i class="bx bx-share me-2"></i>Assign</button>
+                <button type="submit" class="btn btn-primary" onclick="reloadAction()"><i class="bx bx-share me-2"></i>Assign</button>
             </div>
             </form>
         </div>
     </div>
 </div><!-- End Assign Modal-->
+
+{{-- Assign Another Modal --}}
+<div class="modal fade" id="assignAnotherModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="modalContent4">
+            <div class="modal-header">
+                <h5 class="modal-title">.:: Assign Ticket To Another Division</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/tickets/assignAnother" method="post">
+            @method("put")
+            @csrf
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <label for="ticket_for" class="form-label">Division Name</label>
+                    <select class="form-select" name="ticket_for" id="ticket_for" required>
+                        <option selected disabled>Choose...</option>
+                        @foreach($ticketFors as $ticketFor)
+                            @if(old("ticket_for") == $ticketFor->location_id)
+                            <option selected value="{{ $ticketFor->location_id }}">{{ ucwords($ticketFor->location->nama_lokasi) }}</option>
+                            @else
+                            <option value="{{ $ticketFor->location_id }}">{{ ucwords($ticketFor->location->nama_lokasi) }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+                <input type="text" id="ticket_id" name="ticket_id" value="{{ encrypt($ticket->id) }}" hidden>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" onclick="reloadAction()"><i class="bx bx-share me-2"></i>Assign</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div><!-- End Assign Another Modal-->
 
 {{-- Pending Modal --}}
 <div class="modal fade" id="pendingModal" tabindex="-1">
@@ -117,12 +149,9 @@
                 <div class="col-md-12">
                     <textarea name="alasanPending" class="form-control @error('alasanPending') is-invalid @enderror" id="alasanPending" rows="3" placeholder="Type your pending reason...">{{ old('alasanPending') }}</textarea>
                 </div>
-                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                <input type="text" name="nik" value="{{ auth()->user()->nik }}" hidden>
-                <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role_id) }}" hidden>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-danger"><i class="bi bi-stop-circle me-2"></i>Pending</button>
+                <button type="submit" class="btn btn-danger" onclick="reloadAction()"><i class="bi bi-stop-circle me-2"></i>Pending</button>
             </div>
             </form>
         </div>
@@ -150,11 +179,9 @@
                 <div class="col-md-12">
                     <textarea name="alasanClosed" class="form-control" id="alasanClosed" rows="3" placeholder="Type your additional informations (optional)">{{ old('alasanClosed') }}</textarea>
                 </div>
-                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                <input type="text" name="url" value="/tickets/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role_id) }}" hidden>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Send</button>
+                <button type="submit" class="btn btn-primary" onclick="reloadAction()"><i class="bi bi-send me-2"></i>Send</button>
             </div>
             </form>
         </div>
