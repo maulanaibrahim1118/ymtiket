@@ -210,6 +210,9 @@
                                             </a>
                                             </form>
                                         </li>
+
+                                        {{-- Tombol Assign --}}
+                                        <li><button class="dropdown-item text-capitalize" id="assignButton" data-bs-toggle="modal" data-bs-target="#assignModal" name="{{ encrypt($ticket->id) }}" value="{{ $ticket->location->wilayah_id }}" onclick="tampilkanData2(this)"><i class="bx bx-share text-secondary"></i>Assign</button></li>
                                     @endif
                                 @endif
                         

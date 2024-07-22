@@ -124,9 +124,9 @@ class TicketDetailController extends Controller
         // Mencari extension file
         $ext = substr($ticket->file, -4);
 
-        $category_tickets = Category_ticket::where('location_id', $locationId)->orderBy('nama_kategori', 'ASC')->get();
+        $category_tickets = Category_ticket::where('location_id', $locationId)->whereNotIn('nama_kategori', ['none'])->orderBy('nama_kategori', 'ASC')->get();
         $progress_tickets = Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get();
-        $sub_category_tickets = Sub_category_ticket::all();
+        $sub_category_tickets = Sub_category_ticket::whereNotIn('nama_sub_kategori', ['none'])->orderBy('nama_sub_kategori', 'ASC')->get();
 
         return view('contents.ticket_detail.create', [
             "title"                 => "Ticket Process",
@@ -356,8 +356,8 @@ class TicketDetailController extends Controller
         // Mencari extension file
         $ext = substr($ticket->file, -4);
 
-        $category_tickets = Category_ticket::where('location_id', $locationId)->orderBy('nama_kategori', 'ASC')->get();
-        $sub_category_tickets = Sub_category_ticket::where('category_ticket_id', $categoryId)->orderBy('nama_sub_kategori', 'ASC')->get();
+        $category_tickets = Category_ticket::where('location_id', $locationId)->whereNotIn('nama_kategori', ['none'])->orderBy('nama_kategori', 'ASC')->get();
+        $sub_category_tickets = Sub_category_ticket::where('category_ticket_id', $categoryId)->whereNotIn('nama_sub_kategori', ['none'])->orderBy('nama_sub_kategori', 'ASC')->get();
         $progress_tickets = Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get();
 
         return view('contents.ticket_detail.edit', [

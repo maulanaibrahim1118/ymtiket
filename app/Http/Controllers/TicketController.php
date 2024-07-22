@@ -607,7 +607,7 @@ class TicketController extends Controller
             "title"                 => "Ticket Process",
             "path"                  => "Ticket",
             "path2"                 => "Process",
-            "category_tickets"      => Category_ticket::all(),
+            "category_tickets"      => Category_ticket::whereNotIn('nama_kategori', ['none'])->get(),
             "sub_category_tickets"  => Sub_category_ticket::where('category_ticket_id', $categoryId)->get(),
             "progress_tickets"      => Progress_ticket::where('ticket_id', $id)->orderBy('created_at', 'DESC')->get(),
             "ticket"                => Ticket::where('id', $id)->first(),
@@ -1050,6 +1050,8 @@ class TicketController extends Controller
         $agentId = $agent->id;
         $ticket = Ticket::where('id', $id)->first();
         $ticketDetail = Ticket_detail::where('ticket_id', $id)->latest()->first();
+        $none = Sub_category_ticket::where('nama_sub_kategori', 'none')->first();
+        $defaultSubCategory = $none->id;
 
         Ticket::where('id', $id)->update([
             'is_queue'  => "tidak",
@@ -1059,49 +1061,42 @@ class TicketController extends Controller
         if($ticket->status == "created"){
             Ticket::where('id', $id)->update([
                 'agent_id'      => $agentId,
-                'status'        => "onprocess",
-                'assigned'      => "tidak",
-                'process_at'    => $now,
                 'updated_by'    => $updatedBy
             ]);
 
             // Saving data to progress ticket table
             $progress_ticket                = new Progress_ticket;
             $progress_ticket->ticket_id     = $id;
-            $progress_ticket->tindakan      = "Ticket di tarik kembali dan di proses oleh ".ucwords($updatedBy);
+            $progress_ticket->tindakan      = "Ticket di tarik kembali oleh ".ucwords($updatedBy);
             $progress_ticket->status        = "assigned";
             $progress_ticket->process_at    = $now;
             $progress_ticket->updated_by    = $updatedBy;
             $progress_ticket->save();
         
-            return redirect()->route('ticket-detail.create', ['ticket_id' => encrypt($id)]);
+            return redirect('/tickets')->with('success', 'Ticket successfully pulled!');
         }else{
             $now = Carbon::parse($now);
 
             if($ticket->status == "onprocess"){
                 if($ticketDetail == NULL){
-                    // Mencari waktu pending ticket agent
-                    $pendingAt = Carbon::parse($ticket->process_at);
-                    $pendingTime = $pendingAt->diffInSeconds($now);
+                    // Mencari waktu proses ticket agent
+                    $processAt = Carbon::parse($ticket->process_at);
+                    $processedTime = $processAt->diffInSeconds($now);
 
-                    Ticket::where('id', $id)->update([
-                        'agent_id'      => $agentId,
-                        'status'        => "onprocess",
-                        'process_at'    => $now,
-                        'pending_time'  => $pendingTime,
-                        'updated_by'    => $updatedBy
-                    ]);
-
-                    // Saving data to progress ticket table
-                    $progress_ticket                = new Progress_ticket;
-                    $progress_ticket->ticket_id     = $id;
-                    $progress_ticket->tindakan      = "Ticket di ambil alih dan di proses oleh ".ucwords($updatedBy);
-                    $progress_ticket->status        = "assigned";
-                    $progress_ticket->process_at    = $now;
-                    $progress_ticket->updated_by    = $updatedBy;
-                    $progress_ticket->save();
-
-                    return redirect()->route('ticket-detail.create', ['ticket_id' => encrypt($id)]);
+                    // Saving data to ticket_detail table
+                    $ticket_detail                          = new Ticket_detail;
+                    $ticket_detail->ticket_id               = $id;
+                    $ticket_detail->jenis_ticket            = "none";
+                    $ticket_detail->sub_category_ticket_id  = $defaultSubCategory;
+                    $ticket_detail->agent_id                = $ticket->agent_id;
+                    $ticket_detail->process_at              = $ticket->process_at;
+                    $ticket_detail->pending_at              = "-";
+                    $ticket_detail->processed_time          = $processedTime;
+                    $ticket_detail->note                    = "No saved action history";
+                    $ticket_detail->file                    = null;
+                    $ticket_detail->status                  = "assigned";
+                    $ticket_detail->updated_by              = $updatedBy;
+                    $ticket_detail->save();
                 }else{
                     $ticketDetailId = $ticketDetail->id;
                     
@@ -1114,32 +1109,32 @@ class TicketController extends Controller
                         $processedTime2 = $processAt->diffInSeconds($now);
                         $processedTime = ($processedTime1+$processedTime2)-$pendingTime1;
                         
-                        Ticket::where('id', $id)->update([
-                            'agent_id'      => $agentId,
-                            'status'        => "onprocess",
-                            'process_at'    => $now,
-                            'updated_by'    => $updatedBy
-                        ]);
-                        
                         Ticket_detail::where('id', $ticketDetailId)->update([
                             'status'            => 'assigned',
                             'processed_time'    => $processedTime,
                             'updated_by'        => $updatedBy
                         ]);
 
-                    // Jika status onprocess namun agent belum melakukan tindakan apapun (dianggap pending)
+                    // Jika status onprocess namun agent belum melakukan tindakan apapun
                     }else{
-                        // Mencari waktu pending ticket agent
-                        $pendingAt = Carbon::parse($ticket->process_at);
-                        $pendingTime = $pendingAt->diffInSeconds($now);
+                        // Mencari waktu proses ticket agent
+                        $processAt = Carbon::parse($ticket->process_at);
+                        $processedTime = $processAt->diffInSeconds($now);
 
-                        Ticket::where('id', $id)->update([
-                            'agent_id'      => $agentId,
-                            'status'        => "onprocess",
-                            'process_at'    => $now,
-                            'pending_time'  => $pendingTime,
-                            'updated_by'    => $updatedBy
-                        ]);
+                        // Saving data to ticket_detail table
+                        $ticket_detail                          = new Ticket_detail;
+                        $ticket_detail->ticket_id               = $id;
+                        $ticket_detail->jenis_ticket            = "none";
+                        $ticket_detail->sub_category_ticket_id  = $defaultSubCategory;
+                        $ticket_detail->agent_id                = $ticket->agent_id;
+                        $ticket_detail->process_at              = $ticket->process_at;
+                        $ticket_detail->pending_at              = "-";
+                        $ticket_detail->processed_time          = $processedTime;
+                        $ticket_detail->note                    = "No saved action history";
+                        $ticket_detail->file                    = null;
+                        $ticket_detail->status                  = "assigned";
+                        $ticket_detail->updated_by              = $updatedBy;
+                        $ticket_detail->save();
                     }
                 }
             }else{ // Jika Pending
@@ -1174,14 +1169,6 @@ class TicketController extends Controller
                 $processedTime2 = $processAt->diffInSeconds($now);
                 $processedTime = ($processedTime1+$processedTime2)-$pendingTime;
 
-                Ticket::where('id', $id)->update([
-                    'agent_id'      => $agentId,
-                    'status'        => "onprocess",
-                    'process_at'    => $now,
-                    'pending_time'  => $ticketPending,
-                    'updated_by'    => $updatedBy
-                ]);
-                
                 Ticket_detail::where('id', $ticketDetailId)->update([
                     'status'            => 'assigned',
                     'processed_time'    => $processedTime,
@@ -1190,41 +1177,24 @@ class TicketController extends Controller
                 ]);
             }
 
+            Ticket::where('id', $id)->update([
+                'agent_id'      => $agentId,
+                'status'        => "pending",
+                'assigned'      => "ya",
+                'pending_at'    => $now,
+                'updated_by'    => $updatedBy
+            ]);
+
             // Saving data to progress ticket table
             $progress_ticket                = new Progress_ticket;
             $progress_ticket->ticket_id     = $id;
-            $progress_ticket->tindakan      = "Ticket di ambil alih dan di proses oleh ".ucwords($updatedBy);
+            $progress_ticket->tindakan      = "Ticket di tarik kembali oleh ".ucwords($updatedBy);
             $progress_ticket->status        = "assigned";
             $progress_ticket->process_at    = $now;
             $progress_ticket->updated_by    = $updatedBy;
             $progress_ticket->save();
 
-            $subCategoryId  = $ticketDetail->sub_category_ticket_id;
-        
-            // Mencari Category Ticket terakhir yang diproses agent sebelumnya
-            $subCategory    = Sub_category_ticket::where('id', $subCategoryId)->first();
-            $categoryId     = $subCategory->category_ticket_id;
-
-            // Data Array unutk select option
-            $types  = ["kendala", "permintaan"];
-            
-            // Mencari extension file
-            $ext = substr($ticket->file, -4);
-
-            return view('contents.ticket_detail.create2', [
-                "title"                 => "Ticket Process",
-                "path"                  => "Ticket",
-                "path2"                 => "Process",
-                "category_tickets"      => Category_ticket::all(),
-                "sub_category_tickets"  => Sub_category_ticket::where('category_ticket_id', $categoryId)->get(),
-                "progress_tickets"      => Progress_ticket::where('ticket_id', $id)->orderBy('created_at', 'DESC')->get(),
-                "ticket"                => Ticket::where('id', $id)->first(),
-                "td"                    => Ticket_detail::where('ticket_id', $id)->latest()->first(),
-                "countDetail"           => Ticket_detail::where('ticket_id', $id)->count(),
-                "ticket_details"        => Ticket_detail::where('ticket_id', $id)->get(),
-                "types"                 => $types,
-                "ext"                   => $ext,
-            ]);
+            return redirect('/tickets')->with('success', 'Ticket successfully pulled!');
         }
     }
 
@@ -1409,7 +1379,7 @@ class TicketController extends Controller
                     "title"                 => "Ticket Process",
                     "path"                  => "Ticket",
                     "path2"                 => "Process",
-                    "category_tickets"      => Category_ticket::all(),
+                    "category_tickets"      => Category_ticket::whereNotIn('nama_kategori', ['none'])->get(),
                     "sub_category_tickets"  => Sub_category_ticket::where('category_ticket_id', $categoryId)->get(),
                     "progress_tickets"      => Progress_ticket::where('ticket_id', $id)->orderBy('created_at', 'DESC')->get(),
                     "ticket"                => Ticket::where('id', $id)->first(),
