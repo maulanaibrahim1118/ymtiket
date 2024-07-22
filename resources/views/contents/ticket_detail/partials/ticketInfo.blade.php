@@ -149,7 +149,7 @@
             </tr>
             <tr>
                 <th class="col-md-1 fw-bold bg-light text-start ps-3">Details</th>
-                <td colspan="2" class="text-start ps-3">{{ ucfirst($ticket->detail_kendala) }}</td>
+                <td colspan="2" class="text-start ps-3">{!! nl2br(e($ticket->detail_kendala)) !!}</td>
             </tr>
         </tbody>
     </table>

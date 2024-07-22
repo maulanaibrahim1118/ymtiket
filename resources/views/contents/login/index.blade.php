@@ -27,46 +27,6 @@
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('dist/css/style.css') }}" rel="stylesheet">
-
-    <!-- Javascript -->
-    <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
-    
-    <script type="text/javascript">
-        var myVar;
-
-        // Mengatur waktu loading halaman
-        function preloader() {
-            myVar = setTimeout(showPage, 300);
-        }
-
-        // Mengatur urutan tampilan setelah loading selesai
-        function showPage() {
-            document.getElementById("preloader").style.display = "none";
-            document.getElementById("preloader").style.display = "none";
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("status").style.display = "none";
-            document.getElementById("content").style.display = "block";
-        }
-
-        // Menampilkan dan menyembunyikan Password
-        function myFunction() {
-            var x = document.getElementById("password");
-            if (x.type === "password") {
-                x.type = "text";
-            } else {
-                x.type = "password";
-            }
-        }
-
-        // // Menampilkan informasi pendaftaran akun
-        // function register() {
-        //     swal({
-        //         title: "Mohon Maaf",
-        //         text: "Silakan hubungi Staff IT untuk Daftar Akun!",
-        //         icon: "info",
-        //     });
-        // }
-    </script>
 </head>
 <body onload="preloader()">
     <div class="container-fluid position-absolute top-50 start-50 translate-middle">
@@ -81,36 +41,6 @@
                 <div class="container">
                     <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center">
                         <div class="container">
-                            <!-- Showing Notification Login Error -->
-                            @if(session()->has('success'))
-                            <script>
-                                swal("Success!", "{{ session('success') }}", "success", {
-                                    timer: 3000
-                                });
-                            </script>
-                            @endif
-                            @if(session()->has('loginError'))
-                            <script>
-                                swal("Login Failed!", "{{ session('loginError') }}", "warning", {
-                                    timer: 3000
-                                });
-                            </script>
-                            @endif
-                            @if(session()->has('error'))
-                            <script>
-                                swal("Failed!", "{{ session('error') }}", "warning", {
-                                    timer: 3000
-                                });
-                            </script>
-                            @endif
-                            @if(session()->has('error-419'))
-                            <script>
-                                swal("Page Expired!", "{{ session('error-419') }}", "info", {
-                                    timer: 3000
-                                });
-                            </script>
-                            @endif
-                            
                             <div class="row justify-content-center">
                                 <div class="col-lg-5 col-md-6 d-flex flex-column align-items-center justify-content-center">
                                     
@@ -207,17 +137,75 @@
             </div>
         </div>
     </div>
+
     <!-- Vendor JS Files -->
-    <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/chart.js/chart.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/echarts/echarts.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/quill/quill.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/simple-datatables/simple-datatables.js') }}"></script>
-    <script src="{{ asset('dist/vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/php-email-form/validate.js') }}"></script>
+    <script src="{{ asset('dist/vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/echarts/echarts.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/chart.js/chart.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
 
     <!-- Template Main JS File -->
     <script src="{{ asset('dist/js/main.js') }}"></script>
+
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            // Tunggu hingga halaman benar-benar dimuat
+            window.onload = function() {
+                showPage();
+            };
+        });
+
+        function showPage() {
+            document.getElementById("content").style.display = "block";
+            document.getElementById("preloader").style.display = "none";
+        }
+    </script>
+
+    <!-- Showing Notification Login Error -->
+    @if(session()->has('success'))
+    <script>
+        swal("Success!", "{{ session('success') }}", "success", {
+            timer: 3000
+        });
+    </script>
+    @endif
+    @if(session()->has('loginError'))
+    <script>
+        swal("Login Failed!", "{{ session('loginError') }}", "warning", {
+            timer: 3000
+        });
+    </script>
+    @endif
+    @if(session()->has('error'))
+    <script>
+        swal("Failed!", "{{ session('error') }}", "warning", {
+            timer: 3000
+        });
+    </script>
+    @endif
+    @if(session()->has('error-419'))
+    <script>
+        swal("Page Expired!", "{{ session('error-419') }}", "info", {
+            timer: 3000
+        });
+    </script>
+    @endif
+
+    <script type="text/javascript">
+        // Menampilkan dan menyembunyikan Password
+        function myFunction() {
+            var x = document.getElementById("password");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    </script>
 </body>
 </html>

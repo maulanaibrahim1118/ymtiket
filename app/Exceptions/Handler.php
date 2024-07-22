@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
-            return redirect('/')->with('error-419', 'Sesi anda telah berakhir. Silakan login kembali.');
+            return redirect('/')->with('error-419', 'Session has been expired. please log in again.');
         }
         
         return parent::render($request, $exception);

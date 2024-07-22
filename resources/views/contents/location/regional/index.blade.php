@@ -13,7 +13,9 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-geo-alt me-2"></i>{{ $title }}</h5>
                                 
+                                @can('isActor')
                                 <a href="{{ route('regional.create') }}"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
+                                @endcan
 
                                 <div class="table-responsive">
                                     <table class="table datatable table-hover">
@@ -21,7 +23,9 @@
                                             <tr>
                                                 <th scope="col">REGIONAL NAME</th>
                                                 <th scope="col">AREA</th>
+                                                @can('isActor')
                                                 <th scope="col">ACTION</th>
+                                                @endcan
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -29,6 +33,7 @@
                                             <tr>
                                             <td>{{ $regional->name }}</td>
                                             <td>{{ $regional->area->name }}</td>
+                                            @can('isActor')
                                             <td class="dropdown">
                                                 {{-- Tombol Hapus --}}
                                                 <form action="{{ route('regional.delete', ['id' => encrypt($regional->id)]) }}" onsubmit="return confirmAction()" method="POST">
@@ -38,6 +43,7 @@
                                                 <button type="submit" class="dropdown-item text-capitalize text-danger"><i class="bx bx-trash text-danger me-1"></i>Delete</button>
                                                 </form>
                                             </td>
+                                            @endcan
                                             </tr>
                                             @endforeach
                                         </tbody>

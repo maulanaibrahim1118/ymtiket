@@ -1,3 +1,4 @@
+<p class="text-secondary"><i class="bi bi-info-circle me-2"></i>Calculated based on Ticket Processed At by the Agents.</p>
 <div class="table-responsive">
     <table class="table table-bordered table-hover">
         <thead class="bg-light" style="height: 45px;font-size:14px;">
@@ -7,11 +8,11 @@
             </tr>
             @endif
             <tr class="text-center align-middle">
-            <th rowspan="2">NO</th>
-            <th rowspan="2">NIK</th>
-            <th rowspan="2">NAMA AGENT</th>
-            <th rowspan="2">SUB DIVISI</th>
-            <th colspan="2">RATA-RATA</th>
+            <th rowspan="2">#</th>
+            <th rowspan="2">EMPLOYEE NUMBER</th>
+            <th rowspan="2">AGENT NAME</th>
+            <th rowspan="2">SUB DIVISION</th>
+            <th colspan="2">AVERAGE</th>
             <th rowspan="2" class="col-md-1">PERCENTAGE (HOUR/DAY)</th>
             </tr>
             <tr class="text-center align-middle">

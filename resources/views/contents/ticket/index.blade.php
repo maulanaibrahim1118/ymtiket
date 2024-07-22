@@ -32,7 +32,9 @@
                                 
                                 @can('manage-ticket')
                                 {{-- Service Desk & Client --}}
+                                @can('isActor')
                                 <a href="/tickets/create"><button type="button" class="btn btn-primary" onclick="reloadAction()"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
+                                @endcan
                                 @endcan
 
                                 @can('isServiceDesk')

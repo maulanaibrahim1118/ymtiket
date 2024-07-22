@@ -11,7 +11,7 @@
                                     <form class="search-form d-flex align-items-center" action="{{ route('reportSubCategory.filter') }}" method="POST">
                                         @csrf
                                         <select class="form-select form-select-sm me-2" style="width:40%;padding:0px;" name="category" id="cat">
-                                            <option selected value="">Semua Kategori</option>
+                                            <option selected value="">All Category</option>
                                             @foreach($dCategories as $category)
                                                 @if(old('category', $filterArray[0]) == $category->nama_kategori)
                                                     <option selected value="{{ $category->nama_kategori }}">{{ ucwords($category->nama_kategori) }}</option>
@@ -33,7 +33,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Report #1 | Rata-Rata Waktu Agent
+                                            Report #1 | Average Time Agents
                                         </button>
                                     </h2>
                                     <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">

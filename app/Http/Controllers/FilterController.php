@@ -71,46 +71,58 @@ class FilterController extends Controller
         if($role == 3){
             if($locationId == 17){
                 if($positionId == 2){
-                    // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                    $total      = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                    $approval   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $unProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $onProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $pending    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $ticketCounts = Ticket::select(
+                        DB::raw('COUNT(CASE WHEN status NOT IN ("deleted") THEN id END) as total'),
+                        DB::raw('COUNT(CASE WHEN need_approval = "ya" AND approved IS NULL THEN id END) as approval'),
+                        DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
+                        DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
+                        DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
+                        DB::raw('COUNT(CASE WHEN status = "finished" THEN id END) as finished')
+                    )
+                    ->where([['code_access', 'like', '%'.$codeAccess.'%'],['created_at', 'like', $periodeFilter.'%']])
+                    ->first();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1      = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
                 }elseif($positionId == 6){
-                    // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                    $total      = Ticket::where([['code_access', 'like', '%'.$codeAccess],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                    $approval   = Ticket::where([['code_access', 'like', '%'.$codeAccess],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $unProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $onProcess  = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $pending    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $finished   = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $ticketCounts = Ticket::select(
+                        DB::raw('COUNT(CASE WHEN status NOT IN ("deleted") THEN id END) as total'),
+                        DB::raw('COUNT(CASE WHEN need_approval = "ya" AND approved IS NULL THEN id END) as approval'),
+                        DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
+                        DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
+                        DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
+                        DB::raw('COUNT(CASE WHEN status = "finished" THEN id END) as finished')
+                    )
+                    ->where([['code_access', 'like', '%'.$codeAccess],['created_at', 'like', $periodeFilter.'%']])
+                    ->first();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1      = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
                 }elseif($positionId == 7){
-                    // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                    $total      = Ticket::where([['code_access', 'like', $codeAccess.'%'],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                    $approval   = Ticket::where([['code_access', 'like', $codeAccess.'%'],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $unProcess  = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $onProcess  = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $pending    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $finished   = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $ticketCounts = Ticket::select(
+                        DB::raw('COUNT(CASE WHEN status NOT IN ("deleted") THEN id END) as total'),
+                        DB::raw('COUNT(CASE WHEN need_approval = "ya" AND approved IS NULL THEN id END) as approval'),
+                        DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
+                        DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
+                        DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
+                        DB::raw('COUNT(CASE WHEN status = "finished" THEN id END) as finished')
+                    )
+                    ->where([['code_access', 'like', $codeAccess.'%'],['created_at', 'like', $periodeFilter.'%']])
+                    ->first();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1      = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
                 }else{
-                    // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                    $total      = Ticket::where([['location_id', $locationId],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                    $approval   = Ticket::where([['location_id', $locationId],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $unProcess  = Ticket::where([['location_id', $locationId],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $onProcess  = Ticket::where([['location_id', $locationId],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $pending    = Ticket::where([['location_id', $locationId],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                    $finished   = Ticket::where([['location_id', $locationId],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
+                    $ticketCounts = Ticket::select(
+                        DB::raw('COUNT(CASE WHEN status NOT IN ("deleted") THEN id END) as total'),
+                        DB::raw('COUNT(CASE WHEN need_approval = "ya" AND approved IS NULL THEN id END) as approval'),
+                        DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
+                        DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
+                        DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
+                        DB::raw('COUNT(CASE WHEN status = "finished" THEN id END) as finished')
+                    )
+                    ->where([['location_id', $locationId],['created_at', 'like', $periodeFilter.'%']])
+                    ->first();
 
                     // Menampilkan Data Ticket yang belum di Close
                     $data1      = Ticket::where([['location_id', $locationId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
@@ -118,19 +130,28 @@ class FilterController extends Controller
 
             // Jika bukan Divisi Operational
             }else{
-                // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                $total      = Ticket::where([['location_id', $locationId],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                $approval   = Ticket::where([['location_id', $locationId],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $periodeFilter.'%']])->count();
-                $unProcess  = Ticket::where([['location_id', $locationId],['status', 'created'],['created_at', 'like', $periodeFilter.'%']])->count();
-                $onProcess  = Ticket::where([['location_id', $locationId],['status', 'onprocess'],['created_at', 'like', $periodeFilter.'%']])->count();
-                $pending    = Ticket::where([['location_id', $locationId],['status', 'pending'],['created_at', 'like', $periodeFilter.'%']])->count();
-                $finished   = Ticket::where([['location_id', $locationId],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
+                $ticketCounts = Ticket::select(
+                    DB::raw('COUNT(CASE WHEN status NOT IN ("deleted") THEN id END) as total'),
+                    DB::raw('COUNT(CASE WHEN need_approval = "ya" AND approved IS NULL THEN id END) as approval'),
+                    DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
+                    DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
+                    DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
+                    DB::raw('COUNT(CASE WHEN status = "finished" THEN id END) as finished')
+                )
+                ->where([['location_id', $locationId],['created_at', 'like', $periodeFilter.'%']])
+                ->first();
 
                 // Menampilkan Data Ticket yang belum di Close
                 $data1      = Ticket::where([['location_id', $locationId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->get();
             }
 
             // Mengembalikan data untuk di tampilkan di view
+            $total          = $ticketCounts->total;
+            $approval       = $ticketCounts->approval;
+            $unProcess      = $ticketCounts->unprocess;
+            $onProcess      = $ticketCounts->onprocess;
+            $pending        = $ticketCounts->pending;
+            $finished       = $ticketCounts->finished;
             $dataArray      = [$total, $approval, $unProcess, $onProcess, $pending, $finished];
             $data2          = 0;
             $data3          = 0;
@@ -141,16 +162,29 @@ class FilterController extends Controller
             if($role == 1){
                 $pathFilter = "[".$namaAgent."] - [".$pathFilter."]";
 
+                $ticketCounts = Ticket::select(
+                    DB::raw('SUM(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN 1 ELSE 0 END) as total'),
+                    DB::raw('SUM(CASE WHEN status = "created" THEN 1 ELSE 0 END) as unprocess'),
+                    DB::raw('SUM(CASE WHEN status = "onprocess" THEN 1 ELSE 0 END) as onprocess'),
+                    DB::raw('SUM(CASE WHEN status = "pending" THEN 1 ELSE 0 END) as pending'),
+                    DB::raw('SUM(CASE WHEN status = "finished" AND  status = "resolved" THEN 1 ELSE 0 END) as resolved'),
+                    DB::raw('SUM(CASE WHEN jam_kerja = "ya" AND  status NOT IN ("deleted") THEN 1 ELSE 0 END) as worktime'),
+                    DB::raw('SUM(CASE WHEN jam_kerja = "tidak" AND  status NOT IN ("deleted") THEN 1 ELSE 0 END) as freetime'),
+                    DB::raw('COUNT(DISTINCT CASE WHEN status NOT IN ("deleted") THEN asset_id END) as asset')
+                )
+                ->where([['ticket_for', $locationId],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])
+                ->first();
+
                 // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                $total          = Ticket::where([['ticket_for', $locationId],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted', 'resolved', 'finished'])->count();
-                $unProcess      = Ticket::where([['ticket_for', $locationId],['status', 'created'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
-                $onProcess      = Ticket::where([['ticket_for', $locationId],['status', 'onprocess'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
-                $pending        = Ticket::where([['ticket_for', $locationId],['status', 'pending'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
-                $resolved       = Ticket::where([['ticket_for', $locationId],['status', 'resolved'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->orWhere([['ticket_for', $locationId],['status', 'finished'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->count();
+                $total          = $ticketCounts->total;
+                $unProcess      = $ticketCounts->unprocess;
+                $onProcess      = $ticketCounts->onprocess;
+                $pending        = $ticketCounts->pending;
+                $resolved       = $ticketCounts->resolved;
+                $workTimeTicket = $ticketCounts->worktime;
+                $freeTimeTicket = $ticketCounts->freetime;
+                $asset          = $ticketCounts->asset;
                 $assigned       = Ticket_detail::where([['agent_id', 'like', '%'.$agentFilter],['status', 'assigned'],['created_at', 'like', $periodeFilter.'%']])->count();
-                $workTimeTicket = Ticket::where([['ticket_for', $locationId],['jam_kerja', 'ya'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                $freeTimeTicket = Ticket::where([['ticket_for', $locationId],['jam_kerja', 'tidak'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->count();
-                $asset          = Ticket::where([['ticket_for', $locationId],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted'])->distinct()->count('asset_id');
                 $category       = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')->where([['tickets.ticket_for', $locationId],['ticket_details.agent_id', 'like', '%'.$agentFilter],['ticket_details.created_at', 'like', $periodeFilter.'%']])->distinct()->count(['ticket_details.sub_category_ticket_id']);
 
                 // Mengembalikan data untuk di tampilkan di view
@@ -162,13 +196,13 @@ class FilterController extends Controller
                     ->withCount('ticket_details')
                     ->select(
                         'agents.*', 
-                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted") AND tickets.created_at LIKE "' . $periodeFilter . '%") as total_ticket'),
+                        DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.process_at LIKE "' . $periodeFilter . '%") as total_ticket'),
                         // DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted","resolved","finished","created") AND tickets.created_at LIKE "' . $filter2 . '%") as ticket_onprocess'),
-                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted","onprocess","pending","created") AND tickets.created_at LIKE "' . $periodeFilter . '%") as ticket_finish'),
+                        DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.status = "resolved" AND ticket_details.process_at LIKE "' . $periodeFilter . '%") as ticket_finish'),
                         DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.status = "assigned" AND ticket_details.created_at LIKE "' . $periodeFilter . '%") as assigned'),
                         // DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "created" AND tickets.created_at LIKE "' . $filter2 . '%") as ticket_unprocessed'),
                         DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.created_at LIKE "' . $periodeFilter . '%") as sum'),
-                        DB::raw('(SELECT COUNT(DISTINCT CASE WHEN DAYOFWEEK(created_at) NOT IN (1, 7) THEN DATE(created_at) END) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as working_days'),
+                        DB::raw('(SELECT COUNT(DISTINCT CASE WHEN DAYOFWEEK(created_at) NOT IN (1, 7) THEN DATE(created_at) END) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.created_at LIKE "' . $periodeFilter . '%") as working_days'),
                         DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.created_at LIKE "' . $periodeFilter . '%") as avg')
                     )
                     ->orderBy('sub_divisi', 'ASC')
@@ -182,24 +216,29 @@ class FilterController extends Controller
                 if($filter2 == NULL){
                     return redirect('/dashboard');
                 }
+                $ticketCounts = Ticket::select(
+                    DB::raw('SUM(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN 1 ELSE 0 END) as total'),
+                    DB::raw('SUM(CASE WHEN status = "finished" AND  status = "resolved" THEN 1 ELSE 0 END) as resolved'),
+                )
+                ->where([['agent_id', $agentId],['created_at', 'like', $periodeFilter.'%']])
+                ->first();
+
                 // Get total data yang ingin di tampilkan di dashboard sesuai filter
-                $total          = Ticket::where([['agent_id', $agentId],['created_at', 'like', $periodeFilter.'%']])->whereNotIn('status', ['deleted', 'resolved', 'finished'])->count();
-                $resolved       = Ticket::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->orWhere([['agent_id', $agentId],['status', 'finished'],['created_at', 'like', $periodeFilter.'%']])->count();
+                $total          = $ticketCounts->total;
+                $resolved       = $ticketCounts->resolved;
                 $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned'],['created_at', 'like', $periodeFilter.'%']])->count();
                 $processedTime  = Ticket_detail::where([['agent_id', $agentId],['created_at', 'like', $periodeFilter.'%']])->sum('processed_time');
-                $pendingTime    = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->sum('pending_time');
                 $workload       = $processedTime-0;
 
                 // Menghitung Waktu Rata-rata Ticket Resolved
-                $resolvedCount  = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->count();
-                $resolvedTime   = Ticket_detail::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $periodeFilter.'%']])->sum('processed_time');
+                $processedCount  = Ticket_detail::where([['agent_id', $agentId],['created_at', 'like', $periodeFilter.'%']])->whereIn('status', ['resolved', 'assigned'])->count();
 
-                if($resolvedCount == 0){
+                if($processedCount == 0){
                     $resolvedAvg    = 0;
                     $roundedAvg     = 0;
                 }else {
-                    $resolvedAvg    = $resolvedTime/$resolvedCount;
-                    $roundedAvg     = round($resolvedAvg);
+                    $processedAvg    = $processedTime/$processedCount;
+                    $roundedAvg     = round($processedAvg);
                 }
 
                 // Mengembalikan data untuk di tampilkan di view
@@ -357,11 +396,31 @@ class FilterController extends Controller
         // $totalPermintaan    = $agents->sum('permintaan');
         // $totalKendala       = $agents->sum('kendala');
 
+        // Pengolahan data untuk ECharts
+        $data = [];
+        foreach ($agents as $agent) {
+            $subDivision = $agent->sub_divisi ?: 'No Sub Division';
+
+            if (!isset($data[$subDivision])) {
+                $data[$subDivision] = ['tickets' => [], 'process' => []];
+            }
+
+            $data[$subDivision]['tickets'][] = [
+                'name' => $agent->nama_agent,
+                'value' => $agent->jml_ticket
+            ];
+
+            $data[$subDivision]['process'][] = [
+                'name' => $agent->nama_agent,
+                'value' => $agent->jml_process
+            ];
+        }
+
+        $jsonData = json_encode($data);
+
         //              0               1               2               3                4                    5                   6                7                8
         $total = [$totalPending, $totalOnprocess, $totalFinish, $totalAvgPending, $totalAvgFinish, /* $totalTicketPerDay, $totalHourPerDay, $totalPermintaan, $totalKendala */];
         $filterArray = [$request->start_date, $request->end_date];
-
-        $jsonData = $agents->toJson();
 
         return view('contents.report.agent.index', [
             "url"           => "",

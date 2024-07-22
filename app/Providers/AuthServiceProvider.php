@@ -55,5 +55,11 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('isKorwil', function ($user) {
             return $user->position_id === 6;
         });
+
+        Gate::define('isActor', function ($user) {
+            return $user->position_id === 1 || $user->position_id === 2 ||
+                $user->position_id === 4 || $user->position_id === 9 || 
+                $user->position_id === 5 || $user->position_id === 6;
+        });
     }
 }

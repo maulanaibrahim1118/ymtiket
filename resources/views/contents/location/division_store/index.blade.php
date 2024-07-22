@@ -13,7 +13,9 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-geo-alt me-2"></i>{{ $title }}</h5>
                                 
+                                @can('isActor')
                                 <a href="/locations/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
+                                @endcan
 
                                 <div class="col-md-12 pb-3">
                                     <div class="accordion mt-4" id="accordionExample">

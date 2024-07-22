@@ -11,7 +11,9 @@
                 @endcan
                 <th scope="col">DIVISION</th>
                 <th scope="col">STATUS</th>
+                @can('isActor')
                 <th scope="col">SWITCH</th>
+                @endcan
                 </tr>
             </thead>
             <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -33,6 +35,7 @@
                 @else
                 <td><span class="badge bg-secondary">TIDAK HADIR</span></td>
                 @endif
+                @can('isActor')
                 <td>
                 <label class="form-check form-switch">
                     <input type="checkbox" class="form-check-input" data-id="{{ $data->id }}" {{ $data->status ? 'checked' : '' }}>
@@ -40,6 +43,7 @@
                     <span class="slider round"></span>
                 </label>
                 </td>
+                @endcan
                 </tr>
                 @endforeach
             </tbody>

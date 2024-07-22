@@ -4,6 +4,9 @@
             <tr>
                 <th scope="col">CREATED AT</th>
                 <th scope="col">TICKET NUMBER</th>
+                @if(auth()->user()->sub_divisi == "hardware maintenance")
+                <th scope="col">CLIENT</th>
+                @endif
                 <th scope="col">SUBJECT</th>
                 <th scope="col">DETAILS</th>
                 <th scope="col">NOTE</th>
@@ -20,6 +23,15 @@
             @endif
                 <td>{{ date('d-M-Y H:i', strtotime($ticket->created_at)) }}</td>
                 <td>{{ $ticket->no_ticket }}</td>
+                @if(auth()->user()->sub_divisi == "hardware maintenance")
+                <td>
+                    @if($ticket->location->wilayah_id == 1 || $ticket->location->wilayah_id == 2)
+                    {{ $ticket->user->nama }} - {{ $ticket->location->nama_lokasi }}
+                    @else
+                        {{ $ticket->location->site }} - {{ $ticket->location->nama_lokasi }}
+                    @endif
+                </td>
+                @endif
                 <td>{{ $ticket->kendala }}</td>
                 <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->detail_kendala }}</td>
 
@@ -32,6 +44,8 @@
                     <td><span class="badge bg-dark">{{ $ticket->approved }}</span></td>
                 @elseif($ticket->assigned == "ya" AND $ticket->status == "created" OR $ticket->assigned == "ya" AND $ticket->status == "pending")
                     <td><span class="badge bg-dark">direct assign</span></td>
+                @elseif($ticket->assigned == "tidak" AND $ticket->status == "pending")
+                    <td><span class="badge bg-dark"></span>{{ $ticket->last_pending_reason }}</td>
                 @else
                     <td></td>
                 @endif
@@ -40,7 +54,7 @@
                 @include('contents.ticket.partials.status_column')
 
                 {{-- Kolom Aksi --}}
-                <td>
+                <td class="text-nowrap">
                 @if($agentId == $ticket->agent_id)
                     {{-- Jika ticket di assign dan belum di tangani oleh service desk --}}
                     @if($ticket->status == "created")
@@ -60,21 +74,21 @@
                                 @if($ticket->updated_by != auth()->user()->nama)
                                     {{-- Tombol Tangani Setelah Approved --}}
                                     <li>
-                                    <form action="{{ route('ticket.process3', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                    <form action="{{ route('ticket.process3', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
                                     @method('put')
                                     @csrf
                                     <input type="text" name="agent_id" value="{{ encrypt($ticket->agent_id) }}" hidden>
-                                    <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Process</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize"><i class="bx bx-analyse me-1"></i>Process</button>
                                     </form>
                                     </li>
                                 @else
                                     {{-- Tombol Proses Ulang / Jika di pending oleh agent sendiri --}}
                                     <li>
-                                    <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                    <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
                                     @method('put')
                                     @csrf
                                     <a href="#">
-                                    <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Re-Process</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize"><i class="bx bx-analyse me-1"></i>Re-Process</button>
                                     </a>
                                     </form>
                                     </li>
@@ -84,19 +98,19 @@
                             {{-- Jika ticket di assign dan sudah pernah di tangani oleh service desk --}}
                             @if($ticket->assigned == "ya" AND $ticket->agent->nik == auth()->user()->nik)
                                 {{-- Tombol Tangani --}}
-                                <form action="{{ route('ticket.process2', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                <form action="{{ route('ticket.process2', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
                                 @method('put')
                                 @csrf
-                                <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Process</button>
+                                <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize"><i class="bx bx-analyse me-1"></i>Process</button>
                                 </form>
 
                             {{-- Jika ticket di pending oleh agent sendiri --}}
                             @elseif($ticket->assigned == "tidak")
                                 {{-- Tombol Proses Ulang --}}
-                                <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
                                 @method('put')
                                 @csrf
-                                <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize" onclick="reloadAction()"><i class="bx bx-analyse me-1"></i>Re-Process</button>
+                                <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize"><i class="bx bx-analyse me-1"></i>Re-Process</button>
                                 </form>
 
                             @else

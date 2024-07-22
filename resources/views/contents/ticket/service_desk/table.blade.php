@@ -18,7 +18,9 @@
                 <th scope="col">AGENT</th>
                 <th scope="col">NOTE</th>
                 <th scope="col">STATUS</th>
+                @can('isActor')
                 <th scope="col">ACTION</th>
+                @endcan
             </tr>
         </thead>
         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -32,7 +34,7 @@
                 <td>{{ $ticket->no_ticket }}</td>
                 <td>
                     @if($ticket->location->wilayah_id == 1 || $ticket->location->wilayah_id == 2)
-                        {{ $ticket->location->nama_lokasi }}
+                    {{ $ticket->user->nama }} - {{ $ticket->location->nama_lokasi }}
                     @else
                         {{ $ticket->location->site }} - {{ $ticket->location->nama_lokasi }}
                     @endif
@@ -82,6 +84,7 @@
                 {{-- Kolom Status --}}
                 @include('contents.ticket.partials.status_column')
 
+                @can('isActor')
                 {{-- Kolom Aksi --}}
                 <td class="dropdown">
                     <a class="action-icon pe-2" style="font-size:16px;" href="#" data-bs-toggle="dropdown"><i class="bi bi-list"></i></a>
@@ -156,11 +159,11 @@
                         
                                             {{-- Tombol Proses Ulang / Jika di pending oleh agent sendiri --}}
                                             <li>
-                                                <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                                <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
                                                 @method('put')
                                                 @csrf
                                                 <a href="#">
-                                                <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Re-Process</button>
+                                                <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bx bx-analyse text-primary"></i>Re-Process</button>
                                                 </a>
                                                 </form>
                                             </li>
@@ -171,22 +174,22 @@
                                         @if($ticket->is_queue == "tidak")
                                             {{-- Tombol Proses Ulang --}}
                                             <li>
-                                                <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                                <form action="{{ route('ticket.reProcess1', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
                                                 @method('put')
                                                 @csrf
                                                 <a href="#">
-                                                <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Re-Process</button>
+                                                <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bx bx-analyse text-primary"></i>Re-Process</button>
                                                 </a>
                                                 </form>
                                             </li>
                                         @else
                                             {{-- Tombol Tangani --}}
                                             <li>
-                                                <form action="{{ route('ticket.process2', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                                <form action="{{ route('ticket.process2', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
                                                 @method('put')
                                                 @csrf
                                                 <a href="#">
-                                                <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Process</button>
+                                                <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bx bx-analyse text-primary"></i>Process</button>
                                                 </a>
                                                 </form>
                                             </li>
@@ -199,11 +202,11 @@
                                     @elseif($ticket->agent->nik == auth()->user()->nik AND $ticket->assigned == "ya")
                                         {{-- Tombol Tangani --}}
                                         <li>
-                                            <form action="{{ route('ticket.process2', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                            <form action="{{ route('ticket.process2', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
                                             @method('put')
                                             @csrf
                                             <a href="#">
-                                            <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bx bx-analyse text-primary"></i>Process</button>
+                                            <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bx bx-analyse text-primary"></i>Process</button>
                                             </a>
                                             </form>
                                         </li>
@@ -229,11 +232,11 @@
                                 @if(auth()->user()->position_id != 2)
                                     {{-- Tombol Tarik Ticket --}}
                                     <li>
-                                        <form action="{{ route('ticket.pull', ['id' => encrypt($ticket->id)]) }}" method="post">
+                                        <form action="{{ route('ticket.pull', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
                                             @method('put')
                                             @csrf
                                             <a href="#">
-                                            <button type="submit" class="dropdown-item text-capitalize text-primary" onclick="reloadAction()"><i class="bi bi-sign-turn-left text-primary"></i>Pull</button>
+                                            <button type="submit" class="dropdown-item text-capitalize text-primary"><i class="bi bi-sign-turn-left text-primary"></i>Pull</button>
                                             </a>
                                         </form>
                                     </li>
@@ -242,6 +245,7 @@
                         @endif
                     </ul>
                 </td>
+                @endcan
             </tr>
             @endforeach
         </tbody>

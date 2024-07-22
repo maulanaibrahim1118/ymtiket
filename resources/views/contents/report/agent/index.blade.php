@@ -24,7 +24,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Report #1 | Jumlah Ticket
+                                            Report #1 | Total Ticket
                                         </button>
                                     </h2>
                                     <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
@@ -47,7 +47,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                            Report #2 | Rata-Rata Waktu Pending & Resolved
+                                            Report #2 | Average Time Pending & Resolved
                                         </button>
                                     </h2>
                                     <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -70,7 +70,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-                                            Report #3 | Rata-Rata Ticket & Jam Kerja Harian
+                                            Report #3 | Average Ticket & Daily Working Hours
                                         </button>
                                     </h2>
                                     <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -93,7 +93,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-                                            Report #4 | Rata-Rata Waktu Permintaan & Kendala
+                                            Report #4 | Average Time Requests & Accidents
                                         </button>
                                     </h2>
                                     <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -116,7 +116,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
-                                            Report #5 | Jumlah Permintaan & Kendala
+                                            Report #5 | Total Requests & Accidents
                                         </button>
                                     </h2>
                                     <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -139,7 +139,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="true" aria-controls="collapseSix">
-                                            Report #6 | Pie Chart Performa Agent
+                                            Report #6 | Agents Performance Pie Chart
                                         </button>
                                     </h2>
                                     <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -152,6 +152,27 @@
                                                     <button type="submit" class="btn btn-success px-3 me-3" disabled><i class="bi bi-cloud-download me-2"></i>Export</button>
                                                 </form> --}}
                                                 @include('contents.report.agent.partials.report6')
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="true" aria-controls="collapseSeven">
+                                            Report #7 | Agents Performance Column Chart
+                                        </button>
+                                    </h2>
+                                    <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body mt-3">
+                                            <div class="card-body">
+                                                {{-- <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportSubCategory') }}" method="GET">
+                                                    @csrf
+                                                    <input type="date" name="startDate" id="startDate" value="{{ old('startDate', $filterArray[0]) }}" hidden>
+                                                    <input type="date" name="endDate" id="endDate" value="{{ old('endDate', $filterArray[1]) }}" hidden>
+                                                    <button type="submit" class="btn btn-success px-3 me-3" disabled><i class="bi bi-cloud-download me-2"></i>Export</button>
+                                                </form> --}}
+                                                {{-- @include('contents.report.agent.partials.report7') --}}
                                             </div>
                                         </div>
                                     </div>

@@ -13,7 +13,9 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-gem me-2"></i>{{ $title }}</h5>
                                 
+                                @can('isActor')
                                 <a href="/asset-items/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
+                                @endcan
 
                                 <table class="table datatable table-hover">
                                     <thead class="bg-light" style="height: 45px;font-size:14px;">
@@ -21,7 +23,9 @@
                                         <th scope="col">ITEM NAME</th>
                                         <th scope="col">UOM</th>
                                         <th scope="col">ASSET CATEGORY</th>
+                                        @can('isActor')
                                         <th scope="col">ACTION</th>
+                                        @endcan
                                         </tr>
                                     </thead>
                                     <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -30,7 +34,9 @@
                                         <td>{{ $item->name }}</td>
                                         <td>{{ $item->uom }}</td>
                                         <td>{{ $item->category_asset->nama_kategori }}</td>
+                                        @can('isActor')
                                         <td class="text-capitalize"><a href="{{ route('item.edit', ['id' => encrypt($item->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
+                                        @endcan
                                         </tr>
                                         @endforeach
                                     </tbody>

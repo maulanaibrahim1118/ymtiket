@@ -13,7 +13,9 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-geo-alt me-2"></i>{{ $title }}</h5>
                                 
+                                @can('isActor')
                                 <a href="{{ route('subDivision.create') }}"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Tambah</button></a>
+                                @endcan
 
                                 <div class="table-responsive mt-2">
                                     <table class="table datatable table-hover">
@@ -22,7 +24,9 @@
                                                 <th scope="col">SUB DIVISION NAME</th>
                                                 <th scope="col">DIVISION NAME</th>
                                                 <th scope="col">CODE ACCESS</th>
+                                                @can('isActor')
                                                 <th scope="col">ACTION</th>
+                                                @endcan
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -31,7 +35,9 @@
                                                 <td>{{ $subDivision->name }}</td>
                                                 <td>{{ $subDivision->location->nama_lokasi }}</td>
                                                 <td>{{ $subDivision->code_access }}</td>
+                                                @can('isActor')
                                                 <td class="text-capitalize"><a href="{{ route('subDivision.edit', ['id' => encrypt($subDivision->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
+                                                @endcan
                                             </tr>
                                             @endforeach
                                         </tbody>

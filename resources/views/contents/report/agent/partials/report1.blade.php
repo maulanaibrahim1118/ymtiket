@@ -1,17 +1,19 @@
+<p class="text-secondary"><i class="bi bi-info-circle me-2"></i>Calculated based on Ticket Created At.</p>
+
 <div class="table-responsive">
     <table class="table table-bordered table-hover">
         <thead class="bg-light" style="height: 45px;font-size:14px;">
             @if($pathFilter != "Semua")
             <tr>
-            <td colspan="7" class="font-monospace ps-3">Tanggal : {{ $pathFilter }}</td>
+            <td colspan="7" class="font-monospace ps-3">Date : {{ $pathFilter }}</td>
             </tr>
             @endif
             <tr class="text-center align-middle">
-            <th rowspan="2">NO</th>
-            <th rowspan="2">NIK</th>
-            <th rowspan="2">NAMA AGENT</th>
-            <th rowspan="2">SUB DIVISI</th>
-            <th colspan="3">STATUS TICKET</th>
+            <th rowspan="2">#</th>
+            <th rowspan="2">EMPLOYEE NUMBER</th>
+            <th rowspan="2">AGENT NAME</th>
+            <th rowspan="2">SUB DIVISION</th>
+            <th colspan="3">TICKET STATUS</th>
             </tr>
             <tr class="text-center align-middle">
             <th>PENDING</th>

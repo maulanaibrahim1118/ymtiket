@@ -41,9 +41,9 @@
                                                 <table class="table table-bordered">
                                                     <thead class="fw-bold text-center">
                                                         <tr>
-                                                        <td>Type*</td>
-                                                        <td>Category*</td>
-                                                        <td>Sub Category*</td>
+                                                        <td class="col-md-2">Type*</td>
+                                                        <td class="col-md-4">Category*</td>
+                                                        <td class="col-md-4">Sub Category*</td>
                                                         <td class="col-md-2">Cost</td>
                                                         </tr>
                                                     </thead>
@@ -69,7 +69,7 @@
                                                         @enderror
                                                         </td>
                                                         <td>
-                                                        <select class="form-select @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id">
+                                                        <select class="form-select w-100 @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id">
                                                             <option selected disabled>Choose...</option>
                                                             @foreach($category_tickets as $ct)
                                                                 @if(old('category_ticket_id', $td->sub_category_ticket->category_ticket_id) == $ct->id)
@@ -88,7 +88,7 @@
                                                         @enderror
                                                         </td>
                                                         <td>
-                                                            <select class="form-select @error('sub_category_ticket_id') is-invalid @enderror" name="sub_category_ticket_id" id="sub_category_ticket_id">
+                                                            <select class="form-select w-100 @error('sub_category_ticket_id') is-invalid @enderror" name="sub_category_ticket_id" id="sub_category_ticket_id">
                                                                 <option selected disabled>Choose...</option>
                                                                 @foreach($sub_category_tickets as $sct)
                                                                     @if(old('sub_category_ticket_id', $td->sub_category_ticket_id) == $sct->id)
@@ -180,7 +180,7 @@
                                             </div>
                                             
                                             <div class="col-md-6">
-                                                (*) : Mandatory
+                                                <b>(*)</b> : Mandatory
                                             </div>
                                             <div class="col-md-6">
                                                 <button type="submit" class="btn btn-primary float-end ms-1"><i class="bi bi-save me-1"></i> Save</button>

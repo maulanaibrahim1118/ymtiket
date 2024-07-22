@@ -15,7 +15,7 @@ class CreateAgentsTable extends Migration
     {
         Schema::create('agents', function (Blueprint $table) {
             $table->id();
-            $table->string('nik', 8)->unique();
+            $table->string('nik', 9)->unique();
             $table->string('nama_agent', 40);
             $table->bigInteger('location_id');
             $table->string('sub_divisi', 40);

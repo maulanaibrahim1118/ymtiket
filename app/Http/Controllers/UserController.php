@@ -67,7 +67,7 @@ class UserController extends Controller
     {
         // Validating data request
         $validatedData = $request->validate([
-            'nik'               => 'required|min:5|max:8|unique:users',
+            'nik'               => 'required|min:5|max:9|unique:users',
             'nama'              => 'required|min:2|max:40',
             'password'          => 'required|min:5|max:191',
             'position_id'       => 'required',
@@ -85,7 +85,7 @@ class UserController extends Controller
         [
             'nik.required'              => 'Username required!',
             'nik.min'                   => 'Type at least 5 characters!',
-            'nik.max'                   => 'Type maximum 8 characters!',
+            'nik.max'                   => 'Type maximum 9 characters!',
             'unique'                    => 'Username already exists!',
             'nama.required'             => 'Full Name required!',
             'nama.min'                  => 'Type at least 2 characters!',
@@ -241,7 +241,7 @@ class UserController extends Controller
         ];
 
         if($request->nik != $user->nik){
-            $rules['nik'] = 'required|min:5|max:8|unique:users';
+            $rules['nik'] = 'required|min:5|max:9|unique:users';
         }
 
         // Create custom notification for the validation request
@@ -249,7 +249,7 @@ class UserController extends Controller
         [
             'nik.required'              => 'Username required!',
             'nik.min'                   => 'Type at least 5 characters!',
-            'nik.max'                   => 'Type maximum 8 characters!',
+            'nik.max'                   => 'Type maximum 9 characters!',
             'unique'                    => 'Username already exists!',
             'nama.required'             => 'Full Name required!',
             'nama.min'                  => 'Type at least 2 characters!',

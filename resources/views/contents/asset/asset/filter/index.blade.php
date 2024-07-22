@@ -29,7 +29,7 @@
                                             @foreach($tickets as $ticket)
                                             <tr>
                                             <td><a href="{{ route('ticket.asset', ['asset_id' => encrypt($ticket->asset->id)]) }}">{{ $ticket->asset->no_asset }}</a></td>
-                                            <td>{{ $ticket->asset->nama_barang }}</td>
+                                            <td>{{ $ticket->asset->item->name }}</td>
                                             <td>{{ $ticket->asset->merk }}</td>
                                             <td>{{ $ticket->asset->model }}</td>
                                             <td>{{ $ticket->asset->status }}</td>

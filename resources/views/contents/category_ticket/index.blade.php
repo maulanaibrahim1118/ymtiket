@@ -13,7 +13,9 @@
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-ui-radios-grid me-2"></i>{{ $title }}</h5>
                                 
+                                @can('isActor')
                                 <a href="/category-tickets/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
+                                @endcan
 
                                 <div class="table-responsive">
                                     <table class="table datatable table-hover">
@@ -23,7 +25,9 @@
                                                 <th scope="col">CREATED AT</th>
                                                 <th scope="col">UPDATED AT</th>
                                                 <th scope="col">UPDATED BY</th>
+                                                @can('isActor')
                                                 <th scope="col">ACTION</th>
+                                                @endcan
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -33,7 +37,9 @@
                                             <td>{{ $ct->created_at }}</td>
                                             <td>{{ $ct->updated_at }}</td>
                                             <td>{{ $ct->updated_by }}</td>
+                                            @can('isActor')
                                             <td class="text-capitalize"><a href="{{ route('ct.edit', ['id' => encrypt($ct->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
+                                            @endcan
                                             </tr>
                                             @endforeach
                                         </tbody>

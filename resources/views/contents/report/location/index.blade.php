@@ -11,7 +11,7 @@
                                     <form class="search-form d-flex align-items-cente" action="{{ route('reportLocation.filter') }}" method="POST">
                                         @csrf
                                         <select class="form-select form-select-sm" style="width:40%;padding:0px;" name="wil" id="wil">
-                                            <option selected value="">Semua Wilayah</option>
+                                            <option selected value="">All Wilayah</option>
                                             @foreach($wilayahs as $wilayah)
                                                 @if(old('wil', $filterArray[0]) == $wilayah->id)
                                                     <option selected value="{{ $wilayah->id }}">{{ ucwords($wilayah->name) }}</option>
@@ -33,7 +33,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Report #1 | Total Permintaan dan Kendala
+                                            Report #1 | Total Requests & Accidents
                                         </button>
                                     </h2>
                                     <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">

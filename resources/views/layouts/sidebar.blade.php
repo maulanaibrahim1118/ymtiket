@@ -64,7 +64,7 @@
             </a>
             <ul id="assetSideBar" class="nav-content collapse {{ Request::is('asset*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="/asset-items" class="{{ Request::is('lasset-items*') ? 'active' : '' }}">
+                    <a href="/asset-items" class="{{ Request::is('asset-items*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Item</span>
                     </a>
                 </li>

@@ -87,16 +87,35 @@ class ReportAgentController extends Controller
         $totalFinish        = $agents->sum('ticket_finish');
         $totalAvgPending    = $agents->sum('avg_pending');
         $totalAvgFinish     = $agents->sum('avg_finish');
+
+        // Pengolahan data untuk ECharts
+        $data = [];
+        foreach ($agents as $agent) {
+            $subDivision = $agent->sub_divisi ?: 'No Sub Division';
+
+            if (!isset($data[$subDivision])) {
+                $data[$subDivision] = ['tickets' => [], 'process' => []];
+            }
+
+            $data[$subDivision]['tickets'][] = [
+                'name' => $agent->nama_agent,
+                'value' => $agent->jml_ticket
+            ];
+
+            $data[$subDivision]['process'][] = [
+                'name' => $agent->nama_agent,
+                'value' => $agent->jml_process
+            ];
+        }
+
+        $jsonData = json_encode($data);
         
         //              0               1               2               3                4                     5                  6                7                8
         $total = [$totalPending, $totalOnprocess, $totalFinish, $totalAvgPending, $totalAvgFinish, /* $totalTicketPerDay, $totalHourPerDay, $totalPermintaan, $totalKendala */];
         $filterArray = ["", ""];
 
-        $jsonData = json_encode($agents);
-
         return view('contents.report.agent.index', [
-            "url"           => "",
-            "title"         => "Report Agent",
+            "title"         => "Agent Report",
             "path"          => "Report",
             "path2"         => "Agent",
             "filterArray"   => $filterArray,

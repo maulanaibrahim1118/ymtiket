@@ -23,15 +23,15 @@ body {
         zoom: 0.75;
     }
 
-    .echart {
-        zoom: 1.35;
+    .charts-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 20px;
     }
 
-    .mychart {
-        width: 45%;
-        min-height: 350px;
-        margin: 2%;
-        display: inline-block;
+    .chart-container {
+        zoom: 1.35;
     }
 }
 
@@ -1412,4 +1412,17 @@ h6 {
     p {
         font-size: 12pt;
     }
+}
+
+.charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.chart-container {
+    width: 480px;
+    height: 350px;
+    margin-bottom: 20px;
 }

@@ -101,6 +101,8 @@
     </a>
 </div><!-- End Secondary Card --> --}}
 
+<p class="text-secondary"><i class="bi bi-info-circle me-2"></i>Calculated based on Ticket Created At.</p>
+
 <div class="col-md-3">
     <a href="{{ route('ticket.dashboard', ['status' => 'unprocess', 'filter1' => $filterArray[0], 'filter2' => $filterArray[1]]) }}">
     <div class="card info-card secondary-card">
@@ -324,6 +326,7 @@
             <h5 class="card-title border-bottom">Agent Information<span>| {{ $pathFilter }}</span></h5>
             @endif
 
+            <p class="text-secondary"><i class="bi bi-info-circle me-2"></i>Calculated based on Ticket Processed At by the Agents.</p>
             <div class="table-responsive mt-3">
                 <table class="table table-hover" id="performaAgentDatatable">
                     <thead class="bg-light" style="height: 45px;font-size:14px;">
@@ -353,7 +356,7 @@
                         <td>{{ $data->total_ticket }}</td>
                         <td>{{ $data->ticket_finish }}</td>
                         <td>{{ $data->assigned }}</td>
-                        <td class="sisa">{{ $data->total_ticket-$data->ticket_finish }}</td>
+                        <td class="sisa">{{ $data->onprocess+$data->pending+$data->created }}</td>
                         {{-- <td>{{ $data->working_days }}</td> --}}
                         @php
                             if ($data->working_days == 0) {
@@ -389,67 +392,6 @@
         </div>
     </div>
 </div><!-- End Info Table -->
-
-{{-- <div class="col-12">
-    <div class="card info-table">
-        <div class="card-body">
-            @if($pathFilter == "Semua")
-            <h5 class="card-title border-bottom">Ticket Belum Ada Tindakan</h5>
-            @else
-            <h5 class="card-title border-bottom">Ticket Belum Ada Tindakan <span>| {{ $pathFilter }}</span></h5>
-            @endif
-
-            <div class="table-responsive mt-3">
-                <table class="table datatable table-hover">
-                    <thead class="bg-light" style="height: 45px;font-size:14px;">
-                        <tr>
-                        <th scope="col">DIBUAT PADA</th>
-                        <th scope="col">NO. TICKET</th>
-                        <th scope="col">KENDALA</th>
-                        <th scope="col">DETAIL KENDALA</th>
-                        <th scope="col">PIC</th>
-                        @can('isIT')
-                        <th scope="col">SUB DIVISI</th>
-                        @endcan
-                        <th scope="col">STATUS</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                        @foreach($data2 as $data)
-                        <tr>
-                        <td>{{ $data->created_at }}</td>
-                        <td>{{ $data->no_ticket }}</td>
-                        <td>{{ $data->kendala }}</td>
-                        <td class="col-2 text-truncate" style="max-width: 50px;">{{ $data->detail_kendala }}</td>
-                        @if($data->agent->nama_agent == auth()->user()->nama)
-                        <td><span class="badge bg-info">saya</span></td>
-                        @else
-                        <td>{{ $data->agent->nama_agent }}</td>
-                        @endif
-                        @can('isIT')
-                        <td>{{ $data->sub_divisi_agent }}</td>
-                        @endcan
-                        @if($data->status == 'created')
-                        <td><span class="badge bg-secondary">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'onprocess')
-                        <td><span class="badge bg-warning">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'pending')
-                        <td><span class="badge bg-danger">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'resolved')
-                        <td><span class="badge bg-primary">{{ $data->status }}</span></td>
-                        @elseif($data->status == 'finished')
-                        <td><span class="badge bg-success">{{ $data->status }}</span></td>
-                        @else
-                        <td><span class="badge bg-danger">{{ $data->status }}</span></td>
-                        @endif
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div><!-- End Info Table --> --}}
 
 <div class="col-12">
     <div class="card info-table">

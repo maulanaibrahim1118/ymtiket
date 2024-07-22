@@ -10,7 +10,9 @@
                 <th scope="col">REGIONAL</th>
                 <th scope="col">AREA</th>
                 <th scope="col">STATUS</th>
+                @can('isActor')
                 <th scope="col">ACTION</th>
+                @endcan
             </tr>
         </thead>
         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -28,6 +30,7 @@
                 @else
                 <td><span class="badge bg-secondary">Closed</span></td>
                 @endif
+                @can('isActor')
                 <td class="dropdown">
                     <a class="action-icon pe-2" style="font-size:16px;" href="#" data-bs-toggle="dropdown"><i class="bi bi-list"></i></a>
                     <ul class="dropdown-menu">
@@ -56,6 +59,7 @@
                         @endif
                     </ul>
                 </td>
+                @endcan
             </tr>
             @endforeach
         </tbody>

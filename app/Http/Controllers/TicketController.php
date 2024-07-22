@@ -586,6 +586,7 @@ class TicketController extends Controller
             'process_at'    => $now,
             'pending_at'    => "-",
             'assigned'      => "tidak",
+            'is_queue'      => "tidak",
             'pending_time'  => $pending_time,
             'updated_by'    => $updatedBy
         ]);
@@ -678,6 +679,7 @@ class TicketController extends Controller
         Ticket::where('id', $id)->update([
             'status'        => $status,
             'pending_at'    => "-",
+            'is_queue'      => "tidak",
             'pending_time'  => $pending_time,
             'updated_by'    => $updatedBy
         ]);
@@ -776,6 +778,7 @@ class TicketController extends Controller
 
             Ticket::where('id', $ticketId)->update([
                 'assigned'          => "ya",
+                'is_queue'          => "tidak",
                 'agent_id'          => $agentId,
                 'sub_divisi_agent'  => $subDivisi,
                 'updated_by'        => $updatedBy,
@@ -842,6 +845,7 @@ class TicketController extends Controller
                     'pending_at'    => $pending_at2,
                     'pending_time'  => $pending_time,
                     'assigned'      => "ya",
+                    'is_queue'      => "tidak",
                     'status'        => $status
                 ]);
             }
@@ -851,6 +855,7 @@ class TicketController extends Controller
                 'status'        => "pending",
                 'pending_at'    => $now,
                 'assigned'      => "ya",
+                'is_queue'      => "tidak",
                 'agent_id'      => $agentId2,
                 'updated_by'    => $updatedBy,
                 'role'          => 2
@@ -1257,8 +1262,10 @@ class TicketController extends Controller
 
             // Updating data to ticket table
             Ticket::where('id', $id)->update([
-                'pending_at'    => $now,
-                'status'        => $status
+                'is_queue'              => "tidak",
+                'pending_at'            => $now,
+                'status'                => $status,
+                'last_pending_reason'   => $alasan,
             ]);
 
             // Saving data to progress ticket table
@@ -1356,6 +1363,8 @@ class TicketController extends Controller
 
         // Updating data to ticket table
         Ticket::where('id', $id)->update([
+            'is_queue'      => "tidak",
+            'assigned'      => "tidak",
             'pending_at'    => $pending_at2,
             'pending_time'  => $pending_time2,
             'status'        => $status
@@ -1460,7 +1469,8 @@ class TicketController extends Controller
 
         Ticket::where('id', $id)->update([
             'status'            => "resolved",
-            'assigned'          => "ya",
+            'is_queue'          => "tidak",
+            'assigned'          => "tidak",
             'processed_time'    => $processedTime1,
             'updated_by'        => $updatedBy
         ]);

@@ -29,25 +29,7 @@
     <link href="{{ asset('dist/css/style.css') }}" rel="stylesheet">
 
     <!-- Javascript -->
-    <script src="{{ asset('dist/vendor/simple-datatables/simple-datatables.js') }}"></script>
-    <script src="{{ asset('dist/js/config.js') }}"></script>
     <script src="{{ asset('dist/js/jquery-3.6.3.min.js') }}"></script>
-    <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
-
-    <script type="text/javascript">
-        var myVar;
-
-        function myFunction() {
-            myVar = setTimeout(showPage, 1000);
-        }
-
-        function showPage() {
-            document.getElementById("content").style.display = "block";
-            document.getElementById("preloader").style.display = "none";
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("status").style.display = "none";
-        }
-    </script>
 </head>
 <body onload="myFunction()">
     <div class="container-fluid">
@@ -61,7 +43,7 @@
     <div style="display:none;" id="content" class="animate-bottom">
         <header id="header" class="header fixed-top d-flex align-items-center">
             <div class="d-flex align-items-center justify-content-between">
-                <a href="/dashboard/{{ encrypt(auth()->user()->id) }}-{{encrypt(auth()->user()->role) }}" class="logo d-flex align-items-center">
+                <a href="/dashboard" class="logo d-flex align-items-center">
                     <img src="{{ asset('dist/img/logo/logo1.png') }}" alt="">
                     <span class="d-none d-lg-block pt-1"><b>{{ config('app.name') }}</b></span>
                 </a>
@@ -123,33 +105,16 @@
         @include('layouts.sidebar')
         
         <main id="main" class="main">
-            <!-- Showing notification succeded -->
-            @if(session()->has('success'))
-                <script>
-                    swal("Success!", "{{ session('success') }}", "success", {
-                        timer: 3000
-                    });
-                </script>
-            @endif
-
-            @if(session()->has('error'))
-                <script>
-                    swal("Failed!", "{{ session('error') }}", "warning", {
-                        timer: 3000
-                    });
-                </script>
-            @endif
-
             <!-- Title Bar -->
             <div class="pagetitle">
                 <nav style="--bs-breadcrumb-divider: '';">
                     <ol class="breadcrumb">
                         <h1 class="border-end border-2 pe-3 me-3"><b>{{ $path }}</b></h1>
-                        <li class="breadcrumb-item" style="padding-top:5px;"><a href="/dashboard">Home</a></li><i class="bx bxs-chevron-right p-2"></i>
+                        <li class="breadcrumb-item" style="padding-top:5px;"><a href="/dashboard">Home</a></li><i class="bx bxs-chevron-right p-2" style="margin-top:2px;"></i>
                         @if($path == $path2)
                         <li class="breadcrumb-item active" style="padding-top:5px;">{{ $path }}</li>
                         @else
-                        <li class="breadcrumb-item" style="padding-top:5px;">{{ $path }}</li><i class="bx bxs-chevron-right p-2"></i>
+                        <li class="breadcrumb-item" style="padding-top:5px;">{{ $path }}</li><i class="bx bxs-chevron-right p-2" style="margin-top:2px;"></i>
                         <li class="breadcrumb-item active" style="padding-top:5px;">{{ $path2 }}</li>
                         @endif
                     </ol>
@@ -170,19 +135,53 @@
     </div>
 
     <!-- Vendor JS Files -->
-    <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/bootstrap/js/select2.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/chart.js/chart.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/echarts/echarts.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/php-email-form/validate.js') }}"></script>
+    <script src="{{ asset('dist/vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/echarts/echarts.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/chart.js/chart.min.js') }}"></script>
+    <script src="{{ asset('dist/vendor/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('dist/js/parent-dropdown.js') }}"></script>
+    <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('dist/js/config.js') }}"></script>
 
     <!-- Template Main JS File -->
     <script src="{{ asset('dist/js/main.js') }}"></script>
-    <script src="{{ asset('dist/js/parent-dropdown.js') }}"></script>
-    
+
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            // Tunggu hingga halaman benar-benar dimuat
+            window.onload = function() {
+                showPage();
+            };
+        });
+
+        function showPage() {
+            document.getElementById("content").style.display = "block";
+            document.getElementById("preloader").style.display = "none";
+        }
+    </script>
+
+    <!-- Showing notification succeded -->
+    @if(session()->has('success'))
+        <script>
+            swal("Success!", "{{ session('success') }}", "success", {
+                timer: 3000
+            });
+        </script>
+    @endif
+
+    @if(session()->has('error'))
+        <script>
+            swal("Failed!", "{{ session('error') }}", "warning", {
+                timer: 3000
+            });
+        </script>
+    @endif
+
     <script>
         function reloadAction(){
             window.location.reload();

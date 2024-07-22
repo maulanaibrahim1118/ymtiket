@@ -41,7 +41,7 @@ class ReportSubCategoryController extends Controller
         
         return view('contents.report.sub_category.index', [
             "url"           => "",
-            "title"         => "Report Sub Category",
+            "title"         => "Sub Category Report",
             "path"          => "Report",
             "path2"         => "Sub Category",
             "filterArray"   => $filterArray,

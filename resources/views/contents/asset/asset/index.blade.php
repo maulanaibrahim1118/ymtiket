@@ -12,8 +12,9 @@
 
                             <div class="card-body pb-0">
                                 <h5 class="card-title border-bottom mb-3"><i class="bi bi-gem me-2"></i>{{ $title }}</h5>
-                                
+                                @can('isActor')
                                 <a href="/assets/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
+                                @endcan
 
                                 <div class="table-responsive mt-2">
                                     <table class="table datatable table-hover">
@@ -26,7 +27,9 @@
                                             <th scope="col">SERIAL NUMBER</th>
                                             <th scope="col">STATUS</th>
                                             <th scope="col">LOCATION</th>
+                                            @can('isActor')
                                             <th scope="col">ACTION</th>
+                                            @endcan
                                             </tr>
                                         </thead>
                                         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -43,7 +46,9 @@
                                             <td><span class="badge bg-secondary">{{ $asset->status }}</span></td>
                                             @endif
                                             <td>{{ $asset->location->nama_lokasi }}</td>
+                                            @can('isActor')
                                             <td class="text-capitalize"><a href="{{ route('asset.edit', ['id' => encrypt($asset->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
+                                            @endcan
                                             </tr>
                                             @endforeach
                                         </tbody>

@@ -4,7 +4,9 @@
             <tr>
                 <th scope="col">NAMA DIVISI</th>
                 <th scope="col">LOKASI</th>
+                @can('isActor')
                 <th scope="col">AKSI</th>
+                @endcan
             </tr>
         </thead>
         <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
@@ -12,7 +14,9 @@
             <tr>
                 <td>{{ $division->nama_lokasi }}</td>
                 <td>{{ $division->wilayah->name }}</td>
+                @can('isActor')
                 <td class="text-capitalize"><a href="{{ route('location.edit', ['id' => encrypt($division->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
+                @endcan
             </tr>
             @endforeach
         </tbody>

@@ -42,7 +42,7 @@ class ReportLocationController extends Controller
         
         return view('contents.report.location.index', [
             "url"           => "",
-            "title"         => "Report Store & Division",
+            "title"         => "Store & Division Report",
             "path"          => "Report",
             "path2"         => "Store & Division",
             "filterArray"   => $filterArray,

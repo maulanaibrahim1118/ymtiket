@@ -15,15 +15,15 @@
             </tr>
             @elseif($pathFilter[0] != NULL && $pathFilter[1] == NULL)
             <tr>
-            <td colspan="{{ 3+$totalAgents }}" class="font-monospace ps-3">Filter : {{ ucwords($pathFilter[0]) }} | Semua Periode</td>
+            <td colspan="{{ 3+$totalAgents }}" class="font-monospace ps-3">Filter : {{ ucwords($pathFilter[0]) }} | All Period</td>
             </tr>
             @elseif($pathFilter[0] == NULL && $pathFilter[1] != NULL)
             <tr>
-            <td colspan="{{ 3+$totalAgents }}" class="font-monospace ps-3">Filter : Semua Kategori | {{ $pathFilter[1] }}</td>
+            <td colspan="{{ 3+$totalAgents }}" class="font-monospace ps-3">Filter : All Category | {{ $pathFilter[1] }}</td>
             </tr>
             @endif
-            <tr class="text-center align-middle">
-                <th>No</th>
+            <tr class="align-middle">
+                <th class="text-center">#</th>
                 <th style="width:500px">Sub Category</th>
                 <th>Total Average</th>
                 {{-- <th>Category</th> --}}
@@ -48,11 +48,11 @@
                             $seconds = $totalSeconds % 60;
                         @endphp
                         @if($totalSeconds != 0)
-                            <td class="text-end bg-info">
+                            <td class="bg-info">
                                 {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
                             </td>
                         @else
-                            <td class="text-end">00:00:00</td>
+                            <td>00:00:00</td>
                         @endif
                         {{-- <td>{{ $categoryName }}</td> --}}
 
@@ -65,11 +65,11 @@
                             @endphp
 
                             @if($totalSeconds != 0)
-                                <td class="text-end bg-info">
+                                <td class="bg-info">
                                     {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
                                 </td>
                             @else
-                                <td class="text-end">00:00:00</td>
+                                <td>00:00:00</td>
                             @endif
                         @endforeach
                     </tr>
