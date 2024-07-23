@@ -63,15 +63,19 @@
                                         <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="locationName" value="{{ old('location', $ticket->location->nama_lokasi) }}" disabled>
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-5">
                                         <label for="asset_id" class="form-label">Asset</label>
                                         <select class="form-select @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id">
                                             <option value="" disabled>Choose...</option>
                                             @foreach($assets as $asset)
                                             @if(old('asset_id', $ticket->asset_id) == $asset->id)
-                                            <option selected value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} | {{ ucwords($asset->item->name) }} | {{ $asset->merk }}</option>
+                                            <option selected value="{{ $asset->id }}">
+                                                {{ ucwords($asset->no_asset) }} | {{ ucwords($asset->item->name) }} | {{ $asset->merk }} | {{ $asset->model }}  | {{ $asset->asset_users }}
+                                            </option>
                                             @else
-                                            <option value="{{ $asset->id }}">{{ ucwords($asset->no_asset) }} | {{ ucwords($asset->item->name) }} | {{ $asset->merk }}</option>
+                                            <option value="{{ $asset->id }}">
+                                                {{ ucwords($asset->no_asset) }} | {{ ucwords($asset->item->name) }} | {{ $asset->merk }} | {{ $asset->model }}  | {{ $asset->asset_users }}
+                                            </option>
                                             @endif
                                             @endforeach
                                         </select>
@@ -122,7 +126,7 @@
                                                                 assetDropdown.empty();
                                                                 assetDropdown.append('<option selected disabled>Choose...</option>');
                                                                 $.each(response, function (key, value) {
-                                                                    assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + ' | ' + value.nama_barang + ' | ' + value.merk + '</option>');
+                                                                    assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + ' | ' + value.nama_barang + ' | ' + value.merk + ' | ' + value.model + ' | ' + value.asset_users + '</option>');
                                                                 });
                                                                 // Aktifkan dropdown no. asset
                                                                 assetDropdown.prop('disabled', false);
@@ -138,6 +142,18 @@
                                     </script>
                                     
                                     <div class="col-md-3">
+                                        <label for="kendala" class="form-label">Subject</label>
+                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="35" value="{{ old('kendala', $ticket->kendala) }}" required>
+                                        
+                                        <!-- Showing notification error for input validation -->
+                                        @error('kendala')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-3">
                                         <label for="ticket_for" class="form-label">Ticket For</label>
                                         <select class="form-select @error('ticket_for') is-invalid @enderror" name="ticket_for" id="ticket_for">
                                             <option value="" disabled>Choose...</option>
@@ -152,18 +168,6 @@
 
                                         <!-- Showing notification error for input validation -->
                                         @error('ticket_for')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    
-                                    <div class="col-md-3">
-                                        <label for="kendala" class="form-label">Subject</label>
-                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="35" value="{{ old('kendala', $ticket->kendala) }}" required>
-                                        
-                                        <!-- Showing notification error for input validation -->
-                                        @error('kendala')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>

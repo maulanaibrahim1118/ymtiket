@@ -68,7 +68,7 @@
                                                 @csrf
                                                 <div class="col-12">
                                                     <span class="border border-3 border-primary d-inline py-2" style="margin-left: -3px"></span>
-                                                    <input type="number" name="nik" class="form-control rounded-0 mb-2" style="margin-top: -31px;" id="nik" placeholder="Username" required />
+                                                    <input type="number" name="nik" class="form-control rounded-0 mb-2" style="margin-top: -31px;" id="nik" placeholder="Username" required autofocus/>
                                                 </div>
             
                                                 <div class="col-12 pb-2">
@@ -125,7 +125,7 @@
                         @csrf
                         <div class="col-md-12">
                         <div class="input-group">
-                            <input type="text" name="no_ticket" class="form-control" placeholder="Type Ticket Number..." aria-label="Recipient's username" aria-describedby="button-addon2" required>
+                            <input type="text" name="no_ticket" id="no_ticket" class="form-control" placeholder="Type Ticket Number..." aria-label="Recipient's username" aria-describedby="button-addon2" required autofocus>
                             <button class="btn btn-success" type="submit" id="button-addon2"><i class="bi bi-search"></i></button>
                         </div>
                         </div>
@@ -157,6 +157,7 @@
             // Tunggu hingga halaman benar-benar dimuat
             window.onload = function() {
                 showPage();
+                document.getElementById('nik').focus();
             };
         });
 

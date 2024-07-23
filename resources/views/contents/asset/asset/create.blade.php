@@ -122,6 +122,18 @@
                                         </div>
                                         @enderror
                                     </div>
+
+                                    <div class="col-md-3">
+                                        <label for="asset_users" class="form-label">Asset User</label>
+                                        <input type="text" name="asset_users" class="form-control text-capitalize @error('asset_users') is-invalid @enderror" id="asset_users" value="{{ old('asset_users') }}" maxlength="40">
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('asset_users')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
                                     @else
                                     <input type="text" name="location_id" value="{{ auth()->user()->location_id }}" hidden>
                                     @endif

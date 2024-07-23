@@ -23,6 +23,7 @@ class CreateAssetsTable extends Migration
             $table->string('serial_number', 30);
             $table->enum('status', ['digunakan', 'tidak digunakan']);
             $table->bigInteger('location_id');
+            $table->string('asset_users', 40);
             $table->string('updated_by', 40);
             $table->timestamps();
         });

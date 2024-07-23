@@ -27,6 +27,7 @@
                                             <th scope="col">SERIAL NUMBER</th>
                                             <th scope="col">STATUS</th>
                                             <th scope="col">LOCATION</th>
+                                            <th scope="col">USER</th>
                                             @can('isActor')
                                             <th scope="col">ACTION</th>
                                             @endcan
@@ -46,6 +47,7 @@
                                             <td><span class="badge bg-secondary">{{ $asset->status }}</span></td>
                                             @endif
                                             <td>{{ $asset->location->nama_lokasi }}</td>
+                                            <td>{{ $asset->asset_users }}</td>
                                             @can('isActor')
                                             <td class="text-capitalize"><a href="{{ route('asset.edit', ['id' => encrypt($asset->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
                                             @endcan

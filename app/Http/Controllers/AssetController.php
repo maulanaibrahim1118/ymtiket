@@ -89,6 +89,7 @@ class AssetController extends Controller
             'serial_number'     => 'required|max:30',
             'status'            => 'required',
             'location_id'       => 'required',
+            'asset_users'       => 'max:40',
             'updated_by'        => 'required'
         ],
         
@@ -107,6 +108,7 @@ class AssetController extends Controller
             'serial_number.max'         => 'Type maximum 30 characters!',
             'status.required'           => 'Status required!',
             'location_id.required'      => 'Location required!',
+            'asset_users.max'           => 'Type maximum 40 characters!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
 
@@ -182,6 +184,7 @@ class AssetController extends Controller
             'serial_number'     => 'required|max:30',
             'status'            => 'required',
             'location_id'       => 'required',
+            'asset_users'       => 'max:40',
             'updated_by'        => 'required'
         ];
 
@@ -205,6 +208,7 @@ class AssetController extends Controller
             'serial_number.max'         => 'Type maximum 30 characters!',
             'status.required'           => 'Status required!',
             'location_id.required'      => 'Location required!',
+            'asset_users.max'           => 'Type maximum 40 characters!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
 

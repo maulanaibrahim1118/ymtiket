@@ -20,6 +20,10 @@ class CreateCategoryTicketsTable extends Migration
             $table->string('updated_by', 40);
             $table->timestamps();
         });
+
+        DB::table('category_tickets')->insert([
+            ['nama_kategori' => 'none', 'location_id' => 10, 'updated_by' => 'maulana ibrahim']
+        ]);
     }
 
     /**

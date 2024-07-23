@@ -51,7 +51,7 @@
                                         <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="locationName" value="{{ old('location') }}" disabled>
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-5">
                                         <label for="asset_id" class="form-label">Asset</label>
                                         <select class="form-select select2 @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id" disabled>
                                             <option selected value="" disabled>Choose...</option>
@@ -59,6 +59,18 @@
 
                                         <!-- Showing notification error for input validation -->
                                         @error('asset_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="kendala" class="form-label">Subject</label>
+                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="35" value="{{ old('kendala') }}" required>
+                                        
+                                        <!-- Showing notification error for input validation -->
+                                        @error('kendala')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -86,19 +98,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-3">
-                                        <label for="kendala" class="form-label">Subject</label>
-                                        <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="35" value="{{ old('kendala') }}" required>
-                                        
-                                        <!-- Showing notification error for input validation -->
-                                        @error('kendala')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <label for="detail_kendala" class="form-label">Attachment</label>
                                         <input type="file" name="file" id="file" accept=".jpeg, .jpg, .png, .gif, .doc, .docx, .pdf, .xls, .xlsx, .csv, .zip, .rar" class="form-control text-capitalize @error('file') is-invalid @enderror" value="{{ old('file') }}" required>
 
@@ -201,7 +201,7 @@
                                 assetDropdown.empty();
                                 assetDropdown.append('<option selected value="" disabled>Choose...</option>');
                                 $.each(response, function (key, value) {
-                                    assetDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.no_asset + ' | ' + value.nama_barang + ' | ' + value.merk + '</option>');
+                                    assetDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.no_asset + ' | ' + value.nama_barang + ' | ' + value.merk + ' | ' + value.model + ' | ' + value.asset_users + '</option>');
                                 });
                                 // Aktifkan dropdown no. asset
                                 assetDropdown.prop('disabled', false);

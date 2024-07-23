@@ -16,7 +16,7 @@ class CreateTicketDetailsTable extends Migration
         Schema::create('ticket_details', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('ticket_id');
-            $table->enum('jenis_ticket', ['kendala', 'permintaan']);
+            $table->enum('jenis_ticket', ['kendala', 'permintaan', 'none']);
             $table->bigInteger('sub_category_ticket_id');
             $table->bigInteger('agent_id');
             $table->string('process_at')->nullable();

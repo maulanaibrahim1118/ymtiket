@@ -57,7 +57,7 @@ class ItemController extends Controller
 
         // Saving data to Area table
         $item                       = new Item;
-        $item->name                 = $request['name'];
+        $item->name                 = strtolower($request['name']);
         $item->uom                  = $request['uom'];
         $item->category_asset_id    = $request['category_asset_id'];
         $item->updated_by           = $userName;
