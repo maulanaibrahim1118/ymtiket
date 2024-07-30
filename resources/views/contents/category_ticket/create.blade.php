@@ -23,8 +23,11 @@
                                         @enderror
                                     </div>
 
-                                    <input type="text" name="url" value="/category-tickets/{{ encrypt(auth()->user()->location_id) }}" hidden>
+                                    @if(auth()->user()->location_id == 10 || auth()->user()->location_id == 359 || auth()->user()->location_id == 360)
+                                    <input type="text" name="location_id" value="10" hidden>
+                                    @else
                                     <input type="text" name="location_id" value="{{ auth()->user()->location_id }}" hidden>
+                                    @endif
                                     <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
                                     
                                     <div class="col-md-12">

@@ -196,6 +196,13 @@
         });
     </script>
     @endif
+    @if(session()->has('info'))
+    <script>
+        swal("Info!", "{{ session('info') }}", "info", {
+            timer: 5000
+        });
+    </script>
+    @endif
 
     <script type="text/javascript">
         // Menampilkan dan menyembunyikan Password

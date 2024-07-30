@@ -52,6 +52,14 @@
                         @endforeach
                         @endif
                     </select>
+                    
+                    <script>
+                        $(document).ready(function () {
+                            $("#sub_divisi").select2({
+                                dropdownParent: $("#sub_divisi").parent(), // Menentukan parent untuk dropdown
+                            });
+                        });
+                    </script>
                 </div>
                 <input type="text" id="ticket_id" name="id" value="{{ encrypt($ticket->id) }}" hidden>
             </div>
@@ -77,7 +85,7 @@
             <div class="modal-body">
                 <div class="col-md-12">
                     <label for="agent_id" class="form-label">Agent Name</label>
-                    <select class="form-select" name="agent_id" id="agent_id" required>
+                    <select class="form-select select2" name="agent_id" id="agent_id" required>
                         <option selected disabled>Choose...</option>
                         @foreach($agents as $agent)
                             @if(old("agent_id") == $agent->id)
@@ -87,6 +95,13 @@
                             @endif
                         @endforeach
                     </select>
+                    <script>
+                        $(document).ready(function () {
+                            $("#agent_id").select2({
+                                dropdownParent: $("#agent_id").parent(), // Menentukan parent untuk dropdown
+                            });
+                        });
+                    </script>
                 </div>
                 <input type="text" id="ticket_id" name="ticket_id" value="{{ encrypt($ticket->id) }}" hidden>
                 <input type="text" id="agent_id1" name="agent_id1" value="{{ encrypt($ticket->agent_id) }}" hidden>

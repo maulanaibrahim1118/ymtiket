@@ -20,7 +20,11 @@ class CategoryTicketController extends Controller
         $location_id = Auth::user()->location_id;
 
         // Get data Category Ticket berdasarkan Lokasi User
-        $category_tickets = Category_ticket::where('location_id', $location_id)->get();
+        if($location_id == 10 || $location_id == 359 || $location_id == 360) {
+            $category_tickets = Category_ticket::where('location_id', 10)->get();
+        }else {
+            $category_tickets = Category_ticket::where('location_id', $location_id)->get();
+        }
 
         return view('contents.category_ticket.index', [
             "title"             => "Ticket Category List",

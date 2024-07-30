@@ -9,6 +9,11 @@
             return string.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
 
+        // Fungsi untuk mengonversi detik ke jam
+        function secondsToHours(seconds) {
+            return (seconds / 3600).toFixed(2);
+        }
+
         for (var subDivision in jsonData) {
             if (jsonData.hasOwnProperty(subDivision)) {
                 var formattedSubDivision = subDivision !== 'tidak ada' ? capitalizeWords(subDivision) : '';
@@ -30,10 +35,6 @@
                         trigger: 'item',
                         formatter: '{a} <br/>{b} : {c} tickets ({d}%)'
                     },
-                    // legend: {
-                    //     orient: 'vertical',
-                    //     left: 'left'
-                    // },
                     series: [{
                         name: 'Total Tickets',
                         type: 'pie',
@@ -65,23 +66,19 @@
                 processChart.setOption({
                     title: {
                         text: formattedSubDivision ? 'Agent Performance - ' + formattedSubDivision : 'Agent Performance',
-                        subtext: formattedSubDivision ? 'Based on Ticket Processing Time' : 'Based on Ticket Processing Time',
+                        subtext: formattedSubDivision ? 'Based on Ticket Processing Time (hours)' : 'Based on Ticket Processing Time (hours)',
                         left: 'center'
                     },
                     tooltip: {
                         trigger: 'item',
-                        formatter: '{a} <br/>{b} : {c} seconds ({d}%)'
+                        formatter: '{a} <br/>{b} : {c} hours ({d}%)'
                     },
-                    // legend: {
-                    //     orient: 'vertical',
-                    //     left: 'left'
-                    // },
                     series: [{
                         name: 'Processing Time',
                         type: 'pie',
                         radius: '50%',
                         data: jsonData[subDivision]['process'].map(agent => ({
-                            value: agent.value,
+                            value: secondsToHours(agent.value), // Mengonversi detik ke jam
                             name: capitalizeWords(agent.name)
                         })),
                         emphasis: {

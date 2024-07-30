@@ -4,9 +4,7 @@
             <tr>
                 <th scope="col">CREATED AT</th>
                 <th scope="col">TICKET NUMBER</th>
-                @if(auth()->user()->sub_divisi == "hardware maintenance")
                 <th scope="col">CLIENT</th>
-                @endif
                 <th scope="col">SUBJECT</th>
                 <th scope="col">DETAILS</th>
                 <th scope="col">NOTE</th>
@@ -23,7 +21,6 @@
             @endif
                 <td>{{ date('d-M-Y H:i', strtotime($ticket->created_at)) }}</td>
                 <td>{{ $ticket->no_ticket }}</td>
-                @if(auth()->user()->sub_divisi == "hardware maintenance")
                 <td>
                     @if($ticket->location->wilayah_id == 1 || $ticket->location->wilayah_id == 2)
                     {{ $ticket->user->nama }} - {{ $ticket->location->nama_lokasi }}
@@ -31,7 +28,6 @@
                         {{ $ticket->location->site }} - {{ $ticket->location->nama_lokasi }}
                     @endif
                 </td>
-                @endif
                 <td>{{ $ticket->kendala }}</td>
                 <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->detail_kendala }}</td>
 

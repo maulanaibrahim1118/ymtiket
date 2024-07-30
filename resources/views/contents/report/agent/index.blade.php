@@ -31,11 +31,12 @@
                                         <div class="accordion-body mt-3">
                                             <div class="card-body">
                                                 <div id="table-container">
-                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportSubCategory') }}" method="GET">
+                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportAgent') }}" method="GET">
                                                         @csrf
                                                         <input type="date" name="startDate" id="startDate" value="{{ old('startDate', $filterArray[0]) }}" hidden>
                                                         <input type="date" name="endDate" id="endDate" value="{{ old('endDate', $filterArray[1]) }}" hidden>
-                                                        <button type="submit" class="btn btn-success px-3 me-3" disabled><i class="bi bi-cloud-download me-2"></i>Export</button>
+                                                        <input type="text" name="report1" id="report1" value="1" hidden>
+                                                        <button type="submit" class="btn btn-success px-3 me-3"><i class="bi bi-cloud-download me-2"></i>Export</button>
                                                     </form>
                                                     @include('contents.report.agent.partials.report1')
                                                 </div>
@@ -54,11 +55,12 @@
                                         <div class="accordion-body mt-3">
                                             <div class="card-body">
                                                 <div id="table-container">
-                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportSubCategory') }}" method="GET">
+                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportAgent') }}" method="GET">
                                                         @csrf
                                                         <input type="date" name="startDate" id="startDate" value="{{ old('startDate', $filterArray[0]) }}" hidden>
                                                         <input type="date" name="endDate" id="endDate" value="{{ old('endDate', $filterArray[1]) }}" hidden>
-                                                        <button type="submit" class="btn btn-success px-3 me-3" disabled><i class="bi bi-cloud-download me-2"></i>Export</button>
+                                                        <input type="text" name="report2" id="report2" value="2" hidden>
+                                                        <button type="submit" class="btn btn-success px-3 me-3"><i class="bi bi-cloud-download me-2"></i>Export</button>
                                                     </form>
                                                     @include('contents.report.agent.partials.report2')
                                                 </div>
@@ -77,11 +79,12 @@
                                         <div class="accordion-body mt-3">
                                             <div class="card-body">
                                                 <div id="table-container">
-                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportSubCategory') }}" method="GET">
+                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportAgent') }}" method="GET">
                                                         @csrf
                                                         <input type="date" name="startDate" id="startDate" value="{{ old('startDate', $filterArray[0]) }}" hidden>
                                                         <input type="date" name="endDate" id="endDate" value="{{ old('endDate', $filterArray[1]) }}" hidden>
-                                                        <button type="submit" class="btn btn-success px-3 me-3" disabled><i class="bi bi-cloud-download me-2"></i>Export</button>
+                                                        <input type="text" name="report3" id="report3" value="3" hidden>
+                                                        <button type="submit" class="btn btn-success px-3 me-3"><i class="bi bi-cloud-download me-2"></i>Export</button>
                                                     </form>
                                                     @include('contents.report.agent.partials.report3')
                                                 </div>
@@ -100,11 +103,12 @@
                                         <div class="accordion-body mt-3">
                                             <div class="card-body">
                                                 <div id="table-container">
-                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportSubCategory') }}" method="GET">
+                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportAgent') }}" method="GET">
                                                         @csrf
                                                         <input type="date" name="startDate" id="startDate" value="{{ old('startDate', $filterArray[0]) }}" hidden>
                                                         <input type="date" name="endDate" id="endDate" value="{{ old('endDate', $filterArray[1]) }}" hidden>
-                                                        <button type="submit" class="btn btn-success px-3 me-3" disabled><i class="bi bi-cloud-download me-2"></i>Export</button>
+                                                        <input type="text" name="report4" id="report4" value="4" hidden>
+                                                        <button type="submit" class="btn btn-success px-3 me-3"><i class="bi bi-cloud-download me-2"></i>Export</button>
                                                     </form>
                                                     @include('contents.report.agent.partials.report4')
                                                 </div>
@@ -123,11 +127,12 @@
                                         <div class="accordion-body mt-3">
                                             <div class="card-body">
                                                 <div id="table-container">
-                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportSubCategory') }}" method="GET">
+                                                    <form class="search-form d-flex align-items-center mb-3" action="{{ route('export.reportAgent') }}" method="GET">
                                                         @csrf
                                                         <input type="date" name="startDate" id="startDate" value="{{ old('startDate', $filterArray[0]) }}" hidden>
                                                         <input type="date" name="endDate" id="endDate" value="{{ old('endDate', $filterArray[1]) }}" hidden>
-                                                        <button type="submit" class="btn btn-success px-3 me-3" disabled><i class="bi bi-cloud-download me-2"></i>Export</button>
+                                                        <input type="text" name="report5" id="report5" value="5" hidden>
+                                                        <button type="submit" class="btn btn-success px-3 me-3"><i class="bi bi-cloud-download me-2"></i>Export</button>
                                                     </form>
                                                     @include('contents.report.agent.partials.report5')
                                                 </div>
@@ -172,7 +177,7 @@
                                                     <input type="date" name="endDate" id="endDate" value="{{ old('endDate', $filterArray[1]) }}" hidden>
                                                     <button type="submit" class="btn btn-success px-3 me-3" disabled><i class="bi bi-cloud-download me-2"></i>Export</button>
                                                 </form> --}}
-                                                {{-- @include('contents.report.agent.partials.report7') --}}
+                                                @include('contents.report.agent.partials.report7')
                                             </div>
                                         </div>
                                     </div>
@@ -182,50 +187,6 @@
                         </div><!-- End Info Card -->
                     </div><!-- End col-12 -->
 
-                    {{-- <div class="col-12">
-                        <div class="card info-card">
-                            <div class="card-body pb-0">
-                                <h5 class="card-title"><i class="bi bi-person-workspace me-2">
-                                    </i>Report Agent<span> | Rata-Rata Waktu Proses Ticket</span>
-                                </h5>
-                                
-                                <div id="table-container">
-                                    @include('contents.report.agent.partials.report2')
-                                </div>
-
-                            </div><!-- End Card Body -->
-                        </div><!-- End Info Card -->
-                    </div><!-- End col-12 -->
-
-                    <div class="col-12">
-                        <div class="card info-card">
-                            <div class="card-body pb-0">
-                                <h5 class="card-title"><i class="bi bi-person-workspace me-2">
-                                    </i>Report Agent<span> | Rata-Rata Harian</span>
-                                </h5>
-                                
-                                <div id="table-container">
-                                    @include('contents.report.agent.partials.report3')
-                                </div>
-
-                            </div><!-- End Card Body -->
-                        </div><!-- End Info Card -->
-                    </div><!-- End col-12 -->
-
-                    <div class="col-12">
-                        <div class="card info-card">
-                            <div class="card-body pb-0">
-                                <h5 class="card-title"><i class="bi bi-person-workspace me-2">
-                                    </i>Report Agent<span> | Rata-Rata Waktu Pending Per Hari</span>
-                                </h5>
-                                
-                                <div id="table-container">
-                                    @include('contents.report.agent.partials.report4')
-                                </div>
-
-                            </div><!-- End Card Body -->
-                        </div><!-- End Info Card -->
-                    </div><!-- End col-12 --> --}}
                 </div> <!-- End row -->
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->

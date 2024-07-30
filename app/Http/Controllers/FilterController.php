@@ -163,13 +163,13 @@ class FilterController extends Controller
                 $pathFilter = "[".$namaAgent."] - [".$pathFilter."]";
 
                 $ticketCounts = Ticket::select(
-                    DB::raw('SUM(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN 1 ELSE 0 END) as total'),
-                    DB::raw('SUM(CASE WHEN status = "created" THEN 1 ELSE 0 END) as unprocess'),
-                    DB::raw('SUM(CASE WHEN status = "onprocess" THEN 1 ELSE 0 END) as onprocess'),
-                    DB::raw('SUM(CASE WHEN status = "pending" THEN 1 ELSE 0 END) as pending'),
-                    DB::raw('SUM(CASE WHEN status = "finished" AND  status = "resolved" THEN 1 ELSE 0 END) as resolved'),
-                    DB::raw('SUM(CASE WHEN jam_kerja = "ya" AND  status NOT IN ("deleted") THEN 1 ELSE 0 END) as worktime'),
-                    DB::raw('SUM(CASE WHEN jam_kerja = "tidak" AND  status NOT IN ("deleted") THEN 1 ELSE 0 END) as freetime'),
+                    DB::raw('COUNT(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN id END) as total'),
+                    DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
+                    DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
+                    DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
+                    DB::raw('COUNT(CASE WHEN status = "finished" OR status = "resolved" THEN id END) as resolved'),
+                    DB::raw('COUNT(CASE WHEN jam_kerja = "ya" AND status NOT IN ("deleted") THEN id END) as worktime'),
+                    DB::raw('COUNT(CASE WHEN jam_kerja = "tidak" AND status NOT IN ("deleted") THEN id END) as freetime'),
                     DB::raw('COUNT(DISTINCT CASE WHEN status NOT IN ("deleted") THEN asset_id END) as asset')
                 )
                 ->where([['ticket_for', $locationId],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])
@@ -217,8 +217,8 @@ class FilterController extends Controller
                     return redirect('/dashboard');
                 }
                 $ticketCounts = Ticket::select(
-                    DB::raw('SUM(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN 1 ELSE 0 END) as total'),
-                    DB::raw('SUM(CASE WHEN status = "finished" AND  status = "resolved" THEN 1 ELSE 0 END) as resolved'),
+                    DB::raw('COUNT(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN id END) as total'),
+                    DB::raw('COUNT(CASE WHEN status = "finished" OR status = "resolved" THEN id END) as resolved')
                 )
                 ->where([['agent_id', $agentId],['created_at', 'like', $periodeFilter.'%']])
                 ->first();
@@ -292,7 +292,10 @@ class FilterController extends Controller
             return redirect('/report-agents');
         }
 
-        $agents = Agent::where([['location_id', $locationId],['is_active', '1']])
+        $locationIds = $locationId == 10 ? [10, 359, 360] : [$locationId];
+        
+        $agents = Agent::whereIn('location_id', $locationIds)
+            ->where('is_active', '1')
             ->with([
                 'ticket' => function($query) use ($request) {
                     $query->whereNotIn('status', ['deleted']);
@@ -335,6 +338,7 @@ class FilterController extends Controller
             $agent->ticket_pending = $agent->ticket->where('status', 'pending')->count();
             $agent->ticket_onprocess = $agent->ticket->where('status', 'onprocess')->count();
             $agent->ticket_finish = $agent->ticket->whereIn('status', ['resolved', 'finished'])->count();
+            $agent->ticket_assigned = $agent->ticket_details->where('status', 'assigned')->count();
 
             // Report 2
             $agent->avg_pending = $agent->ticket->pluck('ticket_detail.pending_time')->average();
@@ -391,6 +395,7 @@ class FilterController extends Controller
         $totalFinish        = $agents->sum('ticket_finish');
         $totalAvgPending    = $agents->sum('avg_pending');
         $totalAvgFinish     = $agents->sum('avg_finish');
+        $totalAssigned      = $agents->sum('ticket_assigned');
         // $totalTicketPerDay  = $agents->sum('ticket_per_day');
         // $totalHourPerDay    = $agents->sum('hour_per_day');
         // $totalPermintaan    = $agents->sum('permintaan');
@@ -418,8 +423,8 @@ class FilterController extends Controller
 
         $jsonData = json_encode($data);
 
-        //              0               1               2               3                4                    5                   6                7                8
-        $total = [$totalPending, $totalOnprocess, $totalFinish, $totalAvgPending, $totalAvgFinish, /* $totalTicketPerDay, $totalHourPerDay, $totalPermintaan, $totalKendala */];
+        //              0               1               2               3                4               5                   6                7                8
+        $total = [$totalPending, $totalOnprocess, $totalFinish, $totalAvgPending, $totalAvgFinish, $totalAssigned /* $totalTicketPerDay, $totalHourPerDay, $totalPermintaan, $totalKendala */];
         $filterArray = [$request->start_date, $request->end_date];
 
         return view('contents.report.agent.index', [

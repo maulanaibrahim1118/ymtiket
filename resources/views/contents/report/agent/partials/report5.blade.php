@@ -29,8 +29,16 @@
             <td>{{ $agent->nik }}</td>
             <td>{{ $agent->nama_agent }}</td>
             <td>{{ $agent->sub_divisi }}</td>
-            <td>{{ $agent->permintaan }}</td>
-            <td>{{ $agent->kendala }}</td>
+            <td>
+                <a href="{{ route('reportAgent.showDetailTicket', ['agent_id' => encrypt($agent->id), 'type' => 'permintaan', 'start_date' => $filterArray[0], 'end_date', $filterArray[1]]) }}" target="_blank">
+                    {{ $agent->permintaan }}
+                </a>
+            </td>
+            <td>
+                <a href="{{ route('reportAgent.showDetailTicket', ['agent_id' => encrypt($agent->id), 'type' => 'kendala', 'start_date' => $filterArray[0], 'end_date', $filterArray[1]]) }}" target="_blank">
+                    {{ $agent->kendala }}
+                </a>
+            </td>
             @endforeach
             {{-- <tr class="bg-light text-end">
                 <th class="text-center" colspan="4">TOTAL</th>

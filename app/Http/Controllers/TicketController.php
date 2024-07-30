@@ -64,7 +64,7 @@ class TicketController extends Controller
 
         // Jika role Service Desk
         }elseif($role == 1){
-            $tickets = Ticket::where('ticket_for', $locationId)->whereNotIn('status', ['deleted'])->orderBy('status', 'ASC')->orderBy('created_at', 'ASC')->get();
+            $tickets = Ticket::where('ticket_for', $locationId)->orWhere('created_by', Auth::user()->nama)->whereNotIn('status', ['deleted'])->orderBy('status', 'ASC')->orderBy('created_at', 'ASC')->get();
 
         // Jika role Agent
         }else{
@@ -700,8 +700,13 @@ class TicketController extends Controller
     public function queue(Request $request)
     {
         $updatedBy = Auth::user()->nama;
+        $locationId = Auth::user()->location_id;
+        $nik = Auth::user()->nik;
+        $agentAuth = Agent::where('nik', $nik)->first();
+        $agentIdAuth = $agentAuth->id;
         
         $ticketId   = decrypt($request['id']);
+        $subDivisi  = $request['sub_divisi'];
         $now        = date('d-m-Y H:i:s');
         $isQueue    = "ya";
 
@@ -711,8 +716,7 @@ class TicketController extends Controller
 
         if($status == "created"){
             Ticket::where('id', $ticketId)->update([
-                'is_queue'          => $isQueue,
-                'sub_divisi_agent'  => $request['sub_divisi'],
+                'sub_divisi_agent'  => $subDivisi,
                 'updated_by'        => $updatedBy
             ]);
         }else{
@@ -731,10 +735,9 @@ class TicketController extends Controller
 
             Ticket::where('id', $ticketId)->update([
                 'pending_at'        => $now,
-                'is_queue'          => $isQueue,
                 'status'            => "pending",
                 'pending_at'        => date('d-m-Y H:i:s'),
-                'sub_divisi_agent'  => $request['sub_divisi'],
+                'sub_divisi_agent'  => $subDivisi,
                 'updated_by'        => $updatedBy
             ]);
 
@@ -748,17 +751,115 @@ class TicketController extends Controller
             $progress_ticket->save();
         }
 
-        // Saving data to progress ticket table
-        $progress_ticket                = new Progress_ticket;
-        $progress_ticket->ticket_id     = $ticketId;
-        $progress_ticket->tindakan      = "Ticket sedang dalam antrian";
-        $progress_ticket->status        = "edited";
-        $progress_ticket->process_at    = $now;
-        $progress_ticket->updated_by    = $updatedBy;
+        $today = Carbon::today()->toDateString(); // Mendapatkan tanggal hari ini
+
+        // Mendapatkan daftar agent_id dari tabel agents berdasarkan sub_divisi
+        $agentIds = Agent::where([['sub_divisi', $subDivisi], ['status', 'present'], ['is_active', '1']])
+                        ->whereNotIn('nik', [$nik])
+                        ->pluck('id');
+
+        // Menghitung jumlah tiket < 5 untuk setiap agent tanggal hari ini
+        $ticketsToday = Ticket::select('agent_id')
+                            ->whereIn('agent_id', $agentIds)
+                            ->whereDate('created_at', $today)
+                            ->groupBy('agent_id')
+                            ->havingRaw('COUNT(*) < 5') // Menambahkan kondisi hanya agen dengan total tiket kurang dari 5
+                            ->selectRaw('agent_id, COUNT(*) as total')
+                            ->pluck('total', 'agent_id');
+
+        // Menginisialisasi ticketCounts dengan nilai 0 untuk semua agentIds
+        $ticketCounts = $agentIds->mapWithKeys(function ($id) {
+            return [$id => 0];
+        });
+
+        // Memperbarui ticketCounts dengan data tiket yang ditemukan
+        foreach ($ticketsToday as $agentId => $count) {
+            $ticketCounts[$agentId] = $count;
+        }
+
+        // Jika semua agen memiliki tiket lebih dari 5, maka tiket diantrikan
+        if ($ticketCounts->filter(function($count) { return $count < 5; })->isEmpty()) {
+            Ticket::where('id', $ticketId)->update([
+                'is_queue'          => $isQueue,
+                'updated_by'        => $updatedBy
+            ]);
+
+            $progress_ticket = new Progress_ticket;
+            $progress_ticket->ticket_id = $ticketId;
+            $progress_ticket->tindakan = "Ticket sedang dalam antrian";
+            $progress_ticket->status = "edited";
+            $progress_ticket->process_at = $now;
+            $progress_ticket->updated_by = $updatedBy;
+            $progress_ticket->save();
+
+            // Kembali ke halaman ticket beserta pesan sukses
+            return back()->with('success', 'Ticket successfully queued!');
+        }
+
+        // Mendapatkan daftar agent_id dari tabel tickets berdasarkan sub_divisi_agent dan status "onprocess" dengan filter agentIds
+        $ticketAgentIds = Ticket::where([['sub_divisi_agent', $subDivisi], ['status', 'onprocess']])
+                                ->whereIn('agent_id', $agentIds)
+                                ->whereNotIn('agent_id', [$agentIdAuth])
+                                ->pluck('agent_id')
+                                ->unique();
+
+        // Mencari agent_id yang tidak ada di tiket "onprocess"
+        $uniqueAgentIds = $agentIds->diff($ticketAgentIds)->values();
+
+        // Jika tidak ada agent yang menganggur, tiket diantrikan
+        if ($uniqueAgentIds->isEmpty()) {
+            Ticket::where('id', $ticketId)->update([
+                'is_queue'          => $isQueue,
+                'updated_by'        => $updatedBy
+            ]);
+
+            $progress_ticket = new Progress_ticket;
+            $progress_ticket->ticket_id = $ticketId;
+            $progress_ticket->tindakan = "Ticket sedang dalam antrian";
+            $progress_ticket->status = "edited";
+            $progress_ticket->process_at = $now;
+            $progress_ticket->updated_by = $updatedBy;
+            $progress_ticket->save();
+
+            // Kembali ke halaman ticket beserta pesan sukses
+            return back()->with('success', 'Ticket successfully queued!');
+        }
+
+        // Mendapatkan nilai terkecil dari jumlah tiket
+        $minTicketCount = min($ticketCounts->toArray());
+
+        // Mendapatkan agent_id dengan nilai tiket terkecil, dan memilih salah satu jika ada beberapa
+        $agentWithMinTickets = $ticketCounts->filter(function ($count) use ($minTicketCount) {
+            return $count == $minTicketCount;
+        })->keys()->sort()->first();
+
+        Ticket::where('id', $ticketId)->update([
+            'agent_id'      => $agentWithMinTickets,
+            'assigned'      => "ya",
+            'updated_by'    => $updatedBy
+        ]);
+
+        $agent = Agent::where('id', $agentWithMinTickets)->first();
+        $agentName = $agent->nama_agent;
+
+        $progress_ticket = new Progress_ticket;
+        $progress_ticket->ticket_id = $ticketId;
+        $progress_ticket->tindakan = "Ticket di assign dari antrian ke ".ucwords($agentName)." oleh sistem";
+        $progress_ticket->status = "assigned";
+        $progress_ticket->process_at = $now;
+        $progress_ticket->updated_by = $updatedBy;
+        $progress_ticket->save();
+
+        $progress_ticket = new Progress_ticket;
+        $progress_ticket->ticket_id = $ticketId;
+        $progress_ticket->tindakan = "Ticket sedang dalam antrian";
+        $progress_ticket->status = "edited";
+        $progress_ticket->process_at = $now;
+        $progress_ticket->updated_by = $updatedBy;
         $progress_ticket->save();
 
         // Kembali ke halaman ticket beserta pesan sukses
-        return back()->with('success', 'Ticket successfully queued!');
+        return back()->with('success', 'Ticket successfully assigned to '.ucwords($agentName).'!');
     }
 
     // Assign pada saat status ticket masih created (role: service desk)

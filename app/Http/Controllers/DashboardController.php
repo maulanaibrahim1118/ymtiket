@@ -137,13 +137,13 @@ class DashboardController extends Controller
             // Jika Role Service Desk
             if($role == "1"){
                 $ticketCounts = Ticket::select(
-                    DB::raw('SUM(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN 1 ELSE 0 END) as total'),
-                    DB::raw('SUM(CASE WHEN status = "created" THEN 1 ELSE 0 END) as unprocess'),
-                    DB::raw('SUM(CASE WHEN status = "onprocess" THEN 1 ELSE 0 END) as onprocess'),
-                    DB::raw('SUM(CASE WHEN status = "pending" THEN 1 ELSE 0 END) as pending'),
-                    DB::raw('SUM(CASE WHEN status = "finished" AND  status = "resolved" THEN 1 ELSE 0 END) as resolved'),
-                    DB::raw('SUM(CASE WHEN jam_kerja = "ya" AND  status NOT IN ("deleted") THEN 1 ELSE 0 END) as worktime'),
-                    DB::raw('SUM(CASE WHEN jam_kerja = "tidak" AND  status NOT IN ("deleted") THEN 1 ELSE 0 END) as freetime'),
+                    DB::raw('COUNT(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN id END) as total'),
+                    DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
+                    DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
+                    DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
+                    DB::raw('COUNT(CASE WHEN status = "finished" OR status = "resolved" THEN id END) as resolved'),
+                    DB::raw('COUNT(CASE WHEN jam_kerja = "ya" AND status NOT IN ("deleted") THEN id END) as worktime'),
+                    DB::raw('COUNT(CASE WHEN jam_kerja = "tidak" AND status NOT IN ("deleted") THEN id END) as freetime'),
                     DB::raw('COUNT(DISTINCT CASE WHEN status NOT IN ("deleted") THEN asset_id END) as asset')
                 )
                 ->where('ticket_for', $locationId)
@@ -188,8 +188,8 @@ class DashboardController extends Controller
             // Jika Role Agent
             }else{
                 $ticketCounts = Ticket::select(
-                    DB::raw('SUM(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN 1 ELSE 0 END) as total'),
-                    DB::raw('SUM(CASE WHEN status = "finished" AND  status = "resolved" THEN 1 ELSE 0 END) as resolved')
+                    DB::raw('COUNT(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN id END) as total'),
+                    DB::raw('COUNT(CASE WHEN status = "finished" OR status = "resolved" THEN id END) as resolved')
                 )
                 ->where('agent_id', $agentId)
                 ->first();

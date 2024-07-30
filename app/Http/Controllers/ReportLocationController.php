@@ -23,7 +23,7 @@ class ReportLocationController extends Controller
             ->with(['tickets' => function($query) use ($locationId) { 
                 $query->where('ticket_for', $locationId)->whereNotIn('status', ['deleted'])->with('ticket_detail');
             }, 'user']) 
-            ->orderBy('nama_lokasi', 'ASC') ->get();
+            ->orderBy('wilayah_id', 'DESC')->orderBy('nama_lokasi', 'ASC')->get();
 
         $locations = $locations->map(function($location) { 
             // Report 1 

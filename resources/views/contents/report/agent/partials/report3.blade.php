@@ -38,13 +38,15 @@
                 $minutes = floor(($hourPerDay % 3600) / 60);
                 $seconds = $hourPerDay % 60;
             @endphp
-            @if($hourPerDay != 0)
-                <td class="text-end">
+            <td class="text-end">
+                <a href="{{ route('reportAgent.showDetailTicket', ['agent_id' => encrypt($agent->id), 'type' => 'hourperday', 'start_date' => $filterArray[0], 'end_date', $filterArray[1]]) }}" target="_blank">
+                @if($hourPerDay != 0)
                     {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
-                </td>
-            @else
-                <td class="text-end">00:00:00</td>
-            @endif
+                @else
+                    00:00:00
+                @endif
+                </a>
+            </td>
             <td class="text-end">{{ $agent->percentage }}%</td>
             </tr>
             @endforeach

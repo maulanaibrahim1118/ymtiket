@@ -25,10 +25,17 @@ class SubCategoryTicketController extends Controller
         $locationId = Auth::user()->location_id;
         
         // Get data Sub Category Ticket sesuai lokasi user yang ada pada tabel category ticket
-        $subCategoryTicket = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
-            ->where('category_tickets.location_id', $locationId)
-            ->select('sub_category_tickets.*')
-            ->get();
+        if($locationId == 10 || $locationId == 359 || $locationId == 360) {
+            $subCategoryTicket = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
+                ->where('category_tickets.location_id', 10)
+                ->select('sub_category_tickets.*')
+                ->get();
+        }else{
+            $subCategoryTicket = Sub_category_ticket::join('category_tickets', 'sub_category_tickets.category_ticket_id', '=', 'category_tickets.id')
+                ->where('category_tickets.location_id', $locationId)
+                ->select('sub_category_tickets.*')
+                ->get();
+        }
             
         return view('contents.sub_category_ticket.index', [
             "title"                 => "Ticket Sub Category List",
@@ -49,7 +56,11 @@ class SubCategoryTicketController extends Controller
         $locationId = Auth::user()->location_id;
         
         // Get data untuk Select Option
-        $categoryTickets    = Category_ticket::where('location_id', $locationId)->get();
+        if($locationId == 10 || $locationId == 359 || $locationId == 360) {
+            $categoryTickets    = Category_ticket::where('location_id', 10)->get();
+        }else{
+            $categoryTickets    = Category_ticket::where('location_id', $locationId)->get();
+        }
         $assetChange        = ["ya", "tidak"];
 
         return view('contents.sub_category_ticket.create', [
@@ -143,7 +154,11 @@ class SubCategoryTicketController extends Controller
         $subCategoryTicket = Sub_category_ticket::where('id', $id)->first();
 
         // Get data untuk select option
-        $categoryTickets    = Category_ticket::where('location_id', $locationId)->get();
+        if($locationId == 10 || $locationId == 359 || $locationId == 360) {
+            $categoryTickets    = Category_ticket::where('location_id', 10)->get();
+        }else{
+            $categoryTickets    = Category_ticket::where('location_id', $locationId)->get();
+        }
         $assetChange        = ["ya", "tidak"];
 
         return view('contents.sub_category_ticket.edit', [

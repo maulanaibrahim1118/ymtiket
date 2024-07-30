@@ -3,20 +3,21 @@
         <thead class="bg-light" style="height: 45px;font-size:14px;">
             @if($pathFilter[0] != NULL && $pathFilter[1] != NULL)
             <tr>
-            <td colspan="5" class="font-monospace ps-3">Filter : {{ ucwords($pathFilter[0]) }} | {{ $pathFilter[1] }}</td>
+            <td colspan="6" class="font-monospace ps-3">Filter : {{ ucwords($pathFilter[0]) }} | {{ $pathFilter[1] }}</td>
             </tr>
             @elseif($pathFilter[0] != NULL && $pathFilter[1] == NULL)
             <tr>
-            <td colspan="5" class="font-monospace ps-3">Filter : {{ ucwords($pathFilter[0]) }} | Semua Periode</td>
+            <td colspan="6" class="font-monospace ps-3">Filter : {{ ucwords($pathFilter[0]) }} | Semua Periode</td>
             </tr>
             @elseif($pathFilter[0] == NULL && $pathFilter[1] != NULL)
             <tr>
-            <td colspan="5" class="font-monospace ps-3">Filter : Semua Wilayah | {{ $pathFilter[1] }}</td>
+            <td colspan="6" class="font-monospace ps-3">Filter : Semua Wilayah | {{ $pathFilter[1] }}</td>
             </tr>
             @endif
             <tr class="align-middle">
             <th class="text-center">#</th>
-            <th>STORE NAME</th>
+            <th>STORE / DIVISION NAME</th>
+            <th>WILAYAH</th>
             <th>REQUEST</th>
             <th>ACCIDENT</th>
             <th>TOTAL TICKET</th>
@@ -34,6 +35,7 @@
             @else
             <td><a href="/error-404-underconstruction">{{ $location->nama_lokasi }}</a></td>
             @endif
+            <td>{{ $location->wilayah->name }}</td>
             <td>{{ $location->permintaan }}</td>
             <td>{{ $location->kendala }}</td>
             <td>{{ $location->total }}</td>

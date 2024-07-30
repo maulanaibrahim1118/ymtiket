@@ -219,6 +219,9 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
 // Route Report
 Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::get('/report-agents', [ReportAgentController::class, 'index'])->name('report.agent');
+    Route::get('/report-agents/show-ticket', [ReportAgentController::class, 'showTicket'])->name('reportAgent.showTicket');
+    Route::get('/report-agents/show-detail-ticket', [ReportAgentController::class, 'showDetailTicket'])->name('reportAgent.showDetailTicket');
+    Route::get('/agents/export', [ReportAgentController::class, 'export'])->name('export.reportAgent');
     Route::get('/report-locations', [ReportLocationController::class, 'index'])->name('report.location');
     Route::get('/report-sub-categories', [ReportSubCategoryController::class, 'index'])->name('report.subCategory');
     Route::get('/categories/export', [ReportSubCategoryController::class, 'export'])->name('export.reportSubCategory');

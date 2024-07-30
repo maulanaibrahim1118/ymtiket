@@ -41,6 +41,10 @@
                 '<button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Queue</button>'+
             '</div>'+
             '</form>';
+
+            $("#sub_divisi").select2({
+                dropdownParent: $("#sub_divisi").parent(), // Menentukan parent untuk dropdown
+            });
         }else{
             modalContent1.innerHTML  =
             '<div class="modal-header">'+
@@ -70,6 +74,10 @@
                 '<button type="submit" class="btn btn-primary"><i class="bi bi-list-check me-2"></i>Queue</button>'+
             '</div>'+
             '</form>';
+
+            $("#sub_divisi").select2({
+                dropdownParent: $("#sub_divisi").parent(), // Menentukan parent untuk dropdown
+            });
         }
     }
 </script>
@@ -100,7 +108,7 @@
             '<div class="modal-body">'+
                 '<div class="col-md-12">'+
                     '<label for="agent_id" class="form-label">Agent Name</label>'+
-                    '<select class="form-select" name="agent_id" id="agent_id" required>'+
+                    '<select class="form-select select2" name="agent_id" id="agent_id" required>'+
                         '<option selected disabled>Choose...</option>'+
                         '@foreach($hoAgents as $hoAgent)'+
                             '@if(old("agent_id") == $hoAgent->id)'+
@@ -117,6 +125,11 @@
                 '<button type="submit" class="btn btn-primary"><i class="bx bx-share me-2"></i>Assign</button>'+
             '</div>'+
             '</form>';
+
+            // Inisialisasi ulang Select2 setelah mengganti konten modal
+            $("#agent_id").select2({
+                dropdownParent: $("#agent_id").parent(), // Menentukan parent untuk dropdown
+            });
         }else{
             modalContent2.innerHTML  =
             '<div class="modal-header">'+
@@ -146,6 +159,11 @@
                 '<button type="submit" class="btn btn-primary"><i class="bx bx-share me-2"></i>Assign</button>'+
             '</div>'+
             '</form>';
+
+            // Inisialisasi ulang Select2 setelah mengganti konten modal
+            $("#agent_id").select2({
+                dropdownParent: $("#agent_id").parent(), // Menentukan parent untuk dropdown
+            });
         }
     }
 </script>

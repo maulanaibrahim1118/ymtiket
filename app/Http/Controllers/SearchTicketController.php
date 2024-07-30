@@ -28,10 +28,14 @@ class SearchTicketController extends Controller
                 
                 // Jika No. Ticket ditemukan
             }else{
-                $ticket     = Ticket::where('no_ticket', $noTicket)->whereIn('status', ['resolved', 'finished'])->first();
+                $ticket     = Ticket::where('no_ticket', $noTicket)->first();
 
-                if($ticket == NULL){
-                    return back()->with('error', 'Ticket is being processed by the agent!');
+                if($ticket->status == "created"){
+                    return back()->with('info', 'Ticket has not been processed by the agent!');
+                }elseif($ticket->status == "onprocess"){
+                    return back()->with('info', 'Ticket is being processed by the agent!');
+                }elseif($ticket->status == "pending"){
+                    return back()->with('info', 'Ticket is pending with the agent!');
                 }else{
                     // Get ID Ticket
                     $ticketId   = $ticket->id;
