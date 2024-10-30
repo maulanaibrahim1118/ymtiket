@@ -58,7 +58,7 @@ class CategoryTicketController extends Controller
     {
         // Validating data request
         $validatedData = $request->validate([
-            'nama_kategori' => 'required|min:3|max:50|unique:category_tickets',
+            'nama_kategori' => 'required|min:3|max:50',
             'location_id'   => 'required',
             'updated_by'    => 'required'
         ],
@@ -68,10 +68,15 @@ class CategoryTicketController extends Controller
             'nama_kategori.required'    => 'Category Name required!',
             'nama_kategori.min'         => 'Type at least 3 characters!',
             'nama_kategori.max'         => 'Type maximum 50 characters!',
-            'unique'                    => 'Category Name already exists!',
             'location_id.required'      => 'Location must be selected!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
+
+        $countCategory = Category_ticket::where([['nama_kategori', $request['nama_kategori']],['location_id', $request['location_id']]])->count();
+
+        if($countCategory >= 1){
+            return redirect('/category-tickets')->with('error', 'Category exists!');
+        }
 
         // Simpan data Category Ticket sesuai request yang telah di validasi
         $data = array_map('strtolower', $validatedData);
@@ -134,13 +139,10 @@ class CategoryTicketController extends Controller
         
         // Validating data request
         $rules = [
+            'nama_kategori' => 'required|min:3|max:50',
             'location_id'   => 'required',
             'updated_by'    => 'required'
         ];
-
-        if($request->nama_kategori != $category_ticket->nama_kategori){
-            $rules['nama_kategori'] = 'required|min:3|max:50|unique:category_tickets';
-        }
 
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
@@ -148,10 +150,15 @@ class CategoryTicketController extends Controller
             'nama_kategori.required'    => 'Category Name required!',
             'nama_kategori.min'         => 'Type at least 3 characters!',
             'nama_kategori.max'         => 'Type maximum 50 characters!',
-            'unique'                    => 'Category Name already exists!',
             'location_id.required'      => 'Location must be selected!',
             'updated_by.required'       => 'Wajib diisi!'
         ]);
+
+        $countCategory = Category_ticket::where([['nama_kategori', $request['nama_kategori']],['location_id', $request['location_id']]])->count();
+
+        if($countCategory >= 1){
+            return redirect('/category-tickets')->with('error', 'Category exists!');
+        }
 
         // Updating data Category Ticket sesuai request yang telah di validasi
         $data = array_map('strtolower', $validatedData);

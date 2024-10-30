@@ -65,47 +65,6 @@
                                         </table>
                                     </div>
                                 </div>
-
-                                <script>
-                                    $(document).ready(function () {
-                                        $('.form-check-input').change(function () {
-                                            var id = $(this).data('id');
-                                            var status = $(this).prop('checked') ? 1 : 0;
-                                
-                                            $.ajax({
-                                                url: '/agents/update/' + id,
-                                                method: 'POST',
-                                                data: {
-                                                    _token: '{{ csrf_token() }}',
-                                                    status: status
-                                                },
-                                                success: function (response) {
-                                                    // Handle success, jika diperlukan
-                                                    refreshTable();
-                                                },
-                                                error: function (xhr) {
-                                                    // Handle error, jika diperlukan
-                                                    console.error('Error updating status');
-                                                }
-                                            });
-                                        });
-
-                                        function refreshTable() {
-                                            var id = document.getElementById('location_id').value;
-                                            $.ajax({
-                                                url: '/agents/refresh/' + id, 
-                                                method: 'GET',
-                                                success: function(response) {
-                                                    // Memperbarui tabel dengan data terbaru
-                                                    $('#table-container').html(response);
-                                                },
-                                                error: function(error) {
-                                                    console.log('Error:', error);
-                                                }
-                                            });
-                                        }
-                                    });
-                                </script>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->
                     </div><!-- End col-12 -->
@@ -113,4 +72,47 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+@endsection
+
+@section('customScripts')
+<script>
+    $(document).ready(function () {
+        $('.form-check-input').change(function () {
+            var id = $(this).data('id');
+            var status = $(this).prop('checked') ? 1 : 0;
+
+            $.ajax({
+                url: '/agents/update/' + id,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    status: status
+                },
+                success: function (response) {
+                    // Handle success, jika diperlukan
+                    refreshTable();
+                },
+                error: function (xhr) {
+                    // Handle error, jika diperlukan
+                    console.error('Error updating status');
+                }
+            });
+        });
+
+        function refreshTable() {
+            var id = document.getElementById('location_id').value;
+            $.ajax({
+                url: '/agents/refresh/' + id, 
+                method: 'GET',
+                success: function(response) {
+                    // Memperbarui tabel dengan data terbaru
+                    $('#table-container').html(response);
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        }
+    });
+</script>
 @endsection

@@ -61,6 +61,10 @@ class SubCategoryTicketController extends Controller
         }else{
             $categoryTickets    = Category_ticket::where('location_id', $locationId)->get();
         }
+        $types = [
+            ["id" => "kendala", "name" => "Kendala"],
+            ["id" => "permintaan", "name" => "Permintaan"],
+        ];
         $assetChange        = ["ya", "tidak"];
 
         return view('contents.sub_category_ticket.create', [
@@ -69,6 +73,7 @@ class SubCategoryTicketController extends Controller
             "path"              => "Ticket Sub Category",
             "path2"             => "Create",
             "category_tickets"  => $categoryTickets,
+            "types"             => $types,
             "assetChange"       => $assetChange
         ]);
     }
@@ -85,6 +90,7 @@ class SubCategoryTicketController extends Controller
         $validatedData = $request->validate([
             'nama_sub_kategori'     => 'required|min:3|max:50',
             'category_ticket_id'    => 'required',
+            'jenis_ticket'          => 'required',
             'asset_change'          => 'required',
             'updated_by'            => 'required',
             // Menambahkan aturan validasi unik dengan kondisi
@@ -106,6 +112,7 @@ class SubCategoryTicketController extends Controller
             'nama_sub_kategori.max'         => 'Type maximum 50 characters!',
             'nama_sub_kategori.unique'      => 'Already exists for the same category!',
             'category_ticket_id.required'   => 'Ticket Category must be selected!',
+            'jenis_ticket.required'         => 'Ticket Type must be selected!',
             'asset_change.required'         => 'Asset Change must be selected!',
             'updated_by.required'           => 'Harap diisi!'
         ]);
@@ -117,6 +124,7 @@ class SubCategoryTicketController extends Controller
         $sct                        = new Sub_category_ticket;
         $sct->nama_sub_kategori     = ucwords($nama_sub_kategori);
         $sct->category_ticket_id    = $request['category_ticket_id'];
+        $sct->jenis_ticket          = $request['jenis_ticket'];
         $sct->asset_change          = $request['asset_change'];
         $sct->updated_by            = $request['updated_by'];
         $sct->save();
@@ -159,6 +167,10 @@ class SubCategoryTicketController extends Controller
         }else{
             $categoryTickets    = Category_ticket::where('location_id', $locationId)->get();
         }
+        $types = [
+            ["id" => "kendala", "name" => "Kendala"],
+            ["id" => "permintaan", "name" => "Permintaan"],
+        ];
         $assetChange        = ["ya", "tidak"];
 
         return view('contents.sub_category_ticket.edit', [
@@ -167,6 +179,7 @@ class SubCategoryTicketController extends Controller
             "path2"             => "Edit",
             "sct"               => $subCategoryTicket,
             "category_tickets"  => $categoryTickets,
+            "types"             => $types,
             "assetChange"       => $assetChange
         ]);
     }
@@ -190,6 +203,7 @@ class SubCategoryTicketController extends Controller
         $validatedData = $request->validate([
             'nama_sub_kategori'     => 'required|min:3|max:50',
             'category_ticket_id'    => 'required',
+            'jenis_ticket'          => 'required',
             'asset_change'          => 'required',
             'updated_by'            => 'required',
             // Menambahkan aturan validasi unik dengan kondisi
@@ -211,6 +225,7 @@ class SubCategoryTicketController extends Controller
             'nama_sub_kategori.max'         => 'Type maximum 50 characters!',
             'nama_sub_kategori.unique'      => 'Already exists for the same category!',
             'category_ticket_id.required'   => 'Ticket Category must be selected!',
+            'jenis_ticket.required'         => 'Ticket Type must be selected!',
             'asset_change.required'         => 'Asset Change must be selected!',
             'updated_by.required'           => 'Harap diisi!'
         ]);
@@ -222,6 +237,7 @@ class SubCategoryTicketController extends Controller
         Sub_category_ticket::where('id', $id)->update([
             'nama_sub_kategori'     => ucwords($namaSubKategori),
             'category_ticket_id'    => $request['category_ticket_id'],
+            'jenis_ticket'          => $request['jenis_ticket'],
             'asset_change'          => $request['asset_change'],
             'updated_by'            => $request['updated_by']
         ]);

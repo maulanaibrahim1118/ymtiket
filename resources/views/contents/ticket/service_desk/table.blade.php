@@ -7,7 +7,7 @@
     }
 </style>
 <div class="table-responsive mt-2">
-    <table class="table datatable table-hover">
+    <table class="table datatable table-hover" id="ticketsTable">
         <thead class="bg-light" style="height: 45px;font-size:14px;">
             <tr>
                 <th scope="col">CREATED AT</th>
@@ -36,10 +36,10 @@
                     @if($ticket->location->wilayah_id == 1 || $ticket->location->wilayah_id == 2)
                     {{ $ticket->user->nama }} - {{ $ticket->location->nama_lokasi }}
                     @else
-                        {{ $ticket->location->site }} - {{ $ticket->location->nama_lokasi }}
+                        {{ $ticket->location->site }} - {{ $ticket->location->nama_lokasi }} - {{ $ticket->location->initial }}
                     @endif
                 </td>
-                <td>{{ $ticket->kendala }}</td>
+                <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->kendala }}</td>
                 <td class="col-2 text-truncate" style="max-width: 50px;">{{ $ticket->detail_kendala }}</td>
 
                 {{-- Kolom PIC --}}

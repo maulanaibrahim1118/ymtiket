@@ -20,8 +20,6 @@
     <link href="dist/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="dist/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="dist/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="dist/vendor/quill/quill.snow.css" rel="stylesheet">
-    <link href="dist/vendor/quill/quill.bubble.css" rel="stylesheet">
     <link href="dist/vendor/remixicon/remixicon.css" rel="stylesheet">
     <link href="dist/vendor/simple-datatables/style.css" rel="stylesheet">
 
@@ -277,14 +275,8 @@
         </div>
     </div>
     <!-- Vendor JS Files -->
-    <script src="dist/vendor/apexcharts/apexcharts.min.js"></script>
     <script src="dist/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="dist/vendor/chart.js/chart.min.js"></script>
-    <script src="dist/vendor/echarts/echarts.min.js"></script>
-    <script src="dist/vendor/quill/quill.min.js"></script>
     <script src="dist/vendor/simple-datatables/simple-datatables.js"></script>
-    <script src="dist/vendor/tinymce/tinymce.min.js"></script>
-    <script src="dist/vendor/php-email-form/validate.js"></script>
 
     {{-- Saran Tindakan Modal --}}
     <div class="modal fade" id="actionModal" style="zoom: 0.75;" tabindex="-1">

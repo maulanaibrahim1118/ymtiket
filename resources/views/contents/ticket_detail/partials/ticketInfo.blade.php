@@ -46,7 +46,7 @@
         </div>
         <div class="col-md-9 m-0">
             @if ($ticket->user->nama == $ticket->location->nama_lokasi)
-            <label for="client/lokasi" class="form-label">: <span class="badge bg-primary" style="font-size: 13px;">{{ ucwords($ticket->user->nik) }} - {{ ucwords($ticket->location_name) }} / Store</span></label>
+            <label for="client/lokasi" class="form-label">: <span class="badge bg-primary" style="font-size: 13px;">{{ ucwords($ticket->user->nik) }} - {{ ucwords($ticket->location_name) }} - {{ ucwords($ticket->location->initial) }}</span></label>
             @else
             <label for="client/lokasi" class="form-label">: <span class="badge bg-primary" style="font-size: 13px;">{{ ucwords($ticket->user->nama) }} / {{ ucwords($ticket->location->nama_lokasi) }}</span></label>
             @endif

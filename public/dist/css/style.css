@@ -51,8 +51,8 @@ body {
     border: 16px solid #f3f3f3;
     border-radius: 50%;
     border-top: 16px solid #3498db;
-    -webkit-animation: spin 2s linear infinite;
-    animation: spin 2s linear infinite;
+    -webkit-animation: spin linear infinite;
+    animation: spin linear infinite;
 }
 
 @-webkit-keyframes spin {

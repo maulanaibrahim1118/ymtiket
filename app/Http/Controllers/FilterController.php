@@ -188,15 +188,19 @@ class FilterController extends Controller
                 $category       = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')->where([['tickets.ticket_for', $locationId],['ticket_details.agent_id', 'like', '%'.$agentFilter],['ticket_details.created_at', 'like', $periodeFilter.'%']])->distinct()->count(['ticket_details.sub_category_ticket_id']);
 
                 // Mengembalikan data untuk di tampilkan di view
-                $dataArray      = [$total, $unProcess, $onProcess, $pending, $resolved, $assigned, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
-                $data1          = Agent::where('location_id', $locationId)
+                $dataArray = [$total, $unProcess, $onProcess, $pending, $resolved, $assigned, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
+                $locationCondition = $locationId == 10 ? [10, 359, 360] : [$locationId];
+                $data1 = Agent::where('is_active', '1')->whereIn('location_id', $locationCondition)
                     ->when($agentFilter, function ($query, $agentFilter) {
                         return $query->where('id', $agentFilter);
                     })
                     ->withCount('ticket_details')
                     ->select(
                         'agents.*', 
-                        DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.process_at LIKE "' . $periodeFilter . '%") as total_ticket'),
+                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted") AND tickets.process_at LIKE "' . $periodeFilter . '%") as total_ticket'),
+                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "created" AND tickets.process_at LIKE "' . $periodeFilter . '%") as created'),
+                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "onprocess" AND tickets.process_at LIKE "' . $periodeFilter . '%") as onprocess'),
+                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "pending" AND tickets.process_at LIKE "' . $periodeFilter . '%") as pending'),
                         // DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted","resolved","finished","created") AND tickets.created_at LIKE "' . $filter2 . '%") as ticket_onprocess'),
                         DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.status = "resolved" AND ticket_details.process_at LIKE "' . $periodeFilter . '%") as ticket_finish'),
                         DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.status = "assigned" AND ticket_details.created_at LIKE "' . $periodeFilter . '%") as assigned'),
@@ -208,7 +212,7 @@ class FilterController extends Controller
                     ->orderBy('sub_divisi', 'ASC')
                     ->get();
                 $data2          = Ticket::where([['ticket_for', $locationId],['status','created'],['is_queue', 'tidak'],['assigned', 'tidak'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->get();
-                $data3          = Ticket::where([['ticket_for', $locationId],['is_queue', 'ya'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereIn('status',['created', 'pending'])->get();
+                $data3          = Ticket::where([['is_queue', 'ya'],['agent_id', 'like', '%'.$agentFilter],['created_at', 'like', $periodeFilter.'%']])->whereIn('ticket_for', $locationCondition)->whereIn('status',['created', 'pending'])->get();
                 $filterArray    = [$filter1, $filter2];
 
             // Jika role Agent
@@ -371,6 +375,7 @@ class FilterController extends Controller
                 $agent->ticket_per_day = round($totalTicket/$uniqueDates);
                 $agent->hour_per_day = round($workHour/$uniqueDates);
             }
+            $agent->totalDay = $uniqueDates;
             $agent->percentage = round(($agent->hour_per_day/28800)*100);
             
             // Report 4
@@ -506,8 +511,6 @@ class FilterController extends Controller
                         ->whereDate('created_at', '<=', $end_date);
                 }
             }
-        
-            $query->whereIn('status', ['resolved', 'assigned']);
             $query->with('agent');
         }])->get();
         
@@ -518,16 +521,27 @@ class FilterController extends Controller
         foreach ($categories as $category) {
             foreach ($category->sub_category_tickets as $subCategory) {
                 foreach ($agents as $agent) {
-                    $avgTime = $subCategory->ticket_details->where('agent_id', $agent->id)->avg('processed_time');
+                    $avgTime = $subCategory->ticket_details->where('agent_id', $agent->id)->whereIn('status', ['resolved'])->avg('processed_time');
                     $data[$category->nama_kategori][$subCategory->nama_sub_kategori][$agent->id] = $avgTime;
                 }
-                $data[$category->nama_kategori][$subCategory->nama_sub_kategori]['totalAverage'] = $subCategory->ticket_details->avg('processed_time');
+                $data[$category->nama_kategori][$subCategory->nama_sub_kategori]['totalAverage'] = $subCategory->ticket_details->whereIn('status', ['resolved'])->avg('processed_time');
             }
         }
 
-        return view('contents.report.sub_category.index', [
-            "url"           => "",
-            "title"         => "Report Sub Category",
+         // Persiapkan data untuk total tiket
+         $ticketCounts = [];
+         foreach ($categories as $category) {
+             foreach ($category->sub_category_tickets as $subCategory) {
+                 foreach ($agents as $agent) {
+                     $ticketCount = $subCategory->ticket_details->where('agent_id', $agent->id)->whereIn('status', ['resolved'])->count();
+                     $ticketCounts[$category->nama_kategori][$subCategory->nama_sub_kategori][$agent->id] = $ticketCount;
+                 }
+                 $ticketCounts[$category->nama_kategori][$subCategory->nama_sub_kategori]['totalTickets'] = $subCategory->ticket_details->whereIn('status', ['resolved'])->count();
+             }
+         }
+
+         return view('contents.report.sub_category.index', [
+            "title"         => "Sub Category Report",
             "path"          => "Report",
             "path2"         => "Sub Category",
             "filterArray"   => $filterArray,
@@ -535,7 +549,8 @@ class FilterController extends Controller
             "dCategories"   => $dCategories,
             "totalAgents"   => $totalAgents,
             "agents"        => $agents,
-            "data"          => $data
+            "data"          => $data,
+            "ticketCounts"  => $ticketCounts
         ]);
     }
 

@@ -86,16 +86,18 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+@endsection
 
-    <script>
-        function confirmAction(event) {
-            var lanjut = confirm('Are you sure want to disable this user?');
+@section('customScripts')
+<script>
+    function confirmAction(event) {
+        var lanjut = confirm('Are you sure want to disable this user?');
 
-            if(lanjut){
-                return true;
-            }else{
-                return false;
-            }
+        if(lanjut){
+            return true;
+        }else{
+            return false;
         }
-    </script>
+    }
+</script>
 @endsection

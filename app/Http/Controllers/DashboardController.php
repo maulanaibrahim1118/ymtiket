@@ -162,12 +162,13 @@ class DashboardController extends Controller
                 $category       = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')->where('tickets.ticket_for', $locationId)->distinct()->count('ticket_details.sub_category_ticket_id');
 
                 // Mengembalikan data untuk di tampilkan di view
-                $dataArray      = [$total, $unProcess, $onProcess, $pending, $resolved, $assigned, $workTimeTicket, $freeTimeTicket, $asset, $category]; 
-                $data1          = Agent::where([['location_id', $locationId],['is_active', '1']])
+                $dataArray = [$total, $unProcess, $onProcess, $pending, $resolved, $assigned, $workTimeTicket, $freeTimeTicket, $asset, $category];
+                $locationCondition = $locationId == 10 ? [10, 359, 360] : [$locationId]; 
+                $data1 = Agent::where('is_active', '1')->whereIn('location_id', $locationCondition)
                     ->withCount('ticket_details')
                     ->select(
                         'agents.*', 
-                        DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as total_ticket'),
+                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),
                         // DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted","resolved","finished","created")) as ticket_onprocess'),
                         DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "created") as created'),
                         DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "onprocess") as onprocess'),
@@ -181,9 +182,10 @@ class DashboardController extends Controller
                     )
                     ->orderBy('sub_divisi', 'ASC')
                     ->get();
-                $data2          = 0;
-                $data3          = Ticket::where([['ticket_for', $locationId],['is_queue', 'ya']])->whereIn('status',['created', 'pending'])->get();
-                $filterArray    = ["", ""];
+
+                $data2 = 0;
+                $data3 = Ticket::where('is_queue', 'ya')->whereIn('ticket_for', $locationCondition)->whereIn('status', ['created', 'pending'])->get();
+                $filterArray = ["", ""];
 
             // Jika Role Agent
             }else{

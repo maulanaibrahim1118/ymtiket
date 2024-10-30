@@ -197,31 +197,49 @@
         </div> <!-- End row -->
     </section>
 
-    <script>
-        $('#category_asset').change(function(){
-            var category = $(this).val();
-            var url = '{{ route("getItem", ":id") }}';
-            url = url.replace(':id', category);
-            $.ajax({
-                url: url,
-                type: 'get',
-                dataType: 'json',
-                success: function(response){
-                    var subDropdown = $('#item_id');
-                    subDropdown.empty();
-                    subDropdown.append('<option selected value="" disabled>Choose...</option>');
-                    $.each(response, function (key, value) {
-                        subDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.name + '</option>');
-                    });
-                    // Aktifkan dropdown no. asset
-                    subDropdown.prop('disabled', false);
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
+    {{-- @include('contents.asset.partials.validationjs') --}}
+@endsection
+
+@section('customScripts')
+<script>
+    $(document).ready(function () {
+        const selectElements = [
+            "#category_asset",
+            "#item_id",
+            "#location",
+        ];
+
+        // Menginisialisasi select2 pada semua elemen dalam array
+        selectElements.forEach(selector => {
+            $(selector).select2({
+                dropdownParent: $(selector).parent()
             });
         });
-    </script>
-    
-    {{-- @include('contents.asset.partials.validationjs') --}}
+    });
+</script>
+<script>
+    $('#category_asset').change(function(){
+        var category = $(this).val();
+        var url = '{{ route("getItem", ":id") }}';
+        url = url.replace(':id', category);
+        $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json',
+            success: function(response){
+                var subDropdown = $('#item_id');
+                subDropdown.empty();
+                subDropdown.append('<option selected value="" disabled>Choose...</option>');
+                $.each(response, function (key, value) {
+                    subDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.name + '</option>');
+                });
+                // Aktifkan dropdown no. asset
+                subDropdown.prop('disabled', false);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+</script>
 @endsection

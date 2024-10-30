@@ -183,82 +183,100 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+@endsection
 
-    <script>
-        $('#role').change(function() {
-            var location = $('#location');
-            location.val(''); // Set value to default (disabled) option
-            location.prop('selectedIndex', 0); // Ensure the first option is selected
-            location.change();
+@section('customScripts')
+<script>
+    $(document).ready(function () {
+        const selectElements = [
+            "#role",
+            "#position_id",
+            "#location",
+            "#sub_division",
+        ];
+
+        // Menginisialisasi select2 pada semua elemen dalam array
+        selectElements.forEach(selector => {
+            $(selector).select2({
+                dropdownParent: $(selector).parent()
+            });
         });
-        
-        $('#position_id').change(function() {
-            var location = $('#location');
-            location.val(''); // Set value to default (disabled) option
-            location.prop('selectedIndex', 0); // Ensure the first option is selected
-            location.change();
-        });
+    });
+</script>
+<script>
+    $('#role').change(function() {
+        var location = $('#location');
+        location.val(''); // Set value to default (disabled) option
+        location.prop('selectedIndex', 0); // Ensure the first option is selected
+        location.change();
+    });
+    
+    $('#position_id').change(function() {
+        var location = $('#location');
+        location.val(''); // Set value to default (disabled) option
+        location.prop('selectedIndex', 0); // Ensure the first option is selected
+        location.change();
+    });
 
-        $('#location').change(function() {
-            var locationId = $(this).val();
-            var subDivisiDropdown = $('#sub_division');
-            var jabatan = $('#position_id').val();
-            var role = $('#role').val();
+    $('#location').change(function() {
+        var locationId = $(this).val();
+        var subDivisiDropdown = $('#sub_division');
+        var jabatan = $('#position_id').val();
+        var role = $('#role').val();
 
-            if (jabatan == 2 && role == 1 || jabatan == 7 && role == 1) {
-                setEmpty();
-            } else {
-                var SubDivisi = '{{ route("getSubDivisions", ":id") }}';
-                var url = SubDivisi.replace(':id', locationId);
-                $.ajax({
-                    url: url,
-                    type: 'get',
-                    dataType: 'json',
-                    success: function(response) {
-                        subDivisiDropdown.empty();
-                        subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
-                        $.each(response, function(key, value) {
-                            subDivisiDropdown.append('<option class="text-capitalize" value="' + value.name + '">' + value.name + '</option>');
-                        });
-                        subDivisiDropdown.prop('disabled', false);
-                    },
-                    error: function(xhr) {
-                        // Jika error, tambahkan nilai default
-                        if (xhr.status === 404) {
-                            setEmpty();
-                        } else {
-                            // Tangani error lainnya jika perlu
-                            console.error('An error occurred:', xhr.statusText);
-                        }
+        if (jabatan == 2 && role == 1 || jabatan == 7 && role == 1) {
+            setEmpty();
+        } else {
+            var SubDivisi = '{{ route("getSubDivisions", ":id") }}';
+            var url = SubDivisi.replace(':id', locationId);
+            $.ajax({
+                url: url,
+                type: 'get',
+                dataType: 'json',
+                success: function(response) {
+                    subDivisiDropdown.empty();
+                    subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
+                    $.each(response, function(key, value) {
+                        subDivisiDropdown.append('<option class="text-capitalize" value="' + value.name + '">' + value.name + '</option>');
+                    });
+                    subDivisiDropdown.prop('disabled', false);
+                },
+                error: function(xhr) {
+                    // Jika error, tambahkan nilai default
+                    if (xhr.status === 404) {
+                        setEmpty();
+                    } else {
+                        // Tangani error lainnya jika perlu
+                        console.error('An error occurred:', xhr.statusText);
                     }
-                });
-            }
-
-            function setEmpty() {
-                subDivisiDropdown.empty();
-                subDivisiDropdown.append('<option value="" disabled>Choose...</option>');
-                subDivisiDropdown.append('<option selected value="tidak ada">Tidak Ada</option>');
-                subDivisiDropdown.prop('disabled', false);
-            }
-        });
-    </script>
-
-    <script>
-        function formValidation(){
-            var telp = document.getElementById('telp').value;
-
-            if (telp.length < 4) {
-                alert('Type Phone / Ext at least 4 characters!');
-                return false;
-            }
-
-            var lanjut = confirm('Are you sure the data is correct?');
-
-            if(lanjut){
-                return true;
-            }else{
-                return false;
-            }
+                }
+            });
         }
-    </script>
+
+        function setEmpty() {
+            subDivisiDropdown.empty();
+            subDivisiDropdown.append('<option value="" disabled>Choose...</option>');
+            subDivisiDropdown.append('<option selected value="tidak ada">Tidak Ada</option>');
+            subDivisiDropdown.prop('disabled', false);
+        }
+    });
+</script>
+<script>
+    function formValidation(){
+        var telp = document.getElementById('telp').value;
+
+        if (telp.length < 4) {
+            alert('Type Phone / Ext at least 4 characters!');
+            return false;
+        }
+
+        var lanjut = confirm('Are you sure the data is correct?');
+
+        if(lanjut){
+            return true;
+        }else{
+            return false;
+        }
+    }
+</script>
 @endsection

@@ -56,6 +56,7 @@ class LocationController extends Controller
         // Validating data request
         $validatedData = $request->validate([
             'site'          => 'required|max:5|unique:locations',
+            'initial'       => 'max:5|unique:locations',
             'nama_lokasi'   => 'required|min:3|max:50|unique:locations',
             'wilayah_id'    => 'required',
             'updated_by'    => 'required'
@@ -66,6 +67,8 @@ class LocationController extends Controller
             'site.required'         => 'Required!',
             'site.max'              => 'Max 5 char!',
             'site.unique'           => 'Exists!',
+            'initial.max'           => 'Max 5 char!',
+            'initial.unique'        => 'Exists!',
             'nama_lokasi.required'  => 'Location Name required!',
             'nama_lokasi.min'       => 'Type at least 3 characters!',
             'nama_lokasi.max'       => 'Type maximum 50 characters!',
@@ -83,6 +86,7 @@ class LocationController extends Controller
         // Simpan data Location sesuai request yang telah di validasi
         $location               = new Location;
         $location->site         = $data['site'];
+        $location->initial      = strtoupper($data['initial']);
         $location->nama_lokasi  = $data['nama_lokasi'];
         $location->wilayah_id   = $data['wilayah_id'];
         $location->updated_by   = $data['updated_by'];
@@ -185,6 +189,9 @@ class LocationController extends Controller
         if($request->site != $location->site){
             $rules['site'] = 'required|max:5|unique:locations';
         }
+        if($request->initial != $location->initial){
+            $rules['initial'] = 'max:5|unique:locations';
+        }
 
         // Create custom notification for the validation request
         $validatedData = $request->validate($rules,
@@ -192,6 +199,8 @@ class LocationController extends Controller
             'site.required'         => 'Required!',
             'site.max'              => 'Max 5 char!',
             'site.unique'           => 'Exists!',
+            'initial.max'           => 'Max 5 char!',
+            'initial.unique'        => 'Exists!',
             'nama_lokasi.required'  => 'Location Name required!',
             'nama_lokasi.min'       => 'Type at least 3 characters!',
             'nama_lokasi.max'       => 'Type maximum 50 characters!',
@@ -205,6 +214,7 @@ class LocationController extends Controller
         // Updating data Location sesuai request yang telah di validasi
         Location::where('id', $id)->update([
             'site'          => $data['site'],
+            'initial'       => strtoupper($data['initial']),
             'nama_lokasi'   => $data['nama_lokasi'],
             'wilayah_id'    => $data['wilayah_id'],
             'updated_by'    => $data['updated_by']

@@ -78,3 +78,20 @@
         </div> <!-- End row -->
     </section>
 @endsection
+
+@section('customScripts')
+<script>
+    $(document).ready(function () {
+        const selectElements = [
+            "#category_asset_id",
+        ];
+
+        // Menginisialisasi select2 pada semua elemen dalam array
+        selectElements.forEach(selector => {
+            $(selector).select2({
+                dropdownParent: $(selector).parent()
+            });
+        });
+    });
+</script>
+@endsection

@@ -17,6 +17,7 @@ class CreateSubCategoryTicketsTable extends Migration
             $table->id();
             $table->string('nama_sub_kategori', 50);
             $table->bigInteger('category_ticket_id');
+            $table->enum('jenis_ticket', ['kendala', 'permintaan']);
             $table->enum('asset_change', ['tidak', 'ya']);
             $table->string('updated_by', 40);
             $table->timestamps();

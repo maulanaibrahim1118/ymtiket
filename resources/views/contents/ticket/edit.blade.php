@@ -32,13 +32,13 @@
                                             @foreach($users as $user)
                                                 @if(old('user_id', $ticket->user_id) == $user->id)
                                                     @if($user->location->wilayah_id == 1 || $user->location->wilayah_id == 2)
-                                                    <option selected value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
+                                                    <option selected value="{{ $user->id }}">{{ ucwords($user->nama) }} - {{ ucwords($user->location->nama_lokasi) }}</option>
                                                     @else
                                                     <option selected value="{{ $user->id }}">{{ $user->nik }} - {{ ucwords($user->nama) }}</option>
                                                     @endif
                                                 @else
                                                     @if($user->location->wilayah_id == 1 || $user->location->wilayah_id == 2)
-                                                    <option value="{{ $user->id }}">{{ ucwords($user->nama) }}</option>
+                                                    <option value="{{ $user->id }}">{{ ucwords($user->nama) }} - {{ ucwords($user->location->nama_lokasi) }}</option>
                                                     @else
                                                     <option value="{{ $user->id }}">{{ $user->nik }} - {{ ucwords($user->nama) }}</option>
                                                     @endif
@@ -63,18 +63,18 @@
                                         <input type="text" name="location" class="form-control text-capitalize bg-light @error('location') is-invalid @enderror" id="locationName" value="{{ old('location', $ticket->location->nama_lokasi) }}" disabled>
                                     </div>
 
-                                    <div class="col-md-5">
+                                    <div class="col-md-6">
                                         <label for="asset_id" class="form-label">Asset</label>
                                         <select class="form-select @error('asset_id') is-invalid @enderror" name="asset_id" id="asset_id">
                                             <option value="" disabled>Choose...</option>
                                             @foreach($assets as $asset)
                                             @if(old('asset_id', $ticket->asset_id) == $asset->id)
                                             <option selected value="{{ $asset->id }}">
-                                                {{ ucwords($asset->no_asset) }} | {{ ucwords($asset->item->name) }} | {{ $asset->merk }} | {{ $asset->model }}  | {{ $asset->asset_users }}
+                                                {{ ucwords($asset->no_asset) }} | {{ ucwords($asset->item->name) }} | {{ $asset->merk }} | {{ $asset->model }}  | {{ $asset->serial_number }} | {{ $asset->asset_users }}
                                             </option>
                                             @else
                                             <option value="{{ $asset->id }}">
-                                                {{ ucwords($asset->no_asset) }} | {{ ucwords($asset->item->name) }} | {{ $asset->merk }} | {{ $asset->model }}  | {{ $asset->asset_users }}
+                                                {{ ucwords($asset->no_asset) }} | {{ ucwords($asset->item->name) }} | {{ $asset->merk }} | {{ $asset->model }}  | {{ $asset->serial_number }} | {{ $asset->asset_users }}
                                             </option>
                                             @endif
                                             @endforeach
@@ -88,59 +88,6 @@
                                         @enderror
                                     </div>
 
-                                    <script>
-                                        $('#user_id').change(function(){
-                                            var client = $(this).val();
-                                            var url = '{{ route("getClient", ":id") }}';
-                                            url = url.replace(':id', client);
-                                            $.ajax({
-                                                url: url,
-                                                type: 'get',
-                                                dataType: 'json',
-                                                success: function(response){
-                                                    if(response != null){
-                                                        $('#location_id').val(response.location_id);
-                                                        var locationId = response.location_id;
-                                                        var assetDropdown = $('#asset_id');
-
-                                                        var Location = '{{ route("getLocation", ":id") }}';
-                                                        url = Location.replace(':id', locationId);
-                                                        $.ajax({
-                                                            url: url,
-                                                            type: 'get',
-                                                            dataType: 'json',
-                                                            success: function(response){
-                                                                if(response != null){
-                                                                    $('#locationName').val(response.nama_lokasi);
-                                                                }
-                                                            }
-                                                        });
-
-                                                        var Asset = '{{ route("getAssets", ":id") }}';
-                                                        url = Asset.replace(':id', locationId);
-                                                        $.ajax({
-                                                            url: url,
-                                                            type: 'get',
-                                                            dataType: 'json',
-                                                            success: function(response){
-                                                                assetDropdown.empty();
-                                                                assetDropdown.append('<option selected disabled>Choose...</option>');
-                                                                $.each(response, function (key, value) {
-                                                                    assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + ' | ' + value.nama_barang + ' | ' + value.merk + ' | ' + value.model + ' | ' + value.asset_users + '</option>');
-                                                                });
-                                                                // Aktifkan dropdown no. asset
-                                                                assetDropdown.prop('disabled', false);
-                                                            },
-                                                            error: function (xhr, status, error) {
-                                                                console.error(xhr.responseText);
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            });
-                                        });
-                                    </script>
-                                    
                                     <div class="col-md-3">
                                         <label for="kendala" class="form-label">Subject</label>
                                         <input type="text" name="kendala" class="form-control text-capitalize @error('kendala') is-invalid @enderror" id="kendala" maxlength="35" value="{{ old('kendala', $ticket->kendala) }}" required>
@@ -268,49 +215,6 @@
                                         </div>
                                     </div>
                                 </div><!-- End Lampiran Modal-->
-
-                                <script>
-                                    function formValidation(){
-                                        var asset = document.getElementById('asset_id').value;
-                                        var kendala = document.getElementById('kendala').value;
-                                        var fileInput = document.getElementById('file');
-                                        var maxSizeInBytes = 1024 * 1024; // 1 MB (sesuaikan dengan batas maksimum yang diinginkan)
-                                        var detailKendala = document.getElementById('detail_kendala').value;
-                            
-                                        if (asset.length == 0) {
-                                            alert('Asset must be choosed!');
-                                            return false;
-                                        }
-                            
-                                        if (kendala.length < 5) {
-                                            alert('Submission must be at least 5 characters!');
-                                            return false;
-                                        }
-                                        
-                                        if (fileInput.files.length > 0) {
-                                            var fileSizeInBytes = fileInput.files[0].size;
-                                            var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-                            
-                                            if (fileSizeInBytes > maxSizeInBytes) {
-                                            alert('File maximum size: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
-                                            return false;
-                                            } 
-                                        }
-                            
-                                        if (detailKendala.length < 10) {
-                                            alert('Details must be at least 10 characters!');
-                                            return false;
-                                        }
-                            
-                                        var lanjut = confirm('Are you sure the data entered is correct?');
-                            
-                                        if(lanjut){
-                                            return true;
-                                        }else{
-                                            return false;
-                                        }
-                                    }
-                                </script>
                             </div><!-- End Card Body -->
                         </div><!-- End Info Card -->
                     </div><!-- End col-12 -->
@@ -318,4 +222,118 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+@endsection
+
+@section('customScripts')
+<script>
+    $(document).ready(function () {
+        const selectElements = [
+            "#user_id",
+            "#asset_id",
+            "#ticket_for",
+            "#source",
+        ];
+
+        // Menginisialisasi select2 pada semua elemen dalam array
+        selectElements.forEach(selector => {
+            $(selector).select2({
+                dropdownParent: $(selector).parent()
+            });
+        });
+    });
+</script>
+<script>
+    $('#user_id').change(function(){
+        var client = $(this).val();
+        var url = '{{ route("getClient", ":id") }}';
+        url = url.replace(':id', client);
+        $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json',
+            success: function(response){
+                if(response != null){
+                    $('#location_id').val(response.location_id);
+                    var locationId = response.location_id;
+                    var assetDropdown = $('#asset_id');
+
+                    var Location = '{{ route("getLocation", ":id") }}';
+                    url = Location.replace(':id', locationId);
+                    $.ajax({
+                        url: url,
+                        type: 'get',
+                        dataType: 'json',
+                        success: function(response){
+                            if(response != null){
+                                $('#locationName').val(response.nama_lokasi);
+                            }
+                        }
+                    });
+
+                    var Asset = '{{ route("getAssets", ":id") }}';
+                    url = Asset.replace(':id', locationId);
+                    $.ajax({
+                        url: url,
+                        type: 'get',
+                        dataType: 'json',
+                        success: function(response){
+                            assetDropdown.empty();
+                            assetDropdown.append('<option selected disabled>Choose...</option>');
+                            $.each(response, function (key, value) {
+                                assetDropdown.append('<option value="' + value.id + '">' + value.no_asset + ' | ' + value.nama_barang + ' | ' + value.merk + ' | ' + value.model + ' | ' + value.serial_number + ' | ' + value.asset_users + '</option>');
+                            });
+                            // Aktifkan dropdown no. asset
+                            assetDropdown.prop('disabled', false);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+<script>
+    function formValidation(){
+        var asset = document.getElementById('asset_id').value;
+        var kendala = document.getElementById('kendala').value;
+        var fileInput = document.getElementById('file');
+        var maxSizeInBytes = 1024 * 1024; // 1 MB (sesuaikan dengan batas maksimum yang diinginkan)
+        var detailKendala = document.getElementById('detail_kendala').value;
+
+        if (asset.length == 0) {
+            alert('Asset must be choosed!');
+            return false;
+        }
+
+        if (kendala.length < 5) {
+            alert('Submission must be at least 5 characters!');
+            return false;
+        }
+        
+        if (fileInput.files.length > 0) {
+            var fileSizeInBytes = fileInput.files[0].size;
+            var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+            if (fileSizeInBytes > maxSizeInBytes) {
+            alert('File maximum size: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
+            return false;
+            } 
+        }
+
+        if (detailKendala.length < 10) {
+            alert('Details must be at least 10 characters!');
+            return false;
+        }
+
+        var lanjut = confirm('Are you sure the data entered is correct?');
+
+        if(lanjut){
+            return true;
+        }else{
+            return false;
+        }
+    }
+</script>
 @endsection

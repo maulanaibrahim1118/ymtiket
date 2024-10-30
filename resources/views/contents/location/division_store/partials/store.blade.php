@@ -3,6 +3,7 @@
         <thead class="bg-light" style="height: 45px;font-size:14px;">
             <tr>
                 <th scope="col">SITE</th>
+                <th scope="col">INITIAL</th>
                 <th scope="col">STORE NAME</th>
                 <th scope="col">PHONE</th>
                 <th scope="col">IP ADDRESS</th>
@@ -19,6 +20,7 @@
             @foreach($stores as $store)
             <tr>
                 <td>{{ $store->site }}</td>
+                <td>{{ $store->initial }}</td>
                 <td>{{ $store->nama_lokasi }}</td>
                 <td>{{ $store->user->telp }}</td>
                 <td>{{ $store->user->ip_address }}</td>

@@ -102,40 +102,42 @@
     </section>
     
     @include('contents.ticket_detail.partials.modal')
+@endsection
 
-    <script>
-        function copyLink() {
-            var copyText = document.getElementById("sharedLink").value;
+@section('customScripts')
+<script>
+    function copyLink() {
+        var copyText = document.getElementById("sharedLink").value;
 
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(copyText)
-                    .then(() => {
-                        alert("Link copied to clipboard.");
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy: ', err);
-                    });
-            } else {
-                // Fallback untuk browser yang tidak mendukung Clipboard API
-                copyTextFallback(copyText);
-            }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(copyText)
+                .then(() => {
+                    alert("Link copied to clipboard.");
+                })
+                .catch((err) => {
+                    console.error('Failed to copy: ', err);
+                });
+        } else {
+            // Fallback untuk browser yang tidak mendukung Clipboard API
+            copyTextFallback(copyText);
+        }
+    }
+
+    function copyTextFallback(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            alert("Link copied to clipboard.");
+        } catch (err) {
+            console.error('Failed to copy fallback: ', err);
         }
 
-        function copyTextFallback(text) {
-            var textArea = document.createElement("textarea");
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-
-            try {
-                document.execCommand('copy');
-                alert("Link copied to clipboard.");
-            } catch (err) {
-                console.error('Failed to copy fallback: ', err);
-            }
-
-            document.body.removeChild(textArea);
-        }
-    </script>
+        document.body.removeChild(textArea);
+    }
+</script>
 @endsection

@@ -54,16 +54,18 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+@endsection
 
-    <script>
-        function confirmAction(event) {
-            var lanjut = confirm('Apakah anda yakin ingin menghapus area tersebut?');
+@section('customScripts')
+<script>
+    function confirmAction(event) {
+        var lanjut = confirm('Apakah anda yakin ingin menghapus area tersebut?');
 
-            if(lanjut){
-                return true;
-            }else{
-                return false;
-            }
+        if(lanjut){
+            return true;
+        }else{
+            return false;
         }
-    </script>
+    }
+</script>
 @endsection

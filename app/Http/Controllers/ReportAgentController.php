@@ -70,6 +70,8 @@ class ReportAgentController extends Controller
                 $agent->hour_per_day = round($workHour/$uniqueDates);
             }
 
+            $agent->totalHour = $workHour;
+            $agent->totalDay = $uniqueDates;
             $agent->percentage = round(($agent->hour_per_day/28800)*100);
             
             // Report 4

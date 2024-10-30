@@ -25,7 +25,7 @@
                     @if($ticket->location->wilayah_id == 1 || $ticket->location->wilayah_id == 2)
                     {{ $ticket->user->nama }} - {{ $ticket->location->nama_lokasi }}
                     @else
-                        {{ $ticket->location->site }} - {{ $ticket->location->nama_lokasi }}
+                        {{ $ticket->location->site }} - {{ $ticket->location->nama_lokasi }} - {{ $ticket->location->initial }}
                     @endif
                 </td>
                 <td>{{ $ticket->kendala }}</td>

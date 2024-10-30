@@ -23,6 +23,18 @@
                                         @enderror
                                     </div>
 
+                                    <div class="col-md-1">
+                                        <label for="initial" class="form-label">Initial</label>
+                                        <input type="text" name="initial" class="form-control text-capitalize @error('initial') is-invalid @enderror" id="initial" maxlength="5" value="{{ old('initial') }}">
+                                        
+                                        <!-- Showing notification error for input validation -->
+                                        @error('initial')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
                                     <div class="col-md-4">
                                         <label for="nama_lokasi" class="form-label">Store / Division Name</label>
                                         <input type="text" name="nama_lokasi" class="form-control text-capitalize @error('nama_lokasi') is-invalid @enderror" id="nama_lokasi" value="{{ old('nama_lokasi') }}" required>
@@ -119,35 +131,51 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+@endsection
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#wilayah').on('change', function () {
-                var wilayahId = $(this).val();
-                if (wilayahId) {
-                    $.ajax({
-                        url: '/get-detail-wilayah/' + wilayahId,
-                        type: "GET",
-                        dataType: "json",
-                        success: function (data) {
-                            if (data.regional) {
-                                $('#regional').val(data.regional.name);
-                                if (data.regional.area) {
-                                    $('#area').val(data.regional.area.name);
-                                } else {
-                                    $('#area').val('');
-                                }
-                            } else {
-                                $('#regional').val('');
-                                $('#area').val('');
-                            }
-                        }
-                    });
-                } else {
-                    $('#regional').val('');
-                    $('#area').val('');
-                }
+@section('customScripts')
+<script>
+    $(document).ready(function () {
+        const selectElements = [
+            "#wilayah",
+        ];
+
+        // Menginisialisasi select2 pada semua elemen dalam array
+        selectElements.forEach(selector => {
+            $(selector).select2({
+                dropdownParent: $(selector).parent()
             });
         });
-    </script>
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#wilayah').on('change', function () {
+            var wilayahId = $(this).val();
+            if (wilayahId) {
+                $.ajax({
+                    url: '/get-detail-wilayah/' + wilayahId,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.regional) {
+                            $('#regional').val(data.regional.name);
+                            if (data.regional.area) {
+                                $('#area').val(data.regional.area.name);
+                            } else {
+                                $('#area').val('');
+                            }
+                        } else {
+                            $('#regional').val('');
+                            $('#area').val('');
+                        }
+                    }
+                });
+            } else {
+                $('#regional').val('');
+                $('#area').val('');
+            }
+        });
+    });
+</script>
 @endsection

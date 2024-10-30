@@ -68,28 +68,41 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+@endsection
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#regional_id').on('change', function () {
-                var regionalId = $(this).val();
-                if (regionalId) {
-                    $.ajax({
-                        url: '/get-detail-regional/' + regionalId,
-                        type: "GET",
-                        dataType: "json",
-                        success: function (data) {
-                            if (data.area) {
-                                $('#area').val(data.area.name);
-                            } else {
-                                $('#area').val('');
-                            }
-                        }
-                    });
-                } else {
-                    $('#area').val('');
-                }
+@section('customScripts')
+<script type="text/javascript">
+    $(document).ready(function () {
+        const selectElements = [
+            "#regional_id",
+        ];
+
+        // Menginisialisasi select2 pada semua elemen dalam array
+        selectElements.forEach(selector => {
+            $(selector).select2({
+                dropdownParent: $(selector).parent()
             });
         });
-    </script>
+
+        $('#regional_id').on('change', function () {
+            var regionalId = $(this).val();
+            if (regionalId) {
+                $.ajax({
+                    url: '/get-detail-regional/' + regionalId,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.area) {
+                            $('#area').val(data.area.name);
+                        } else {
+                            $('#area').val('');
+                        }
+                    }
+                });
+            } else {
+                $('#area').val('');
+            }
+        });
+    });
+</script>
 @endsection

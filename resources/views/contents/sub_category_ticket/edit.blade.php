@@ -44,6 +44,26 @@
                                         </div>
                                         @enderror
                                     </div>
+                                    <div class="col-md-3">
+                                        <label for="jenis_ticket" class="form-label">Ticket Type</label>
+                                        <select class="form-select @error('jenis_ticket') is-invalid @enderror" name="jenis_ticket" id="jenis_ticket" required>
+                                            <option selected value="" disabled>Choose...</option>
+                                            @foreach($types as $type)
+                                                @if(old('jenis_ticket', $sct->jenis_ticket) == $type['id'])
+                                                <option selected value="{{ $type['id'] }}">{{ ucwords($type['name']) }}</option>
+                                                @else
+                                                <option value="{{ $type['id'] }}">{{ ucwords($type['name']) }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+
+                                        <!-- Showing notification error for input validation -->
+                                        @error('jenis_ticket')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
 
                                     <div class="col-md-2">
                                         <label for="asset_change" class="form-label">Asset Change</label>
@@ -110,4 +130,39 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+@endsection
+
+@section('customScripts')
+<script>
+    $(document).ready(function () {
+        const selectElements = [
+            "#category_ticket_id",
+            "#jenis_ticket",
+            "#asset_change",
+        ];
+
+        // Menginisialisasi select2 pada semua elemen dalam array
+        selectElements.forEach(selector => {
+            $(selector).select2({
+                dropdownParent: $(selector).parent()
+            });
+        });
+    });
+</script>
+<script>
+    function confirmLanjut(){
+        var asset_change = document.getElementById('asset_change').value;
+        if(asset_change === 'ya'){
+            var lanjut = confirm('Apakah anda yakin, Sub Category tersebut dapat merubah status Asset?');
+
+            if(lanjut){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }
+</script>
 @endsection

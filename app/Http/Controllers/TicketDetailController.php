@@ -124,7 +124,9 @@ class TicketDetailController extends Controller
         // Mencari extension file
         $ext = substr($ticket->file, -4);
 
-        $category_tickets = Category_ticket::where('location_id', $locationId)->whereNotIn('nama_kategori', ['none'])->orderBy('nama_kategori', 'ASC')->get();
+        $locationIdToQuery = ($locationId == 359 || $locationId == 360) ? 10 : $locationId;
+
+        $category_tickets = Category_ticket::where('location_id', $locationIdToQuery)->whereNotIn('nama_kategori', ['none'])->orderBy('nama_kategori', 'ASC')->get();
         $progress_tickets = Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get();
         $sub_category_tickets = Sub_category_ticket::whereNotIn('nama_sub_kategori', ['none'])->orderBy('nama_sub_kategori', 'ASC')->get();
 
@@ -142,9 +144,9 @@ class TicketDetailController extends Controller
         ]);
     }
 
-    public function getSubCategoryTicket($id = 0)
+    public function getSubCategoryTicket($id = 0, $type = 0)
     {
-        $data = Sub_category_ticket::where('category_ticket_id', $id)->orderBy('nama_sub_kategori', 'ASC')->get();
+        $data = Sub_category_ticket::where([['category_ticket_id', $id],['jenis_ticket', $type]])->orderBy('nama_sub_kategori', 'ASC')->get();
         return response()->json($data);
     }
 
@@ -356,7 +358,9 @@ class TicketDetailController extends Controller
         // Mencari extension file
         $ext = substr($ticket->file, -4);
 
-        $category_tickets = Category_ticket::where('location_id', $locationId)->whereNotIn('nama_kategori', ['none'])->orderBy('nama_kategori', 'ASC')->get();
+        $locationIdToQuery = ($locationId == 359 || $locationId == 360) ? 10 : $locationId;
+
+        $category_tickets = Category_ticket::where('location_id', $locationIdToQuery)->whereNotIn('nama_kategori', ['none'])->orderBy('nama_kategori', 'ASC')->get();
         $sub_category_tickets = Sub_category_ticket::where('category_ticket_id', $categoryId)->whereNotIn('nama_sub_kategori', ['none'])->orderBy('nama_sub_kategori', 'ASC')->get();
         $progress_tickets = Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get();
 

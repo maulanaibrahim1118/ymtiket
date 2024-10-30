@@ -62,7 +62,7 @@
                                                         @enderror
                                                         </td>
                                                         <td>
-                                                        <select class="form-select w-100 @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id" required>
+                                                        <select class="form-select w-100 @error('category_ticket_id') is-invalid @enderror" name="category_ticket_id" id="category_ticket_id" disabled>
                                                             <option selected value="" disabled>Choose...</option>
                                                             @foreach($category_tickets as $ct)
                                                                 @if(old('category_ticket_id') == $ct->id)
@@ -199,17 +199,41 @@
             </div>
         </div>
     </div><!-- End Lampiran Modal-->
+@endsection
 
-    <script>
-        $('#category_ticket_id').change(function(){
-            var category = $(this).val();
-            var url = '{{ route("getSubCategoryTicket", ":id") }}';
+@section('customScripts')
+<script>
+    $(document).ready(function () {
+        const selectElements = [
+            "#jenis_ticket",
+            "#category_ticket_id",
+            "#sub_category_ticket_id",
+        ];
+
+        // Menginisialisasi select2 pada semua elemen dalam array
+        selectElements.forEach(selector => {
+            $(selector).select2({
+                dropdownParent: $(selector).parent()
+            });
+        });
+    });
+</script>
+<script>
+    function fetchSubCategory() {
+        var category = $('#category_ticket_id').val();
+        var type = $('#jenis_ticket').val();
+
+        // Cek apakah category dan type sudah dipilih
+        if (category && type) {
+            var url = '{{ route("getSubCategoryTicket", [":id", ":type"]) }}';
             url = url.replace(':id', category);
+            url = url.replace(':type', type);
+
             $.ajax({
                 url: url,
                 type: 'get',
                 dataType: 'json',
-                success: function(response){
+                success: function(response) {
                     var subDropdown = $('#sub_category_ticket_id');
                     subDropdown.empty();
                     subDropdown.append('<option selected value="" disabled>Choose...</option>');
@@ -223,35 +247,52 @@
                     console.error(xhr.responseText);
                 }
             });
-        });
-    </script>
-
-    <script>
-        function formValidation(){
-            var kendala = document.getElementById('sub_category_ticket_id').value;
-            var tindakan = document.getElementById('note').value;
-            var fileInput = document.getElementById('file');
-            var maxSizeInBytes = 1024 * 1024;
-
-            if (kendala.length == 0) {
-                alert('Sub Kategori Ticket harus dipilih!');
-                return false;
-            }
-
-            if (tindakan.length < 10) {
-                alert('Action Suggestion must be at least 10 characters!');
-                return false;
-            }
-
-            var fileSizeInBytes = fileInput.files[0].size;
-            var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-
-            if (fileSizeInBytes > maxSizeInBytes) {
-            alert('File maximum size: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
-            return false;
-            } 
-
-            return true;
         }
-    </script>
+    }
+
+    // Event ketika jenis tiket berubah
+    $('#jenis_ticket').change(function() {
+        // Aktifkan dropdown kategori jika belum aktif
+        var categoryDropdown = $('#category_ticket_id');
+        categoryDropdown.prop('disabled', false);
+
+        // Jika kategori sudah dipilih, lakukan proses AJAX
+        if (categoryDropdown.val()) {
+            fetchSubCategory();
+        }
+    });
+
+    // Event ketika kategori tiket berubah
+    $('#category_ticket_id').change(function() {
+        fetchSubCategory();
+    });
+</script>
+<script>
+    function formValidation(){
+        var kendala = document.getElementById('sub_category_ticket_id').value;
+        var tindakan = document.getElementById('note').value;
+        var fileInput = document.getElementById('file');
+        var maxSizeInBytes = 1024 * 1024;
+
+        if (kendala.length == 0) {
+            alert('Sub Kategori Ticket harus dipilih!');
+            return false;
+        }
+
+        if (tindakan.length < 10) {
+            alert('Action Suggestion must be at least 10 characters!');
+            return false;
+        }
+
+        var fileSizeInBytes = fileInput.files[0].size;
+        var fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+        if (fileSizeInBytes > maxSizeInBytes) {
+        alert('File maximum size: ' + maxSizeInBytes / (1024 * 1024) + ' MB');
+        return false;
+        } 
+
+        return true;
+    }
+</script>
 @endsection

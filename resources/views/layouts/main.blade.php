@@ -20,8 +20,6 @@
     <link href="{{ asset('dist/vendor/bootstrap/css/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('dist/vendor/quill/quill.snow.css') }}" rel="stylesheet">
-    <link href="{{ asset('dist/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/vendor/simple-datatables/style.css') }}" rel="stylesheet">
 
@@ -59,10 +57,11 @@
                     </li><!-- End Notification Nav -->
 
                     <li class="nav-item dropdown float-end">
-                        <p class="nav-link d-block float-end m-0" style="font-size: 15px;"><b>{{ ucwords(auth()->user()->nama) }}</b></p><br>
                         @if(auth()->user()->location->wilayah_id == 1 || auth()->user()->location->wilayah_id == 2)
+                        <p class="nav-link d-block float-end m-0" style="font-size: 15px;"><b>{{ ucwords(auth()->user()->nama) }}</b></p><br>
                         <p class="nav-link d-block float-end m-0" style="font-size: 12px;">{{ ucwords(auth()->user()->location->nama_lokasi) }}</p>
                         @else
+                        <p class="nav-link d-block float-end m-0" style="font-size: 15px;"><b>{{ ucwords(auth()->user()->nama) }} - [{{ ucwords(auth()->user()->location->initial) }}]</b></p><br>
                         <p class="nav-link d-block float-end m-0" style="font-size: 12px;">{{ ucwords(auth()->user()->location->wilayah->name) }}</p>
                         @endif
                     </li><!-- End User Profile -->
@@ -139,12 +138,7 @@
     <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/bootstrap/js/select2.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/php-email-form/validate.js') }}"></script>
     <script src="{{ asset('dist/vendor/tinymce/tinymce.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/echarts/echarts.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/chart.js/chart.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('dist/js/parent-dropdown.js') }}"></script>
     <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
     <script src="{{ asset('dist/js/config.js') }}"></script>
 
@@ -182,11 +176,21 @@
         </script>
     @endif
 
+    @if(session()->has('createError'))
+    <script>
+        swal("Sorry!", "{{ session('createError') }}", "warning", {
+            timer: 3000
+        });
+    </script>
+    @endif
+
     <script>
         function reloadAction(){
             window.location.reload();
             return true;
         }
     </script>
+
+    @yield('customScripts')
 </body>
 </html>

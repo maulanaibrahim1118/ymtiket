@@ -13,6 +13,7 @@ use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TicketCRUDController;
 use App\Http\Controllers\ReportAgentController;
 use App\Http\Controllers\SubDivisionController;
 use App\Http\Controllers\SearchTicketController;
@@ -52,17 +53,17 @@ Route::post('/report-locations/filter', [FilterController::class, 'reportLocatio
 Route::post('/report-sub-categories/filter', [FilterController::class, 'reportSubCategory'])->middleware(['auth', 'service.desk'])->name('reportSubCategory.filter');
 
 // Route Ticket (semua user)
-Route::get('/tickets-dashboard', [TicketController::class, 'ticketDashboard'])->middleware('auth')->name('ticket.dashboard');
-Route::get('/tickets', [TicketController::class, 'index'])->middleware('auth')->name('ticket.index');
-Route::get('/tickets/asset', [TicketController::class, 'ticketAsset'])->middleware('auth')->name('ticket.asset');
+Route::get('/tickets-dashboard', [TicketCRUDController::class, 'ticketDashboard'])->middleware('auth')->name('ticket.dashboard');
+Route::get('/tickets', [TicketCRUDController::class, 'index'])->middleware('auth')->name('ticket.index');
+Route::get('/tickets/asset', [TicketCRUDController::class, 'ticketAsset'])->middleware('auth')->name('ticket.asset');
 
 // Route Ticket (Role = Client/Service Desk)
 Route::middleware(['auth', 'manage.ticket'])->group(function () {
-    Route::get('/tickets/create', [TicketController::class, 'create'])->name('ticket.create');
-    Route::post('/tickets/store', [TicketController::class, 'store'])->name('ticket.store');
-    Route::get('/tickets/edit', [TicketController::class, 'edit'])->name('ticket.edit');
-    Route::put('/tickets/update', [TicketController::class, 'update'])->name('ticket.update');
-    Route::put('/tickets/delete', [TicketController::class, 'delete'])->name('ticket.delete');
+    Route::get('/tickets/create', [TicketCRUDController::class, 'create'])->name('ticket.create');
+    Route::post('/tickets/store', [TicketCRUDController::class, 'store'])->name('ticket.store');
+    Route::get('/tickets/edit', [TicketCRUDController::class, 'edit'])->name('ticket.edit');
+    Route::put('/tickets/update', [TicketCRUDController::class, 'update'])->name('ticket.update');
+    Route::put('/tickets/delete', [TicketCRUDController::class, 'delete'])->name('ticket.delete');
 });
 
 // Route Ticket (Role = Agent/Service Desk)
@@ -88,9 +89,9 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
 Route::put('/tickets/finished', [TicketController::class, 'finished'])->middleware('auth', 'manage.ticket')->name('ticket.finished');
 
 // Route Ticket (Dropdown JQuery)
-Route::get('/tickets/create2{id}', [TicketController::class, 'getClient'])->middleware('auth')->name('getClient');
-Route::get('/tickets/create3{id}', [TicketController::class, 'getLocation'])->middleware('auth')->name('getLocation');
-Route::get('/tickets/create4{id}', [TicketController::class, 'getAssets'])->middleware('auth')->name('getAssets');
+Route::get('/tickets/create2{id}', [TicketCRUDController::class, 'getClient'])->middleware('auth')->name('getClient');
+Route::get('/tickets/create3{id}', [TicketCRUDController::class, 'getLocation'])->middleware('auth')->name('getLocation');
+Route::get('/tickets/create4{id}', [TicketCRUDController::class, 'getAssets'])->middleware('auth')->name('getAssets');
 
 // Route Ticket Detail (semua user)
 Route::get('/ticket-details', [TicketDetailController::class, 'index'])->middleware('auth')->name('ticket-detail.index');
@@ -104,7 +105,7 @@ Route::middleware(['auth', 'agent.info'])->group(function () {
 });
 
 // Route Ticket Detail (Dropdown JQuery)
-Route::get('/ticket-details/{id}/create1', [TicketDetailController::class, 'getSubCategoryTicket'])->middleware('auth')->name('getSubCategoryTicket');
+Route::get('/ticket-details/{id}-{type}/create1', [TicketDetailController::class, 'getSubCategoryTicket'])->middleware('auth')->name('getSubCategoryTicket');
 
 // Route Ticket Comment
 Route::resource('/ticket-comments', TicketCommentController::class)->middleware('auth');
@@ -117,10 +118,8 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::get('/agents', [AgentController::class, 'index'])->name('agent.index');
     Route::post('/agents/update/{id}', [AgentController::class, 'update'])->name('agent.update');
     Route::get('/agents/refresh/{id}', 'AgentController@agentsRefresh');
-});
 
-// Route User
-Route::middleware(['auth', 'service.desk'])->group(function () {
+    // Route User
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/users', [UserController::class, 'store'])->name('user.store');
@@ -128,10 +127,8 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::put('/users', [UserController::class, 'update'])->name('user.update');
     Route::put('/users/switch', [UserController::class, 'switch'])->name('user.switch');
     Route::get('/users/create1{id}', [UserController::class, 'getSubDivisions'])->middleware('auth')->name('getSubDivisions');
-});
 
-// Route Location
-Route::middleware(['auth', 'service.desk'])->group(function () {
+    // Route Location
     Route::get('/locations', [LocationController::class, 'index'])->name('location.index');
     Route::get('/locations/create', [LocationController::class, 'create'])->name('location.create');
     Route::post('/locations', [LocationController::class, 'store'])->name('location.store');
@@ -166,15 +163,44 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::put('/location-wilayahs', [WilayahController::class, 'update'])->name('wilayah.update');
     Route::put('/location-wilayahs/delete', [WilayahController::class, 'destroy'])->name('wilayah.delete');
     Route::get('/get-detail-regional/{id}', [WilayahController::class, 'getDetailRegional']);
-});
 
-// Route Item
-Route::middleware(['auth', 'service.desk'])->group(function () {
+    // Route Item
     Route::get('/asset-items', [ItemController::class, 'index'])->name('item.index');
     Route::get('/asset-items/create', [ItemController::class, 'create'])->name('item.create');
     Route::post('/asset-items', [ItemController::class, 'store'])->name('item.store');
     Route::get('/asset-items/edit', [ItemController::class, 'edit'])->name('item.edit');
     Route::put('/asset-items', [ItemController::class, 'update'])->name('item.update');
+    
+    // Route Asset Category
+    Route::get('/asset-categories', [CategoryAssetController::class, 'index'])->name('ca.index');
+    Route::get('/asset-categories/create', [CategoryAssetController::class, 'create'])->name('ca.create');
+    Route::post('/asset-categories', [CategoryAssetController::class, 'store'])->name('ca.store');
+    Route::get('/asset-categories/edit', [CategoryAssetController::class, 'edit'])->name('ca.edit');
+    Route::put('/asset-categories', [CategoryAssetController::class, 'update'])->name('ca.update');
+
+    // Route Category Ticket
+    Route::get('/category-tickets', [CategoryTicketController::class, 'index'])->name('ct.index');
+    Route::get('/category-tickets/create', [CategoryTicketController::class, 'create'])->name('ct.create');
+    Route::post('/category-tickets', [CategoryTicketController::class, 'store'])->name('ct.store');
+    Route::get('/category-tickets/edit', [CategoryTicketController::class, 'edit'])->name('ct.edit');
+    Route::put('/category-tickets', [CategoryTicketController::class, 'update'])->name('ct.update');
+
+    // Route Sub Category Ticket
+    Route::get('/category-sub-tickets', [SubCategoryTicketController::class, 'index'])->name('sct.index');
+    Route::get('/category-sub-tickets/create', [SubCategoryTicketController::class, 'create'])->name('sct.create');
+    Route::post('/category-sub-tickets', [SubCategoryTicketController::class, 'store'])->name('sct.store');
+    Route::get('/category-sub-tickets/edit', [SubCategoryTicketController::class, 'edit'])->name('sct.edit');
+    Route::put('/category-sub-tickets', [SubCategoryTicketController::class, 'update'])->name('sct.update');
+    Route::get('/category-sub-tickets-dashboard', [SubCategoryTicketController::class, 'kendalaDashboard'])->name('kendala.dashboard');
+
+    // Route Report
+    Route::get('/report-agents', [ReportAgentController::class, 'index'])->name('report.agent');
+    Route::get('/report-agents/show-ticket', [ReportAgentController::class, 'showTicket'])->name('reportAgent.showTicket');
+    Route::get('/report-agents/show-detail-ticket', [ReportAgentController::class, 'showDetailTicket'])->name('reportAgent.showDetailTicket');
+    Route::get('/agents/export', [ReportAgentController::class, 'export'])->name('export.reportAgent');
+    Route::get('/report-locations', [ReportLocationController::class, 'index'])->name('report.location');
+    Route::get('/report-sub-categories', [ReportSubCategoryController::class, 'index'])->name('report.subCategory');
+    Route::get('/categories/export', [ReportSubCategoryController::class, 'export'])->name('export.reportSubCategory');
 });
 
 // Route Asset
@@ -186,45 +212,6 @@ Route::middleware(['auth', 'manage.ticket'])->group(function () {
     Route::get('/assets/edit', [AssetController::class, 'edit'])->name('asset.edit');
     Route::put('/assets', [AssetController::class, 'update'])->name('asset.update');
     Route::get('/assets/{id}/create1', [AssetController::class, 'getItem'])->middleware('auth')->name('getItem');
-});
-
-// Route Asset Category
-Route::middleware(['auth', 'service.desk'])->group(function () {
-    Route::get('/asset-categories', [CategoryAssetController::class, 'index'])->name('ca.index');
-    Route::get('/asset-categories/create', [CategoryAssetController::class, 'create'])->name('ca.create');
-    Route::post('/asset-categories', [CategoryAssetController::class, 'store'])->name('ca.store');
-    Route::get('/asset-categories/edit', [CategoryAssetController::class, 'edit'])->name('ca.edit');
-    Route::put('/asset-categories', [CategoryAssetController::class, 'update'])->name('ca.update');
-});
-
-// Route Category Ticket
-Route::middleware(['auth', 'service.desk'])->group(function () {
-    Route::get('/category-tickets', [CategoryTicketController::class, 'index'])->name('ct.index');
-    Route::get('/category-tickets/create', [CategoryTicketController::class, 'create'])->name('ct.create');
-    Route::post('/category-tickets', [CategoryTicketController::class, 'store'])->name('ct.store');
-    Route::get('/category-tickets/edit', [CategoryTicketController::class, 'edit'])->name('ct.edit');
-    Route::put('/category-tickets', [CategoryTicketController::class, 'update'])->name('ct.update');
-});
-
-// Route Sub Category Ticket
-Route::middleware(['auth', 'service.desk'])->group(function () {
-    Route::get('/category-sub-tickets', [SubCategoryTicketController::class, 'index'])->name('sct.index');
-    Route::get('/category-sub-tickets/create', [SubCategoryTicketController::class, 'create'])->name('sct.create');
-    Route::post('/category-sub-tickets', [SubCategoryTicketController::class, 'store'])->name('sct.store');
-    Route::get('/category-sub-tickets/edit', [SubCategoryTicketController::class, 'edit'])->name('sct.edit');
-    Route::put('/category-sub-tickets', [SubCategoryTicketController::class, 'update'])->name('sct.update');
-    Route::get('/category-sub-tickets-dashboard', [SubCategoryTicketController::class, 'kendalaDashboard'])->name('kendala.dashboard');
-});
-
-// Route Report
-Route::middleware(['auth', 'service.desk'])->group(function () {
-    Route::get('/report-agents', [ReportAgentController::class, 'index'])->name('report.agent');
-    Route::get('/report-agents/show-ticket', [ReportAgentController::class, 'showTicket'])->name('reportAgent.showTicket');
-    Route::get('/report-agents/show-detail-ticket', [ReportAgentController::class, 'showDetailTicket'])->name('reportAgent.showDetailTicket');
-    Route::get('/agents/export', [ReportAgentController::class, 'export'])->name('export.reportAgent');
-    Route::get('/report-locations', [ReportLocationController::class, 'index'])->name('report.location');
-    Route::get('/report-sub-categories', [ReportSubCategoryController::class, 'index'])->name('report.subCategory');
-    Route::get('/categories/export', [ReportSubCategoryController::class, 'export'])->name('export.reportSubCategory');
 });
 
 // Route::get('/settings-change-password', [UserController::class, 'showChangePasswordForm'])->middleware('auth')->name('setting.password');

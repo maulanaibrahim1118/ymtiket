@@ -90,6 +90,7 @@ class AgentsExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                 $agent->ticket_per_day = round($totalTicket / $uniqueDates);
                 $agent->hour_per_day = round($workHour / $uniqueDates);
             }
+            $agent->totalDay = $uniqueDates;
             $agent->percentage = round(($agent->hour_per_day / 28800) * 100);
 
             $agent->avg_permintaan = $agent->ticket_details->whereIn('status', ['resolved', 'assigned'])->where('jenis_ticket', 'permintaan')->average('processed_time');
@@ -151,6 +152,7 @@ class AgentsExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                 ucwords($agent->sub_divisi),
                 $agent->ticket_per_day ? $agent->ticket_per_day : '0',
                 $hourPerDay ? sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds) : '00:00:00',
+                $agent->totalDay ? $agent->totalDay : '0',
                 $agent->percentage . '%',
             ];
         }
@@ -214,6 +216,7 @@ class AgentsExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                 'Sub Division',
                 'Average Ticket/Day',
                 'Average Hour/Day',
+                'Total Workday',
                 'Percentage (Hour/Day)',
             ];
         }

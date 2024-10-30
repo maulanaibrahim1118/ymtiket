@@ -3,7 +3,6 @@
     display: block;
     margin: 0;
     position: relative;
-    vertical-align: middle;
 }
 .select2-container .select2-selection--single {
     box-sizing: border-box;
@@ -11,7 +10,8 @@
     display: block;
     user-select: none;
     -webkit-user-select: none;
-    padding: 4px 5px;
+    padding: 5px 5px;
+    height: 39px;
 }
 .select2-container .select2-selection--single .select2-selection__rendered {
     display: block;
@@ -47,7 +47,7 @@
 .select2-container .select2-selection--multiple .select2-selection__clear {
     background-color: transparent;
     border: none;
-    font-size: 1em;
+    font-size: 2em;
 }
 .select2-container .select2-search--inline .select2-search__field {
     box-sizing: border-box;
@@ -64,7 +64,7 @@
 }
 .select2-dropdown {
     background-color: white;
-    border: 1px solid #d8d8d8;
+    border: 1px solid #e7e7e7;
     border-radius: 4px;
     box-sizing: border-box;
     display: block;
@@ -81,7 +81,7 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    font-size: 16px;
+    font-size: 14px;
     white-space: nowrap;
 }
 .select2-results__option {
@@ -91,6 +91,10 @@
 }
 .select2-results__option--selectable {
     cursor: pointer;
+}
+.select2-container--open {
+    top: auto !important;
+    left: auto !important;
 }
 .select2-container--open .select2-dropdown {
     left: 0;
@@ -156,8 +160,12 @@
 .select2-container--default .select2-selection--single {
     color: #555;
     background-color: #fff;
-    border: 1px solid #ccc;
+    border: 1px solid #e7e7e7;
     border-radius: 5px;
+}
+.select2-container--default .select2-selection--single:focus-within {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
 }
 .select2-container--default
     .select2-selection--single
@@ -178,14 +186,14 @@
 .select2-container--default
     .select2-selection--single
     .select2-selection__placeholder {
-    color: #999;
+    color: #e2e2e2;
 }
 .select2-container--default
     .select2-selection--single
     .select2-selection__arrow {
     height: 26px;
     position: absolute;
-    top: 6px;
+    top: 7px;
     right: 10px;
     width: 20px;
 }
@@ -199,7 +207,6 @@
     height: 0;
     left: 50%;
     margin-left: -4px;
-    margin-top: -2px;
     position: absolute;
     top: 50%;
     width: 0;
@@ -358,7 +365,6 @@
     border: none;
     outline: 0;
     box-shadow: none;
-    -webkit-appearance: textfield;
 }
 .select2-container--default .select2-results > .select2-results__options {
     max-height: 200px;

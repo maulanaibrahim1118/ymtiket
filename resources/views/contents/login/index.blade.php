@@ -139,14 +139,8 @@
     </div>
 
     <!-- Vendor JS Files -->
-    <script src="{{ asset('dist/vendor/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/php-email-form/validate.js') }}"></script>
-    <script src="{{ asset('dist/vendor/tinymce/tinymce.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/echarts/echarts.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/chart.js/chart.min.js') }}"></script>
-    <script src="{{ asset('dist/vendor/quill/quill.min.js') }}"></script>
     <script src="{{ asset('dist/js/sweetalert.min.js') }}"></script>
 
     <!-- Template Main JS File -->

@@ -23,6 +23,7 @@
                                             <tr>
                                                 <th scope="col">NAME</th>
                                                 <th scope="col">CATEGORY</th>
+                                                <th scope="col">TICKET TYPE</th>
                                                 <th scope="col">ASSET CHANGE</th>
                                                 <th scope="col">CREATED AT</th>
                                                 <th scope="col">UPDATED AT</th>
@@ -37,6 +38,7 @@
                                             <tr>
                                             <td>{{ $sct->nama_sub_kategori }}</td>
                                             <td>{{ $sct->category_ticket->nama_kategori }}</td>
+                                            <td>{{ $sct->jenis_ticket }}</td>
                                             <td>{{ $sct->asset_change }}</td>
                                             <td>{{ $sct->created_at }}</td>
                                             <td>{{ $sct->updated_at }}</td>

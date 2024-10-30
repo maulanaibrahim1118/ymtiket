@@ -1,22 +1,5 @@
 @extends('layouts.main')
 @section('content')
-    <!-- Showing Notification -->
-    @if(session()->has('createError'))
-    <script>
-        swal("Mohon Maaf!", "{{ session('createError') }}", "warning", {
-            timer: 3000
-        });
-    </script>
-    @endif
-
-    @if(session()->has('error'))
-    <script>
-        swal("Gagal!", "{{ session('error') }}", "warning", {
-            timer: 3000
-        });
-    </script>
-    @endif
-
     <section class="section dashboard">
         <div class="row">
             <div class="col-lg-12">
@@ -55,4 +38,18 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+@endsection
+
+@section('customScripts')
+<script>
+//     $(document).ready(function() {
+//     $('#ticketsTable').DataTable({
+//         paging: true, // Enable DataTables pagination
+//         ordering: true,
+//         searching: true,
+//         pageLength: 10, // Number of rows per page in DataTables
+//         lengthChange: true // Allow user to change number of rows per page
+//     });
+// });
+</script>
 @endsection

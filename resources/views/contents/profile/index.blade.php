@@ -12,12 +12,6 @@
                     @else
                     <h3>{{ ucwords(auth()->user()->location->wilayah->name) }}</h3>
                     @endif
-                    {{-- <div class="social-links mt-2">
-                    <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
-                    <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-                    </div> --}}
                 </div>
             </div>
         </div>
@@ -33,9 +27,6 @@
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
                         </li>
-                        {{-- <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Settings</button>
-                        </li> --}}
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
                         </li>
@@ -146,7 +137,9 @@
         </div>
     </div>
 </section>
+@endsection
 
+@section('customScripts')
 <script>
     function validateForm1() {
         var telp = document.getElementById('telp').value;

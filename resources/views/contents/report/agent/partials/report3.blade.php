@@ -13,6 +13,7 @@
             <th rowspan="2">AGENT NAME</th>
             <th rowspan="2">SUB DIVISION</th>
             <th colspan="2">AVERAGE</th>
+            <th rowspan="2" class="col-md-1">TOTAL WORKDAY</th>
             <th rowspan="2" class="col-md-1">PERCENTAGE (HOUR/DAY)</th>
             </tr>
             <tr class="text-center align-middle">
@@ -39,7 +40,7 @@
                 $seconds = $hourPerDay % 60;
             @endphp
             <td class="text-end">
-                <a href="{{ route('reportAgent.showDetailTicket', ['agent_id' => encrypt($agent->id), 'type' => 'hourperday', 'start_date' => $filterArray[0], 'end_date', $filterArray[1]]) }}" target="_blank">
+                <a href="{{ route('reportAgent.showDetailTicket', ['agent_id' => encrypt($agent->id), 'type' => 'hourperday', 'start_date' => $filterArray[0], 'end_date' => $filterArray[1]]) }}" target="_blank">
                 @if($hourPerDay != 0)
                     {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
                 @else
@@ -47,6 +48,7 @@
                 @endif
                 </a>
             </td>
+            <td class="text-end">{{ $agent->totalDay }}</td>
             <td class="text-end">{{ $agent->percentage }}%</td>
             </tr>
             @endforeach

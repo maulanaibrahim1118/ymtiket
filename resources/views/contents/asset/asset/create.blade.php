@@ -1,197 +1,215 @@
 @extends('layouts.main')
 @section('content')
-    <section class="section dashboard">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card info-card">
-                            <div class="card-body pb-0">
-                                <h5 class="card-title border-bottom mb-3"><i class="bi bi-gem me-2"></i>{{ $title }}</h5>
-                                <form class="row g-3 mb-3" action="/assets" method="POST">
-                                    @csrf
-                                    <div class="col-md-2">
-                                        <label for="no_asset" class="form-label">Asset Number</label>
-                                        <input type="text" name="no_asset" class="form-control text-capitalize @error('no_asset') is-invalid @enderror" id="no_asset" value="{{ old('no_asset') }}" maxlength="20" required>
-                                        
-                                        <!-- Showing notification error for input validation -->
-                                        @error('no_asset')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
+<section class="section dashboard">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card info-card">
+                        <div class="card-body pb-0">
+                            <h5 class="card-title border-bottom mb-3"><i class="bi bi-gem me-2"></i>{{ $title }}</h5>
+                            <form class="row g-3 mb-3" action="/assets" method="POST">
+                                @csrf
+                                <div class="col-md-2">
+                                    <label for="no_asset" class="form-label">Asset Number</label>
+                                    <input type="text" name="no_asset" class="form-control text-capitalize @error('no_asset') is-invalid @enderror" id="no_asset" value="{{ old('no_asset') }}" maxlength="20" required>
                                     
-                                    <div class="col-md-3">
-                                        <label for="category_asset" class="form-label">Category</label>
-                                        <select class="form-select @error('category_asset') is-invalid @enderror" name="category_asset" id="category_asset" required>
-                                            <option selected value="" disabled>Choose...</option>
-                                            @foreach($category_assets as $ca)
-                                                @if(old('category_asset') == $ca->nama_kategori)
-                                                <option selected value="{{ $ca->nama_kategori }}">{{ ucwords($ca->nama_kategori) }}</option>
+                                    <!-- Showing notification error for input validation -->
+                                    @error('no_asset')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <label for="category_asset" class="form-label">Category</label>
+                                    <select class="form-select @error('category_asset') is-invalid @enderror" name="category_asset" id="category_asset" required>
+                                        <option selected value="" disabled>Choose...</option>
+                                        @foreach($category_assets as $ca)
+                                            @if(old('category_asset') == $ca->nama_kategori)
+                                            <option selected value="{{ $ca->nama_kategori }}">{{ ucwords($ca->nama_kategori) }}</option>
+                                            @else
+                                            <option value="{{ $ca->nama_kategori }}">{{ ucwords($ca->nama_kategori) }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+
+                                    <!-- Showing notification error for input validation -->
+                                    @error('category_asset')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="item_id" class="form-label">Item Name</label>
+                                    <select class="form-select select2 @error('item_id') is-invalid @enderror" name="item_id" id="item_id" disabled>
+                                        <option selected value="" disabled>Choose...</option>
+                                    </select>
+
+                                    <!-- Showing notification error for input validation -->
+                                    @error('item_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <label for="merk" class="form-label">Brand</label>
+                                    <input type="text" name="merk" class="form-control text-capitalize @error('merk') is-invalid @enderror" id="merk" value="{{ old('merk') }}" maxlength="30" required>
+
+                                    <!-- Showing notification error for input validation -->
+                                    @error('merk')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="model" class="form-label">Model/Type</label>
+                                    <input type="text" name="model" class="form-control text-capitalize @error('model') is-invalid @enderror" id="model" value="{{ old('model') }}" maxlength="30" required>
+
+                                    <!-- Showing notification error for input validation -->
+                                    @error('model')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="serial_number" class="form-label">Serial Number</label>
+                                    <input type="text" name="serial_number" class="form-control text-capitalize @error('serial_number') is-invalid @enderror" id="serial_number" value="{{ old('serial_number') }}" maxlength="30" required>
+
+                                    <!-- Showing notification error for input validation -->
+                                    @error('serial_number')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                @if(auth()->user()->role_id == 1)
+                                <div class="col-md-3">
+                                    <label for="location_id" class="form-label">Location</label>
+                                    <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location" required>
+                                        <option selected value="" disabled>Choose...</option>
+                                        @foreach($locations as $location)
+                                            @if(old('location_id') == $location->id)
+                                                @if($location->wilayah_id == 1 || $location->wilayah_id == 2)
+                                                <option selected value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
                                                 @else
-                                                <option value="{{ $ca->nama_kategori }}">{{ ucwords($ca->nama_kategori) }}</option>
+                                                <option selected value="{{ $location->id }}">{{ $location->site }} - {{ ucwords($location->nama_lokasi) }}</option>
                                                 @endif
-                                            @endforeach
-                                        </select>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('category_asset')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <label for="item_id" class="form-label">Item Name</label>
-                                        <select class="form-select select2 @error('item_id') is-invalid @enderror" name="item_id" id="item_id" disabled>
-                                            <option selected value="" disabled>Choose...</option>
-                                        </select>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('item_id')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    
-                                    <div class="col-md-2">
-                                        <label for="merk" class="form-label">Brand</label>
-                                        <input type="text" name="merk" class="form-control text-capitalize @error('merk') is-invalid @enderror" id="merk" value="{{ old('merk') }}" maxlength="30" required>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('merk')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <label for="model" class="form-label">Model/Type</label>
-                                        <input type="text" name="model" class="form-control text-capitalize @error('model') is-invalid @enderror" id="model" value="{{ old('model') }}" maxlength="30" required>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('model')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <label for="serial_number" class="form-label">Serial Number</label>
-                                        <input type="text" name="serial_number" class="form-control text-capitalize @error('serial_number') is-invalid @enderror" id="serial_number" value="{{ old('serial_number') }}" maxlength="30" required>
-
-                                        <!-- Showing notification error for input validation -->
-                                        @error('serial_number')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-
-                                    @if(auth()->user()->role_id == 1)
-                                    <div class="col-md-3">
-                                        <label for="location_id" class="form-label">Location</label>
-                                        <select class="form-select @error('location_id') is-invalid @enderror" name="location_id" id="location" required>
-                                            <option selected value="" disabled>Choose...</option>
-                                            @foreach($locations as $location)
-                                                @if(old('location_id') == $location->id)
-                                                    @if($location->wilayah_id == 1 || $location->wilayah_id == 2)
-                                                    <option selected value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
-                                                    @else
-                                                    <option selected value="{{ $location->id }}">{{ $location->site }} - {{ ucwords($location->nama_lokasi) }}</option>
-                                                    @endif
+                                            @else
+                                                @if($location->wilayah_id == 1 || $location->wilayah_id == 2)
+                                                <option value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
                                                 @else
-                                                    @if($location->wilayah_id == 1 || $location->wilayah_id == 2)
-                                                    <option value="{{ $location->id }}">{{ ucwords($location->nama_lokasi) }}</option>
-                                                    @else
-                                                    <option value="{{ $location->id }}">{{ $location->site }} - {{ ucwords($location->nama_lokasi) }}</option>
-                                                    @endif
+                                                <option value="{{ $location->id }}">{{ $location->site }} - {{ ucwords($location->nama_lokasi) }}</option>
                                                 @endif
-                                            @endforeach
-                                        </select>
+                                            @endif
+                                        @endforeach
+                                    </select>
 
-                                        <!-- Showing notification error for input validation -->
-                                        @error('location_id')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
+                                    <!-- Showing notification error for input validation -->
+                                    @error('location_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
                                     </div>
+                                    @enderror
+                                </div>
 
-                                    <div class="col-md-3">
-                                        <label for="asset_users" class="form-label">Asset User</label>
-                                        <input type="text" name="asset_users" class="form-control text-capitalize @error('asset_users') is-invalid @enderror" id="asset_users" value="{{ old('asset_users') }}" maxlength="40">
+                                <div class="col-md-3">
+                                    <label for="asset_users" class="form-label">Asset User</label>
+                                    <input type="text" name="asset_users" class="form-control text-capitalize @error('asset_users') is-invalid @enderror" id="asset_users" value="{{ old('asset_users') }}" maxlength="40">
 
-                                        <!-- Showing notification error for input validation -->
-                                        @error('asset_users')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
+                                    <!-- Showing notification error for input validation -->
+                                    @error('asset_users')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
                                     </div>
-                                    @else
-                                    <input type="text" name="location_id" value="{{ auth()->user()->location_id }}" hidden>
-                                    @endif
+                                    @enderror
+                                </div>
+                                @else
+                                <input type="text" name="location_id" value="{{ auth()->user()->location_id }}" hidden>
+                                @endif
 
-                                    <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
-                                    <input type="text" name="status" value="digunakan" hidden>
+                                <input type="text" name="updated_by" value="{{ auth()->user()->nama }}" hidden>
+                                <input type="text" name="status" value="digunakan" hidden>
 
-                                    <div class="col-md-12">
-                                        <p class="border-bottom mt-2 mb-0"></p>
-                                    </div>
+                                <div class="col-md-12">
+                                    <p class="border-bottom mt-2 mb-0"></p>
+                                </div>
 
-                                    <div class="col-md-12">
-                                        <p class="m-0"><span class="badge bg-secondary">*Note: Jika nomor asset tidak ada / sudah pudar. Ketik nomor asset dengan format : [INISIAL TOKO][LIMA ANGKA UNIK]</span></p>
-                                        <p><span class="badge bg-success">*Contoh: KBA00001, KBA00002, dst.</span></p>
-                                    </div>
+                                <div class="col-md-12">
+                                    <p class="m-0"><span class="badge bg-secondary">*Note: Jika nomor asset tidak ada / sudah pudar. Ketik nomor asset dengan format : [INISIAL TOKO][LIMA ANGKA UNIK]</span></p>
+                                    <p><span class="badge bg-success">*Contoh: KBA00001, KBA00002, dst.</span></p>
+                                </div>
 
-                                    <div class="col-md-12 mt-0">
-                                        <p class="border-bottom mb-0"></p>
-                                    </div>
-                                    
-                                    <div class="col-md-12">
-                                        <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Save</button>
-                                        <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
-                                        <a href="/assets"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
-                                    </div>
-                                </form><!-- End Input Form -->
-                            </div><!-- End Card Body -->
-                        </div><!-- End Info Card -->
-                    </div><!-- End col-12 -->
-                </div> <!-- End row -->
-            </div> <!-- End col-lg-12 -->
-        </div> <!-- End row -->
-    </section>
-    <script>
-        $('#category_asset').change(function(){
-            var category = $(this).val();
-            var url = '{{ route("getItem", ":id") }}';
-            url = url.replace(':id', category);
-            $.ajax({
-                url: url,
-                type: 'get',
-                dataType: 'json',
-                success: function(response){
-                    var subDropdown = $('#item_id');
-                    subDropdown.empty();
-                    subDropdown.append('<option selected value="" disabled>Choose...</option>');
-                    $.each(response, function (key, value) {
-                        subDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.name + '</option>');
-                    });
-                    // Aktifkan dropdown no. asset
-                    subDropdown.prop('disabled', false);
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
+                                <div class="col-md-12 mt-0">
+                                    <p class="border-bottom mb-0"></p>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary float-end ms-2"><i class="bi bi-save2 me-1"></i> Save</button>
+                                    <button type="reset" class="btn btn-warning float-end ms-2"><i class="bi bi-trash me-1"></i> Reset</button>
+                                    <a href="/assets"><button type="button" class="btn btn-secondary float-start"><i class="bi bi-arrow-return-left me-1"></i> Back</button></a>
+                                </div>
+                            </form><!-- End Input Form -->
+                        </div><!-- End Card Body -->
+                    </div><!-- End Info Card -->
+                </div><!-- End col-12 -->
+            </div> <!-- End row -->
+        </div> <!-- End col-lg-12 -->
+    </div> <!-- End row -->
+</section>
+{{-- @include('contents.asset.partials.validationjs') --}}
+@endsection
+
+@section('customScripts')
+<script>
+    $(document).ready(function () {
+        const selectElements = [
+            "#category_asset",
+            "#item_id",
+            "#location",
+        ];
+
+        // Menginisialisasi select2 pada semua elemen dalam array
+        selectElements.forEach(selector => {
+            $(selector).select2({
+                dropdownParent: $(selector).parent()
             });
         });
-    </script>
-
-    {{-- @include('contents.asset.partials.validationjs') --}}
+    });
+</script>
+<script>
+    $('#category_asset').change(function(){
+        var category = $(this).val();
+        var url = '{{ route("getItem", ":id") }}';
+        url = url.replace(':id', category);
+        $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json',
+            success: function(response){
+                var subDropdown = $('#item_id');
+                subDropdown.empty();
+                subDropdown.append('<option selected value="" disabled>Choose...</option>');
+                $.each(response, function (key, value) {
+                    subDropdown.append('<option class="text-capitalize" value="' + value.id + '">' + value.name + '</option>');
+                });
+                // Aktifkan dropdown no. asset
+                subDropdown.prop('disabled', false);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+</script>
 @endsection

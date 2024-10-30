@@ -106,26 +106,42 @@
             </div> <!-- End col-lg-12 -->
         </div> <!-- End row -->
     </section>
+@endsection
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const startDate = document.getElementById("start_date");
-            const endDate = document.getElementById("end_date");
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
+@section('customScripts')
+<script>
+    $(document).ready(function () {
+        const selectElements = [
+            "#wil",
+        ];
 
-            const maxDate = `${year}-${month}-${day}`;
-            startDate.setAttribute('max', maxDate);
-            endDate.setAttribute('max', maxDate);
-
-            // Event listener for the start date change
-            $("#start_date").change(function () {
-                var startDate = $(this).val();
-                $("#end_date").val(""); // Clear the end date
-                $("#end_date").attr("min", startDate); // Set the min attribute of end date
+        // Menginisialisasi select2 pada semua elemen dalam array
+        selectElements.forEach(selector => {
+            $(selector).select2({
+                dropdownParent: $(selector).parent()
             });
         });
-    </script>
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const startDate = document.getElementById("start_date");
+        const endDate = document.getElementById("end_date");
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        const maxDate = `${year}-${month}-${day}`;
+        startDate.setAttribute('max', maxDate);
+        endDate.setAttribute('max', maxDate);
+
+        // Event listener for the start date change
+        $("#start_date").change(function () {
+            var startDate = $(this).val();
+            $("#end_date").val(""); // Clear the end date
+            $("#end_date").attr("min", startDate); // Set the min attribute of end date
+        });
+    });
+</script>
 @endsection
