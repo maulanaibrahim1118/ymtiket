@@ -177,6 +177,8 @@
                     </div>
                 </div>
             </div>
+            
+            @include('contents.ticket_detail.partials.comment')
         </div> <!-- End row -->
     </section>
 

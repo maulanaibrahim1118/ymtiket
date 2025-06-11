@@ -6,6 +6,7 @@ use App\User;
 use App\Agent;
 use App\Asset;
 use App\Ticket;
+use App\Comment;
 use App\Location;
 use Carbon\Carbon;
 use App\Sub_division;
@@ -190,6 +191,8 @@ class TicketController extends Controller
                 "sub_category_tickets"  => Sub_category_ticket::where('category_ticket_id', $categoryId)->get(),
                 "progress_tickets"      => Progress_ticket::where('ticket_id', $id)->orderBy('created_at', 'DESC')->get(),
                 "ticket"                => $ticket,
+                "comments"              => Comment::where('ticket_id', $id)->get(),
+                "checkComment"          => Comment::where('ticket_id', $id)->count(),
                 "td"                    => $ticket_detail,
                 "countDetail"           => Ticket_detail::where('ticket_id', $id)->count(),
                 "ticket_details"        => Ticket_detail::where('ticket_id', $id)->get(),
@@ -1160,6 +1163,8 @@ class TicketController extends Controller
                     "sub_category_tickets"  => Sub_category_ticket::where('category_ticket_id', $categoryId)->get(),
                     "progress_tickets"      => Progress_ticket::where('ticket_id', $id)->orderBy('created_at', 'DESC')->get(),
                     "ticket"                => Ticket::where('id', $id)->first(),
+                    "comments"              => Comment::where('ticket_id', $id)->get(),
+                    "checkComment"          => Comment::where('ticket_id', $id)->count(),
                     "td"                    => Ticket_detail::where('ticket_id', $id)->latest()->first(),
                     "countDetail"           => Ticket_detail::where('ticket_id', $id)->count(),
                     "ticket_details"        => Ticket_detail::where('ticket_id', $id)->get(),

@@ -135,6 +135,8 @@ class TicketDetailController extends Controller
             "path"                  => "Ticket",
             "path2"                 => "Process",
             "ticket"                => $ticket,
+            "comments"              => Comment::where('ticket_id', $ticketId)->get(),
+            "checkComment"          => Comment::where('ticket_id', $ticketId)->count(),
             'now'                   => $now,
             'types'                 => $types,
             'ext'                   => $ext,
