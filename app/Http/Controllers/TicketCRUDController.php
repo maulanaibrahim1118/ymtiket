@@ -156,7 +156,7 @@ class TicketCRUDController extends Controller
             // Jika masih ada ticket yang belum di close
             }else{
                 // Kembali ke halaman ticket beserta pesan error
-                return back()->with('createError', 'Please close the resolved tickets first!');
+                return back()->with('createError', 'Anda memiliki tiket "resolved", tolong di "close"!');
             }
 
         // Jika Role Service Desk
@@ -228,7 +228,7 @@ class TicketCRUDController extends Controller
         $ticketFor = $data['ticket_for'];
 
         // Get NIK Service Desk
-        $getServiceDesk = User::where([['is_active', '1'],['location_id', $ticketFor],['role_id', 1]])->whereNotIn('position_id', [2, 7])->first();
+        $getServiceDesk = User::where([['is_active', '1'],['location_id', $ticketFor],['role_id', 1]])->whereNotIn('position_id', [2, 7])->inRandomOrder()->first();
         $nikServiceDesk = $getServiceDesk['nik'];
 
         // Get ID Service Desk

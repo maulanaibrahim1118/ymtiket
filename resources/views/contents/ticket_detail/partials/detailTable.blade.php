@@ -13,8 +13,8 @@
             <td>Pending Time</td>
             <td>Prosessed Time</td>
             <td>Action</td>
-            <td>Attachment</td>
             @endcan
+            <td>Attachment</td>
             </tr>
         </thead>
         <tbody class="text-capitalize">
@@ -46,6 +46,16 @@
 
             @if($td->status == 'onprocess')
             <td><span class="badge bg-warning">{{ $td->status }}</span></td>
+            @elseif($td->status == 'standby')
+                @can('isClient')
+                <td><span class="badge bg-warning">onprocess</span></td>
+                @endcan
+                @can('isAgent')
+                <td><span class="badge bg-warning">{{ $td->status }}</span></td>
+                @endcan
+                @can('isServiceDesk')
+                <td><span class="badge bg-warning">{{ $td->status }}</span></td>
+                @endcan
             @elseif($td->status == 'pending')
             <td><span class="badge bg-danger">{{ $td->status }}</span></td>
             @elseif($td->status == 'resolved')
@@ -129,14 +139,14 @@
                     '</form>';
                 }
             </script>
+            @endcan
             <td class="text-capitalize">
                 @if($td->file)
-                <a href="{{ asset('uploads/penanganan/' . $td->file) }}" target="_blank"><button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark-richtext"></i></button></a>
+                <a href="{{ asset('uploads/penanganan/' . $td->file) }}" target="_blank"><button type="button" class="btn btn-info btn-sm"><i class="bi bi-paperclip"></i></button></a>
                 @else
                 Not Yet
                 @endif
             </td>
-            @endcan
             </tr>
             @endforeach
             @endif

@@ -24,7 +24,7 @@ class CreateSubCategoryTicketsTable extends Migration
         });
 
         DB::table('sub_category_tickets')->insert([
-            ['nama_sub_kategori' => 'none', 'category_ticket_id' => 1, 'asset_change' => 'tidak', 'updated_by' => 'maulana ibrahim']
+            ['nama_sub_kategori' => 'none', 'category_ticket_id' => 1, 'jenis_ticket' => 'permintaan', 'asset_change' => 'tidak', 'updated_by' => 'maulana ibrahim']
         ]);
     }
 

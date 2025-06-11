@@ -23,6 +23,7 @@ use App\Http\Controllers\CategoryTicketController;
 use App\Http\Controllers\ReportLocationController;
 use App\Http\Controllers\TicketApprovalController;
 use App\Http\Controllers\ReportSubCategoryController;
+use App\Http\Controllers\ReportSubDivisionController;
 use App\Http\Controllers\SubCategoryTicketController;
 
 /*
@@ -49,6 +50,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 // Route Filter
 Route::post('/dashboard/filter', [FilterController::class, 'dashboard'])->middleware('auth')->name('dashboard.filter');
 Route::post('/report-agents/filter', [FilterController::class, 'reportAgent'])->middleware(['auth', 'service.desk'])->name('reportAgent.filter');
+Route::post('/report-sub-divisions/filter', [FilterController::class, 'reportSubDivision'])->middleware(['auth', 'service.desk'])->name('reportSubDivision.filter');
 Route::post('/report-locations/filter', [FilterController::class, 'reportLocation'])->middleware(['auth', 'service.desk'])->name('reportLocation.filter');
 Route::post('/report-sub-categories/filter', [FilterController::class, 'reportSubCategory'])->middleware(['auth', 'service.desk'])->name('reportSubCategory.filter');
 
@@ -78,6 +80,7 @@ Route::middleware(['auth', 'agent.info'])->group(function () {
     Route::put('/tickets/pending', [TicketController::class, 'pending'])->name('ticket.pending');
     Route::put('/tickets/reProcess1', [TicketController::class, 'reProcess1'])->name('ticket.reProcess1');
     Route::get('/tickets/reProcess2', [TicketController::class, 'reProcess2'])->name('ticket.reProcess2');
+    Route::put('/tickets/reProcess3', [TicketController::class, 'reProcess3'])->name('ticket.reProcess3');
     Route::put('/tickets/resolved', [TicketController::class, 'resolved'])->name('ticket.resolved');
 });
 
@@ -198,6 +201,7 @@ Route::middleware(['auth', 'service.desk'])->group(function () {
     Route::get('/report-agents/show-ticket', [ReportAgentController::class, 'showTicket'])->name('reportAgent.showTicket');
     Route::get('/report-agents/show-detail-ticket', [ReportAgentController::class, 'showDetailTicket'])->name('reportAgent.showDetailTicket');
     Route::get('/agents/export', [ReportAgentController::class, 'export'])->name('export.reportAgent');
+    Route::get('/report-sub-divisions', [ReportSubDivisionController::class, 'index'])->name('report.subDivision');
     Route::get('/report-locations', [ReportLocationController::class, 'index'])->name('report.location');
     Route::get('/report-sub-categories', [ReportSubCategoryController::class, 'index'])->name('report.subCategory');
     Route::get('/categories/export', [ReportSubCategoryController::class, 'export'])->name('export.reportSubCategory');

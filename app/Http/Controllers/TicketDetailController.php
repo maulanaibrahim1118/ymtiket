@@ -93,7 +93,7 @@ class TicketDetailController extends Controller
             "comments"          => Comment::where('ticket_id', $ticketId)->get(),
             "checkComment"      => Comment::where('ticket_id', $ticketId)->count(),
             "progress_tickets"  => Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get(),
-            "ticket_details"    => Ticket_detail::where('ticket_id', $ticketId)->get(),
+            "ticket_details"    => Ticket_detail::where('ticket_id', $ticketId)->orderBy('created_at', 'ASC')->get(),
             "ticket_approval"   => $ticketApproval,
             "countDetail"       => Ticket_detail::where('ticket_id', $ticketId)->count(),
             "agents"            => $agents,
@@ -124,7 +124,7 @@ class TicketDetailController extends Controller
         // Mencari extension file
         $ext = substr($ticket->file, -4);
 
-        $locationIdToQuery = ($locationId == 359 || $locationId == 360) ? 10 : $locationId;
+        $locationIdToQuery = ($locationId == 347 || $locationId == 348) ? 10 : $locationId;
 
         $category_tickets = Category_ticket::where('location_id', $locationIdToQuery)->whereNotIn('nama_kategori', ['none'])->orderBy('nama_kategori', 'ASC')->get();
         $progress_tickets = Progress_ticket::where('ticket_id', $ticketId)->orderBy('created_at', 'DESC')->get();
@@ -358,7 +358,7 @@ class TicketDetailController extends Controller
         // Mencari extension file
         $ext = substr($ticket->file, -4);
 
-        $locationIdToQuery = ($locationId == 359 || $locationId == 360) ? 10 : $locationId;
+        $locationIdToQuery = ($locationId == 347 || $locationId == 348) ? 10 : $locationId;
 
         $category_tickets = Category_ticket::where('location_id', $locationIdToQuery)->whereNotIn('nama_kategori', ['none'])->orderBy('nama_kategori', 'ASC')->get();
         $sub_category_tickets = Sub_category_ticket::where('category_ticket_id', $categoryId)->whereNotIn('nama_sub_kategori', ['none'])->orderBy('nama_sub_kategori', 'ASC')->get();

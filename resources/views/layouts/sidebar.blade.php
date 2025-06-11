@@ -147,14 +147,21 @@
                         <i class="bi bi-file-text"></i><span>Agent</span>
                     </a>
                 </li>
+                @can('isIT')
                 <li>
-                    <a href="{{ route('report.subCategory') }}" class="{{ Request::is('report-sub-categories*') ? 'active' : '' }}">
-                        <i class="bi bi-file-text"></i><span>Sub Category</span>
+                    <a href="{{ route('report.subDivision') }}" class="{{ Request::is('report-sub-divisions*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Sub Division</span>
                     </a>
                 </li>
+                @endcan
                 <li>
                     <a href="{{ route('report.location') }}" class="{{ Request::is('report-locations*') ? 'active' : '' }}">
                         <i class="bi bi-file-text"></i><span>Store & Division</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('report.subCategory') }}" class="{{ Request::is('report-sub-categories*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text"></i><span>Sub Category</span>
                     </a>
                 </li>
             </ul>

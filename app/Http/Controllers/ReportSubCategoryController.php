@@ -30,10 +30,10 @@ class ReportSubCategoryController extends Controller
         foreach ($categories as $category) {
             foreach ($category->sub_category_tickets as $subCategory) {
                 foreach ($agents as $agent) {
-                    $avgTime = $subCategory->ticket_details->where('agent_id', $agent->id)->whereIn('status', ['resolved'])->avg('processed_time');
+                    $avgTime = $subCategory->ticket_details->where('agent_id', $agent->id)->whereIn('status', ['resolved','assigned'])->avg('processed_time');
                     $data[$category->nama_kategori][$subCategory->nama_sub_kategori][$agent->id] = $avgTime;
                 }
-                $data[$category->nama_kategori][$subCategory->nama_sub_kategori]['totalAverage'] = $subCategory->ticket_details->whereIn('status', ['resolved'])->avg('processed_time');
+                $data[$category->nama_kategori][$subCategory->nama_sub_kategori]['totalAverage'] = $subCategory->ticket_details->whereIn('status', ['resolved','assigned'])->avg('processed_time');
             }
         }
 
@@ -42,10 +42,10 @@ class ReportSubCategoryController extends Controller
         foreach ($categories as $category) {
             foreach ($category->sub_category_tickets as $subCategory) {
                 foreach ($agents as $agent) {
-                    $ticketCount = $subCategory->ticket_details->where('agent_id', $agent->id)->whereIn('status', ['resolved'])->count();
+                    $ticketCount = $subCategory->ticket_details->where('agent_id', $agent->id)->whereIn('status', ['resolved','assigned'])->count();
                     $ticketCounts[$category->nama_kategori][$subCategory->nama_sub_kategori][$agent->id] = $ticketCount;
                 }
-                $ticketCounts[$category->nama_kategori][$subCategory->nama_sub_kategori]['totalTickets'] = $subCategory->ticket_details->whereIn('status', ['resolved'])->count();
+                $ticketCounts[$category->nama_kategori][$subCategory->nama_sub_kategori]['totalTickets'] = $subCategory->ticket_details->whereIn('status', ['resolved','assigned'])->count();
             }
         }
 

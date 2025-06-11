@@ -72,7 +72,11 @@ class CategoryTicketController extends Controller
             'updated_by.required'       => 'Wajib diisi!'
         ]);
 
-        $countCategory = Category_ticket::where([['nama_kategori', $request['nama_kategori']],['location_id', $request['location_id']]])->count();
+        if ($request['location_id'] == 347 || $request['location_id'] == 348) {
+            $validatedData['location_id'] = 10;
+        }
+
+        $countCategory = Category_ticket::where([['nama_kategori', $request['nama_kategori']],['location_id', $validatedData['location_id']]])->count();
 
         if($countCategory >= 1){
             return redirect('/category-tickets')->with('error', 'Category exists!');
@@ -154,7 +158,11 @@ class CategoryTicketController extends Controller
             'updated_by.required'       => 'Wajib diisi!'
         ]);
 
-        $countCategory = Category_ticket::where([['nama_kategori', $request['nama_kategori']],['location_id', $request['location_id']]])->count();
+        if ($request['location_id'] == 347 || $request['location_id'] == 348) {
+            $validatedData['location_id'] = 10;
+        }
+
+        $countCategory = Category_ticket::where([['nama_kategori', $request['nama_kategori']],['location_id', $validatedData['location_id']]])->count();
 
         if($countCategory >= 1){
             return redirect('/category-tickets')->with('error', 'Category exists!');

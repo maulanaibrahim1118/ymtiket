@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Agent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 
@@ -25,10 +26,12 @@ class AgentController extends Controller
             ->withCount('ticket_details')
             ->select(
                 'agents.*', 
-                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),
+                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN (\'deleted\')) as total_ticket'),
                 DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
                 DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
             )
+            ->orderBy('sub_divisi', 'ASC')
+            ->orderBy('nama_agent', 'ASC')
             ->get();
 
         return view('contents.agent.index', [
@@ -92,6 +95,7 @@ class AgentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Log::info($request->input('status'));
         $item = Agent::find($id);
         $item->status = $request->input('status');
         $item->save();
@@ -116,14 +120,16 @@ class AgentController extends Controller
         $locationId = Auth::user()->location_id;
 
         // Get data Agent yang ditampilkan
-        $data = Agent::where('location_id', $locationId)
+        $data = Agent::where([['location_id', $locationId],['is_active', '1']])
             ->withCount('ticket_details')
             ->select(
                 'agents.*', 
-                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),
+                DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN (\'deleted\')) as total_ticket'),
                 DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as processed_time'),
                 DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
             )
+            ->orderBy('sub_divisi', 'ASC')
+            ->orderBy('nama_agent', 'ASC')
             ->get();
             
         return view('contents.agent.partials.table', compact('data'));

@@ -224,33 +224,39 @@
         var jabatan = $('#position_id').val();
         var role = $('#role').val();
 
-        if (jabatan == 2 && role == 1 || jabatan == 7 && role == 1) {
+        if (jabatan == 2 || jabatan == 7) {
             setEmpty();
         } else {
-            var SubDivisi = '{{ route("getSubDivisions", ":id") }}';
-            var url = SubDivisi.replace(':id', locationId);
-            $.ajax({
-                url: url,
-                type: 'get',
-                dataType: 'json',
-                success: function(response) {
-                    subDivisiDropdown.empty();
-                    subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
-                    $.each(response, function(key, value) {
-                        subDivisiDropdown.append('<option class="text-capitalize" value="' + value.name + '">' + value.name + '</option>');
-                    });
-                    subDivisiDropdown.prop('disabled', false);
-                },
-                error: function(xhr) {
-                    // Jika error, tambahkan nilai default
-                    if (xhr.status === 404) {
-                        setEmpty();
-                    } else {
-                        // Tangani error lainnya jika perlu
-                        console.error('An error occurred:', xhr.statusText);
+            if(locationId) {
+                var SubDivisi = '{{ route("getSubDivisions", ":id") }}';
+                var url = SubDivisi.replace(':id', locationId);
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(response) {
+                        subDivisiDropdown.empty();
+                        subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
+                        $.each(response, function(key, value) {
+                            subDivisiDropdown.append('<option class="text-capitalize" value="' + value.name + '">' + value.name + '</option>');
+                        });
+                        subDivisiDropdown.prop('disabled', false);
+                    },
+                    error: function(xhr) {
+                        // Jika error, tambahkan nilai default
+                        if (xhr.status === 404) {
+                            setEmpty();
+                        } else {
+                            // Tangani error lainnya jika perlu
+                            console.error('An error occurred:', xhr.statusText);
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                subDivisiDropdown.empty();
+                subDivisiDropdown.append('<option selected value="" disabled>Choose...</option>');
+                subDivisiDropdown.prop('disabled', true);
+            }
         }
 
         function setEmpty() {

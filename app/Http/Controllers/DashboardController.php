@@ -44,14 +44,14 @@ class DashboardController extends Controller
                 // Jika jabatan Chief
                 if($positionId == 2){
                     $ticketCounts = Ticket::select(
-                        DB::raw('COUNT(CASE WHEN status NOT IN ("deleted") THEN id END) as total'),
-                        DB::raw('COUNT(CASE WHEN need_approval = "ya" AND approved IS NULL THEN id END) as approval'),
-                        DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
-                        DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
-                        DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
-                        DB::raw('COUNT(CASE WHEN status = "finished" THEN id END) as finished')
+                        DB::raw('COUNT(CASE WHEN status NOT IN (\'deleted\') THEN id END) as total'),
+                        DB::raw('COUNT(CASE WHEN need_approval = \'ya\' AND approved IS NULL THEN id END) as approval'),
+                        DB::raw('COUNT(CASE WHEN status = \'created\' THEN id END) as unprocess'),
+                        DB::raw('COUNT(CASE WHEN status = \'onprocess\' OR status = \'standby\' THEN id END) as onprocess'),
+                        DB::raw('COUNT(CASE WHEN status = \'pending\' THEN id END) as pending'),
+                        DB::raw('COUNT(CASE WHEN status = \'finished\' THEN id END) as finished')
                     )
-                    ->where('code_access', 'like', '%'.$codeAccess.'%')
+                    ->where('code_access', 'like', '%' . $codeAccess . '%')
                     ->first();
 
                     // Menampilkan Data Ticket yang belum di Close
@@ -60,12 +60,12 @@ class DashboardController extends Controller
                 // Jika jabatan Koordinator Wilayah
                 }elseif($positionId == 6){
                     $ticketCounts = Ticket::select(
-                        DB::raw('COUNT(CASE WHEN status NOT IN ("deleted") THEN id END) as total'),
-                        DB::raw('COUNT(CASE WHEN need_approval = "ya" AND approved IS NULL THEN id END) as approval'),
-                        DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
-                        DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
-                        DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
-                        DB::raw('COUNT(CASE WHEN status = "finished" THEN id END) as finished')
+                        DB::raw('COUNT(CASE WHEN status NOT IN (\'deleted\') THEN id END) as total'),
+                        DB::raw('COUNT(CASE WHEN need_approval = \'ya\' AND approved IS NULL THEN id END) as approval'),
+                        DB::raw('COUNT(CASE WHEN status = \'created\' THEN id END) as unprocess'),
+                        DB::raw('COUNT(CASE WHEN status = \'onprocess\' OR status = \'standby\' THEN id END) as onprocess'),
+                        DB::raw('COUNT(CASE WHEN status = \'pending\' THEN id END) as pending'),
+                        DB::raw('COUNT(CASE WHEN status = \'finished\' THEN id END) as finished')
                     )
                     ->where('code_access', 'like', '%'.$codeAccess)
                     ->first();
@@ -76,12 +76,12 @@ class DashboardController extends Controller
                 // Jika jabatan Manager
                 }elseif($positionId == 7){
                     $ticketCounts = Ticket::select(
-                        DB::raw('COUNT(CASE WHEN status NOT IN ("deleted") THEN id END) as total'),
-                        DB::raw('COUNT(CASE WHEN need_approval = "ya" AND approved IS NULL THEN id END) as approval'),
-                        DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
-                        DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
-                        DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
-                        DB::raw('COUNT(CASE WHEN status = "finished" THEN id END) as finished')
+                        DB::raw('COUNT(CASE WHEN status NOT IN (\'deleted\') THEN id END) as total'),
+                        DB::raw('COUNT(CASE WHEN need_approval = \'ya\' AND approved IS NULL THEN id END) as approval'),
+                        DB::raw('COUNT(CASE WHEN status = \'created\' THEN id END) as unprocess'),
+                        DB::raw('COUNT(CASE WHEN status = \'onprocess\' OR status = \'standby\' THEN id END) as onprocess'),
+                        DB::raw('COUNT(CASE WHEN status = \'pending\' THEN id END) as pending'),
+                        DB::raw('COUNT(CASE WHEN status = \'finished\' THEN id END) as finished')
                     )
                     ->where('code_access', 'like', $codeAccess.'%')
                     ->first();
@@ -91,12 +91,12 @@ class DashboardController extends Controller
                 // Jika jabatan selain Korwil, Chief dan Manager
                 }else{
                     $ticketCounts = Ticket::select(
-                        DB::raw('COUNT(CASE WHEN status NOT IN ("deleted") THEN id END) as total'),
-                        DB::raw('COUNT(CASE WHEN need_approval = "ya" AND approved IS NULL THEN id END) as approval'),
-                        DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
-                        DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
-                        DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
-                        DB::raw('COUNT(CASE WHEN status = "finished" THEN id END) as finished')
+                        DB::raw('COUNT(CASE WHEN status NOT IN (\'deleted\') THEN id END) as total'),
+                        DB::raw('COUNT(CASE WHEN need_approval = \'ya\' AND approved IS NULL THEN id END) as approval'),
+                        DB::raw('COUNT(CASE WHEN status = \'created\' THEN id END) as unprocess'),
+                        DB::raw('COUNT(CASE WHEN status = \'onprocess\' OR status = \'standby\' THEN id END) as onprocess'),
+                        DB::raw('COUNT(CASE WHEN status = \'pending\' THEN id END) as pending'),
+                        DB::raw('COUNT(CASE WHEN status = \'finished\' THEN id END) as finished')
                     )
                     ->where('location_id', $locationId)
                     ->first();
@@ -107,12 +107,12 @@ class DashboardController extends Controller
             // Jika bukan Divisi Operational
             }else{
                 $ticketCounts = Ticket::select(
-                    DB::raw('COUNT(CASE WHEN status NOT IN ("deleted") THEN id END) as total'),
-                    DB::raw('COUNT(CASE WHEN need_approval = "ya" AND approved IS NULL THEN id END) as approval'),
-                    DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
-                    DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
-                    DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
-                    DB::raw('COUNT(CASE WHEN status = "finished" THEN id END) as finished')
+                    DB::raw('COUNT(CASE WHEN status NOT IN (\'deleted\') THEN id END) as total'),
+                    DB::raw('COUNT(CASE WHEN need_approval = \'ya\' AND approved IS NULL THEN id END) as approval'),
+                    DB::raw('COUNT(CASE WHEN status = \'created\' THEN id END) as unprocess'),
+                    DB::raw('COUNT(CASE WHEN status = \'onprocess\' OR status = \'standby\' THEN id END) as onprocess'),
+                    DB::raw('COUNT(CASE WHEN status = \'pending\' THEN id END) as pending'),
+                    DB::raw('COUNT(CASE WHEN status = \'finished\' THEN id END) as finished')
                 )
                 ->where('location_id', $locationId)
                 ->first();
@@ -136,20 +136,21 @@ class DashboardController extends Controller
         }else{
             // Jika Role Service Desk
             if($role == "1"){
+                // Query untuk ticketCounts
                 $ticketCounts = Ticket::select(
-                    DB::raw('COUNT(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN id END) as total'),
-                    DB::raw('COUNT(CASE WHEN status = "created" THEN id END) as unprocess'),
-                    DB::raw('COUNT(CASE WHEN status = "onprocess" THEN id END) as onprocess'),
-                    DB::raw('COUNT(CASE WHEN status = "pending" THEN id END) as pending'),
-                    DB::raw('COUNT(CASE WHEN status = "finished" OR status = "resolved" THEN id END) as resolved'),
-                    DB::raw('COUNT(CASE WHEN jam_kerja = "ya" AND status NOT IN ("deleted") THEN id END) as worktime'),
-                    DB::raw('COUNT(CASE WHEN jam_kerja = "tidak" AND status NOT IN ("deleted") THEN id END) as freetime'),
-                    DB::raw('COUNT(DISTINCT CASE WHEN status NOT IN ("deleted") THEN asset_id END) as asset')
+                    DB::raw('COUNT(CASE WHEN status NOT IN (\'deleted\', \'resolved\', \'finished\') THEN id END) as total'),
+                    DB::raw('COUNT(CASE WHEN status = \'created\' THEN id END) as unprocess'),
+                    DB::raw('COUNT(CASE WHEN status = \'onprocess\' OR status = \'standby\' THEN id END) as onprocess'),
+                    DB::raw('COUNT(CASE WHEN status = \'pending\' THEN id END) as pending'),
+                    DB::raw('COUNT(CASE WHEN status IN (\'finished\', \'resolved\') THEN id END) as resolved'),
+                    DB::raw('COUNT(CASE WHEN jam_kerja = \'ya\' AND status NOT IN (\'deleted\') THEN id END) as worktime'),
+                    DB::raw('COUNT(CASE WHEN jam_kerja = \'tidak\' AND status NOT IN (\'deleted\') THEN id END) as freetime'),
+                    DB::raw('COUNT(DISTINCT CASE WHEN status NOT IN (\'deleted\') THEN asset_id END) as asset')
                 )
                 ->where('ticket_for', $locationId)
                 ->first();
 
-                // Get total data yang ingin di tampilkan di dashboard
+                // Get total data yang ingin ditampilkan di dashboard
                 $total          = $ticketCounts->total;
                 $unProcess      = $ticketCounts->unprocess;
                 $onProcess      = $ticketCounts->onprocess;
@@ -158,40 +159,48 @@ class DashboardController extends Controller
                 $workTimeTicket = $ticketCounts->worktime;
                 $freeTimeTicket = $ticketCounts->freetime;
                 $asset          = $ticketCounts->asset;
-                $assigned       = Ticket_detail::where([['agent_id', $agentId],['status', 'assigned']])->count();
-                $category       = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')->where('tickets.ticket_for', $locationId)->distinct()->count('ticket_details.sub_category_ticket_id');
+                $assigned       = Ticket_detail::where([['agent_id', $agentId], ['status', 'assigned']])->count();
+                $category       = Ticket_detail::join('tickets', 'ticket_details.ticket_id', '=', 'tickets.id')
+                                    ->where('tickets.ticket_for', $locationId)
+                                    ->distinct()
+                                    ->count('ticket_details.sub_category_ticket_id');
 
-                // Mengembalikan data untuk di tampilkan di view
+                // Mengembalikan data untuk ditampilkan di view
                 $dataArray = [$total, $unProcess, $onProcess, $pending, $resolved, $assigned, $workTimeTicket, $freeTimeTicket, $asset, $category];
-                $locationCondition = $locationId == 10 ? [10, 359, 360] : [$locationId]; 
-                $data1 = Agent::where('is_active', '1')->whereIn('location_id', $locationCondition)
+                $locationCondition = $locationId == 10 ? [10, 347, 348] : [$locationId];
+
+                // Query untuk data1
+                $data1 = Agent::where('is_active', '1')
+                    ->whereIn('location_id', $locationCondition)
                     ->withCount('ticket_details')
                     ->select(
-                        'agents.*', 
-                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted")) as total_ticket'),
-                        // DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN ("deleted","resolved","finished","created")) as ticket_onprocess'),
-                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "created") as created'),
-                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "onprocess") as onprocess'),
-                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "pending") as pending'),
-                        DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.status = "assigned") as assigned'),
-                        DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.status = "resolved") as ticket_finish'),
-                        // DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = "created") as ticket_unprocessed'),
+                        'agents.*',
+                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status NOT IN (\'deleted\')) as total_ticket'),
+                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = \'created\') as created'),
+                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND (tickets.status = \'onprocess\' OR tickets.status = \'standby\')) as onprocess'),
+                        DB::raw('(SELECT COUNT(id) FROM tickets WHERE tickets.agent_id = agents.id AND tickets.status = \'pending\') as pending'),
+                        DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.status = \'assigned\') as assigned'),
+                        DB::raw('(SELECT COUNT(id) FROM ticket_details WHERE ticket_details.agent_id = agents.id AND ticket_details.status = \'resolved\') as ticket_finish'),
                         DB::raw('(SELECT SUM(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as sum'),
-                        DB::raw('(SELECT COUNT(DISTINCT CASE WHEN DAYOFWEEK(created_at) NOT IN (1, 7) THEN DATE(created_at) END) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as working_days')
-                        // DB::raw('(SELECT AVG(processed_time) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as avg')
+                        DB::raw('(SELECT COUNT(DISTINCT CASE WHEN EXTRACT(DOW FROM created_at) NOT IN (0, 6) THEN DATE(created_at) END) FROM ticket_details WHERE ticket_details.agent_id = agents.id) as working_days')
                     )
                     ->orderBy('sub_divisi', 'ASC')
                     ->get();
 
+                // Query untuk data2 dan data3
                 $data2 = 0;
-                $data3 = Ticket::where('is_queue', 'ya')->whereIn('ticket_for', $locationCondition)->whereIn('status', ['created', 'pending'])->get();
+                $data3 = Ticket::where('is_queue', 'ya')
+                    ->whereIn('ticket_for', $locationCondition)
+                    ->whereIn('status', ['created', 'pending'])
+                    ->get();
+
                 $filterArray = ["", ""];
 
             // Jika Role Agent
             }else{
                 $ticketCounts = Ticket::select(
-                    DB::raw('COUNT(CASE WHEN status NOT IN ("deleted", "resolved", "finished") THEN id END) as total'),
-                    DB::raw('COUNT(CASE WHEN status = "finished" OR status = "resolved" THEN id END) as resolved')
+                    DB::raw('COUNT(CASE WHEN status NOT IN (\'deleted\', \'resolved\', \'finished\') THEN id END) as total'),
+                    DB::raw('COUNT(CASE WHEN status = \'finished\' OR status = \'resolved\' THEN id END) as resolved')
                 )
                 ->where('agent_id', $agentId)
                 ->first();

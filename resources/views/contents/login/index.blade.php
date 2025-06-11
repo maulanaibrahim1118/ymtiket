@@ -94,7 +94,7 @@
                                     </div> <!-- End card mb-3 p-4 -->
                                     
                                     <div class="col-md-12 text-center border-bottom mb-4 text-secondary">
-                                        <p style="font-size: 14px;">Search resolved or finished ticket without login? <span class="fst-italic"> <a href="#" class="text-success" data-bs-toggle="modal" data-bs-target="#searchModal">Click here</a></span></p>
+                                        <p style="font-size: 14px;">Search ticket without login? <span class="fst-italic"> <a href="#" class="text-success" data-bs-toggle="modal" data-bs-target="#searchModal">Click here</a></span></p>
                                     </div>
             
                                     <!-- Copyright Footer -->

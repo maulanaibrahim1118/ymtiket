@@ -53,7 +53,7 @@
                                                 @can('isActor')
                                                 <td>
                                                 <label class="form-check form-switch">
-                                                    <input type="checkbox" class="form-check-input" data-id="{{ $data->id }}" {{ $data->status ? 'checked' : '' }}>
+                                                    <input type="checkbox" class="form-check-input" data-id="{{ $data->id }}" {{ $data->status == 'present' ? 'checked' : '' }}>
                                                     <input type="text" id="location_id" value="{{ $data->location_id }}" hidden>
                                                     <span class="slider round"></span>
                                                 </label>
@@ -76,43 +76,41 @@
 
 @section('customScripts')
 <script>
-    $(document).ready(function () {
-        $('.form-check-input').change(function () {
-            var id = $(this).data('id');
-            var status = $(this).prop('checked') ? 1 : 0;
+    // Update status agent ketika checkbox diubah
+    $(document).on('change', '.form-check-input', function () {
+        var id = $(this).data('id');
+        var status = $(this).prop('checked') ? "present" : "absent";
 
-            $.ajax({
-                url: '/agents/update/' + id,
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    status: status
-                },
-                success: function (response) {
-                    // Handle success, jika diperlukan
-                    refreshTable();
-                },
-                error: function (xhr) {
-                    // Handle error, jika diperlukan
-                    console.error('Error updating status');
-                }
-            });
+        $.ajax({
+            url: '/agents/update/' + id,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: status
+            },
+            success: function (response) {
+                refreshTable(); // Refresh tabel setelah update
+            },
+            error: function (xhr) {
+                console.error('Error updating status');
+            }
         });
-
-        function refreshTable() {
-            var id = document.getElementById('location_id').value;
-            $.ajax({
-                url: '/agents/refresh/' + id, 
-                method: 'GET',
-                success: function(response) {
-                    // Memperbarui tabel dengan data terbaru
-                    $('#table-container').html(response);
-                },
-                error: function(error) {
-                    console.log('Error:', error);
-                }
-            });
-        }
     });
+
+    // Fungsi untuk merefresh tabel
+    function refreshTable() {
+        var locationId = $('#location_id').val(); // Ambil ID lokasi dari input hidden
+
+        $.ajax({
+            url: '/agents/refresh/' + locationId,
+            method: 'GET',
+            success: function(response) {
+                $('#table-container').html(response); // Ganti konten dengan tabel baru
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+    }
 </script>
 @endsection

@@ -3,7 +3,7 @@
         <thead class="bg-light" style="height: 45px;font-size:14px;">
             <tr>
                 <th scope="col">CREATED AT</th>
-                <th scope="col">TICKET NUMBER</th>
+                <th scope="col">NO. TICKET</th>
                 <th scope="col">CLIENT</th>
                 <th scope="col">SUBJECT</th>
                 <th scope="col">DETAILS</th>
@@ -108,13 +108,17 @@
                                 @csrf
                                 <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize"><i class="bx bx-analyse me-1"></i>Re-Process</button>
                                 </form>
-
                             @else
                                 {{-- Tombol Detail --}}
                                 <a class="btn btn-sm btn-outline-secondary text-capitalize" href="{{ route('ticket-detail.index', ['ticket_id' => encrypt($ticket->id)]) }}"><i class="bi bi-file-text me-1"></i>Detail</a>
                             @endif
                         @endif
-
+                    @elseif($ticket->status == "standby")
+                        <form action="{{ route('ticket.reProcess3', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
+                            @method('put')
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize"><i class="bx bx-analyse me-1"></i>Re-Process</button>
+                        </form>
                     {{-- Jika status ticket onprocess --}}
                     @elseif($ticket->status == "onprocess") {{-- Jika status onprocess dan belum ada detail ticket --}}
                     {{-- Tombol Tangani Kembali --}}

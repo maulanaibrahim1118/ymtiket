@@ -25,11 +25,13 @@ class CreateTicketsTable extends Migration
             $table->bigInteger('agent_id');
             $table->string('sub_divisi_agent')->nullable();
             $table->string('file')->nullable();
-            $table->enum('role', ['service desk', 'agent']);
-            $table->enum('status', ['created', 'onprocess', 'pending', 'resolved', 'finished', 'deleted']);
+            $table->bigInteger('role');
+            $table->enum('status', ['created', 'onprocess', 'pending', 'standby', 'resolved', 'finished', 'deleted']);
             $table->string('process_at')->nullable();
+            $table->string('standby_at')->nullable();
             $table->string('pending_at')->nullable();
             $table->text('last_pending_reason')->nullable();
+            $table->bigInteger('standby_time')->nullable();
             $table->bigInteger('pending_time')->nullable();
             $table->bigInteger('processed_time')->nullable();
             $table->string('closed_status')->nullable();

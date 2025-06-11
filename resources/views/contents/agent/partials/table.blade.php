@@ -1,8 +1,7 @@
-<div id="table-container">
-    <div class="table-responsive">
-        <table class="table datatable table-hover">
-            <thead class="bg-light" style="height: 45px;font-size:14px;">
-                <tr>
+<div class="table-responsive">
+    <table class="table datatable table-hover">
+        <thead class="bg-light" style="height: 45px;font-size:14px;">
+            <tr>
                 <th scope="col">EMPLOYEE NUMBER</th>
                 <th scope="col">AGENT NAME</th>
                 @can('isIT')
@@ -14,15 +13,11 @@
                 @can('isActor')
                 <th scope="col">SWITCH</th>
                 @endcan
-                </tr>
-            </thead>
-            <tbody class="text-uppercase" style="height: 45px;font-size:13px;">
-                @foreach($data as $data)
-                @if($data->status != "present")
-                <tr class="bg-light">
-                @else
-                <tr>
-                @endif
+            </tr>
+        </thead>
+        <tbody id="data-agent" class="text-uppercase" style="height: 45px;font-size:13px;">
+            @foreach($data as $data)
+            <tr class="{{ $data->status != 'present' ? 'bg-light' : '' }}">
                 <td>{{ $data->nik }}</td>
                 <td>{{ $data->nama_agent }}</td>
                 @can('isIT')
@@ -30,67 +25,25 @@
                 <td>{{ $data->sub_divisi }}</td>
                 @endcan
                 <td>{{ $data->location->nama_lokasi }}</td>
-                @if($data->status == "present")
-                <td><span class="badge bg-primary">HADIR</span></td>
-                @else
-                <td><span class="badge bg-secondary">TIDAK HADIR</span></td>
-                @endif
+                <td>
+                    <span class="badge {{ $data->status == 'present' ? 'bg-primary' : 'bg-secondary' }}">
+                        {{ $data->status == 'present' ? 'HADIR' : 'TIDAK HADIR' }}
+                    </span>
+                </td>
                 @can('isActor')
                 <td>
-                <label class="form-check form-switch">
-                    <input type="checkbox" class="form-check-input" data-id="{{ $data->id }}" {{ $data->status ? 'checked' : '' }}>
-                    <input type="text" id="location_id" value="{{ $data->location_id }}" hidden>
-                    <span class="slider round"></span>
-                </label>
+                    <label class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" data-id="{{ $data->id }}" 
+                               {{ $data->status == 'present' ? 'checked' : '' }}>
+                        <span class="slider round"></span>
+                    </label>
                 </td>
                 @endcan
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
-
-<script>
-    $(document).ready(function () {
-        $('.form-check-input').change(function () {
-            var id = $(this).data('id');
-            var status = $(this).prop('checked') ? 1 : 0;
-
-            $.ajax({
-                url: '/agents/update/' + id,
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    status: status
-                },
-                success: function (response) {
-                    // Handle success, jika diperlukan
-                    refreshTable();
-                },
-                error: function (xhr) {
-                    // Handle error, jika diperlukan
-                    console.error('Error updating status');
-                }
-            });
-        });
-
-        function refreshTable() {
-            var id = document.getElementById('location_id').value;
-            $.ajax({
-                url: '/agents/refresh/' + id, 
-                method: 'GET',
-                success: function(response) {
-                    // Memperbarui tabel dengan data terbaru
-                    $('#table-container').html(response);
-                },
-                error: function(error) {
-                    console.log('Error:', error);
-                }
-            });
-        }
-    });
-</script>
 
 <!-- Template Main JS File -->
 <script src="{{ asset('dist/js/main.js') }}"></script>

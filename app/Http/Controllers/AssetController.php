@@ -27,7 +27,7 @@ class AssetController extends Controller
 
         // Jika user Service Desk
         if ($roleId == 1) {
-            if($locationId == 10 || $locationId == 359 || $locationId == 360) {
+            if($locationId == 10 || $locationId == 347 || $locationId == 348) {
                 $assets = Asset::all();
             }else{
                 $assets = Asset::where('location_id', $locationId)

@@ -20,13 +20,15 @@ class CreateTicketDetailsTable extends Migration
             $table->bigInteger('sub_category_ticket_id');
             $table->bigInteger('agent_id');
             $table->string('process_at')->nullable();
+            $table->string('standby_at')->nullable();
             $table->string('pending_at')->nullable();
             $table->bigInteger('pending_time')->nullable();
+            $table->bigInteger('standby_time')->nullable();
             $table->bigInteger('processed_time')->nullable();
             $table->bigInteger('biaya')->nullable();
             $table->text('note')->nullable();
             $table->string('file')->nullable();
-            $table->enum('status', ['onprocess', 'pending', 'resolved', 'assigned']);
+            $table->enum('status', ['onprocess', 'pending', 'standby', 'resolved', 'assigned']);
             $table->string('updated_by', 40);
             $table->timestamps();
         });

@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('ticket:pending')->dailyAt('11:10')->appendOutputTo('/var/www/html/eticket/storage/logs/schedule.log');;
+        $schedule->command('ticket:pending')->dailyAt('17:10');
     }
 
     /**

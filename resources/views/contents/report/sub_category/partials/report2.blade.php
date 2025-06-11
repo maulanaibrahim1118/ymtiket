@@ -18,7 +18,7 @@
             <tr class="align-middle">
                 <th class="text-center">#</th>
                 <th style="width:500px">Sub Category</th>
-                <th>Total Tickets</th>
+                <th>Total</th>
                 @foreach($agents as $agent)
                     <th>{{ ucwords($agent->nama_agent) }}</th>
                 @endforeach

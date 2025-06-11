@@ -50,7 +50,7 @@ class CategoriesExport implements FromCollection, WithHeadings, WithMapping, Sho
             } elseif (!empty($this->endDate)) {
                 $query->whereDate('created_at', '<=', $this->endDate);
             }
-            $query->whereIn('status', ['resolved']);
+            $query->whereIn('status', ['resolved','assigned']);
             $query->with('agent');
         }])->get();
 

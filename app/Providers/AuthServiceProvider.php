@@ -27,12 +27,12 @@ class AuthServiceProvider extends ServiceProvider
 
         // Menetapkan peran "Service Desk"
         Gate::define('isServiceDesk', function ($user) {
-            return $user->role_id === 1;
+            return $user->role_id === 1 || $user->nik == "06080049";
         });
 
         // Menetapkan peran "Agent"
         Gate::define('isAgent', function ($user) {
-            return $user->role_id === 2;
+            return $user->role_id === 2 && $user->nik != "06080049";
         });
 
         // Menetapkan peran "Client"

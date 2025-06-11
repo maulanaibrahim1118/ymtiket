@@ -20,13 +20,13 @@
                                 @endcan
                                 @endcan
 
-                                @can('isServiceDesk')
+                                @if(auth()->user()->role_id == 1)
                                 @include('contents.ticket.service_desk.table')
-                                @endcan
+                                @endif
 
-                                @can('isAgent')
+                                @if(auth()->user()->role_id == 2)
                                 @include('contents.ticket.agent.table')
-                                @endcan
+                                @endif
 
                                 @can('isClient')
                                 @include('contents.ticket.client.table')

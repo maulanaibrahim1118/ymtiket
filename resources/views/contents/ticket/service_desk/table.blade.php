@@ -11,13 +11,14 @@
         <thead class="bg-light" style="height: 45px;font-size:14px;">
             <tr>
                 <th scope="col">CREATED AT</th>
-                <th scope="col">TICKET NUMBER</th>
+                <th scope="col">NO. TICKET</th>
                 <th scope="col">CLIENT</th>
                 <th scope="col">SUBJECT</th>
                 <th scope="col">DETAILS</th>
                 <th scope="col">AGENT</th>
                 <th scope="col">NOTE</th>
                 <th scope="col">STATUS</th>
+                <th scope="col">WORK TIME</th>
                 @can('isActor')
                 <th scope="col">ACTION</th>
                 @endcan
@@ -44,9 +45,9 @@
 
                 {{-- Kolom PIC --}}
                 @if($ticket->agent->nama_agent == auth()->user()->nama)
-                    <td><span class="badge bg-info">me</span></td>
+                    <td class="text-truncate"><span class="badge bg-info">me</span></td>
                 @else
-                    <td>{{ $ticket->agent->nama_agent }}</td>
+                    <td class="text-truncate">{{ $ticket->agent->nama_agent }}</td>
                 @endif
 
                 {{-- Kolom Keterangan --}}
@@ -59,6 +60,8 @@
                     
                 @elseif($ticket->assigned == "ya" AND $ticket->status == "created" OR $ticket->assigned == "ya" AND $ticket->status == "pending")
                     <td><span class="badge bg-dark">direct assign</span></td>
+                @elseif($ticket->assigned == "tidak" AND $ticket->status == "pending")
+                    <td><span class="badge bg-dark"></span>{{ $ticket->last_pending_reason }}</td>
                 @else
                     @if($ticket->is_queue == "ya" AND $ticket->status == "created" OR $ticket->is_queue == "ya" AND $ticket->status == "pending")
                         <td>
@@ -83,6 +86,20 @@
 
                 {{-- Kolom Status --}}
                 @include('contents.ticket.partials.status_column')
+
+                @php
+                    $time = $ticket->processed_time ?? 0;
+                    $hours = floor($time / 3600);
+                    $minutes = floor(($time % 3600) / 60);
+                    $seconds = $time % 60;
+                    @endphp
+                    @if($time != 0)
+                    <td class="text-end">
+                        {{ str_pad($hours, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, "0", STR_PAD_LEFT) }}:{{ str_pad($seconds, 2, "0", STR_PAD_LEFT) }}
+                    </td>
+                    @else
+                    <td class="text-end">00:00:00</td>
+                @endif
 
                 @can('isActor')
                 {{-- Kolom Aksi --}}
@@ -216,6 +233,12 @@
                                     @endif
                                 @endif
                         
+                            @elseif($ticket->status == "standby" AND $ticket->agent->nik == auth()->user()->nik)
+                                <form action="{{ route('ticket.reProcess3', ['id' => encrypt($ticket->id)]) }}" method="post" onsubmit="return reloadAction();">
+                                    @method('put')
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-outline-primary text-capitalize"><i class="bx bx-analyse me-1"></i>Re-Process</button>
+                                </form>
                             {{-- ========== Jika status ticket onprocess ========== --}}
                             @elseif($ticket->status == "onprocess" AND $ticket->agent->nik == auth()->user()->nik) {{-- Jika status onprocess dan belum ada detail ticket --}}
                                 {{-- Tombol Tangani Kembali --}}

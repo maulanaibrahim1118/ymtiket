@@ -46,9 +46,9 @@
                     <i class='bi bi-circle-fill activity-badge text-secondary align-self-start'></i>
                     <div class="activity-content">
                         @if(auth()->user()->nama == $comment->user->nama)
-                        <a href="#" class="fw-bold text-dark pe-1">{{ ucwords($comment->user->nama) }}</a><span class="badge bg-info text-capitalize">me</span></td> : {{ $comment->komentar }}
+                        <a href="#" class="fw-bold text-dark pe-1">{{ ucwords($comment->user->nama) }}</a><span class="badge bg-info text-capitalize">me</span></td> : {!! nl2br(e($comment->komentar)) !!}
                         @else
-                        <a href="#" class="fw-bold text-dark">{{ ucwords($comment->user->nama) }}</a></td> : {{ $comment->komentar }}
+                        <a href="#" class="fw-bold text-dark">{{ ucwords($comment->user->nama) }}</a></td> : {!! nl2br(e($comment->komentar)) !!}
                         @endif
                     </div>
                 </div><!-- End activity item-->

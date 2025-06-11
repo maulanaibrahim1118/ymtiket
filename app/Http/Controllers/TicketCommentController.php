@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use App\Agent;
+use App\Ticket;
 use App\Comment;
 use Illuminate\Http\Request;
+use App\Jobs\SendFonnteNotification;
 use Illuminate\Support\Facades\Auth;
 
 class TicketCommentController extends Controller
@@ -54,6 +58,32 @@ class TicketCommentController extends Controller
         $validatedData['ticket_id'] = $ticketId;
         $validatedData['updated_by'] = Auth::user()->nama;
         $validatedData['user_id'] = Auth::user()->id;
+
+        // Mencari data no. hp untuk agent atau client yang akan di kirimi komentar
+        $ticket = Ticket::find($ticketId);
+        
+        if ($ticket->user_id == Auth::user()->id) {
+            $clientPhone = Auth::user()->telp;
+        } else {
+            $getAgent = Agent::where([['is_active', '1'],['id', $ticket->agent_id]])->first();
+            $userAgent = User::where('nik', $getAgent->nik)->first();
+            $userPhone = $userAgent->telp;
+        }
+
+        $noTiket = $ticket->no_ticket;
+                    
+        if($ticket->location->wilayah_id == 1 || $ticket->location->wilayah_id == 2){
+            $cabang = ucwords($ticket->user->nama)." (".ucwords($ticket->location_name).")";
+        } else {
+            $cabang = ucwords($ticket->location_name);
+        }
+
+        $kendala = $ticket->kendala;
+
+        // Kirim notifikasi ke WhatsApp via job/helper
+        if (!empty($userPhone) && strlen(preg_replace('/\D/', '', $userPhone)) >= 8) {
+            SendFonnteNotification::dispatch("+$userPhone", "Ada komentar baru pada tiket!\n\nNo Tiket: $noTiket\nClient: $cabang\nKendala: $kendala");
+        }
 
         // Simpan data Comment sesuai request yang telah di validasi
         Comment::create($validatedData);
