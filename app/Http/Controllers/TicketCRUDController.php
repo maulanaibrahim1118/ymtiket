@@ -754,6 +754,7 @@ class TicketCRUDController extends Controller
                     $title      = "Ticket Resolved";
                     $tickets    = Ticket::where([['ticket_for', $locationId],['status', 'resolved'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])
                                         ->orWhere([['ticket_for', $locationId],['status', 'finished'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])
+                                        ->orderBy('updated_at', 'DESC')
                                         ->get();
                 }elseif($status == "assign"){
                     $title      = "Ticket Participant";

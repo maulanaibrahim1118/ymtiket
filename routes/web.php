@@ -117,7 +117,7 @@ Route::resource('/ticket-comments', TicketCommentController::class)->middleware(
 Route::put('/ticket-approval', [TicketApprovalController::class, 'update'])->middleware('auth')->name('ticket-approval.store');
 
 // Route Agent
-Route::middleware(['auth', 'service.desk'])->group(function () {
+Route::middleware(['auth', 'agent.info'])->group(function () {
     Route::get('/agents', [AgentController::class, 'index'])->name('agent.index');
     Route::post('/agents/update/{id}', [AgentController::class, 'update'])->name('agent.update');
     Route::get('/agents/refresh/{id}', 'AgentController@agentsRefresh');

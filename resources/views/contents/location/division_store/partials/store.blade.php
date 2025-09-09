@@ -11,7 +11,7 @@
                 <th scope="col">REGIONAL</th>
                 <th scope="col">AREA</th>
                 <th scope="col">STATUS</th>
-                @can('isActor')
+                @can('isServiceDesk')
                 <th scope="col">ACTION</th>
                 @endcan
             </tr>
@@ -32,7 +32,7 @@
                 @else
                 <td><span class="badge bg-secondary">Closed</span></td>
                 @endif
-                @can('isActor')
+                @can('isServiceDesk')
                 <td class="dropdown">
                     <a class="action-icon pe-2" style="font-size:16px;" href="#" data-bs-toggle="dropdown"><i class="bi bi-list"></i></a>
                     <ul class="dropdown-menu">

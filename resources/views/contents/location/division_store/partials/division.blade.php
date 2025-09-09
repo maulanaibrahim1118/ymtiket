@@ -4,7 +4,7 @@
             <tr>
                 <th scope="col">NAMA DIVISI</th>
                 <th scope="col">LOKASI</th>
-                @can('isActor')
+                @can('isServiceDesk')
                 <th scope="col">AKSI</th>
                 @endcan
             </tr>
@@ -14,7 +14,7 @@
             <tr>
                 <td>{{ $division->nama_lokasi }}</td>
                 <td>{{ $division->wilayah->name }}</td>
-                @can('isActor')
+                @can('isServiceDesk')
                 <td class="text-capitalize"><a href="{{ route('location.edit', ['id' => encrypt($division->id)]) }}" class="text-primary"><i class="bi bi-pencil-square"></i> Edit</a></td>
                 @endcan
             </tr>

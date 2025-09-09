@@ -23,8 +23,14 @@
         </li><!-- End Agent -->
         @endcan
 
-        @can('manage-ticket')
         <li class="nav-heading pt-3">MASTER DATA</li>
+        @can('isAgent')
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('/locations*') ? '' : 'collapsed' }}" href="/locations">
+                <i class="bi bi-geo-alt"></i>
+                <span>Store & Division</span>
+            </a>
+        </li><!-- End Asset -->
         @endcan
 
         @can('isServiceDesk')

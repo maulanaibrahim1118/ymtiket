@@ -55,7 +55,7 @@
             <label for="telp" class="form-label fw-bold">Phone/Ext</label>
         </div>
         <div class="col-md-9 m-0">
-            <label for="telp" class="form-label">: <a href="https://wa.me/62{{ substr($ticket->user->telp, 1) }}?text=" target="_blank">{{ $ticket->user->telp }}</a></label>
+            <label for="telp" class="form-label">: <a href="https://wa.me/{{ $ticket->user->telp }}?text=" target="_blank">{{ $ticket->user->telp }}</a></label>
         </div>
         <div class="col-md-3 m-0">
             <label for="ip_address" class="form-label fw-bold">IP Address</label>

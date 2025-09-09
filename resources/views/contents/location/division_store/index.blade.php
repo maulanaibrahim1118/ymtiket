@@ -13,7 +13,7 @@
                         <div class="card-body pb-0">
                             <h5 class="card-title border-bottom mb-3"><i class="bi bi-geo-alt me-2"></i>{{ $title }}</h5>
                             
-                            @can('isActor')
+                            @can('isServiceDesk')
                             <a href="/locations/create"><button type="button" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create</button></a>
                             @endcan
 
@@ -25,7 +25,7 @@
                                                 <i class="bi bi-shop me-2"></i> Store List
                                             </button>
                                         </h2>
-                                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
                                                 <div class="card-body">
                                                     @include('contents.location.division_store.partials.store')
