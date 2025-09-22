@@ -158,11 +158,24 @@ class ReportAgentController extends Controller
                 ->whereDate('created_at', '<=', $endDate);
         }
 
-        // Mengambil hasil query
-        if($status != 'finished'){
-            $tickets = $query->where([['agent_id', $agentId],['status', $status]])->get();
-        }else{
-            $tickets = $query->where('agent_id', $agentId)->whereIn('status', ['resolved', 'finished'])->get();
+        if ($status != 'finished') {
+            $tickets = $query->where([
+                ['agent_id', $agentId],
+                ['status', $status]
+            ])
+            ->with(['ticket_detail' => function ($q) use ($agentId) {
+                $q->select('id','ticket_id','process_at','processed_time','agent_id')
+                ->where('agent_id', $agentId);
+            }])
+            ->get();
+        } else {
+            $tickets = $query->where('agent_id', $agentId)
+                ->whereIn('status', ['resolved', 'finished'])
+                ->with(['ticket_detail' => function ($q) use ($agentId) {
+                    $q->select('id','ticket_id','process_at','processed_time','agent_id')
+                    ->where('agent_id', $agentId);
+                }])
+                ->get();
         }
 
         $agent = Agent::find($agentId);

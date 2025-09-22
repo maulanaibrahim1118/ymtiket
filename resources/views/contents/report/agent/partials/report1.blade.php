@@ -33,22 +33,22 @@
             <td>{{ $agent->nama_agent }}</td>
             <td>{{ $agent->sub_divisi }}</td>
             <td class="text-end">
-                <a href="{{ route('reportAgent.showTicket', ['agent_id' => encrypt($agent->id), 'status' => 'pending', 'start_date' => $filterArray[0], 'end_date', $filterArray[1]]) }}" target="_blank">
+                <a href="{{ route('reportAgent.showTicket', ['agent_id' => encrypt($agent->id), 'status' => 'pending', 'start_date' => $filterArray[0], 'end_date' => $filterArray[1]]) }}" target="_blank">
                     {{ $agent->ticket_pending }}
                 </a>
             </td>
             <td class="text-end">
-                <a href="{{ route('reportAgent.showTicket', ['agent_id' => encrypt($agent->id), 'status' => 'onprocess', 'start_date' => $filterArray[0], 'end_date', $filterArray[1]]) }}" target="_blank">
+                <a href="{{ route('reportAgent.showTicket', ['agent_id' => encrypt($agent->id), 'status' => 'onprocess', 'start_date' => $filterArray[0], 'end_date' => $filterArray[1]]) }}" target="_blank">
                     {{ $agent->ticket_onprocess }}
                 </a>
             </td>
             <td class="text-end">
-                <a href="{{ route('reportAgent.showTicket', ['agent_id' => encrypt($agent->id), 'status' => 'finished', 'start_date' => $filterArray[0], 'end_date', $filterArray[1]]) }}" target="_blank">
+                <a href="{{ route('reportAgent.showTicket', ['agent_id' => encrypt($agent->id), 'status' => 'finished', 'start_date' => $filterArray[0], 'end_date' => $filterArray[1]]) }}" target="_blank">
                     {{ $agent->ticket_finish }}
                 </a>
             </td>
             <td class="text-end">
-                <a href="{{ route('reportAgent.showDetailTicket', ['agent_id' => encrypt($agent->id), 'type' => 'assigned', 'start_date' => $filterArray[0], 'end_date', $filterArray[1]]) }}" target="_blank">
+                <a href="{{ route('reportAgent.showDetailTicket', ['agent_id' => encrypt($agent->id), 'type' => 'assigned', 'start_date' => $filterArray[0], 'end_date' => $filterArray[1]]) }}" target="_blank">
                     {{ $agent->ticket_assigned }}
                 </a>
             </td>
