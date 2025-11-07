@@ -83,7 +83,12 @@ class TicketCommentController extends Controller
 
         // Kirim notifikasi ke WhatsApp via job/helper
         if (!empty($userPhone) && strlen(preg_replace('/\D/', '', $userPhone)) >= 8) {
-            SendFonnteNotification::dispatch("+$userPhone", "Ada komentar baru pada tiket!\n\nNo Tiket: $noTiket\nClient: $cabang\nKendala: $kendala\n\nKomentar: $request->komentar");
+            $url = config('app.url')."/ticket-details?ticket_id=".encrypt($ticketId);
+            
+            SendFonnteNotification::dispatch(
+                "+$userPhone",
+                "Ada tanggapan baru pada tiket!\n\nNo Tiket: $noTiket\nClient: $cabang\nKendala: $kendala\n\nLihat detail tanggapan di kolom komentar pada YMTIKET.\n\nURL: $url"
+            );
         }
 
         // Simpan data Comment sesuai request yang telah di validasi
