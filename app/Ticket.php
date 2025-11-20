@@ -59,7 +59,17 @@ class Ticket extends Model
 
     protected static function generateTicketNumber()
     {
-        // Logic untuk menghasilkan nomor ticket
-        return 'T' . date('my') . str_pad(static::count() + 1, 4, '0', STR_PAD_LEFT);
+        $month = date('m');
+        $year  = date('Y');
+
+        // Hitung jumlah ticket pada bulan & tahun ini
+        $countThisPeriod = static::whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->count();
+
+        // Nomor berurutan
+        $sequence = str_pad($countThisPeriod + 1, 4, '0', STR_PAD_LEFT);
+
+        return 'T' . date('my') . $sequence;
     }
 }
