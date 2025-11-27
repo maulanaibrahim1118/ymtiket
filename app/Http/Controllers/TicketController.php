@@ -497,10 +497,11 @@ class TicketController extends Controller
                     }
 
                     $kendala = $ticket->kendala;
+                    $clientContact = $ticket->user->telp;
 
                     // Kirim notifikasi ke WhatsApp via job/helper
                     if (!empty($agentPhone) && strlen(preg_replace('/\D/', '', $agentPhone)) >= 8) {
-                        SendFonnteNotification::dispatch("+$agentPhone", "Tiket baru telah ditugaskan ke Anda!\n\nNo Tiket: $noTiket\nClient: $cabang\nKendala: $kendala");
+                        SendFonnteNotification::dispatch("+$agentPhone", "Tiket baru telah ditugaskan ke Anda!\n\nNo Tiket: $noTiket\nClient: $cabang\nContact Client: $clientContact\nKendala: $kendala");
                     }
                 }
 
@@ -556,6 +557,7 @@ class TicketController extends Controller
             }
             
             $kendala = $ticket->kendala;
+            $clientContact = $ticket->user->telp;
 
             DB::beginTransaction();
 
@@ -605,7 +607,7 @@ class TicketController extends Controller
                 
                 // Kirim notifikasi ke WhatsApp via job/helper
                 if (!empty($agentPhone) && strlen(preg_replace('/\D/', '', $agentPhone)) >= 8) {
-                    SendFonnteNotification::dispatch("+$agentPhone", "Tiket baru telah ditugaskan ke Anda!\n\nNo Tiket: $noTiket\nClient: $cabang\nKendala: $kendala");
+                    SendFonnteNotification::dispatch("+$agentPhone", "Tiket baru telah ditugaskan ke Anda!\n\nNo Tiket: $noTiket\nClient: $cabang\nContact Client: $clientContact\nKendala: $kendala");
                 }
 
                 $getTicketDetail    = Ticket_detail::where([['ticket_id', $ticketId],['agent_id', $agentId1]])->latest()->first();

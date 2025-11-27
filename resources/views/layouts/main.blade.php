@@ -42,7 +42,7 @@
         <header id="header" class="header fixed-top d-flex align-items-center">
             <div class="d-flex align-items-center justify-content-between">
                 <a href="/dashboard" class="logo d-flex align-items-center">
-                    <img src="{{ asset('dist/img/logo/logo1.png') }}" alt="">
+                    <img src="{{ asset('dist/img/logo/logoym.png') }}" alt="">
                     <span class="d-none d-lg-block pt-1"><b>{{ config('app.name') }}</b></span>
                 </a>
                 <i class="bi bi-list toggle-sidebar-btn"></i>

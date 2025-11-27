@@ -63,7 +63,7 @@
                             <div class="col-12">
                                 <div class="d-flex justify-content-center">
                                     <a href="/" class="logo2 d-flex align-items-center">
-                                      <img src="{{ asset('dist/img/logo/logo4.png') }}" alt="">
+                                      <img src="{{ asset('dist/img/logo/logoym.png') }}" alt="">
                                       <span class="d-lg-block">{{ config('app.name') }}</span>
                                     </a>
                                 </div><!-- End Logo -->

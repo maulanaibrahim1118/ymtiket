@@ -62,12 +62,13 @@ class TicketCommentController extends Controller
         // Mencari data no. hp untuk agent atau client yang akan di kirimi komentar
         $ticket = Ticket::find($ticketId);
 
+        $userClient = User::where('id', $ticket->user_id)->first();
+        
         if ($ticket->user_id == Auth::user()->id) {
             $getAgent = Agent::where([['is_active', '1'],['id', $ticket->agent_id]])->first();
             $userAgent = User::where('nik', $getAgent->nik)->first();
             $userPhone = $userAgent->telp;
         } else {
-            $userClient = User::where('id', $ticket->user_id)->first();
             $userPhone = $userClient->telp;
         }
 
@@ -80,6 +81,7 @@ class TicketCommentController extends Controller
         }
 
         $kendala = $ticket->kendala;
+        $clientContact = $ticket->user->telp;
 
         // Kirim notifikasi ke WhatsApp via job/helper
         if (!empty($userPhone) && strlen(preg_replace('/\D/', '', $userPhone)) >= 8) {
@@ -87,7 +89,7 @@ class TicketCommentController extends Controller
             
             SendFonnteNotification::dispatch(
                 "+$userPhone",
-                "Ada tanggapan baru pada tiket!\n\nNo Tiket: $noTiket\nClient: $cabang\nKendala: $kendala\n\nLihat detail tanggapan di kolom komentar pada YMTIKET.\n\nURL: $url"
+                "Ada tanggapan baru pada tiket!\n\nNo Tiket: $noTiket\nClient: $cabang\nContact Client: $clientContact\nKendala: $kendala\n\nLihat detail tanggapan di kolom komentar pada YMTIKET.\n\nURL: $url"
             );
         }
 
