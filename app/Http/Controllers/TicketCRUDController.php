@@ -32,12 +32,17 @@ class TicketCRUDController extends Controller
         $codeAccess = $user->code_access;
 
         // Mencari agent_id untuk parameter menampilkan halaman ticket Agent
-        $getAgent   = Agent::where([['is_active', '1'], ['nik', $nik]])->first();
-        $agentId    = $getAgent['id'];
+        $getAgent = Agent::where([
+            ['is_active', '1'],
+            ['nik', $nik]
+        ])->first();
 
-        // Query ticket dengan eager loading untuk menghindari N+1 problem
-        $ticketsQuery = Ticket::with(['agent', 'location'])->whereNotIn('status', ['deleted']);
-        
+        $agentId = $getAgent->id ?? null;
+
+        // Query ticket dengan eager loading (hindari N+1)
+        $ticketsQuery = Ticket::with(['agent', 'location'])
+            ->whereNotIn('status', ['deleted']);
+
         // Jika role Client
         if ($role == 3) {
             if ($locationId == 17) {
@@ -48,12 +53,16 @@ class TicketCRUDController extends Controller
                                 ->orWhere('location_id', $locationId);
                         });
                         break;
+
                     case 6:
                         $ticketsQuery->where('code_access', 'like', '%' . $codeAccess);
                         break;
+
                     case 7:
+                        // asumsi $area memang ada di konteks asli
                         $ticketsQuery->where('code_access', 'like', $area . '%');
                         break;
+
                     default:
                         $ticketsQuery->where('location_id', $locationId);
                 }
@@ -61,38 +70,54 @@ class TicketCRUDController extends Controller
                 $ticketsQuery->where('location_id', $locationId);
             }
         } elseif ($role == 1) {
-            $ticketsQuery->where(function ($query) use ($locationId) {
+            $ticketsQuery->where(function ($query) use ($locationId, $user) {
                 $query->where('ticket_for', $locationId)
-                    ->orWhere('created_by', Auth::user()->nama);
+                    ->orWhere('created_by', $user->nama);
             });
         } else {
-            $ticketsQuery->where([['ticket_for', $locationId], ['agent_id', $agentId]]);
+            $ticketsQuery->where([
+                ['ticket_for', $locationId],
+                ['agent_id', $agentId]
+            ]);
         }
 
-        // Optimasi dengan pagination untuk menangani banyak data
-        $tickets = $ticketsQuery->orderBy('status', 'ASC')->orderBy('created_at', 'DESC')->get();
+        // ====== PERUBAHAN UTAMA DI SINI ======
+        // dari ->get() menjadi ->paginate()
+        $tickets = $ticketsQuery
+            ->orderBy('status', 'ASC')
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10); // silakan sesuaikan jumlah per halaman
+        // ====================================
 
-        // Mencari agent yang memiliki sub divisi, untuk menentukan antrian dan assign
-        $haveSubDivs = Sub_division::select('location_id')->distinct()->pluck('location_id')->toArray();
+        // Mencari agent yang memiliki sub divisi
+        $haveSubDivs = Sub_division::select('location_id')
+            ->distinct()
+            ->pluck('location_id')
+            ->toArray();
 
-        // Menggabungkan query Sub Divisi Agent HO & Store dalam satu query
+        // Sub divisi HO & Store
         $baseQuery = Agent::where('location_id', $locationId)
-                        ->whereNotIn('id', [$agentId])
-                        ->whereNotIn('sub_divisi', ['tidak ada'])
-                        ->groupBy('sub_divisi', 'pic_ticket');
+            ->whereNotIn('id', [$agentId])
+            ->whereNotIn('sub_divisi', ['tidak ada'])
+            ->groupBy('sub_divisi', 'pic_ticket');
 
         $subDivs = $baseQuery->get(['sub_divisi', 'pic_ticket']);
-        $subDivHo = $subDivs->where('pic_ticket', '!=', 'store')->pluck('sub_divisi')->toArray();
-        $subDivStore = $subDivs->where('pic_ticket', '!=', 'ho')->pluck('sub_divisi')->toArray();
 
-        // Menggabungkan query untuk Agent HO & Store
+        $subDivHo = $subDivs->where('pic_ticket', '!=', 'store')
+            ->pluck('sub_divisi')
+            ->toArray();
+
+        $subDivStore = $subDivs->where('pic_ticket', '!=', 'ho')
+            ->pluck('sub_divisi')
+            ->toArray();
+
+        // Agent HO & Store
         $agents = Agent::where('is_active', '1')
-                    ->where('location_id', $locationId)
-                    ->where('status', 'present')
-                    ->whereNotIn('id', [$agentId])
-                    ->get();
+            ->where('location_id', $locationId)
+            ->where('status', 'present')
+            ->whereNotIn('id', [$agentId])
+            ->get();
 
-        // Memisahkan data Agent HO dan Store
         $hoAgents = $agents->where('pic_ticket', '!=', 'store');
         $storeAgents = $agents->where('pic_ticket', '!=', 'ho');
 
