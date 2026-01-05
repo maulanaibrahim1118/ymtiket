@@ -32,17 +32,12 @@ class TicketCRUDController extends Controller
         $codeAccess = $user->code_access;
 
         // Mencari agent_id untuk parameter menampilkan halaman ticket Agent
-        $getAgent = Agent::where([
-            ['is_active', '1'],
-            ['nik', $nik]
-        ])->first();
+        $getAgent   = Agent::where([['is_active', '1'], ['nik', $nik]])->first();
+        $agentId    = $getAgent['id'];
 
-        $agentId = $getAgent->id ?? null;
-
-        // Query ticket dengan eager loading (hindari N+1)
-        $ticketsQuery = Ticket::with(['agent', 'location'])
-            ->whereNotIn('status', ['deleted']);
-
+        // Query ticket dengan eager loading untuk menghindari N+1 problem
+        $ticketsQuery = Ticket::with(['agent', 'location'])->whereNotIn('status', ['deleted']);
+        
         // Jika role Client
         if ($role == 3) {
             if ($locationId == 17) {
@@ -53,16 +48,12 @@ class TicketCRUDController extends Controller
                                 ->orWhere('location_id', $locationId);
                         });
                         break;
-
                     case 6:
                         $ticketsQuery->where('code_access', 'like', '%' . $codeAccess);
                         break;
-
                     case 7:
-                        // asumsi $area memang ada di konteks asli
                         $ticketsQuery->where('code_access', 'like', $area . '%');
                         break;
-
                     default:
                         $ticketsQuery->where('location_id', $locationId);
                 }
@@ -70,54 +61,38 @@ class TicketCRUDController extends Controller
                 $ticketsQuery->where('location_id', $locationId);
             }
         } elseif ($role == 1) {
-            $ticketsQuery->where(function ($query) use ($locationId, $user) {
+            $ticketsQuery->where(function ($query) use ($locationId) {
                 $query->where('ticket_for', $locationId)
-                    ->orWhere('created_by', $user->nama);
+                    ->orWhere('created_by', Auth::user()->nama);
             });
         } else {
-            $ticketsQuery->where([
-                ['ticket_for', $locationId],
-                ['agent_id', $agentId]
-            ]);
+            $ticketsQuery->where([['ticket_for', $locationId], ['agent_id', $agentId]]);
         }
 
-        // ====== PERUBAHAN UTAMA DI SINI ======
-        // dari ->get() menjadi ->paginate()
-        $tickets = $ticketsQuery
-            ->orderBy('status', 'ASC')
-            ->orderBy('created_at', 'DESC')
-            ->paginate(10); // silakan sesuaikan jumlah per halaman
-        // ====================================
+        // Optimasi dengan pagination untuk menangani banyak data
+        $tickets = $ticketsQuery->orderBy('status', 'ASC')->orderBy('created_at', 'DESC')->paginate(10);
 
-        // Mencari agent yang memiliki sub divisi
-        $haveSubDivs = Sub_division::select('location_id')
-            ->distinct()
-            ->pluck('location_id')
-            ->toArray();
+        // Mencari agent yang memiliki sub divisi, untuk menentukan antrian dan assign
+        $haveSubDivs = Sub_division::select('location_id')->distinct()->pluck('location_id')->toArray();
 
-        // Sub divisi HO & Store
+        // Menggabungkan query Sub Divisi Agent HO & Store dalam satu query
         $baseQuery = Agent::where('location_id', $locationId)
-            ->whereNotIn('id', [$agentId])
-            ->whereNotIn('sub_divisi', ['tidak ada'])
-            ->groupBy('sub_divisi', 'pic_ticket');
+                        ->whereNotIn('id', [$agentId])
+                        ->whereNotIn('sub_divisi', ['tidak ada'])
+                        ->groupBy('sub_divisi', 'pic_ticket');
 
         $subDivs = $baseQuery->get(['sub_divisi', 'pic_ticket']);
+        $subDivHo = $subDivs->where('pic_ticket', '!=', 'store')->pluck('sub_divisi')->toArray();
+        $subDivStore = $subDivs->where('pic_ticket', '!=', 'ho')->pluck('sub_divisi')->toArray();
 
-        $subDivHo = $subDivs->where('pic_ticket', '!=', 'store')
-            ->pluck('sub_divisi')
-            ->toArray();
-
-        $subDivStore = $subDivs->where('pic_ticket', '!=', 'ho')
-            ->pluck('sub_divisi')
-            ->toArray();
-
-        // Agent HO & Store
+        // Menggabungkan query untuk Agent HO & Store
         $agents = Agent::where('is_active', '1')
-            ->where('location_id', $locationId)
-            ->where('status', 'present')
-            ->whereNotIn('id', [$agentId])
-            ->get();
+                    ->where('location_id', $locationId)
+                    ->where('status', 'present')
+                    ->whereNotIn('id', [$agentId])
+                    ->get();
 
+        // Memisahkan data Agent HO dan Store
         $hoAgents = $agents->where('pic_ticket', '!=', 'store');
         $storeAgents = $agents->where('pic_ticket', '!=', 'ho');
 
@@ -681,82 +656,82 @@ class TicketCRUDController extends Controller
             if($positionId == 2){ // Jika jabatan Chief
                 if($status == "all"){
                     $title      = "Ticket Total";
-                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->paginate(10);
                 }elseif($status == "approval"){
                     $title      = "Ticket Need Approval";
-                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "unprocess"){
                     $title      = "Ticket Unprocessed";
-                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'created'],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'created'],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "onprocess"){
                     $title      = "Ticket On Process";
-                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "pending"){
                     $title      = "Ticket Pending";
-                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }else{
                     $title      = "Ticket Closed";
-                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }
             }elseif($positionId == "6"){ // Jika jabatan Koordinator Wilayah
                 if($status == "all"){
                     $title      = "Ticket Total";
-                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->paginate(10);
                 }elseif($status == "approval"){
                     $title      = "Ticket Need Approval";
-                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "unprocess"){
                     $title      = "Ticket Unprocessed";
-                    $tickets    = $ticket     = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'created'],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = $ticket     = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'created'],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "onprocess"){
                     $title      = "Ticket On Process";
-                    $ticket     = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', $status],['created_at', 'like', $filter2.'%']])->get();
+                    $ticket     = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', $status],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "pending"){
                     $title      = "Ticket Pending";
-                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', $status],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', $status],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }else{
                     $title      = "Ticket Closed";
-                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'finished'],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', '%'.$codeAccess],['status', 'finished'],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }
             }elseif($positionId == "7"){ // Jika jabatan Manager
                 if($status == "all"){
                     $title      = "Ticket Total";
-                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->paginate(10);
                 }elseif($status == "approval"){
                     $title      = "Ticket Need Approval";
-                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "unprocess"){
                     $title      = "Ticket Unprocessed";
-                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'created'],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'created'],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "onprocess"){
                     $title      = "Ticket On Process";
-                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "pending"){
                     $title      = "Ticket Pending";
-                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', $status],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }else{
                     $title      = "Ticket Closed";
-                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['code_access', 'like', $codeAccess.'%'],['status', 'finished'],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }
             }else{ // Jika jabatan selain Korwil, Chief dan Manager
                 if($status == "all"){
                     $title      = "Ticket Total";
-                    $tickets    = Ticket::where([['location_id', $locationId],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
+                    $tickets    = Ticket::where([['location_id', $locationId],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->paginate(10);
                 }elseif($status == "approval"){
                     $title      = "Ticket Need Approval";
-                    $tickets    = Ticket::where([['location_id', $locationId],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['location_id', $locationId],['need_approval', 'ya'],['approved', NULL],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "unprocess"){
                     $title      = "Ticket Unprocessed";
-                    $tickets    = Ticket::where([['location_id', $locationId],['status', 'created'],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['location_id', $locationId],['status', 'created'],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "onprocess"){
                     $title      = "Ticket On Process";
-                    $tickets    = Ticket::where([['location_id', $locationId],['status', $status],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['location_id', $locationId],['status', $status],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "pending"){
                     $title      = "Ticket Pending";
-                    $tickets    = Ticket::where([['location_id', $locationId],['status', $status],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['location_id', $locationId],['status', $status],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }else{
                     $title      = "Ticket Closed";
-                    $tickets    = Ticket::where([['location_id', $locationId],['status', 'finished'],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['location_id', $locationId],['status', 'finished'],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }
             }
         }else{ // Jika role Service Desk / Agent
@@ -765,52 +740,52 @@ class TicketCRUDController extends Controller
                 // Menghitung Ticket Total Service Desk
                 if($status == "all"){
                     $title      = "Ticket Total Masuk";
-                    $tickets    = Ticket::where([['ticket_for', $locationId],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted', 'resolved', 'finished'])->get();
+                    $tickets    = Ticket::where([['ticket_for', $locationId],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted', 'resolved', 'finished'])->paginate(10);
                 }elseif($status == "unprocess"){
                     $title      = "Ticket Unprocessed";
-                    $tickets    = Ticket::where([['ticket_for', $locationId],['status', 'created'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['ticket_for', $locationId],['status', 'created'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "onprocess"){
                     $title      = "Ticket On Process";
-                    $tickets    = Ticket::where([['ticket_for', $locationId],['status', 'onprocess'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['ticket_for', $locationId],['status', 'onprocess'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "pending"){
                     $title      = "Ticket Pending";
-                    $tickets    = Ticket::where([['ticket_for', $locationId],['status', 'pending'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->get();
+                    $tickets    = Ticket::where([['ticket_for', $locationId],['status', 'pending'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->paginate(10);
                 }elseif($status == "selesai"){
                     $title      = "Ticket Resolved";
                     $tickets    = Ticket::where([['ticket_for', $locationId],['status', 'resolved'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])
                                         ->orWhere([['ticket_for', $locationId],['status', 'finished'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])
                                         ->orderBy('updated_at', 'DESC')
-                                        ->get();
+                                        ->paginate(10);
                 }elseif($status == "assign"){
                     $title      = "Ticket Participant";
                     $tickets    = Ticket::join('ticket_details', 'tickets.id', '=', 'ticket_details.ticket_id')
                                         ->where([['ticket_details.agent_id', 'like', '%'.$filter1],['ticket_details.status', 'assigned'],['ticket_details.created_at', 'like', $filter2.'%']])
                                         ->select('tickets.*')
-                                        ->get();
+                                        ->paginate(10);
                 }elseif($status == "workday"){
                     $title      = "Work Day Ticket";
-                    $tickets    = Ticket::where([['ticket_for', $locationId],['jam_kerja', 'ya'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
+                    $tickets    = Ticket::where([['ticket_for', $locationId],['jam_kerja', 'ya'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->paginate(10);
                 }else{
                     $title      = "Off Day Ticket";
-                    $tickets    = Ticket::where([['ticket_for', $locationId],['jam_kerja', 'tidak'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->get();
+                    $tickets    = Ticket::where([['ticket_for', $locationId],['jam_kerja', 'tidak'],['agent_id', 'like', '%'.$filter1],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted'])->paginate(10);
                 }
             }else{
                 $pathFilter = "[".$pathFilter."]";
                 // Menghitung Ticket Total Agent
                 if($status == "all"){
                     $title      = "Ticket Assigned";
-                    $tickets    = Ticket::where([['agent_id', $agentId],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted', 'resolved', 'finished'])->get();
+                    $tickets    = Ticket::where([['agent_id', $agentId],['created_at', 'like', $filter2.'%']])->whereNotIn('status', ['deleted', 'resolved', 'finished'])->paginate(10);
                 }elseif($status == "selesai"){
                     $title      = "Ticket Resolved";
                     $tickets    = Ticket::where([['agent_id', $agentId],['status', 'resolved'],['created_at', 'like', $filter2.'%']])
                         ->orWhere([['agent_id', $agentId],['status', 'finished'],['created_at', 'like', $filter2.'%']])
-                        ->get();
+                        ->paginate(10);
                 }else{
                     $title      = "Ticket Participant";
                     $tickets    = Ticket::join('ticket_details', 'tickets.id', '=', 'ticket_details.ticket_id')
                         ->where([['ticket_details.agent_id', $agentId],['ticket_details.status', 'assigned'],['ticket_details.created_at', 'like', $filter2.'%']])
                         ->select('tickets.*')
-                        ->get();
+                        ->paginate(10);
                 }
             }
         }
