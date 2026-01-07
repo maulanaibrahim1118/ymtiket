@@ -22,6 +22,7 @@
     <link href="{{ asset('dist/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/vendor/simple-datatables/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/DataTables/datatables.css') }}" rel="stylesheet">
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('dist/css/style.css') }}" rel="stylesheet">
@@ -135,6 +136,7 @@
 
     <!-- Vendor JS Files -->
     <script src="{{ asset('dist/vendor/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ asset('dist/DataTables/datatables.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('dist/vendor/bootstrap/js/select2.min.js') }}"></script>

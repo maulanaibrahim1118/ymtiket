@@ -14,15 +14,15 @@
                                 @endif
                                 
                                 @can('isServiceDesk')
-                                @include('contents.ticket.service_desk.table')
+                                @include('contents.ticket.filter.service_desk')
                                 @endcan
 
                                 @can('isAgent')
-                                @include('contents.ticket.agent.table')
+                                @include('contents.ticket.filter.agent')
                                 @endcan
 
                                 @can('isClient')
-                                @include('contents.ticket.client.table')
+                                @include('contents.ticket.filter.client')
                                 @endcan
                                 
                                 <div class="col-md-12 border-top mb-3"></div>

@@ -99,7 +99,8 @@ class SubCategoryTicketController extends Controller
                 Rule::unique('sub_category_tickets')->where(function ($query) use ($request) {
                     return $query->where([
                         ['category_ticket_id', $request->category_ticket_id],
-                        ['nama_sub_kategori', $request->nama_sub_kategori]
+                        ['nama_sub_kategori', $request->nama_sub_kategori],
+                        ['jenis_ticket', $request->jenis_ticket]
                     ]);
                 })->ignore($request->id),
             ],
@@ -110,7 +111,6 @@ class SubCategoryTicketController extends Controller
             'nama_sub_kategori.required'    => 'Sub Category Name required!',
             'nama_sub_kategori.min'         => 'Type at least 3 characters!',
             'nama_sub_kategori.max'         => 'Type maximum 50 characters!',
-            'nama_sub_kategori.unique'      => 'Already exists for the same category!',
             'category_ticket_id.required'   => 'Ticket Category must be selected!',
             'jenis_ticket.required'         => 'Ticket Type must be selected!',
             'asset_change.required'         => 'Asset Change must be selected!',
@@ -212,7 +212,8 @@ class SubCategoryTicketController extends Controller
                 Rule::unique('sub_category_tickets')->where(function ($query) use ($request, $id) {
                     return $query->where([
                         ['category_ticket_id', $request->category_ticket_id],
-                        ['nama_sub_kategori', $request->nama_sub_kategori]
+                        ['nama_sub_kategori', $request->nama_sub_kategori],
+                        ['jenis_ticket', $request->jenis_ticket]
                     ])->where('id', '!=', $id); // Mengabaikan entri saat ini saat memeriksa unik
                 }),
             ],
@@ -223,7 +224,6 @@ class SubCategoryTicketController extends Controller
             'nama_sub_kategori.required'    => 'Sub Category Name required!',
             'nama_sub_kategori.min'         => 'Type at least 3 characters!',
             'nama_sub_kategori.max'         => 'Type maximum 50 characters!',
-            'nama_sub_kategori.unique'      => 'Already exists for the same category!',
             'category_ticket_id.required'   => 'Ticket Category must be selected!',
             'jenis_ticket.required'         => 'Ticket Type must be selected!',
             'asset_change.required'         => 'Asset Change must be selected!',

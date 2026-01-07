@@ -57,6 +57,7 @@ Route::post('/report-sub-categories/filter', [FilterController::class, 'reportSu
 // Route Ticket (semua user)
 Route::get('/tickets-dashboard', [TicketCRUDController::class, 'ticketDashboard'])->middleware('auth')->name('ticket.dashboard');
 Route::get('/tickets', [TicketCRUDController::class, 'index'])->middleware('auth')->name('ticket.index');
+Route::get('/tickets/list', [TicketCRUDController::class, 'list'])->middleware('auth')->name('ticket.list');
 Route::get('/tickets/asset', [TicketCRUDController::class, 'ticketAsset'])->middleware('auth')->name('ticket.asset');
 
 // Route Ticket (Role = Client/Service Desk)
