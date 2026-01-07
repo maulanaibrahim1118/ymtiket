@@ -22,7 +22,10 @@ $(function () {
                 { data: "no_ticket", name: "no_ticket" },
                 { data: "location_name", name: "location_name" },
                 { data: "kendala", name: "kendala" },
-                { data: "detail_kendala", name: "detail_kendala" },
+                {
+                    data: "detail_kendala",
+                    name: "detail_kendala",
+                },
                 { data: "agent_name", name: "agent_name" },
                 { data: "status_raw", name: "status" },
                 { data: "notes_raw", name: "notes_raw" },
@@ -36,6 +39,16 @@ $(function () {
                             return data.toUpperCase();
                         }
                         return data;
+                    },
+                },
+                {
+                    targets: [4, 5], // SUBJECT & DETAIL
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        td.style.maxWidth = "100px";
+                        td.style.whiteSpace = "nowrap";
+                        td.style.overflow = "hidden";
+                        td.style.textOverflow = "ellipsis";
+                        td.title = cellData;
                     },
                 },
                 {

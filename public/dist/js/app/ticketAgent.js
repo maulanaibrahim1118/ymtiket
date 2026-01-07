@@ -37,6 +37,16 @@ $(function () {
                     },
                 },
                 {
+                    targets: [4, 5], // SUBJECT & DETAIL
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        td.style.maxWidth = "100px";
+                        td.style.whiteSpace = "nowrap";
+                        td.style.overflow = "hidden";
+                        td.style.textOverflow = "ellipsis";
+                        td.title = cellData;
+                    },
+                },
+                {
                     targets: 6,
                     render: function (data, type, row) {
                         if (type !== "display") return row.status_raw;
