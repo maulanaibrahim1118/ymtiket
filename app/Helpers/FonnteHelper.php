@@ -19,13 +19,6 @@ class FonnteHelper
             'message' => $message
         ]);
 
-        Log::info('KIRIM FONNTE', [
-            'target' => $target,
-            'message' => $message,
-            'response' => $response->json(),
-            'status' => $response->status(),
-        ]);
-
         return $response->json();
     }
 }

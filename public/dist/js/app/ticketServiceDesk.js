@@ -3,7 +3,7 @@ $(function () {
         return $("#ticketsTable").DataTable({
             destroy: true,
             processing: true,
-            serverSide: false,
+            serverSide: true,
             ajax: {
                 url: listUrl,
                 data: function (d) {
@@ -165,7 +165,7 @@ $(function () {
             order: [
                 [7, "asc"],
                 [6, "asc"],
-                [1, "desc"],
+                [1, "asc"],
             ],
         });
     }
