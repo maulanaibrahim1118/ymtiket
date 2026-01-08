@@ -4,6 +4,7 @@ $(function () {
             destroy: true,
             processing: true,
             serverSide: true,
+            pageLength: 25,
             ajax: {
                 url: listUrl,
                 data: function (d) {
