@@ -49,23 +49,35 @@ class TicketCRUDController extends Controller
         $subDivHo = $subDivs->where('pic_ticket', '!=', 'store')->pluck('sub_divisi')->toArray();
         $subDivStore = $subDivs->where('pic_ticket', '!=', 'ho')->pluck('sub_divisi')->toArray();
 
+        $users = User::where('is_active', '1')->orderBy('nama', 'asc')->get();
+
         // Menggabungkan query untuk Agent HO & Store
-        $agents = Agent::where('is_active', '1')
-                    ->where('location_id', $locationId)
-                    ->where('status', 'present')
-                    ->whereNotIn('id', [$agentId])
-                    ->get();
+        $baseQueryAgent = Agent::where('is_active', '1');
+        $filterAgents = $baseQueryAgent->where('location_id', $locationId)->orderBy('nama_agent', 'asc')->get();
+        $agents = $baseQueryAgent->where('location_id', $locationId)->where('status', 'present')->whereNotIn('id', [$agentId])->get();
 
         // Memisahkan data Agent HO dan Store
         $hoAgents = $agents->where('pic_ticket', '!=', 'store');
         $storeAgents = $agents->where('pic_ticket', '!=', 'ho');
 
+        $statuses = [
+            'created'   => 'CREATED',
+            'pending'   => 'PENDING',
+            'standby'   => 'STANDBY',
+            'onprocess' => 'ON PROCESS',
+            'resolved'  => 'RESOLVED',
+            'finished'  => 'FINISHED',
+        ];
+
         return view('contents.ticket.index', [
             "title"         => "Ticket List",
             "path"          => "Ticket",
             "path2"         => "Ticket",
+            "users"         => $users,
+            "filterAgents"  => $filterAgents,
             "hoAgents"      => $hoAgents,
             "storeAgents"   => $storeAgents,
+            'statuses'      => $statuses,
             "subDivHo"      => $subDivHo,
             "subDivStore"   => $subDivStore,
             "haveSubDivs"   => $haveSubDivs,
@@ -81,6 +93,10 @@ class TicketCRUDController extends Controller
         $positionId  = $user->position_id ?? null;
         $codeAccess  = $user->code_access ?? null;
         $area        = $user->area ?? null;
+
+        $clientFilter = $request->client;
+        $agentFilter  = $request->agent;
+        $statusFilter = $request->status;
 
         $agentId     = Agent::where('nik', $user->nik)->value('id');
         $haveSubDivs = Sub_division::pluck('location_id')->toArray();
@@ -131,6 +147,18 @@ class TicketCRUDController extends Controller
                 ['ticket_for', $locationId],
                 ['agent_id', $agentId]
             ]);
+        }
+
+        if (!empty($clientFilter)) {
+            $query->where('user_id', $clientFilter);
+        }
+
+        if (!empty($agentFilter)) {
+            $query->where('agent_id', $agentFilter);
+        }
+
+        if (!empty($statusFilter)) {
+            $query->where('status', $statusFilter);
         }
 
         return DataTables::of($query)

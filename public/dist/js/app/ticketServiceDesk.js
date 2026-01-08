@@ -3,12 +3,13 @@ $(function () {
         return $("#ticketsTable").DataTable({
             destroy: true,
             processing: true,
-            serverSide: true,
+            serverSide: false,
             ajax: {
                 url: listUrl,
                 data: function (d) {
-                    d.subject = $("#subject").val();
-                    d.username = $("#username").val();
+                    d.client = $("#client").val();
+                    d.agent = $("#agent").val();
+                    d.status = $("#searchStatus").val();
                 },
             },
             columns: [
@@ -55,7 +56,7 @@ $(function () {
                     targets: 6,
                     render: function (data, type, row) {
                         if (row.is_me) {
-                            return '<span class="badge bg-info">me</span>';
+                            return '<span class="badge bg-info">ME</span>';
                         }
                         return data;
                     },
@@ -163,12 +164,17 @@ $(function () {
             ],
             order: [
                 [7, "asc"],
+                [6, "asc"],
                 [1, "desc"],
             ],
         });
     }
 
     let table = initDataTable();
+
+    $("#reloadBtn").on("click", function (e) {
+        table.ajax.reload();
+    });
 
     $("#filter-form").on("submit", function (e) {
         e.preventDefault();

@@ -116,10 +116,7 @@ $(function () {
                     },
                 },
             ],
-            order: [
-                [7, "asc"],
-                [1, "desc"],
-            ],
+            order: [[1, "desc"]],
         });
     }
 
