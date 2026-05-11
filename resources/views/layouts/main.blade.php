@@ -114,7 +114,7 @@
                         @if($path == $path2)
                         <li class="breadcrumb-item active" style="padding-top:5px;">{{ $path }}</li>
                         @else
-                        <li class="breadcrumb-item" style="padding-top:5px;">{{ $path }}</li><i class="bx bxs-chevron-right p-2" style="margin-top:2px;"></i>
+                        <li class="breadcrumb-item" style="padding-top:5px;"><a href="{{ url()->previous() }}">{{ $path }}</a></li><i class="bx bxs-chevron-right p-2" style="margin-top:2px;"></i>
                         <li class="breadcrumb-item active" style="padding-top:5px;">{{ $path2 }}</li>
                         @endif
                     </ol>
